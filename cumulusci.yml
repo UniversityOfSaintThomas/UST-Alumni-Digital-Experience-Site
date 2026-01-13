@@ -1,0 +1,24 @@
+minimum_cumulusci_version: '4.8.0'
+project:
+    name: UST-Alumni-Digital-Experience-Site
+    package:
+        name: UST-Alumni-Digital-Experience-Site
+        api_version: '63.0'
+    git:
+    source_format: sfdx
+
+tasks:
+    robot:
+        options:
+            suites: robot/UST-Alumni-Digital-Experience-Site/tests
+            options:
+                outputdir: robot/UST-Alumni-Digital-Experience-Site/results
+
+    robot_testdoc:
+        options:
+            path: robot/UST-Alumni-Digital-Experience-Site/tests
+            output: robot/UST-Alumni-Digital-Experience-Site/doc/UST-Alumni-Digital-Experience-Site_tests.html
+
+    run_tests:
+        options:
+            required_org_code_coverage_percent: 75
