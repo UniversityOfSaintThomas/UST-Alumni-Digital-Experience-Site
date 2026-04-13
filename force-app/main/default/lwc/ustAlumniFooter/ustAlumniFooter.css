@@ -1,0 +1,302 @@
+/* ============================================================
+   UST Alumni Footer
+   - Dark purple primary body
+   - 4-column nav grid
+   - Legal bar (slightly darker)
+   - Social icon row
+   ============================================================ */
+
+:host {
+    display: block;
+}
+
+/* ---- Shared container ---- */
+.ust-footer__container {
+    max-width: var(--ust-container-max, 1280px);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+/* ============================================================
+   MAIN FOOTER BODY
+   ============================================================ */
+.ust-footer__body {
+    background: var(--ust-purple-dark, #510c76);
+    color: #ffffff;
+    padding: 3rem 0 2.5rem;
+}
+
+.ust-footer__body > .ust-footer__container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* ============================================================
+   BRAND COLUMN
+   ============================================================ */
+.ust-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.ust-footer__logo-link {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.ust-footer__logo {
+    height: 35px;
+    width: auto;
+    /* Invert purple logo to white on dark background */
+    filter: brightness(0) invert(1);
+}
+
+.ust-footer__address {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: normal;
+    line-height: 1.7;
+}
+
+.ust-footer__address p {
+    margin: 0;
+}
+
+/* Contact links */
+.ust-footer__contact-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.ust-footer__contact-links a {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.35);
+    text-underline-offset: 2px;
+    transition: color 150ms ease;
+}
+
+.ust-footer__contact-links a:hover {
+    color: #ffffff;
+    text-decoration-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Social icons */
+.ust-footer__social {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.ust-footer__social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    text-decoration: none;
+    transition: background 150ms ease, transform 150ms ease;
+}
+
+.ust-footer__social a:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.ust-footer__social a:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+}
+
+.ust-footer__social svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    display: block;
+}
+
+/* LinkedIn viewBox is 1536x1536 — scale down visually */
+.ust-footer__social li:nth-child(3) svg {
+    width: 14px;
+    height: 14px;
+}
+
+.ust-footer__copyright {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0;
+}
+
+/* ============================================================
+   FOOTER NAVIGATION COLUMNS
+   ============================================================ */
+.ust-footer__nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
+.ust-footer__nav-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ust-footer__nav-heading {
+    font-family: var(--ust-font-family-ui, sans-serif);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.ust-footer__nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ust-footer__nav-link {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0.1rem 0;
+    transition: color 120ms ease;
+}
+
+.ust-footer__nav-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.ust-footer__nav-link:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* ============================================================
+   LEGAL BAR
+   ============================================================ */
+.ust-footer__legal-bar {
+    background: #3a0858; /* slightly darker than dark purple */
+    padding: 0.75rem 0;
+}
+
+.ust-footer__legal-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.ust-footer__legal-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem;
+}
+
+.ust-footer__legal-links li + li::before {
+    content: '|';
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0 0.4rem;
+    font-size: 0.7rem;
+}
+
+.ust-footer__legal-links a {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    transition: color 120ms ease;
+}
+
+.ust-footer__legal-links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.ust-footer__back-to-top {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 120ms ease;
+    white-space: nowrap;
+}
+
+.ust-footer__back-to-top:hover {
+    color: #ffffff;
+}
+
+.ust-footer__back-to-top svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+    .ust-footer__body > .ust-footer__container {
+        grid-template-columns: 1fr;
+    }
+
+    .ust-footer__nav {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .ust-footer__nav {
+        grid-template-columns: 1fr;
+    }
+
+    .ust-footer__legal-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .ust-footer__legal-links {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .ust-footer__legal-links li + li::before {
+        display: none;
+    }
+}
+

@@ -1,0 +1,154 @@
+<template>
+    <!-- ============================================================
+         UST Alumni Footer
+         Mirrors alumni.stthomas.edu:
+         - Brand block (logo, address, contact, social icons)
+         - 4-column navigation
+         - Legal bar
+         - Back to top
+         ============================================================ -->
+    <footer class="ust-footer" role="contentinfo">
+
+        <!-- MAIN FOOTER BODY -->
+        <div class="ust-footer__body">
+            <div class="ust-footer__container">
+
+                <!-- Brand column: logo + address + social -->
+                <div class="ust-footer__brand">
+                    <a href={homeUrl} class="ust-footer__logo-link" aria-label="University of St. Thomas Alumni — home">
+                        <img src={logoUrl} alt="University of St. Thomas" class="ust-footer__logo" width="160" height="35" />
+                    </a>
+
+                    <address class="ust-footer__address">
+                        <p>University of St. Thomas, Minnesota</p>
+                        <p>2115 Summit Avenue</p>
+                        <p>St. Paul, Minnesota 55105 USA</p>
+                    </address>
+
+                    <ul class="ust-footer__contact-links">
+                        <li><a href={contactUrl}>Contact Alumni Engagement</a></li>
+                        <li><a href={updateContactUrl}>Update your Contact Info</a></li>
+                        <li>
+                            <a href="https://www.stthomas.edu/registrar/alumni-former-student-information/index.html"
+                               target="_blank" rel="noopener">Request a Transcript</a>
+                        </li>
+                    </ul>
+
+                    <!-- Social media icons -->
+                    <ul class="ust-footer__social" aria-label="Social media links">
+                        <li>
+                            <a href="https://www.facebook.com/tommiealumni/" target="_blank" rel="noopener"
+                               aria-label="Follow UST Alumni on Facebook">
+                                <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="m20.517 15.631.778-5.03h-4.863V7.339c0-1.376.679-2.717 2.857-2.717H21.5V.34S19.493 0 17.575 0c-4.005 0-6.623 2.409-6.623 6.769v3.833H6.5v5.03h4.452v12.157a17.804 17.804 0 0 0 5.48 0V15.63h4.085z"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.instagram.com/tommiealumni/" target="_blank" rel="noopener"
+                               aria-label="Follow UST Alumni on Instagram">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="M12 0C8.741 0 8.333.014 7.053.072c-1.277.06-2.15.262-2.912.559a5.882 5.882 0 0 0-2.125 1.383A5.882 5.882 0 0 0 .63 4.14c-.297.763-.5 1.635-.559 2.912C.014 8.333 0 8.74 0 12s.014 3.667.072 4.947c.058 1.277.262 2.15.559 2.912.307.79.716 1.46 1.383 2.127A5.882 5.882 0 0 0 4.14 23.37c.764.297 1.635.5 2.912.559C8.332 23.986 8.74 24 12 24s3.667-.014 4.947-.072c1.277-.058 2.15-.262 2.912-.559a5.883 5.883 0 0 0 2.127-1.383 5.883 5.883 0 0 0 1.383-2.127c.297-.763.5-1.635.559-2.912.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.058-1.277-.262-2.15-.559-2.912a5.882 5.882 0 0 0-1.383-2.127A5.883 5.883 0 0 0 19.86.63c-.763-.297-1.635-.5-2.912-.559C15.667.014 15.26 0 12 0zm0 2.162c3.204 0 3.585.012 4.85.07 1.17.054 1.803.249 2.226.413.56.218.961.478 1.381.898.42.42.68.82.899 1.38.164.424.359 1.057.412 2.227.058 1.265.07 1.646.07 4.85s-.012 3.585-.07 4.85c-.053 1.17-.248 1.803-.412 2.226-.218.56-.479.961-.899 1.381s-.82.68-1.38.899c-.424.164-1.057.359-2.227.412-1.265.058-1.646.07-4.85.07s-3.585-.012-4.85-.07c-1.17-.053-1.803-.248-2.226-.412a3.718 3.718 0 0 1-1.381-.899c-.42-.42-.68-.82-.899-1.38-.164-.424-.359-1.057-.412-2.227-.058-1.265-.07-1.646-.07-4.85s.012-3.585.07-4.85c.053-1.17.248-1.803.412-2.226a3.73 3.73 0 0 1 .899-1.381c.42-.42.82-.68 1.38-.898.424-.164 1.057-.36 2.227-.413 1.265-.058 1.646-.07 4.85-.07zm6.613 1.285a1.714 1.714 0 0 0-1.47 1.696 1.714 1.714 0 0 0 3.427 0 1.714 1.714 0 0 0-1.957-1.696zM12.43 5.143a6.429 6.429 0 1 0 0 12.857 6.429 6.429 0 0 0 0-12.857zm0 2.256a4.173 4.173 0 0 1 0 8.345 4.173 4.173 0 1 1 0-8.345z"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/school/universityofstthomas/" target="_blank" rel="noopener"
+                               aria-label="Follow UST Alumni on LinkedIn">
+                                <svg viewBox="0 0 1536 1536" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="M349 511v991H19V511zm21-306q1 73-50.5 122T184 376h-2q-82 0-132-49T0 205q0-74 51.5-122.5T186 34t133 48.5T370 205zm1166 729v568h-329V972q0-105-40.5-164.5T1040 748q-63 0-105.5 34.5T871 868q-11 30-11 81v553H531q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5T1157 488q171 0 275 113.5T1536 934z"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.tiktok.com/@universityofstthomas/" target="_blank" rel="noopener"
+                               aria-label="Follow UST Alumni on TikTok">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/tommiealumni/" target="_blank" rel="noopener"
+                               aria-label="Follow UST Alumni on X (formerly Twitter)">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/universityofstthomas/" target="_blank" rel="noopener"
+                               aria-label="Follow UST Alumni on YouTube">
+                                <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="M27.415 7.123a3.543 3.543 0 0 0-2.475-2.526C22.756 4 14 4 14 4s-8.756 0-10.94.597A3.543 3.543 0 0 0 .585 7.123C0 9.351 0 14 0 14s0 4.65.585 6.877a3.543 3.543 0 0 0 2.475 2.526C5.244 24 14 24 14 24s8.756 0 10.94-.597a3.543 3.543 0 0 0 2.475-2.526C28 18.649 28 14 28 14s0-4.649-.585-6.877ZM11.2 18.286V9.714L18.474 14Z"/>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <p class="ust-footer__copyright">&copy; {currentYear} University of St. Thomas, Minnesota</p>
+                </div>
+
+                <!-- Footer navigation columns -->
+                <nav class="ust-footer__nav" aria-label="Footer navigation">
+                    <template for:each={footerColumns} for:item="col">
+                        <div key={col.id} class="ust-footer__nav-col">
+                            <h3 class="ust-footer__nav-heading">{col.label}</h3>
+                            <ul class="ust-footer__nav-list">
+                                <template for:each={col.items} for:item="item">
+                                    <li key={item.id}>
+                                        <a
+                                            href={item.actionValue}
+                                            class="ust-footer__nav-link"
+                                            data-url={item.actionValue}
+                                            data-type={item.actionType}
+                                            onclick={handleNavClick}>
+                                            {item.label}
+                                        </a>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                </nav>
+
+            </div>
+        </div>
+
+        <!-- LEGAL BAR -->
+        <div class="ust-footer__legal-bar">
+            <div class="ust-footer__container ust-footer__legal-container">
+                <ul class="ust-footer__legal-links">
+                    <li>
+                        <a href="https://stthomas.az1.qualtrics.com/jfe/form/SV_29nqe0td5nH798q"
+                           target="_blank" rel="noopener">Report a Website Problem</a>
+                    </li>
+                    <li>
+                        <a href="https://www.stthomas.edu/policies/equal-opportunity/"
+                           target="_blank" rel="noopener">EO Statement</a>
+                    </li>
+                    <li>
+                        <a href="https://www.stthomas.edu/accessibility-statement/index.html"
+                           target="_blank" rel="noopener">Accessibility</a>
+                    </li>
+                    <li>
+                        <a href="https://www.stthomas.edu/policies/online-privacy/index.html"
+                           target="_blank" rel="noopener">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <a href="https://www.stthomas.edu/emergency/index.html"
+                           target="_blank" rel="noopener">Emergency</a>
+                    </li>
+                </ul>
+                <a href="#top" class="ust-footer__back-to-top" aria-label="Back to top of page">
+                    Back to Top
+                    <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 3.293 2.854 10.44a1 1 0 0 1-1.415-1.413l8-8a1 1 0 0 1 1.415 0l8 8a1 1 0 0 1-1.415 1.413L10 3.293Z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+    </footer>
+</template>
+

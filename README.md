@@ -1,18 +1,38 @@
-# Salesforce DX Project: Next Steps
+# UST Alumni Digital Experience Site
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+Personalized alumni portal built on **Salesforce Experience Cloud** using LWC widget components. Powered by EDA (Higher Education Data Architecture) and personalized by each alumnus's giving history, event registrations, major/college, and declared preferences.
 
-## How Do You Plan to Deploy Your Changes?
+## Documentation
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+| Doc | Purpose |
+|-----|---------|
+| [MAIN_GUIDE.md](docs/MAIN_GUIDE.md) | Project overview, architecture, development workflow |
+| [WIDGET-CATALOG.md](docs/WIDGET-CATALOG.md) | Portal widget inventory, requirements, and status |
+| [DATA-MODEL.md](docs/DATA-MODEL.md) | Custom objects, key fields, EDA object map |
+| [BRAND-COLORS.md](docs/BRAND-COLORS.md) | Official UST color palette (HEX/RGB/PMS) |
+| [AI-TOOLS-CONFIG.md](docs/AI-TOOLS-CONFIG.md) | Org aliases, CI/CD config, AI tool context |
+| [user-discover.md](docs/user-discover.md) | Raw discovery session notes (Jan & Mar 2026) |
 
-## Configure Your Salesforce DX Project
+## Quick Start
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+```powershell
+# Create a fresh dev scratch org
+cci flow run dev_org --org dev
 
-## Read All About It
+# Deploy LWC components
+cci task run deploy --path force-app/main/default/lwc --org dev
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+# Run LWC Jest tests
+npm test
+
+# Run Apex tests
+cci task run run_tests --org dev
+```
+
+## Tech Stack
+
+- Salesforce Experience Cloud (LWR)
+- Lightning Web Components (LWC)
+- EDA - Higher Education Data Architecture (`hed__` namespace)
+- CumulusCI (build/deploy tooling)
+- Salesforce API v63.0 / v65.0

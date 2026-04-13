@@ -1,0 +1,548 @@
+/* ============================================================
+   UST Alumni Header
+   Mirrors alumni.stthomas.edu structure:
+   - Top utility bar (white)
+   - Main nav bar (Dark Purple #510c76)
+   - Dropdown menus
+   - Mobile slide-down nav
+   - Search panel
+   ============================================================ */
+
+:host {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ---- Shared container ---- */
+.ust-header__container {
+    max-width: var(--ust-container-max, 1280px);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ============================================================
+   TOP UTILITY BAR
+   ============================================================ */
+.ust-header__top-bar {
+    background: #ffffff;
+    border-bottom: 1px solid #e0dce4;
+    height: 36px;
+}
+
+.ust-header__top-bar .ust-header__container {
+    height: 36px;
+    justify-content: space-between;
+}
+
+.ust-header__top-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ust-header__alumni-link,
+.ust-header__ust-link {
+    font-family: var(--ust-font-family-ui, sans-serif);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ust-purple-dark, #510c76);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transition: color 150ms ease;
+}
+
+.ust-header__alumni-link:hover,
+.ust-header__ust-link:hover {
+    color: var(--ust-purple-medium, #8348ad);
+    text-decoration: underline;
+}
+
+.ust-header__top-divider {
+    color: var(--ust-gray-cool, #98999b);
+    font-size: 0.75rem;
+}
+
+.ust-header__top-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ust-header__top-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ust-purple-dark, #510c76);
+    white-space: nowrap;
+    transition: color 150ms ease;
+}
+
+.ust-header__top-link:hover {
+    color: var(--ust-purple-medium, #8348ad);
+    text-decoration: underline;
+}
+
+.ust-header__top-link--cta {
+    background: var(--ust-purple-dark, #510c76);
+    color: #ffffff !important;
+    padding: 0.2rem 0.75rem;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+.ust-header__top-link--cta:hover {
+    background: var(--ust-purple-medium, #8348ad);
+    text-decoration: none !important;
+}
+
+/* ============================================================
+   MAIN NAVIGATION BAR
+   ============================================================ */
+.ust-header__nav-bar {
+    background: var(--ust-purple-dark, #510c76);
+    position: relative;
+}
+
+.ust-header__nav-bar > .ust-header__container {
+    height: 80px;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+/* Logo */
+.ust-header__logo-link {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 2rem;
+    text-decoration: none;
+}
+
+.ust-header__logo {
+    height: 35px;
+    width: auto;
+    /* On dark purple background, logo is already purple —
+       invert to white so it's readable */
+    filter: brightness(0) invert(1);
+    display: block;
+}
+
+/* ============================================================
+   DESKTOP NAV
+   ============================================================ */
+.ust-header__desktop-nav {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    /* Hidden on mobile */
+}
+
+.ust-header__nav-list {
+    display: flex;
+    align-items: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 80px;
+}
+
+.ust-header__nav-item {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+}
+
+/* Shared nav link / button base */
+.ust-header__nav-link,
+.ust-header__nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0 1rem;
+    height: 100%;
+    font-family: var(--ust-font-family-ui, sans-serif);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+.ust-header__nav-link:hover,
+.ust-header__nav-btn:hover,
+.ust-header__nav-item--open .ust-header__nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.ust-header__nav-link:focus-visible,
+.ust-header__nav-btn:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: -3px;
+}
+
+/* Caret icon in desktop nav */
+.ust-header__caret {
+    display: flex;
+    align-items: center;
+    transition: transform 250ms ease;
+}
+
+.ust-header__caret svg {
+    width: 11px;
+    height: 7px;
+    fill: #ffffff;
+}
+
+.ust-header__nav-item--open .ust-header__caret {
+    transform: rotate(180deg);
+}
+
+/* ============================================================
+   DROPDOWN MENUS
+   ============================================================ */
+.ust-header__dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: #ffffff;
+    border-top: 3px solid var(--ust-purple-dark, #510c76);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    z-index: 200;
+    border-radius: 0 0 4px 4px;
+}
+
+.ust-header__dropdown--open {
+    display: block;
+}
+
+.ust-header__dropdown-item {
+    display: block;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ust-purple-dark, #510c76);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 120ms ease, color 120ms ease;
+}
+
+.ust-header__dropdown-item:hover {
+    background: var(--ust-purple-10, #f2eaf6);
+    color: var(--ust-purple-dark, #510c76);
+    text-decoration: none;
+}
+
+.ust-header__dropdown-item:focus-visible {
+    outline: 3px solid var(--ust-purple-dark, #510c76);
+    outline-offset: -3px;
+}
+
+/* ============================================================
+   HEADER ACTIONS (search + hamburger)
+   ============================================================ */
+.ust-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+}
+
+.ust-header__search-btn,
+.ust-header__hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #ffffff;
+    transition: background 150ms ease;
+}
+
+.ust-header__search-btn:hover,
+.ust-header__hamburger:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.ust-header__search-btn:focus-visible,
+.ust-header__hamburger:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+}
+
+.ust-header__search-btn svg,
+.ust-header__hamburger svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    pointer-events: none;
+}
+
+/* Hamburger only visible on mobile */
+.ust-header__hamburger {
+    display: none;
+}
+
+/* ============================================================
+   SEARCH PANEL
+   ============================================================ */
+.ust-header__search-panel {
+    max-height: 0;
+    overflow: hidden;
+    background: var(--ust-purple-dark, #510c76);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    transition: max-height 280ms ease, padding 280ms ease;
+}
+
+.ust-header__search-panel--open {
+    max-height: 100px;
+    padding: 0.75rem 0;
+}
+
+.ust-header__search-panel .ust-header__container {
+    display: block;
+}
+
+.ust-header__search-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ust-header__search-row {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 560px;
+}
+
+.ust-header__search-input {
+    flex: 1;
+    height: 40px;
+    padding: 0 0.75rem;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 150ms ease, background 150ms ease;
+}
+
+.ust-header__search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.ust-header__search-input:focus {
+    border-color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ust-header__search-submit {
+    height: 40px;
+    padding: 0 1.25rem;
+    background: #ffffff;
+    color: var(--ust-purple-dark, #510c76);
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 150ms ease;
+}
+
+.ust-header__search-submit:hover {
+    background: var(--ust-purple-10, #f2eaf6);
+}
+
+.ust-header__search-submit:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   MOBILE NAVIGATION PANEL
+   ============================================================ */
+.ust-header__mobile-nav {
+    display: none;
+    background: var(--ust-purple-dark, #510c76);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 320ms ease;
+}
+
+.ust-header__mobile-nav--open {
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.ust-header__mobile-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+}
+
+.ust-header__mobile-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ust-header__mobile-link,
+.ust-header__mobile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 120ms ease;
+}
+
+.ust-header__mobile-link:hover,
+.ust-header__mobile-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ust-header__mobile-caret svg {
+    width: 12px;
+    height: 8px;
+    fill: #ffffff;
+    transition: transform 250ms ease;
+    flex-shrink: 0;
+}
+
+.ust-header__mobile-item--open .ust-header__mobile-caret svg {
+    transform: rotate(180deg);
+}
+
+/* Mobile accordion submenu */
+.ust-header__mobile-sub {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.15);
+    transition: max-height 250ms ease;
+}
+
+.ust-header__mobile-sub--open {
+    max-height: 500px;
+}
+
+.ust-header__mobile-sub-link {
+    display: block;
+    padding: 0.65rem 1.25rem 0.65rem 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: background 120ms ease;
+}
+
+.ust-header__mobile-sub-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+/* Mobile utility links section */
+.ust-header__mobile-utility {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.15);
+    padding: 0.5rem 0;
+    margin-top: 0.25rem;
+}
+
+.ust-header__mobile-utility-link {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: background 120ms ease;
+}
+
+.ust-header__mobile-utility-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.ust-header__mobile-utility-link--cta {
+    color: #ffd700;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+    .ust-header__desktop-nav {
+        display: none;
+    }
+
+    .ust-header__hamburger {
+        display: flex;
+    }
+
+    .ust-header__mobile-nav {
+        display: block;
+    }
+
+    .ust-header__top-nav {
+        display: none;
+    }
+
+    .ust-header__nav-bar > .ust-header__container {
+        height: 64px;
+    }
+
+    .ust-header__logo {
+        height: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ust-header__top-divider,
+    .ust-header__ust-link {
+        display: none;
+    }
+}
+

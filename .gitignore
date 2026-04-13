@@ -56,6 +56,9 @@ target/
 **/*.tsbuildinfo
 **/graphql.config.yml
 
+# AI working files (output logs, temp scripts, jq filters)
+ai-logs/
+
 # CCI
 .cci
 /src.orig
@@ -68,7 +71,6 @@ __pycache__
 # Robot Framework results
 robot/UST-RFI/results/
 
-
 # Editors
 *.sublime-project
 *.sublime-workspace
@@ -78,3 +80,8 @@ robot/UST-RFI/results/
 .settings
 
 *.iml
+
+code-analyzer.yml
+
+.playwright-report/
+.playwright-mcp/
