@@ -1,0 +1,48 @@
+/* ============================================================
+   UST Brand Color Overrides for MkDocs Material Theme
+   Primary:  #4E2A84  (UST Purple)
+   Accent:   #B58B3A  (UST Gold)
+   ============================================================ */
+
+/* Light mode */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:              #4E2A84;
+  --md-primary-fg-color--light:       #6D43A5;
+  --md-primary-fg-color--dark:        #3A1F66;
+  --md-accent-fg-color:               #B58B3A;
+  --md-accent-fg-color--transparent:  rgba(181, 139, 58, 0.1);
+}
+
+/* Dark mode */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:              #4E2A84;
+  --md-primary-fg-color--light:       #6D43A5;
+  --md-primary-fg-color--dark:        #3A1F66;
+  --md-accent-fg-color:               #D4A84B;
+  --md-accent-fg-color--transparent:  rgba(212, 168, 75, 0.1);
+}
+
+/* Ensure the header and tabs use the full UST purple */
+.md-header {
+  background-color: #4E2A84;
+}
+
+.md-tabs {
+  background-color: #3A1F66;
+}
+
+/* Search bar placeholder colour */
+.md-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Slightly bump up base font for readability */
+.md-content {
+  font-size: 0.92rem;
+}
+
+/* Admonition accent colour uses gold on hover/active */
+.md-nav__link:is(:focus, :hover) {
+  color: var(--md-accent-fg-color);
+}
+

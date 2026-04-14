@@ -11,19 +11,19 @@ Each row is a potential portal widget surfaced on the Experience Cloud alumni pa
 | # | Widget Name | Phase | Priority | Status | Notes |
 |---|------------|-------|---------|--------|-------|
 | 1 | [Profile Card](#1-profile-card) | 1 | High | Planned | Includes Business Info update |
-| 2 | [Events — Upcoming & Registered](#2-events--upcoming--registered) | 1 | High | Planned | Alumni events, non-alumni events, registrations |
-| 3 | [Give / Donor Widget](#3-give--donor-widget) | 1 | High | Planned | Includes Assigned Gift Officer section |
+| 2 | [Events — Upcoming & Registered](#2-events-upcoming-registered) | 1 | High | Planned | Alumni events, non-alumni events, registrations |
+| 3 | [Give / Donor Widget](#3-give-donor-widget) | 1 | High | Planned | Includes Assigned Gift Officer section |
 | 4 | [Engagement Summary (Year in Review)](#4-engagement-summary-year-in-review) | 2 | High | Planned | Needs data model definition |
 | 5 | [St. Thomas Connection Messages](#5-st-thomas-connection-messages) | 1 | High | Planned | Personalized by role |
 | 6 | [Preference Center](#6-preference-center) | 2 | High | Planned | Full pref center is Phase 2; see notes |
-| 7 | [Alumni Directory & Connect](#7-alumni-directory--connect) | 1 | Medium | Planned | ❓ Native messaging vs. PeopleGrove TBD |
+| 7 | [Alumni Directory & Connect](#7-alumni-directory-connect) | 1 | Medium | Planned | ❓ Native messaging vs. PeopleGrove TBD |
 | 8 | [Links Hub](#8-links-hub) | 1 | Medium | Planned | Expanded link list from 2026 CSV |
 | 9 | [Communications History](#9-communications-history) | 2 | Medium | Planned | ❓ MC Connect status TBD |
-| 10 | [Photo & Story Sharing](#10-photo--story-sharing) | 1 | Medium | Planned | |
+| 10 | [Photo & Story Sharing](#10-photo-story-sharing) | 1 | Medium | Planned | |
 | 11 | [Athletics](#11-athletics) | 1 | Low | Planned | Phase 1 = link only |
-| 12 | [Videos & Media](#12-videos--media) | 1 | Low | Planned | Phase 1 = curated playlist |
+| 12 | [Videos & Media](#12-videos-media) | 1 | Low | Planned | Phase 1 = curated playlist |
 | 13 | [Volunteer Management](#13-volunteer-management) | 2 | Low | Planned | ❓ V4SF package TBD |
-| 14 | [Alumni News & UST Updates](#14-alumni-news--ust-updates) | 1 | Medium | Planned | ❓ Content source TBD |
+| 14 | [Alumni News & UST Updates](#14-alumni-news-ust-updates) | 1 | Medium | Planned | ❓ Content source TBD |
 
 ---
 

@@ -85,3 +85,4 @@ code-analyzer.yml
 
 .playwright-report/
 .playwright-mcp/
+site/

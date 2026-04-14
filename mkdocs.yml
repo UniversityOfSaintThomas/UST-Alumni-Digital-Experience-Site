@@ -1,0 +1,83 @@
+site_name: UST Alumni Portal
+site_description: Design, planning, and roadmap documentation for the UST Alumni Digital Experience Portal
+site_url: https://universityofsaintthomas.github.io/UST-Alumni-Digital-Experience-Site/
+docs_dir: docs
+repo_url: https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site
+repo_name: UST-Alumni-Digital-Experience-Site
+edit_uri: ""
+
+theme:
+  name: material
+  favicon: fav-icons/favicon-32x32.png
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - toc.follow
+
+extra_css:
+  - stylesheets/ust-theme.css
+
+nav:
+  - Home: index.md
+  - Project Guide: MAIN_GUIDE.md
+  - 2026 Roadmap: ROADMAP.md
+  - Widget Catalog: WIDGET-CATALOG.md
+  - Data Model: DATA-MODEL.md
+  - Brand Guide: BRAND-COLORS.md
+  - User Discovery: user-discover.md
+
+# Suppress nav warnings and exclude developer-only files from the published build
+not_in_nav: |
+  AI-TOOLS-CONFIG.md
+  SVG-ASSETS.md
+  2026_Portal Requests.csv
+
+exclude_docs: |
+  AI-TOOLS-CONFIG.md
+  SVG-ASSETS.md
+  2026_Portal Requests.csv
+
+plugins:
+  - search
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site
+      name: Source Repository
+
