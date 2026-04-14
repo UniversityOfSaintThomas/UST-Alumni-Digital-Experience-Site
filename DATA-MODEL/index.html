@@ -1,0 +1,1682 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design, planning, and roadmap documentation for the UST Alumni Digital Experience Portal">
+      
+      
+      
+        <link rel="canonical" href="https://universityofsaintthomas.github.io/UST-Alumni-Digital-Experience-Site/DATA-MODEL/">
+      
+      
+        <link rel="prev" href="../WIDGET-CATALOG/">
+      
+      
+        <link rel="next" href="../BRAND-COLORS/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../fav-icons/favicon-32x32.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Data Model - UST Alumni Portal</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ust-theme.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model-ust-alumni-portal" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UST Alumni Portal" class="md-header__button md-logo" aria-label="UST Alumni Portal" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UST Alumni Portal
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data Model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    UST-Alumni-Digital-Experience-Site
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../MAIN_GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Project Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  2026 Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../WIDGET-CATALOG/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Widget Catalog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Model
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../BRAND-COLORS/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Brand Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../user-discover/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Discovery
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UST Alumni Portal" class="md-nav__button md-logo" aria-label="UST Alumni Portal" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UST Alumni Portal
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    UST-Alumni-Digital-Experience-Site
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MAIN_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WIDGET-CATALOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Widget Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#standard-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Objects
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standard Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campaign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Campaign
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campaignmember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CampaignMember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opportunity-npsp-giving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opportunity (NPSP giving)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eda-objects-namespace-hed__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EDA Objects (namespace: hed__)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EDA Objects (namespace: hed__)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hed__affiliation__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hed__Affiliation__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hed__course_enrollment__c-program_enrollment__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hed__Course_Enrollment__c / Program_Enrollment__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-objects-to-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Objects to Build
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Objects to Build">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alumni_preference__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alumni_Preference__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alumni_story__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alumni_Story__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ust_link__c-or-custom-metadata-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UST_Link__c (or Custom Metadata Type)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impact_story__c-or-experience-cloud-cms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact_Story__c (or Experience Cloud CMS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#marketing-cloud-data-via-mc-connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Marketing Cloud Data (via MC Connect)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#object-relationship-diagram-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Object Relationship Diagram (Summary)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Questions / Actions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BRAND-COLORS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-discover/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#standard-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Objects
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Standard Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campaign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Campaign
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campaignmember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CampaignMember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opportunity-npsp-giving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opportunity (NPSP giving)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eda-objects-namespace-hed__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EDA Objects (namespace: hed__)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EDA Objects (namespace: hed__)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hed__affiliation__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hed__Affiliation__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hed__course_enrollment__c-program_enrollment__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hed__Course_Enrollment__c / Program_Enrollment__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-objects-to-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Objects to Build
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Objects to Build">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alumni_preference__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alumni_Preference__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alumni_story__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alumni_Story__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ust_link__c-or-custom-metadata-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UST_Link__c (or Custom Metadata Type)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impact_story__c-or-experience-cloud-cms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact_Story__c (or Experience Cloud CMS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#marketing-cloud-data-via-mc-connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Marketing Cloud Data (via MC Connect)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#object-relationship-diagram-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Object Relationship Diagram (Summary)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Questions / Actions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model-ust-alumni-portal">Data Model — UST Alumni Portal<a class="headerlink" href="#data-model-ust-alumni-portal" title="Permanent link">&para;</a></h1>
+<p>This document maps the Salesforce objects and key fields used by the portal widgets. It covers standard objects, EDA managed package objects, and custom objects to be built.</p>
+<blockquote>
+<p><strong>EDA Note:</strong> The <code>hed__</code> namespace objects are available on <strong>both</strong> the dev scratch org (via the "EASY" snapshot) and EDA-Staging. Apex classes and tests referencing <code>hed__</code> types can be compiled and run against either org.</p>
+</blockquote>
+<hr />
+<h2 id="standard-objects">Standard Objects<a class="headerlink" href="#standard-objects" title="Permanent link">&para;</a></h2>
+<h3 id="contact">Contact<a class="headerlink" href="#contact" title="Permanent link">&para;</a></h3>
+<p>The central record for every alumnus. Nearly every widget reads from or writes to Contact.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>API Name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td><code>Name</code></td>
+<td>Display name</td>
+</tr>
+<tr>
+<td>Email</td>
+<td><code>Email</code></td>
+<td>Primary email (may be personal or institutional)</td>
+</tr>
+<tr>
+<td>Phone</td>
+<td><code>Phone</code></td>
+<td>Primary phone</td>
+</tr>
+<tr>
+<td>Mailing Address</td>
+<td><code>MailingCity</code>, <code>MailingState</code>, <code>MailingPostalCode</code>, <code>MailingCountry</code></td>
+<td>Used for geo-based event recommendations</td>
+</tr>
+<tr>
+<td>Photo URL</td>
+<td><code>Contact.PhotoUrl</code></td>
+<td>Community user profile photo</td>
+</tr>
+<tr>
+<td>Federated ID (via User)</td>
+<td><code>User.FederatedIdentifier</code></td>
+<td>SSO mapping to personal email</td>
+</tr>
+<tr>
+<td>Engagement Score</td>
+<td><em>(TBD — existing field on Contact)</em></td>
+<td>Source of CASE engagement score; query org schema to confirm field name</td>
+</tr>
+<tr>
+<td>Donor Flag</td>
+<td><em>(TBD)</em></td>
+<td>Confirm whether this is a rollup, formula, or custom field</td>
+</tr>
+<tr>
+<td>Faculty/Staff Flag</td>
+<td><em>(TBD)</em></td>
+<td>Custom field indicating UST employment connection</td>
+</tr>
+<tr>
+<td>Parent Flag</td>
+<td><em>(TBD)</em></td>
+<td>Custom field indicating parent-of-current-student connection</td>
+</tr>
+<tr>
+<td>Directory Opt-In</td>
+<td><em>(TBD)</em></td>
+<td>Privacy control for alumni directory visibility</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Action:</strong> Confirm field API names for Engagement Score, Donor Flag, Faculty/Staff Flag, and Parent Flag with the advancement team or by querying the EDA-Staging org schema.</p>
+</blockquote>
+<h3 id="user">User<a class="headerlink" href="#user" title="Permanent link">&para;</a></h3>
+<p>Community Users are linked to Contact records. The Experience Cloud portal session is tied to the User.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ContactId</code></td>
+<td>Links to the Contact record</td>
+</tr>
+<tr>
+<td><code>FederatedIdentifier</code></td>
+<td>SSO key (personal email) — populated when alumni has an institutional link, but <strong>most alumni log in via standard Experience Cloud login</strong>, not SSO</td>
+</tr>
+<tr>
+<td><code>Profile</code></td>
+<td>Community user profile (controls permissions)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="campaign">Campaign<a class="headerlink" href="#campaign" title="Permanent link">&para;</a></h3>
+<p>Events are tracked as Campaigns in Salesforce.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>API Name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event Name</td>
+<td><code>Name</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Event Type</td>
+<td><code>Type</code></td>
+<td>Picklist: Virtual, In-Person, Hybrid, etc.</td>
+</tr>
+<tr>
+<td>Start Date</td>
+<td><code>StartDate</code></td>
+<td></td>
+</tr>
+<tr>
+<td>End Date</td>
+<td><code>EndDate</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Location</td>
+<td><code>Campaign.Description</code> or custom</td>
+<td>TBD — confirm how location is stored</td>
+</tr>
+<tr>
+<td>Category/Interest Area</td>
+<td><em>(TBD custom field)</em></td>
+<td>For preference-based filtering</td>
+</tr>
+</tbody>
+</table>
+<h3 id="campaignmember">CampaignMember<a class="headerlink" href="#campaignmember" title="Permanent link">&para;</a></h3>
+<p>Links a Contact to a Campaign (event registration).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ContactId</code></td>
+<td>Alumnus</td>
+</tr>
+<tr>
+<td><code>CampaignId</code></td>
+<td>Event/Campaign</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td>Registered, Attended, No Show, etc.</td>
+</tr>
+<tr>
+<td><code>HasResponded</code></td>
+<td>Whether they attended (for CASE Experiential metric)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="opportunity-npsp-giving">Opportunity (NPSP giving)<a class="headerlink" href="#opportunity-npsp-giving" title="Permanent link">&para;</a></h3>
+<p>Gifts and pledges. NPSP standard object.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AccountId</code> → Household</td>
+<td>NPSP household account</td>
+</tr>
+<tr>
+<td><code>Primary_Contact__c</code></td>
+<td>Contact (donor)</td>
+</tr>
+<tr>
+<td><code>Amount</code></td>
+<td>Gift amount</td>
+</tr>
+<tr>
+<td><code>CloseDate</code></td>
+<td>Gift date</td>
+</tr>
+<tr>
+<td><code>RecordType</code></td>
+<td>Donation, Pledge, Soft Credit, etc.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="eda-objects-namespace-hed__">EDA Objects (namespace: <code>hed__</code>)<a class="headerlink" href="#eda-objects-namespace-hed__" title="Permanent link">&para;</a></h2>
+<h3 id="hed__affiliation__c">hed__Affiliation__c<a class="headerlink" href="#hed__affiliation__c" title="Permanent link">&para;</a></h3>
+<p>Links a Contact to an Account (College/School/Department). Primary source for "what college did they attend."</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>API Name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contact</td>
+<td><code>hed__Contact__c</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Account (College)</td>
+<td><code>hed__Account__c</code></td>
+<td>The college/school account</td>
+</tr>
+<tr>
+<td>Type</td>
+<td><code>hed__Type__c</code></td>
+<td>e.g. "Student", "Faculty", "Staff"</td>
+</tr>
+<tr>
+<td>Status</td>
+<td><code>hed__Status__c</code></td>
+<td>"Current" or "Former"</td>
+</tr>
+<tr>
+<td>Primary</td>
+<td><code>hed__Primary__c</code></td>
+<td>Boolean — marks the primary affiliation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="hed__course_enrollment__c-program_enrollment__c">hed__Course_Enrollment__c / Program_Enrollment__c<a class="headerlink" href="#hed__course_enrollment__c-program_enrollment__c" title="Permanent link">&para;</a></h3>
+<p>Tracks the alumnus's academic program (degree, major, minor).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contact lookup</td>
+<td>Links to alumnus</td>
+</tr>
+<tr>
+<td>Program/Course lookup</td>
+<td>Resolves to major/minor/degree</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Active, Graduated, etc.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Action:</strong> Confirm whether EDA Program Enrollment or Course Enrollment is the source for major/minor data in this org.</p>
+</blockquote>
+<hr />
+<h2 id="custom-objects-to-build">Custom Objects to Build<a class="headerlink" href="#custom-objects-to-build" title="Permanent link">&para;</a></h2>
+<h3 id="alumni_preference__c">Alumni_Preference__c<a class="headerlink" href="#alumni_preference__c" title="Permanent link">&para;</a></h3>
+<p>Stores the alumni's self-declared preferences for portal personalization.</p>
+<table>
+<thead>
+<tr>
+<th>Field Label</th>
+<th>API Name</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contact</td>
+<td><code>Contact__c</code></td>
+<td>Lookup(Contact)</td>
+<td>Master-detail preferred for cleanup</td>
+</tr>
+<tr>
+<td>Event Type Preferences</td>
+<td><code>Event_Type_Preferences__c</code></td>
+<td>Multi-select Picklist</td>
+<td>Virtual; In-Person; Career; Athletics; Philanthropy; Social</td>
+</tr>
+<tr>
+<td>Communication Channels</td>
+<td><code>Communication_Channels__c</code></td>
+<td>Multi-select Picklist</td>
+<td>Email; SMS; Phone; Mail</td>
+</tr>
+<tr>
+<td>Geographic Radius (Miles)</td>
+<td><code>Geo_Radius_Miles__c</code></td>
+<td>Number</td>
+<td>For event distance filtering</td>
+</tr>
+<tr>
+<td>Willing to Travel</td>
+<td><code>Willing_To_Travel__c</code></td>
+<td>Checkbox</td>
+<td>Expands event geo radius</td>
+</tr>
+<tr>
+<td>Newsletter Opt-In</td>
+<td><code>Newsletter_Opt_In__c</code></td>
+<td>Checkbox</td>
+<td></td>
+</tr>
+<tr>
+<td>Directory Opt-In</td>
+<td><code>Directory_Opt_In__c</code></td>
+<td>Checkbox</td>
+<td>Whether alumnus appears in alumni directory</td>
+</tr>
+</tbody>
+</table>
+<h3 id="alumni_story__c">Alumni_Story__c<a class="headerlink" href="#alumni_story__c" title="Permanent link">&para;</a></h3>
+<p>Stores alumnus-submitted notes, stories, and life updates.</p>
+<table>
+<thead>
+<tr>
+<th>Field Label</th>
+<th>API Name</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contact</td>
+<td><code>Contact__c</code></td>
+<td>Lookup(Contact)</td>
+<td>Author</td>
+</tr>
+<tr>
+<td>Title</td>
+<td><code>Title__c</code></td>
+<td>Text(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>Story Body</td>
+<td><code>Story_Body__c</code></td>
+<td>Long Text Area</td>
+<td></td>
+</tr>
+<tr>
+<td>Published</td>
+<td><code>Is_Published__c</code></td>
+<td>Checkbox</td>
+<td>Moderation gate</td>
+</tr>
+<tr>
+<td>Visibility</td>
+<td><code>Visibility__c</code></td>
+<td>Picklist</td>
+<td>Private; Alumni Community; Public</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ust_link__c-or-custom-metadata-type">UST_Link__c (or Custom Metadata Type)<a class="headerlink" href="#ust_link__c-or-custom-metadata-type" title="Permanent link">&para;</a></h3>
+<p>Admin-managed list of links for the Links Hub widget. Prefer Custom Metadata Type for deploy-ability.</p>
+<table>
+<thead>
+<tr>
+<th>Field Label</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Label</td>
+<td>Text</td>
+<td>Display name</td>
+</tr>
+<tr>
+<td>URL</td>
+<td>URL</td>
+<td>Target link</td>
+</tr>
+<tr>
+<td>Category</td>
+<td>Picklist</td>
+<td>Career; Academics; Athletics; Giving; etc.</td>
+</tr>
+<tr>
+<td>College Filter</td>
+<td>Text</td>
+<td>If blank, shown to all; otherwise scoped to that college</td>
+</tr>
+<tr>
+<td>Sort Order</td>
+<td>Number</td>
+<td>Display order</td>
+</tr>
+<tr>
+<td>Active</td>
+<td>Checkbox</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="impact_story__c-or-experience-cloud-cms">Impact_Story__c (or Experience Cloud CMS)<a class="headerlink" href="#impact_story__c-or-experience-cloud-cms" title="Permanent link">&para;</a></h3>
+<p>Seasonal giving impact stories shown in the Give widget. Could be a custom object or CMS content collection.</p>
+<table>
+<thead>
+<tr>
+<th>Field Label</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>Text</td>
+<td></td>
+</tr>
+<tr>
+<td>Body</td>
+<td>Rich Text</td>
+<td></td>
+</tr>
+<tr>
+<td>College</td>
+<td>Lookup(Account)</td>
+<td>Target audience; blank = all</td>
+</tr>
+<tr>
+<td>Active Start Date</td>
+<td>Date</td>
+<td>When to start showing</td>
+</tr>
+<tr>
+<td>Active End Date</td>
+<td>Date</td>
+<td>When to stop showing</td>
+</tr>
+<tr>
+<td>Is Tommie Give Day</td>
+<td>Checkbox</td>
+<td>Activates special Tommie Give Day styling</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="marketing-cloud-data-via-mc-connect">Marketing Cloud Data (via MC Connect)<a class="headerlink" href="#marketing-cloud-data-via-mc-connect" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Individual_Email_Result__c</code></td>
+<td>Synced from SFMC via Marketing Cloud Connect; tracks email send, open, click per Contact</td>
+</tr>
+<tr>
+<td>SFMC Subscriber</td>
+<td>Linked by Contact email; preference center updates should sync subscriber attributes</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Action:</strong> Confirm Marketing Cloud Connect is configured in EDA-Staging and which objects are synced before building the Communications History widget.</p>
+</blockquote>
+<hr />
+<h2 id="object-relationship-diagram-summary">Object Relationship Diagram (Summary)<a class="headerlink" href="#object-relationship-diagram-summary" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>User
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a> └── ContactId ──&gt; Contact
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                      ├── hed__Affiliation__c (College/School)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                      ├── hed__Program_Enrollment__c (Major/Minor)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                      ├── CampaignMember (Event registrations)
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                      ├── Opportunity (Gifts — via NPSP)
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                      ├── Alumni_Preference__c (Portal prefs)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                      ├── Alumni_Story__c (Notes/stories)
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                      └── Individual_Email_Result__c (MC email history)
+</code></pre></div>
+<hr />
+<h2 id="open-questions-actions">Open Questions / Actions<a class="headerlink" href="#open-questions-actions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] Confirm field API names for Engagement Score, Donor Flag, Faculty/Staff Flag, Parent Flag on Contact in EDA-Staging</li>
+<li>[ ] Confirm whether Program Enrollment or Course Enrollment holds major/minor data</li>
+<li>[ ] Confirm Marketing Cloud Connect sync configuration in EDA-Staging</li>
+<li>[ ] Confirm how event location is stored on Campaign (custom field vs. Description)</li>
+<li>[ ] Decide: Custom object vs. Custom Metadata Type for Links Hub links</li>
+<li>[ ] Confirm fiscal year vs. calendar year for engagement summary</li>
+<li>[ ] Identify existing engagement score fields on Contact (query schema in EDA-Staging)</li>
+<li>[ ] Determine photo upload file size limits and sharing model for Experience Cloud community</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" target="_blank" rel="noopener" title="Source Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
