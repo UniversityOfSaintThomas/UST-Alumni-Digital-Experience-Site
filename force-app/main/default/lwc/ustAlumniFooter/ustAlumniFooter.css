@@ -26,6 +26,21 @@
     padding: 3rem 0 2.5rem;
 }
 
+/*
+ * Override any global LWR/Experience Cloud stylesheet that may render
+ * anchor elements as browser-default blue on our dark purple backgrounds.
+ * Class-specific selectors below still take full precedence for hover etc.
+ */
+.ust-footer__body a {
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-decoration: none;
+}
+
+.ust-footer__legal-bar a {
+    color: rgba(255, 255, 255, 0.65) !important;
+    text-decoration: none;
+}
+
 .ust-footer__body > .ust-footer__container {
     display: grid;
     grid-template-columns: 260px 1fr;

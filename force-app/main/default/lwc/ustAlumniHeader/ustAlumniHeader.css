@@ -110,6 +110,26 @@
     position: relative;
 }
 
+/*
+ * Override any global LWR/Experience Cloud stylesheet that may render
+ * anchor elements as browser-default blue on our dark purple backgrounds.
+ * Class-specific selectors below still take full precedence for hover etc.
+ */
+.ust-header__nav-bar a {
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+.ust-header__search-panel a {
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+.ust-header__mobile-nav a {
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
 .ust-header__nav-bar > .ust-header__container {
     height: 80px;
     justify-content: flex-start;

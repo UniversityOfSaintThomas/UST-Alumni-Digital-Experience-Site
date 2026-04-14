@@ -98,6 +98,7 @@ docs/
   MAIN_GUIDE.md         # This file — project overview and workflow
   BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
   WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
+  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
   DATA-MODEL.md         # Custom objects, key fields, and EDA object map
   AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
   SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)

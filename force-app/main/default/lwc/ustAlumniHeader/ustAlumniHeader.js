@@ -1,5 +1,5 @@
 import { LightningElement, api, wire, track } from 'lwc';
-import { NavigationMixin } from 'lightning/navigation';
+import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import getMenuItems from '@salesforce/apex/NavMenuController.getMenuItems';
 import UST_LOGO_PURPLE from '@salesforce/resourceUrl/ustLogoPurple';
 import basePath from '@salesforce/community/basePath';
@@ -27,6 +27,20 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
     @track isMobileMenuOpen = false;
     @track searchQuery = '';
 
+    /**
+     * Publish status detected from CurrentPageReference.
+     * 'Draft' when inside Experience Builder (commeditor), 'Live' otherwise.
+     * Starts undefined so the wire adapter waits until this is resolved before fetching.
+     */
+    _publishStatus;
+
+    /* ------- Detect Experience Builder vs published site ------- */
+    @wire(CurrentPageReference)
+    setCurrentPageReference(currentPageReference) {
+        const app = currentPageReference && currentPageReference.state && currentPageReference.state.app;
+        this._publishStatus = (app === 'commeditor') ? 'Draft' : 'Live';
+    }
+
     /* ------- Static resource ------- */
     logoUrl = UST_LOGO_PURPLE;
 
@@ -40,7 +54,7 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
     }
 
     /* ------- Wire: Apex NavMenuController ------- */
-    @wire(getMenuItems, { menuName: '$navMenuName' })
+    @wire(getMenuItems, { menuName: '$navMenuName', publishStatus: '$_publishStatus' })
     wiredMenuItems({ data, error }) {
         if (data && data.length > 0) {
             this._rawMenuItems = data;

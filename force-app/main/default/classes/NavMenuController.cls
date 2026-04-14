@@ -1,83 +1,100 @@
 /**
  * NavMenuController
  *
- * Apex bridge for fetching Experience Cloud navigation menu items via SOQL.
- * Uses dynamic SOQL (Database.query) so the class compiles in scratch orgs
- * that do not have Communities / Experience Cloud enabled -- the queries will
- * simply throw at runtime and the catch block returns an empty list, letting
- * the LWC fall back to its hard-coded defaults.
+ * Apex bridge for fetching Experience Cloud navigation menu items.
+ * Uses ConnectApi.NavigationMenu.getCommunityNavigationMenu() so site builders
+ * can manage all navigation entirely inside Experience Builder -- no code change
+ * required when links or labels change.
+ *
+ * Falls back gracefully (empty list) when called outside a community context
+ * or when the named menu does not exist yet, allowing LWC components to use
+ * their hard-coded defaults instead.
+ *
+ * Supports Live (published site) and Draft (Experience Builder preview) modes
+ * via the publishStatus parameter, which the LWC sets by inspecting
+ * CurrentPageReference.state.app ('commeditor' = Draft, everything else = Live).
  */
 public with sharing class NavMenuController {
 
     /**
      * Returns navigation menu items for the specified menu developer name.
-     * Top-level items appear first; their children are nested in subMenu.
+     * Top-level items are in the returned list; their children are nested
+     * inside each item's subMenu property.
      *
-     * @param menuName Developer Name of the NavigationMenu in Experience Builder
-     * @return List of NavMenuItemDto, empty if menu not found or not in community
+     * @param menuName The DeveloperName of the NavigationLinkSet (navigation menu)
+     *                 as configured in Experience Builder under Navigation
+     * @param publishStatus 'Live' for the published site, 'Draft' for Experience Builder preview
+     * @return List of NavMenuItemDto; empty if not in a community or menu is not found
      */
     @AuraEnabled(cacheable=true)
-    public static List<NavMenuItemDto> getMenuItems(String menuName) {
+    public static List<NavMenuItemDto> getMenuItems(String menuName, String publishStatus) {
         try {
             Id networkId = Network.getNetworkId();
-            if (networkId == null || String.isBlank(menuName)) {
+            if (networkId == null || String.isBlank(menuName) || String.isBlank(publishStatus)) {
                 return new List<NavMenuItemDto>();
             }
 
-            // Dynamic SOQL: NavigationMenu is only available in orgs with
-            // Communities enabled. Using Database.query avoids compile-time
-            // type resolution so the class deploys to any org.
-            List<SObject> menus = Database.query(
-                'SELECT Id FROM NavigationMenu' +
-                ' WHERE DeveloperName = :menuName' +
-                ' AND NetworkId = :networkId' +
-                ' LIMIT 1'
-            );
-            if (menus.isEmpty()) {
+            ConnectApi.PublishStatus status = publishStatus.equalsIgnoreCase('Draft')
+                ? ConnectApi.PublishStatus.Draft
+                : ConnectApi.PublishStatus.Live;
+
+            // Skip item types that are not supported in custom navigation components
+            List<ConnectApi.NavigationMenuItemType> skipTypes = new List<ConnectApi.NavigationMenuItemType>{
+                ConnectApi.NavigationMenuItemType.Event,
+                ConnectApi.NavigationMenuItemType.SystemLink
+            };
+
+            ConnectApi.NavigationMenuItemCollection collection =
+                ConnectApi.NavigationMenu.getCommunityNavigationMenu(
+                    networkId,
+                    null,       // navigationLinkSetId -- not needed when DeveloperName is provided
+                    menuName,   // navigationLinkSetDeveloperName
+                    status,
+                    false,      // includeImageUrl
+                    false,      // addHomeMenuItem
+                    skipTypes
+                );
+
+            if (collection == null || collection.menuItems == null) {
                 return new List<NavMenuItemDto>();
             }
 
-            Id menuId = (Id) menus[0].get('Id');
-            List<SObject> allItems = Database.query(
-                'SELECT Id, Label, Target, Position, Type, ActionValue, ParentId, Status' +
-                ' FROM NavigationMenuItem' +
-                ' WHERE NavigationMenuId = :menuId' +
-                ' AND Status = \'Live\'' +
-                ' ORDER BY Position NULLS LAST'
-            );
-
-            return buildTree(allItems, null);
+            return toDto(collection.menuItems);
         } catch (Exception e) {
             return new List<NavMenuItemDto>();
         }
     }
 
     /**
-     * Recursively builds the menu item tree from a flat SOQL result.
+     * Recursively maps ConnectApi navigation menu items to serializable DTOs.
      *
-     * @param allItems All NavigationMenuItem SObjects for the menu
-     * @param parentId Filter to items with this parent (null = top-level)
-     * @return Nested DTO list
+     * @param items List of ConnectApi.NavigationMenuItem to convert
+     * @return Nested DTO list matching the shape expected by the LWC components
      */
-    private static List<NavMenuItemDto> buildTree(
-        List<SObject> allItems,
-        Id parentId
-    ) {
+    private static List<NavMenuItemDto> toDto(List<ConnectApi.NavigationMenuItem> items) {
         List<NavMenuItemDto> result = new List<NavMenuItemDto>();
-        for (SObject item : allItems) {
-            Id itemParentId = (Id) item.get('ParentId');
-            if (itemParentId == parentId) {
-                NavMenuItemDto dto = new NavMenuItemDto();
-                dto.id = (String) item.get('Id');
-                dto.label = (String) item.get('Label');
-                String itemType = (String) item.get('Type');
-                dto.actionType = String.isBlank(itemType) ? 'InternalLink' : itemType;
-                dto.actionValue = (String) item.get('ActionValue');
-                String itemTarget = (String) item.get('Target');
-                dto.target = String.isBlank(itemTarget) ? 'CurrentWindow' : itemTarget;
-                dto.subMenu = buildTree(allItems, (Id) item.get('Id'));
-                result.add(dto);
-            }
+        if (items == null) {
+            return result;
+        }
+        for (Integer i = 0; i < items.size(); i++) {
+            ConnectApi.NavigationMenuItem item = items.get(i);
+            NavMenuItemDto dto = new NavMenuItemDto();
+            // ConnectApi.NavigationMenuItem has no id field; use position index
+            dto.id = 'nav-' + i;
+            dto.label = item.label;
+            dto.actionType = item.actionType != null
+                ? String.valueOf(item.actionType)
+                : 'InternalLink';
+            dto.actionValue = item.actionValue;
+            // target is ConnectApi.NavigationMenuItemOpenTarget (enum) -- use String.valueOf
+            dto.target = item.target != null
+                ? String.valueOf(item.target)
+                : 'CurrentWindow';
+            // subMenu is List<ConnectApi.NavigationMenuItem> directly (no .menuItems wrapper)
+            dto.subMenu = (item.subMenu != null)
+                ? toDto(item.subMenu)
+                : new List<NavMenuItemDto>();
+            result.add(dto);
         }
         return result;
     }
@@ -90,7 +107,7 @@ public with sharing class NavMenuController {
         @AuraEnabled public String id;
         /** Display label */
         @AuraEnabled public String label;
-        /** Action type: ExternalLink, InternalLink, HomePage, SitePage, etc. */
+        /** Action type: ExternalLink, InternalLink, MenuLabel, SalesforceCMSContent, etc. */
         @AuraEnabled public String actionType;
         /** URL or page name depending on actionType */
         @AuraEnabled public String actionValue;
