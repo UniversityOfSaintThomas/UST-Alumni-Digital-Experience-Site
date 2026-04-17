@@ -1,9 +1,10 @@
 /* ============================================================
    UST Alumni Header
    Mirrors alumni.stthomas.edu structure:
-   - Top utility bar (white)
-   - Main nav bar (Dark Purple #510c76)
-   - Dropdown menus
+   - Top utility bar (#340e51 — deep purple)
+   - Brand row: "Alumni" label (Lora) + UST logo
+   - Nav row: primary navigation (full-width below logo)
+   - Dropdown menus: full-width dark purple panel, white links
    - Mobile slide-down nav
    - Search panel
    ============================================================ */
@@ -30,13 +31,13 @@
    TOP UTILITY BAR
    ============================================================ */
 .ust-header__top-bar {
-    background: #ffffff;
-    border-bottom: 1px solid #e0dce4;
-    height: 36px;
+    background: var(--ust-nav-bg, #340e51);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    height: 44px;
 }
 
 .ust-header__top-bar .ust-header__container {
-    height: 36px;
+    height: 44px;
     justify-content: space-between;
 }
 
@@ -48,72 +49,147 @@
 
 .ust-header__alumni-link,
 .ust-header__ust-link {
+    position: relative;
     font-family: var(--ust-font-family-ui, sans-serif);
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 400;
     text-decoration: none;
-    color: var(--ust-purple-dark, #510c76);
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.01em;
     transition: color 150ms ease;
+}
+
+.ust-header__alumni-link {
+    font-weight: 600;
+}
+
+.ust-header__alumni-link::after,
+.ust-header__ust-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.7);
+    transition: width 220ms ease;
+    pointer-events: none;
 }
 
 .ust-header__alumni-link:hover,
 .ust-header__ust-link:hover {
-    color: var(--ust-purple-medium, #8348ad);
-    text-decoration: underline;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.ust-header__alumni-link:hover::after,
+.ust-header__ust-link:hover::after {
+    width: 100%;
 }
 
 .ust-header__top-divider {
-    color: var(--ust-gray-cool, #98999b);
+    color: rgba(255, 255, 255, 0.35);
     font-size: 0.75rem;
 }
 
-.ust-header__top-nav {
+/* Audience switcher links */
+.ust-header__audience-link {
+    position: relative;
+    font-family: var(--ust-font-family-ui, sans-serif);
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.75);
+    white-space: nowrap;
+    transition: color 150ms ease;
+}
+
+.ust-header__audience-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.7);
+    transition: width 220ms ease;
+    pointer-events: none;
+}
+
+.ust-header__audience-link:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.ust-header__audience-link:hover::after {
+    width: 100%;
+}
+
+/* Right-side utility links */
+.ust-header__top-right {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
 .ust-header__top-link {
-    font-size: 0.75rem;
-    font-weight: 500;
+    position: relative;
+    font-size: 0.8rem;
+    font-weight: 400;
     text-decoration: none;
-    color: var(--ust-purple-dark, #510c76);
+    color: rgba(255, 255, 255, 0.85);
     white-space: nowrap;
     transition: color 150ms ease;
 }
 
+.ust-header__top-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.7);
+    transition: width 220ms ease;
+    pointer-events: none;
+}
+
 .ust-header__top-link:hover {
-    color: var(--ust-purple-medium, #8348ad);
-    text-decoration: underline;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.ust-header__top-link:hover::after {
+    width: 100%;
+}
+
+.ust-header__top-link--cta::after {
+    display: none;
 }
 
 .ust-header__top-link--cta {
-    background: var(--ust-purple-dark, #510c76);
+    background: rgba(255, 255, 255, 0.15);
     color: #ffffff !important;
     padding: 0.2rem 0.75rem;
     border-radius: 2px;
     font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .ust-header__top-link--cta:hover {
-    background: var(--ust-purple-medium, #8348ad);
+    background: rgba(255, 255, 255, 0.25);
     text-decoration: none !important;
 }
 
 /* ============================================================
-   MAIN NAVIGATION BAR
+   NAV BAR WRAPPER
    ============================================================ */
 .ust-header__nav-bar {
-    background: var(--ust-purple-dark, #510c76);
-    position: relative;
+    background: var(--ust-nav-bg, #340e51);
 }
 
 /*
- * Override any global LWR/Experience Cloud stylesheet that may render
- * anchor elements as browser-default blue on our dark purple backgrounds.
- * Class-specific selectors below still take full precedence for hover etc.
+ * Override any global LWR anchor color on dark backgrounds.
  */
 .ust-header__nav-bar a {
     color: #ffffff !important;
@@ -130,28 +206,72 @@
     text-decoration: none;
 }
 
-.ust-header__nav-bar > .ust-header__container {
-    height: 80px;
-    justify-content: flex-start;
-    gap: 0;
+/* ============================================================
+   BRAND ROW: "Alumni" label + UST logo
+   ============================================================ */
+.ust-header__brand-row {
+    background: var(--ust-nav-bg, #340e51);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* Logo */
+.ust-header__container--brand {
+    height: 68px;
+    justify-content: space-between;
+}
+
+.ust-header__brand-identity {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* "Alumni" label in Lora serif — mirrors the live site's lora-md style */
+.ust-header__alumni-brand {
+    font-family: var(--ust-font-family-serif, 'Lora', Georgia, serif);
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: #ffffff !important;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    line-height: 1;
+    transition: opacity 150ms ease;
+}
+
+.ust-header__alumni-brand:hover {
+    opacity: 0.85;
+    text-decoration: none;
+}
+
+/* Logo link */
 .ust-header__logo-link {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    margin-right: 2rem;
     text-decoration: none;
 }
 
 .ust-header__logo {
-    height: 35px;
+    height: 32px;
     width: auto;
-    /* On dark purple background, logo is already purple —
-       invert to white so it's readable */
+    /* Purple SVG inverted to white on the dark background */
     filter: brightness(0) invert(1);
     display: block;
+}
+
+/* ============================================================
+   NAV ROW: primary navigation below the brand
+   ============================================================ */
+.ust-header__nav-row {
+    background: var(--ust-nav-bg, #340e51);
+    position: relative; /* dropdown anchors here */
+}
+
+.ust-header__container--nav {
+    height: 52px;
+    padding: 0;
+    max-width: 100%;
+    justify-content: flex-start;
 }
 
 /* ============================================================
@@ -161,7 +281,6 @@
     flex: 1;
     display: flex;
     align-items: stretch;
-    /* Hidden on mobile */
 }
 
 .ust-header__nav-list {
@@ -169,12 +288,15 @@
     align-items: stretch;
     list-style: none;
     margin: 0;
-    padding: 0;
-    height: 80px;
+    padding: 0 1.25rem;
+    height: 52px;
+    width: 100%;
+    max-width: var(--ust-container-max, 1280px);
+    margin: 0 auto;
 }
 
 .ust-header__nav-item {
-    position: relative;
+    position: static; /* so dropdown positions against .ust-header__nav-row */
     display: flex;
     align-items: stretch;
 }
@@ -182,10 +304,12 @@
 /* Shared nav link / button base */
 .ust-header__nav-link,
 .ust-header__nav-btn {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0 1rem;
+    padding: 0 .5rem 0 0;
+    margin: 0 1.5rem 0 0;
     height: 100%;
     font-family: var(--ust-font-family-ui, sans-serif);
     font-size: 0.9rem;
@@ -196,18 +320,35 @@
     white-space: nowrap;
     background: transparent;
     border: none;
-    border-bottom: 3px solid transparent;
     cursor: pointer;
-    transition: background 150ms ease, border-color 150ms ease;
+    transition: background 150ms ease;
+}
+
+/* Bottom underline indicator on hover / open */
+.ust-header__nav-link::after,
+.ust-header__nav-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.85);
+    transition: width 220ms ease;
+    pointer-events: none;
 }
 
 .ust-header__nav-link:hover,
 .ust-header__nav-btn:hover,
 .ust-header__nav-item--open .ust-header__nav-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border-bottom-color: rgba(255, 255, 255, 0.6);
     color: #ffffff;
     text-decoration: none;
+}
+
+.ust-header__nav-link:hover::after,
+.ust-header__nav-btn:hover::after,
+.ust-header__nav-item--open .ust-header__nav-btn::after {
+    width: 100%;
 }
 
 .ust-header__nav-link:focus-visible,
@@ -216,17 +357,21 @@
     outline-offset: -3px;
 }
 
-/* Caret icon in desktop nav */
+/* Caret icon using the SVG asset */
 .ust-header__caret {
     display: flex;
     align-items: center;
     transition: transform 250ms ease;
 }
 
-.ust-header__caret svg {
-    width: 11px;
-    height: 7px;
-    fill: #ffffff;
+.ust-header__caret-img {
+    width: 14px;
+    height: 14px;
+    /* caret-down-outline.svg is a filled black shape — invert to white */
+    filter: brightness(0) invert(1);
+    display: block;
+    pointer-events: none;
+    transition: transform 250ms ease;
 }
 
 .ust-header__nav-item--open .ust-header__caret {
@@ -235,57 +380,97 @@
 
 /* ============================================================
    DROPDOWN MENUS
+   Full-width dark purple panel with white links (mirrors live site)
    ============================================================ */
 .ust-header__dropdown {
     display: none;
     position: absolute;
-    top: 100%;
+    top: 100%;      /* below the nav-row */
     left: 0;
-    min-width: 220px;
-    background: #ffffff;
-    border-top: 3px solid var(--ust-purple-dark, #510c76);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    right: 0;
+    background: var(--ust-nav-bg, #340e51);
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     list-style: none;
     margin: 0;
-    padding: 0.5rem 0;
+    padding: 1rem 0;
     z-index: 200;
-    border-radius: 0 0 4px 4px;
+    /* Horizontal layout — items flow left to right */
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    /* inner padding aligns with the container */
+    padding-left: max(1.25rem, calc((100% - var(--ust-container-max, 1280px)) / 2 + 1.25rem));
+    padding-right: max(1.25rem, calc((100% - var(--ust-container-max, 1280px)) / 2 + 1.25rem));
 }
 
 .ust-header__dropdown--open {
-    display: block;
+    display: flex;
+    animation: dropdown-appear 180ms ease forwards;
 }
 
+@keyframes dropdown-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dropdown items: white text on dark purple */
 .ust-header__dropdown-item {
+    position: relative;
     display: block;
     padding: 0.6rem 1.25rem;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    color: var(--ust-purple-dark, #510c76);
+    color: #ffffff !important;
     text-decoration: none;
     white-space: nowrap;
-    transition: background 120ms ease, color 120ms ease;
+    border-radius: 2px;
+    transition: background 120ms ease;
+}
+
+.ust-header__dropdown-item::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 1.25rem;
+    right: 1.25rem;
+    height: 1px;
+    background: rgba(255, 255, 255, 0);
+    transition: background 180ms ease;
+    pointer-events: none;
 }
 
 .ust-header__dropdown-item:hover {
-    background: var(--ust-purple-10, #f2eaf6);
-    color: var(--ust-purple-dark, #510c76);
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff !important;
     text-decoration: none;
 }
 
+.ust-header__dropdown-item:hover::after {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 .ust-header__dropdown-item:focus-visible {
-    outline: 3px solid var(--ust-purple-dark, #510c76);
+    outline: 3px solid #ffd700;
     outline-offset: -3px;
 }
 
 /* ============================================================
-   HEADER ACTIONS (search + hamburger)
+   HEADER ACTIONS (search + hamburger — inside brand row)
    ============================================================ */
 .ust-header__actions {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    margin-left: auto;
 }
 
 .ust-header__search-btn,
@@ -333,7 +518,7 @@
 .ust-header__search-panel {
     max-height: 0;
     overflow: hidden;
-    background: var(--ust-purple-dark, #510c76);
+    background: var(--ust-nav-bg, #340e51);
     border-top: 1px solid rgba(255, 255, 255, 0.15);
     transition: max-height 280ms ease, padding 280ms ease;
 }
@@ -414,7 +599,7 @@
    ============================================================ */
 .ust-header__mobile-nav {
     display: none;
-    background: var(--ust-purple-dark, #510c76);
+    background: var(--ust-nav-bg, #340e51);
     border-top: 1px solid rgba(255, 255, 255, 0.15);
     max-height: 0;
     overflow: hidden;
@@ -459,15 +644,19 @@
     background: rgba(255, 255, 255, 0.08);
 }
 
-.ust-header__mobile-caret svg {
-    width: 12px;
-    height: 8px;
-    fill: #ffffff;
+.ust-header__mobile-caret {
+    display: flex;
+    align-items: center;
     transition: transform 250ms ease;
+}
+
+.ust-header__mobile-caret .ust-header__caret-img {
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
 }
 
-.ust-header__mobile-item--open .ust-header__mobile-caret svg {
+.ust-header__mobile-item--open .ust-header__mobile-caret {
     transform: rotate(180deg);
 }
 
@@ -526,15 +715,16 @@
     color: #ffffff;
 }
 
-.ust-header__mobile-utility-link--cta {
-    color: #ffd700;
-}
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 960px) {
     .ust-header__desktop-nav {
+        display: none;
+    }
+
+    .ust-header__nav-row {
         display: none;
     }
 
@@ -546,23 +736,27 @@
         display: block;
     }
 
-    .ust-header__top-nav {
-        display: none;
+    .ust-header__container--brand {
+        height: 56px;
     }
 
-    .ust-header__nav-bar > .ust-header__container {
-        height: 64px;
+    .ust-header__alumni-brand {
+        font-size: 1.4rem;
     }
 
     .ust-header__logo {
-        height: 28px;
+        height: 26px;
     }
 }
 
 @media (max-width: 480px) {
     .ust-header__top-divider,
-    .ust-header__ust-link {
+    .ust-header__ust-link,
+    .ust-header__audience-link {
         display: none;
     }
-}
 
+    .ust-header__alumni-brand {
+        font-size: 1.2rem;
+    }
+}

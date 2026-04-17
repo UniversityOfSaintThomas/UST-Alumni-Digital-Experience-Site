@@ -1,19 +1,66 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import getMenuItems from '@salesforce/apex/NavMenuController.getMenuItems';
-import UST_LOGO_PURPLE from '@salesforce/resourceUrl/ustLogoPurple';
+import UST_ALUMNI_TEMPLATE from '@salesforce/resourceUrl/ustAlumniThemplate';
 import basePath from '@salesforce/community/basePath';
 
 /**
  * Default portal navigation rendered when no Experience Cloud menu is configured yet.
+ * Mirrors the structure of alumni.stthomas.edu.
  * Replace / augment these once Experience Builder navigation menus are created.
  */
 const DEFAULT_MENU_ITEMS = [
-    { id: 'home',    label: 'Home',    actionType: 'InternalLink', actionValue: basePath + '/', target: 'CurrentWindow', subMenu: [] },
-    { id: 'events',  label: 'Events',  actionType: 'InternalLink', actionValue: basePath + '/events', target: 'CurrentWindow', subMenu: [] },
-    { id: 'profile', label: 'My Profile', actionType: 'InternalLink', actionValue: basePath + '/profile', target: 'CurrentWindow', subMenu: [] },
-    { id: 'give',    label: 'Give',    actionType: 'ExternalLink', actionValue: 'https://give.stthomas.edu/', target: 'NewWindow', subMenu: [] },
-    { id: 'connect', label: 'Connect', actionType: 'InternalLink', actionValue: basePath + '/connect', target: 'CurrentWindow', subMenu: [] },
+    {
+        id: 'about', label: 'About', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/about/index.html', target: 'CurrentWindow',
+        subMenu: [
+            { id: 'a1', label: 'About the Tommie Network', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/about/index.html', target: 'CurrentWindow' },
+            { id: 'a2', label: 'Alumni Awards', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/about/awards/index.html', target: 'CurrentWindow' },
+            { id: 'a3', label: 'Athletics Hall of Fame', actionType: 'ExternalLink', actionValue: 'https://tommiesports.com/sports/2022/6/14/hall-of-fame', target: 'NewWindow' },
+            { id: 'a4', label: 'Engagement Board', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/about/alumni-engagement-board/index.html', target: 'CurrentWindow' },
+            { id: 'a5', label: 'Alumni Surveys', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/about/surveys/index.html', target: 'CurrentWindow' },
+            { id: 'a6', label: 'Contact the Alumni Team', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/contact/index.html', target: 'CurrentWindow' },
+        ],
+    },
+    {
+        id: 'benefits', label: 'Benefits & Resources', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/benefits-resources/index.html', target: 'CurrentWindow',
+        subMenu: [
+            { id: 'b1', label: 'Career Resources', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/benefits-resources/career/index.html', target: 'CurrentWindow' },
+            { id: 'b2', label: 'Continuing Education', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/benefits-resources/continuing-education/index.html', target: 'CurrentWindow' },
+            { id: 'b3', label: 'Faith & Spirituality', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/benefits-resources/faith-spirituality/index.html', target: 'CurrentWindow' },
+            { id: 'b4', label: 'Financial Wellness', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/benefits-resources/financial/index.html', target: 'CurrentWindow' },
+        ],
+    },
+    {
+        id: 'involved', label: 'Get Involved', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/get-involved/index.html', target: 'CurrentWindow',
+        subMenu: [
+            { id: 'i1', label: 'Join St. Thomas Connect', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/get-involved/join-st-thomas-connect/index.html', target: 'CurrentWindow' },
+            { id: 'i2', label: 'Corporate Alumni Groups', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/get-involved/corporate-alumni-groups/index.html', target: 'CurrentWindow' },
+            { id: 'i3', label: 'Social Media Directory', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/get-involved/social-media/index.html', target: 'CurrentWindow' },
+            { id: 'i4', label: 'Alumni Engagement Board', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/about/alumni-engagement-board/index.html', target: 'CurrentWindow' },
+        ],
+    },
+    {
+        id: 'news', label: 'News & Events', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/events/index.html', target: 'CurrentWindow',
+        subMenu: [
+            { id: 'n1', label: 'Alumni Stories', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/news/stories/index.html', target: 'CurrentWindow' },
+            { id: 'n2', label: 'Alumni Newsletter', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/news/newsletter/index.html', target: 'CurrentWindow' },
+            { id: 'n3', label: 'St. Thomas News', actionType: 'ExternalLink', actionValue: 'https://news.stthomas.edu/', target: 'NewWindow' },
+            { id: 'n4', label: 'Signature Events', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/events/index.html#signature-events', target: 'CurrentWindow' },
+            { id: 'n5', label: 'Events Calendar', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/events/calendar/index.html', target: 'CurrentWindow' },
+        ],
+    },
+    {
+        id: 'support', label: 'Support St. Thomas', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/support-st-thomas/index.html', target: 'CurrentWindow',
+        subMenu: [
+            { id: 's1', label: 'Refer a Student', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/support-st-thomas/refer-a-student/index.html', target: 'CurrentWindow' },
+            { id: 's2', label: 'Mentor a Student', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/support-st-thomas/mentor-a-student/index.html', target: 'CurrentWindow' },
+            { id: 's3', label: 'Hire a Tommie', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/support-st-thomas/hire-a-tommie/index.html', target: 'CurrentWindow' },
+            { id: 's4', label: 'Volunteer', actionType: 'ExternalLink', actionValue: 'https://alumni.stthomas.edu/support-st-thomas/volunteer/index.html', target: 'CurrentWindow' },
+            { id: 's5', label: 'Make a Gift', actionType: 'ExternalLink', actionValue: 'https://give.stthomas.edu/', target: 'NewWindow' },
+        ],
+    },
+    { id: 'update-contact', label: 'Update Contact Info', actionType: 'InternalLink', actionValue: basePath + '/update-contact-info', target: 'CurrentWindow', subMenu: [] },
+    { id: 'give', label: 'Make a Gift', actionType: 'ExternalLink', actionValue: 'https://give.stthomas.edu/', target: 'NewWindow', subMenu: [] },
 ];
 
 export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
@@ -34,6 +81,7 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
      */
     _publishStatus;
 
+
     /* ------- Detect Experience Builder vs published site ------- */
     @wire(CurrentPageReference)
     setCurrentPageReference(currentPageReference) {
@@ -42,7 +90,8 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
     }
 
     /* ------- Static resource ------- */
-    logoUrl = UST_LOGO_PURPLE;
+    logoUrl = UST_ALUMNI_TEMPLATE + '/images/ustLogoPurple.svg';
+    caretUrl = UST_ALUMNI_TEMPLATE + '/images/caret-down-outline.svg';
 
     /* ------- Community base path ------- */
     get homeUrl() {
@@ -58,8 +107,14 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
     wiredMenuItems({ data, error }) {
         if (data && data.length > 0) {
             this._rawMenuItems = data;
+        } else if (data) {
+            // Apex returned successfully but with an empty list — menu not configured yet
+            // Fallback to DEFAULT_MENU_ITEMS (no sub-menus)
+            this._rawMenuItems = null;
         } else if (error) {
-            // Silently fall back to defaults; org may not have the menu configured yet
+            // Apex call failed — likely a permissions issue or the class isn't accessible
+            // to the current user. Check Alumni_Portal_Guest permission set assignment.
+            console.warn('[ustAlumniHeader] getMenuItems error:', JSON.stringify(error));
             this._rawMenuItems = null;
         }
     }
@@ -95,6 +150,11 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
 
     /* ------- Desktop dropdown ------- */
     handleDropdownToggle(event) {
+        // Stop the click from bubbling to the document-level outside-click listener.
+        // In LWR (native shadow DOM), composed events like click DO bubble across
+        // shadow boundaries to the document. Stopping propagation here prevents
+        // _closeAllDropdowns from firing on the same click that opens the dropdown.
+        event.stopPropagation();
         const id = event.currentTarget.dataset.id;
         this._openDropdownId = this._openDropdownId === id ? null : id;
     }
@@ -183,10 +243,11 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
         document.body.style.overflow = '';
     }
 
-    _closeAllDropdowns(event) {
-        if (!this.template.contains(event.target)) {
-            this._openDropdownId = null;
-        }
+    _closeAllDropdowns() {
+        // Fires on any click that reaches the document (i.e. clicks OUTSIDE the
+        // component). Clicks inside the component are stopped in their respective
+        // handlers via event.stopPropagation() so they never reach this listener.
+        this._openDropdownId = null;
     }
 
     /* ------- Computed class helpers ------- */

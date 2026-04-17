@@ -5,130 +5,117 @@
          ============================================= -->
     <header class="ust-header" role="banner">
 
-        <!-- TOP UTILITY BAR -------------------------------- -->
-        <div class="ust-header__top-bar">
-            <div class="ust-header__container">
-                <!-- Brand identity -->
-                <div class="ust-header__top-left">
-                    <a href={homeUrl} class="ust-header__alumni-link" aria-label="Alumni home">Alumni</a>
-                    <span class="ust-header__top-divider" aria-hidden="true">|</span>
-                    <a href="https://www.stthomas.edu/" class="ust-header__ust-link" target="_blank" rel="noopener">
-                        University of St. Thomas
-                    </a>
-                </div>
-                <!-- Quick utility links -->
-                <nav class="ust-header__top-nav" aria-label="Quick links">
-                    <a href={updateContactUrl} class="ust-header__top-link">Update Contact Info</a>
-                    <a href="https://give.stthomas.edu/" class="ust-header__top-link ust-header__top-link--cta"
-                       target="_blank" rel="noopener">Make a Gift</a>
-                </nav>
-            </div>
-        </div>
-
         <!-- MAIN NAVIGATION BAR ----------------------------- -->
         <div class="ust-header__nav-bar">
-            <div class="ust-header__container">
 
-                <!-- Logo -->
-                <a href={homeUrl} class="ust-header__logo-link" aria-label="University of St. Thomas Alumni — home">
-                    <img src={logoUrl} alt="University of St. Thomas" class="ust-header__logo" width="160" height="35" />
-                </a>
-
-                <!-- Desktop primary navigation -->
-                <nav class="ust-header__desktop-nav" aria-label="Primary navigation">
-                    <ul class="ust-header__nav-list" role="menubar">
-                        <template for:each={menuItems} for:item="item">
-                            <li key={item.id} class={item.liCssClass} role="none">
-
-                                <!-- Item WITH submenu (dropdown) -->
-                                <template lwc:if={item.hasChildren}>
-                                    <button
-                                        class="ust-header__nav-btn"
-                                        data-id={item.id}
-                                        onclick={handleDropdownToggle}
-                                        aria-haspopup="true"
-                                        aria-expanded={item.isOpen}>
-                                        {item.label}
-                                        <span class="ust-header__caret" aria-hidden="true">
-                                            <svg viewBox="0 0 17 11" xmlns="http://www.w3.org/2000/svg" focusable="false">
-                                                <path d="M1.61 1.12C1.47.96 1.24.96 1.1 1.12c-.14.16-.14.42 0 .58l7.14 8.18c.14.16.37.16.51 0l7.14-8.18c.14-.16.14-.42 0-.58C15.76.96 15.53.96 15.39 1.12L8.5 9.02 1.61 1.12z"/>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                    <ul class={item.dropdownCssClass} role="menu" aria-label={item.label}>
-                                        <template for:each={item.subMenu} for:item="child">
-                                            <li key={child.id} role="none">
-                                                <a
-                                                    href={child.actionValue}
-                                                    class="ust-header__dropdown-item"
-                                                    role="menuitem"
-                                                    data-url={child.actionValue}
-                                                    data-type={child.actionType}
-                                                    data-newtab={child.isNewTab}
-                                                    onclick={handleNavClick}>
-                                                    {child.label}
-                                                </a>
-                                            </li>
-                                        </template>
-                                    </ul>
-                                </template>
-
-                                <!-- Item WITHOUT submenu -->
-                                <template lwc:else>
-                                    <a
-                                        href={item.actionValue}
-                                        class="ust-header__nav-link"
-                                        role="menuitem"
-                                        data-url={item.actionValue}
-                                        data-type={item.actionType}
-                                        data-newtab={item.isNewTab}
-                                        onclick={handleNavClick}>
-                                        {item.label}
-                                    </a>
-                                </template>
-                            </li>
-                        </template>
-                    </ul>
-                </nav>
-
-                <!-- Header actions: search + hamburger -->
-                <div class="ust-header__actions">
-                    <button
-                        class="ust-header__search-btn"
-                        onclick={handleSearchToggle}
-                        aria-label="Toggle search"
-                        aria-expanded={isSearchOpen}
-                        aria-controls="ust-search-panel">
-                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M13.273 7.818a5.455 5.455 0 1 1-10.91 0 5.455 5.455 0 0 1 10.91 0Zm-1.167 6.32a7.636 7.636 0 1 1 1.617-1.477l5.741 5.262a1.091 1.091 0 0 1-1.474 1.608l-5.884-5.393Z"/>
-                        </svg>
-                    </button>
-
-                    <button
-                        class="ust-header__hamburger"
-                        onclick={handleMobileMenuToggle}
-                        aria-label={mobileMenuAriaLabel}
-                        aria-expanded={isMobileMenuOpen}
-                        aria-controls="ust-mobile-nav">
-
-                        <!-- Hamburger icon (shown when closed) -->
-                        <template lwc:if={showHamburger}>
-                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
-                                <path d="M1.307 5.28A1.307 1.307 0 0 0 0 6.586a1.307 1.307 0 0 0 1.307 1.307h29.385A1.307 1.307 0 0 0 32 6.587a1.307 1.307 0 0 0-1.308-1.307zm0 9.413A1.307 1.307 0 0 0 0 16a1.307 1.307 0 0 0 1.307 1.307h29.385A1.307 1.307 0 0 0 32 16a1.307 1.307 0 0 0-1.308-1.307zm0 9.413A1.307 1.307 0 0 0 0 25.413a1.307 1.307 0 0 0 1.307 1.307h29.385A1.307 1.307 0 0 0 32 25.414a1.307 1.307 0 0 0-1.308-1.307z"/>
+            <!-- BRAND ROW: Alumni label + logo + actions -->
+            <div class="ust-header__brand-row">
+                <div class="ust-header__container ust-header__container--brand">
+                    <div class="ust-header__brand-identity">
+                        <a href={homeUrl} class="ust-header__alumni-brand" aria-label="Alumni home">Alumni</a>
+                        <a href={homeUrl} class="ust-header__logo-link" aria-label="University of St. Thomas Alumni — home">
+                            <img src={logoUrl} alt="University of St. Thomas" class="ust-header__logo" />
+                        </a>
+                    </div>
+                    <!-- Header actions: search + hamburger (right side of brand row) -->
+                    <div class="ust-header__actions">
+                        <button
+                            class="ust-header__search-btn"
+                            onclick={handleSearchToggle}
+                            aria-label="Toggle search"
+                            aria-expanded={isSearchOpen}
+                            aria-controls="ust-search-panel">
+                            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M13.273 7.818a5.455 5.455 0 1 1-10.91 0 5.455 5.455 0 0 1 10.91 0Zm-1.167 6.32a7.636 7.636 0 1 1 1.617-1.477l5.741 5.262a1.091 1.091 0 0 1-1.474 1.608l-5.884-5.393Z"/>
                             </svg>
-                        </template>
+                        </button>
 
-                        <!-- Close icon (shown when open) -->
-                        <template lwc:else>
-                            <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
-                                <path d="M12.293 13.707a1 1 0 0 0 1.414-1.414L8.414 7l5.293-5.293A1 1 0 0 0 12.293.293L7 5.586 1.707.293A1 1 0 1 0 .293 1.707L5.586 7 .293 12.293a1 1 0 1 0 1.414 1.414L7 8.414l5.293 5.293Z"/>
-                            </svg>
-                        </template>
-                    </button>
+                        <button
+                            class="ust-header__hamburger"
+                            onclick={handleMobileMenuToggle}
+                            aria-label={mobileMenuAriaLabel}
+                            aria-expanded={isMobileMenuOpen}
+                            aria-controls="ust-mobile-nav">
+
+                            <!-- Hamburger icon (shown when closed) -->
+                            <template lwc:if={showHamburger}>
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="M1.307 5.28A1.307 1.307 0 0 0 0 6.586a1.307 1.307 0 0 0 1.307 1.307h29.385A1.307 1.307 0 0 0 32 6.587a1.307 1.307 0 0 0-1.308-1.307zm0 9.413A1.307 1.307 0 0 0 0 16a1.307 1.307 0 0 0 1.307 1.307h29.385A1.307 1.307 0 0 0 32 16a1.307 1.307 0 0 0-1.308-1.307zm0 9.413A1.307 1.307 0 0 0 0 25.413a1.307 1.307 0 0 0 1.307 1.307h29.385A1.307 1.307 0 0 0 32 25.414a1.307 1.307 0 0 0-1.308-1.307z"/>
+                                </svg>
+                            </template>
+
+                            <!-- Close icon (shown when open) -->
+                            <template lwc:else>
+                                <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                    <path d="M12.293 13.707a1 1 0 0 0 1.414-1.414L8.414 7l5.293-5.293A1 1 0 0 0 12.293.293L7 5.586 1.707.293A1 1 0 1 0 .293 1.707L5.586 7 .293 12.293a1 1 0 1 0 1.414 1.414L7 8.414l5.293 5.293Z"/>
+                                </svg>
+                            </template>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Search panel (slides down below nav bar) -->
+            <!-- NAV ROW: primary navigation below brand -->
+            <div class="ust-header__nav-row">
+                <div class="ust-header__container ust-header__container--nav">
+                    <!-- Desktop primary navigation -->
+                    <nav class="ust-header__desktop-nav" aria-label="Primary navigation">
+                        <ul class="ust-header__nav-list" role="menubar">
+                            <template for:each={menuItems} for:item="item">
+                                <li key={item.id} class={item.liCssClass} role="none">
+
+                                    <!-- Item WITH submenu (dropdown) -->
+                                    <template lwc:if={item.hasChildren}>
+                                        <button
+                                            class="ust-header__nav-btn"
+                                            data-id={item.id}
+                                            onclick={handleDropdownToggle}
+                                            aria-haspopup="true"
+                                            aria-expanded={item.isOpen}>
+                                            {item.label}
+                                            <span class="ust-header__caret" aria-hidden="true">
+                                                <img src={caretUrl} class="ust-header__caret-img" alt="" />
+                                            </span>
+                                        </button>
+                                        <ul class={item.dropdownCssClass} role="menu" aria-label={item.label}>
+                                            <template for:each={item.subMenu} for:item="child">
+                                                <li key={child.id} role="none">
+                                                    <a
+                                                        href={child.actionValue}
+                                                        class="ust-header__dropdown-item"
+                                                        role="menuitem"
+                                                        data-url={child.actionValue}
+                                                        data-type={child.actionType}
+                                                        data-newtab={child.isNewTab}
+                                                        onclick={handleNavClick}>
+                                                        {child.label}
+                                                    </a>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+
+                                    <!-- Item WITHOUT submenu -->
+                                    <template lwc:else>
+                                        <a
+                                            href={item.actionValue}
+                                            class="ust-header__nav-link"
+                                            role="menuitem"
+                                            data-url={item.actionValue}
+                                            data-type={item.actionType}
+                                            data-newtab={item.isNewTab}
+                                            onclick={handleNavClick}>
+                                            {item.label}
+                                        </a>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Search panel (slides down below nav row) -->
             <div id="ust-search-panel" class={searchPanelCssClass} aria-hidden={searchPanelAriaHidden}>
                 <div class="ust-header__container">
                     <form class="ust-header__search-form" onsubmit={handleSearchSubmit} novalidate>
@@ -169,9 +156,7 @@
                                     aria-expanded={item.isMobileOpen}>
                                     {item.label}
                                     <span class="ust-header__mobile-caret" aria-hidden="true">
-                                        <svg viewBox="0 0 17 11" xmlns="http://www.w3.org/2000/svg" focusable="false">
-                                            <path d="M1.61 1.12C1.47.96 1.24.96 1.1 1.12c-.14.16-.14.42 0 .58l7.14 8.18c.14.16.37.16.51 0l7.14-8.18c.14-.16.14-.42 0-.58C15.76.96 15.53.96 15.39 1.12L8.5 9.02 1.61 1.12z"/>
-                                        </svg>
+                                        <img src={caretUrl} class="ust-header__caret-img" alt="" />
                                     </span>
                                 </button>
                                 <ul class={item.mobileSubCssClass} aria-hidden={item.mobileSubAriaHidden}>
@@ -205,11 +190,12 @@
                     </template>
                 </ul>
 
-                <!-- Mobile utility links -->
+                <!-- Mobile utility audience links -->
                 <div class="ust-header__mobile-utility">
-                    <a href={updateContactUrl} class="ust-header__mobile-utility-link">Update Contact Info</a>
-                    <a href="https://give.stthomas.edu/" class="ust-header__mobile-utility-link ust-header__mobile-utility-link--cta"
-                       target="_blank" rel="noopener">Make a Gift</a>
+                    <a href="https://alumni.stthomas.edu/early-career-alumni/index.html"
+                       class="ust-header__mobile-utility-link" target="_blank" rel="noopener">Early Career Alumni</a>
+                    <a href="https://alumni.stthomas.edu/parents-families/index.html"
+                       class="ust-header__mobile-utility-link" target="_blank" rel="noopener">Parents &amp; Families</a>
                 </div>
             </nav>
         </div>

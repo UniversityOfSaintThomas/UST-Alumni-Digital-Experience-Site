@@ -1,39 +1,63 @@
 /* -------------------------------------------------------
    UST Alumni Theme Layout — global page scaffold
    Resets, CSS tokens, and skip-link
+
+   TOKEN ARCHITECTURE
+   ------------------
+   :root (ust-branding.css, document level)
+     --dxp-g-brand: #510c76          ← Salesforce DXP hooks; Experience Builder reads/writes these
+     --dxp-g-font-family: 'Lato' ... ← affects ALL base Lightning components site-wide
+
+   :host (this file, theme shadow root)
+     --ust-purple-dark: var(--dxp-g-brand, #510c76)  ← bridges DXP → UST tokens
+     ...                                               ← child components inherit via CSS cascade
+
+   Result: Experience Builder admin can change brand color in the Theme panel
+   and BOTH base components AND our custom header/footer update automatically.
 ------------------------------------------------------- */
 
 :host {
-    /* Primary brand tokens — available to all child components */
-    --ust-purple-dark:     #510c76;
-    --ust-purple-medium:   #8348ad;
-    --ust-purple-bright:   #9e28b5;
-    --ust-gray-cool:       #98999b;
-    --ust-green-emerald:   #4c9c2e;
+    /* ============================================================
+       BRIDGE: --dxp-* global hooks → --ust-* component tokens
+       The var() fallback is the raw UST value, used when the DXP
+       stylesheet hasn't loaded yet or the hook isn't defined.
+       ============================================================ */
 
-    /* Tints */
+    /* Primary brand color — reads from Experience Builder Theme panel */
+    --ust-purple-dark:   var(--dxp-g-brand,          #510c76);
+    --ust-purple-medium: var(--dxp-g-brand-1,         #8348ad);
+    --ust-purple-bright:                              #9e28b5;  /* accent only, no DXP equivalent */
+
+    /* Header / footer background — deeper purple matching alumni.stthomas.edu nav/footer */
+    --ust-nav-bg:            #340e51;
+    /* Footer brand column left-panel accent — brighter purple matching live site */
+    --ust-footer-brand-bg:   #59007b;
+    --ust-gray-cool:     var(--dxp-g-root-contrast-3, #98999b);
+    --ust-green-emerald:                              #4c9c2e;  /* success/go color */
+
+    /* Tints — derived from brand; these don't have --dxp equivalents */
     --ust-purple-90: #9059b5;
     --ust-purple-80: #9d6bbd;
-    --ust-purple-50: #c2a0d6;
+    --ust-purple-50: var(--dxp-g-brand-2, #c2a0d6);
     --ust-purple-20: #e6d8ee;
-    --ust-purple-10: #f2eaf6;
-    --ust-gray-10:   #f3f3f3;
-    --ust-gray-20:   #e8e9e9;
-    --ust-gray-40:   #d2d4d5;
+    --ust-purple-10: var(--dxp-g-brand-3, #f2eaf6);
+    --ust-gray-10:   var(--dxp-g-root-1,  #f3f3f3);
+    --ust-gray-20:   var(--dxp-g-root-2,  #e8e9e9);
+    --ust-gray-40:   var(--dxp-g-root-3,  #d2d4d5);
 
-    /* Typography */
-    --ust-font-family: 'Georgia', 'Times New Roman', serif;
-    --ust-font-family-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --ust-font-size-base: 1rem;
-    --ust-line-height: 1.6;
+    /* Typography — reads from Experience Builder Theme panel */
+    --ust-font-family:    var(--dxp-g-font-family-heading, 'Lora', Georgia, 'Times New Roman', serif);
+    --ust-font-family-ui: var(--dxp-g-font-family,         'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    --ust-font-size-base: var(--dxp-g-font-size,            1rem);
+    --ust-line-height:    var(--dxp-g-line-height,          1.6);
 
-    /* Spacing */
+    /* Spacing — bridged from Experience Builder spacing controls */
     --ust-space-xs:  0.25rem;
     --ust-space-sm:  0.5rem;
     --ust-space-md:  1rem;
-    --ust-space-lg:  1.5rem;
+    --ust-space-lg:  var(--dxp-s-grid-gutter,               1.5rem);
     --ust-space-xl:  2rem;
-    --ust-space-2xl: 3rem;
+    --ust-space-2xl: var(--dxp-s-section-spacing-block-end,  3rem);
 
     /* Layout */
     --ust-container-max: 1280px;
@@ -45,7 +69,7 @@
     font-family: var(--ust-font-family-ui);
     font-size: var(--ust-font-size-base);
     line-height: var(--ust-line-height);
-    color: #1a1a1a;
+    color: var(--dxp-g-root-contrast, #1a1a1a);
     background-color: var(--ust-gray-10);
     min-height: 100vh;
 }

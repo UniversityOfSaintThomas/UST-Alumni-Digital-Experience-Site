@@ -2,9 +2,13 @@
  * NavMenuController
  *
  * Apex bridge for fetching Experience Cloud navigation menu items.
- * Uses ConnectApi.NavigationMenu.getCommunityNavigationMenu() so site builders
- * can manage all navigation entirely inside Experience Builder -- no code change
- * required when links or labels change.
+ * Queries NavigationMenuItem directly via SOQL so that guest users can access
+ * nav data without requiring ConnectApi permissions.
+ *
+ * ConnectApi.NavigationMenu.getCommunityNavigationMenu() throws
+ * "This feature is not currently enabled for this user" for guest users, making
+ * it unusable for public-facing LWR sites. The SOQL approach works for all
+ * user types as long as the class runs without sharing.
  *
  * Falls back gracefully (empty list) when called outside a community context
  * or when the named menu does not exist yet, allowing LWC components to use
@@ -14,7 +18,7 @@
  * via the publishStatus parameter, which the LWC sets by inspecting
  * CurrentPageReference.state.app ('commeditor' = Draft, everything else = Live).
  */
-public with sharing class NavMenuController {
+public without sharing class NavMenuController {
 
     /**
      * Returns navigation menu items for the specified menu developer name.
@@ -29,74 +33,86 @@ public with sharing class NavMenuController {
     @AuraEnabled(cacheable=true)
     public static List<NavMenuItemDto> getMenuItems(String menuName, String publishStatus) {
         try {
-            Id networkId = Network.getNetworkId();
-            if (networkId == null || String.isBlank(menuName) || String.isBlank(publishStatus)) {
+            if (String.isBlank(menuName) || String.isBlank(publishStatus)) {
                 return new List<NavMenuItemDto>();
             }
 
-            ConnectApi.PublishStatus status = publishStatus.equalsIgnoreCase('Draft')
-                ? ConnectApi.PublishStatus.Draft
-                : ConnectApi.PublishStatus.Live;
+            String status = publishStatus.equalsIgnoreCase('Draft') ? 'Draft' : 'Live';
 
-            // Skip item types that are not supported in custom navigation components
-            List<ConnectApi.NavigationMenuItemType> skipTypes = new List<ConnectApi.NavigationMenuItemType>{
-                ConnectApi.NavigationMenuItemType.Event,
-                ConnectApi.NavigationMenuItemType.SystemLink
-            };
+            List<NavigationMenuItem> allItems = [
+                SELECT Id, Label, Type, Target, TargetPrefs, ParentId, Position, Status
+                FROM NavigationMenuItem
+                WHERE NavigationLinkSet.DeveloperName = :menuName
+                  AND Status = :status
+                ORDER BY Position ASC
+            ];
 
-            ConnectApi.NavigationMenuItemCollection collection =
-                ConnectApi.NavigationMenu.getCommunityNavigationMenu(
-                    networkId,
-                    null,       // navigationLinkSetId -- not needed when DeveloperName is provided
-                    menuName,   // navigationLinkSetDeveloperName
-                    status,
-                    false,      // includeImageUrl
-                    false,      // addHomeMenuItem
-                    skipTypes
-                );
-
-            if (collection == null || collection.menuItems == null) {
-                return new List<NavMenuItemDto>();
-            }
-
-            return toDto(collection.menuItems);
+            return buildMenuTree(allItems, null);
         } catch (Exception e) {
             return new List<NavMenuItemDto>();
         }
     }
 
     /**
-     * Recursively maps ConnectApi navigation menu items to serializable DTOs.
+     * Recursively builds a nested menu tree from a flat list of NavigationMenuItem records.
      *
-     * @param items List of ConnectApi.NavigationMenuItem to convert
-     * @return Nested DTO list matching the shape expected by the LWC components
+     * @param allItems All items fetched for this menu (flat list)
+     * @param parentId The parent Id to match at this level; null for top-level items
+     * @return Ordered list of NavMenuItemDto with nested subMenu children
      */
-    private static List<NavMenuItemDto> toDto(List<ConnectApi.NavigationMenuItem> items) {
+    private static List<NavMenuItemDto> buildMenuTree(List<NavigationMenuItem> allItems, Id parentId) {
         List<NavMenuItemDto> result = new List<NavMenuItemDto>();
-        if (items == null) {
-            return result;
-        }
-        for (Integer i = 0; i < items.size(); i++) {
-            ConnectApi.NavigationMenuItem item = items.get(i);
+        for (NavigationMenuItem item : allItems) {
+            Boolean matchesParent = (parentId == null)
+                ? (item.ParentId == null)
+                : (item.ParentId == parentId);
+            if (!matchesParent) {
+                continue;
+            }
             NavMenuItemDto dto = new NavMenuItemDto();
-            // ConnectApi.NavigationMenuItem has no id field; use position index
-            dto.id = 'nav-' + i;
-            dto.label = item.label;
-            dto.actionType = item.actionType != null
-                ? String.valueOf(item.actionType)
-                : 'InternalLink';
-            dto.actionValue = item.actionValue;
-            // target is ConnectApi.NavigationMenuItemOpenTarget (enum) -- use String.valueOf
-            dto.target = item.target != null
-                ? String.valueOf(item.target)
-                : 'CurrentWindow';
-            // subMenu is List<ConnectApi.NavigationMenuItem> directly (no .menuItems wrapper)
-            dto.subMenu = (item.subMenu != null)
-                ? toDto(item.subMenu)
-                : new List<NavMenuItemDto>();
+            dto.id = item.Id;
+            dto.label = item.Label;
+            dto.actionType = mapType(item.Type);
+            dto.actionValue = item.Target; // Target field stores the URL/path
+            dto.target = mapWindowTarget(item.TargetPrefs);
+            dto.subMenu = buildMenuTree(allItems, item.Id);
             result.add(dto);
         }
         return result;
+    }
+
+    /**
+     * Maps a NavigationMenuItem Type string to the action type string expected by the LWC.
+     *
+     * @param itemType The Type field value from NavigationMenuItem
+     * @return Normalised action type string
+     */
+    private static String mapType(String itemType) {
+        if (String.isBlank(itemType)) {
+            return 'InternalLink';
+        }
+        if (itemType == 'ExternalLink') {
+            return 'ExternalLink';
+        }
+        if (itemType == 'MenuLabel') {
+            return 'MenuLabel';
+        }
+        return 'InternalLink';
+    }
+
+    /**
+     * Maps NavigationMenuItem TargetPrefs picklist to the window-target string expected by the LWC.
+     * TargetPrefs of "None" means open in the current window; anything else (e.g. "OpenInNewWindow")
+     * means open in a new tab.
+     *
+     * @param targetPrefs The TargetPrefs picklist value from NavigationMenuItem
+     * @return 'NewWindow' or 'CurrentWindow'
+     */
+    private static String mapWindowTarget(String targetPrefs) {
+        if (String.isNotBlank(targetPrefs) && targetPrefs.containsIgnoreCase('NewWindow')) {
+            return 'NewWindow';
+        }
+        return 'CurrentWindow';
     }
 
     // ----- Inner DTO -----

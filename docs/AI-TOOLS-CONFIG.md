@@ -80,7 +80,12 @@ Portal pages require authenticated Experience Cloud login (Community User sessio
 For visual regression testing with BackstopJS, an `onBefore.js` login script is required.
 Login URL pattern: `https://<experience-cloud-domain>/alumni/s/login`
 
-Check with the team for current sandbox/scratch org Experience Cloud domain before running visual tests.
+**Current dev scratch org domain:** `deploy-pistachio-9172-dev-ed.scratch.my.site.com`
+- Site base: `https://deploy-pistachio-9172-dev-ed.scratch.my.site.com/alumni`
+- Login: `https://deploy-pistachio-9172-dev-ed.scratch.my.site.com/alumni/s/login`
+- Events page: `https://deploy-pistachio-9172-dev-ed.scratch.my.site.com/alumni/events`
+
+> **Note:** This domain is tied to the current scratch org and will change when the org is recreated. Update this value after each `cci flow run dev_org`.
 
 ---
 
@@ -90,6 +95,25 @@ Check with the team for current sandbox/scratch org Experience Cloud domain befo
 - Scratch org (`dev`) starts empty — `cci flow run dev_org` runs seed data tasks defined in `datasets/mapping.yml`
 - For widget testing, need a Contact with: giving history, event registrations, a major/college affiliation, and a geo location (Mailing Address)
 - Restricted picklist values (e.g. `Preferred_Communication_Channel__c`) must be queried from schema in tests — never hardcoded
+
+---
+
+## Experience Cloud Guest User Access
+
+The portal has a **Guest User** for unauthenticated/public-facing pages. Access to Apex controllers for guest users is granted via **Permission Sets** (not profiles) — this is Salesforce best practice.
+
+| Permission Set | Assigned To | Purpose |
+|----------------|-------------|---------|
+| `Alumni_Portal_Guest` | Guest User | Grants access to `NavMenuController` (and any other Apex needed by guest pages) |
+
+> **Best Practice:** Always use permission sets (not profiles) to grant Apex class access to guest users. This keeps the Guest profile minimal and makes grants auditable and reversible.
+
+> **⚠️ Republish required:** After assigning or changing a permission set on the guest user, you **must republish the site** from Experience Builder. `@AuraEnabled(cacheable=true)` responses for guest pages are cached at the CDN/platform level. Without republishing, the stale cached response (error or empty) continues to be served.
+
+When adding new Apex controllers that must be callable by unauthenticated/guest users:
+1. Add the class to the `Alumni_Portal_Guest` permission set
+2. Verify the permission set is assigned to the site's Guest User
+3. **Republish the site** from Experience Builder to clear the cached response
 
 ---
 

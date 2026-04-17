@@ -1,0 +1,133 @@
+/* ============================================================
+   UST Alumni Site — DXP Styling Hooks
+   ============================================================
+   Loaded via platformResourceLoader in ustAlumniTheme.js so it
+   is injected at the document level (outside shadow DOM).
+
+   PURPOSE
+   -------
+   Maps Salesforce's --dxp-* custom property system to UST brand
+   values. Setting these hooks here means:
+
+   1. Every Salesforce base component (lightning-button, lightning-input,
+      lightning-badge, etc.) automatically renders in UST brand colors
+      without per-component overrides.
+
+   2. Experience Builder's Theme panel reads and writes these same
+      variables, so an admin can fine-tune values in the UI and all
+      components — both base and our custom ones — update together.
+
+   ARCHITECTURE
+   ------------
+   :root (this file, document level)
+     sets --dxp-* hooks
+
+   ustAlumniTheme.css (:host)
+     bridges --dxp-* → --ust-* tokens
+     all child LWC components inherit --ust-* via CSS cascade
+
+   REFERENCES
+   ----------
+   https://developer.salesforce.com/docs/atlas.en-us.exp_cloud_lwr.meta/exp_cloud_lwr/brand_hooks.htm
+   https://developer.salesforce.com/docs/atlas.en-us.exp_cloud_lwr.meta/exp_cloud_lwr/brand_hooks_color.htm
+   https://developer.salesforce.com/docs/atlas.en-us.exp_cloud_lwr.meta/exp_cloud_lwr/brand_hooks_text.htm
+   https://developer.salesforce.com/docs/atlas.en-us.exp_cloud_lwr.meta/exp_cloud_lwr/brand_hooks_spacing.htm
+   ============================================================ */
+
+:root {
+
+    /* ============================================================
+       COLOR HOOKS — GLOBAL (--dxp-g-*)
+       Each "family" has a root (background) and root-contrast
+       (foreground). Contrast must meet WCAG AA 4.5:1 minimum.
+       ============================================================ */
+
+    /* Root family — page canvas */
+    --dxp-g-root:              #ffffff;
+    --dxp-g-root-1:            #f3f3f3; /* light gray tint */
+    --dxp-g-root-2:            #e8e9e9;
+    --dxp-g-root-3:            #d2d4d5;
+    --dxp-g-root-contrast:     #1a1a1a; /* near-black body text; 15:1 vs white */
+    --dxp-g-root-contrast-1:   #3c3c3c;
+    --dxp-g-root-contrast-2:   #6e6e6e;
+    --dxp-g-root-contrast-3:   #98999b; /* UST gray-cool */
+
+    /* Brand family — UST Purple Dark */
+    /* #510c76 on #fff = 9.3:1 contrast (AAA) */
+    --dxp-g-brand:             #510c76;
+    --dxp-g-brand-1:           #8348ad; /* medium purple, hover states */
+    --dxp-g-brand-2:           #c2a0d6; /* 50% tint */
+    --dxp-g-brand-3:           #f2eaf6; /* 10% tint — subtle backgrounds */
+    --dxp-g-brand-contrast:    #ffffff; /* white on dark purple = 9.3:1 (AAA) */
+
+    /* Neutral family — UST cool gray */
+    --dxp-g-neutral:           #98999b;
+    --dxp-g-neutral-1:         #d2d4d5;
+    --dxp-g-neutral-2:         #e8e9e9;
+    --dxp-g-neutral-3:         #f3f3f3;
+    --dxp-g-neutral-contrast:  #ffffff;
+
+    /* ============================================================
+       COLOR HOOKS — COMPONENT (--dxp-c-*)
+       Fine-tune individual component patterns without touching
+       every --slds-c-* hook. The DXP layer maps these to SLDS.
+       ============================================================ */
+
+    /* Buttons */
+    --dxp-c-button-color-background:        #510c76; /* brand purple */
+    --dxp-c-button-color-background-hover:  #8348ad;
+    --dxp-c-button-color-background-active: #3a0858; /* darker on press */
+    --dxp-c-button-color-border:            #510c76;
+    --dxp-c-button-color-border-hover:      #8348ad;
+    --dxp-c-button-text-color:              #ffffff;
+    --dxp-c-button-text-color-hover:        #ffffff;
+
+    /* Links */
+    --dxp-c-link-color-text:        #510c76;
+    --dxp-c-link-color-text-hover:  #8348ad;
+    --dxp-c-link-color-text-active: #3a0858;
+
+    /* Inputs — border on focus matches brand */
+    --dxp-c-input-color-border-focus: #510c76;
+
+    /* Badges */
+    --dxp-c-badge-color-background: #510c76;
+    --dxp-c-badge-color-text:        #ffffff;
+
+    /* ============================================================
+       TEXT / TYPOGRAPHY HOOKS (--dxp-g-font-*)
+       Lora  = UST brand serif  — headings, editorial body copy
+       Lato  = UST brand sans   — UI, navigation, labels, captions
+       ============================================================ */
+
+    /* Font families */
+    --dxp-g-font-family:         'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --dxp-g-font-family-heading: 'Lora', Georgia, 'Times New Roman', serif;
+
+    /* Base body size and rhythm */
+    --dxp-g-font-size:       1rem;       /* 16px */
+    --dxp-g-line-height:     1.6;
+
+    /* Heading scale — maps to h1/h2/h3 throughout the site */
+    --dxp-g-font-size-heading-large:  2.25rem;  /* 36px — page titles */
+    --dxp-g-font-size-heading-medium: 1.625rem; /* 26px — section headings */
+    --dxp-g-font-size-heading-small:  1.25rem;  /* 20px — card/widget headings */
+
+    /* Heading weight — Lora 600 (SemiBold) is the UST editorial style */
+    --dxp-g-font-weight-heading: 600;
+    --dxp-g-font-weight-body:    400;
+    --dxp-g-font-weight-bold:    700;
+
+    /* ============================================================
+       SITE SPACING HOOKS (--dxp-s-*)
+       Controls the breathing room between page sections and
+       columns in Experience Builder's drag-drop layout system.
+       ============================================================ */
+
+    --dxp-s-section-spacing-block-start: 3rem;  /* 48px top padding per section */
+    --dxp-s-section-spacing-block-end:   3rem;  /* 48px bottom padding per section */
+
+    /* Column gutters inside sections */
+    --dxp-s-grid-gutter: 1.5rem;
+}
+
