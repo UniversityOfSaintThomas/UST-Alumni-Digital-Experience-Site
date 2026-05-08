@@ -117,6 +117,110 @@ When adding new Apex controllers that must be callable by unauthenticated/guest 
 
 ---
 
+## Experience Cloud Bundle — Retrieval & Source Control
+
+The site's page structure, routes, layout, theme, and CSS are captured as an **Experience Bundle** (metadata type `ExperienceBundle`) and stored in:
+
+```
+unpackaged/config/experiences/digitalExperiences/site/Alumni1/
+```
+
+This directory is used as a **template snapshot** — it is deployed to new orgs by the `create_community_experience_cloud_bundle` CumulusCI task. It intentionally contains only site structure, not editorial CMS content.
+
+### What the bundle contains
+
+| Folder | Contents |
+|--------|----------|
+| `sfdc_cms__route/*` | URL route definitions (which page serves each URL) |
+| `sfdc_cms__view/*` | Page layouts — which LWC components are placed where, with property bindings |
+| `sfdc_cms__themeLayout/*` | Header/footer/theme layout assignments |
+| `sfdc_cms__theme/*` | Theme settings (Build Your Own LWR) |
+| `sfdc_cms__brandingSet/*` | Branding tokens (colors, fonts) |
+| `sfdc_cms__styles/*` | Custom CSS (`styles.css`, `print.css`) |
+| `sfdc_cms__appPage/*` | Main App Page definition |
+| `sfdc_cms__site/*` | Site-level settings (name, auth config, etc.) |
+
+### What it does NOT contain
+
+Salesforce CMS editorial content (news articles, images, managed content items) is **not** part of any retrievable metadata type and lives only in the org. Seed data for custom SObjects (e.g. events, giving history) is managed separately via CumulusCI datasets.
+
+### Retrieval command (run periodically as you build out the site)
+
+```powershell
+# 1. Discover the bundle's full name in the org (first time or after scratch org rebuild)
+sf org list metadata --metadata-type DigitalExperienceBundle --target-org UST-Alumni-Digital-Experience-Site__dev
+# Expected output: Full Name = site/Alumni1
+
+# 2. Retrieve the bundle — store as-is, NO restructuring needed
+sf project retrieve start `
+  --metadata "DigitalExperienceBundle:site/Alumni1" `
+  --output-dir unpackaged/config/experiences `
+  --target-org UST-Alumni-Digital-Experience-Site__dev
+```
+
+**That's it. Keep the retrieved files exactly as-is.** CumulusCI's Deploy task has `source_format: sfdx` which handles the SFDX format natively.
+
+**Structure after retrieval (SFDX source format — do not modify):**
+```
+unpackaged/config/experiences/
+  package.xml                                          ← committed, never delete or modify
+  digitalExperiences/
+    site/
+      Alumni1/
+        Alumni1.digitalExperience-meta.xml             ← bundle descriptor
+        sfdc_cms__route/Error/content.json             ← SFDX: workspace/site/contentType/definition
+        sfdc_cms__route/Home/content.json
+        sfdc_cms__view/home/content.json
+        sfdc_cms__themeLayout/Alumni_Theme/content.json
+        sfdc_cms__site/Alumni1/content.json
+        … (all content types under site/Alumni1/)
+```
+
+**`package.xml` (committed, static — do not change):**
+```xml
+<types>
+    <members>site/Alumni1</members>
+    <name>DigitalExperienceBundle</name>  <!-- MDAPI type name — NOT ExperienceBundle -->
+</types>
+<types>
+    <members>*</members>
+    <name>DigitalExperience</name>        <!-- wildcard covers all routes/views/themes/etc. -->
+</types>
+```
+
+> **⚠️ `source_format: sfdx` on the Deploy task is required.** The task in `cumulusci.yml` must include `source_format: sfdx`. Without it, CumulusCI treats `unpackaged/` as MDAPI and mangles the `site/Alumni1/` path structure at deploy time.
+>
+> **⚠️ Do NOT restructure the retrieved files.** Previous attempts to flatten `site/Alumni1/` into other shapes all failed. The SFDX structure is correct as retrieved.
+
+> **Error → cause reference (for debugging):**
+> | Error | Cause |
+> |-------|-------|
+> | `All file paths must use a three level structure` | Missing `source_format: sfdx` — CumulusCI treating as MDAPI |
+> | `workspace type Alumni1 is invalid` | Removed `site/` folder; `Alumni1` used as workspace type |
+> | `workspace name sfdc_cms__appPage is invalid` | Removed `Alumni1/` folder; content type used as site name |
+> | `ExperienceBundle … not found in zipped directory` | Wrong type in package.xml — must be `DigitalExperienceBundle` |
+> | `DigitalExperience … Not in package.xml` | Missing `DigitalExperience` wildcard in package.xml |
+
+### Deployment command (apply bundle to a new/existing org)
+
+```powershell
+cci task run create_community_experience_cloud_bundle --org dev
+```
+
+### Workflow — keeping the bundle in sync
+
+1. Make layout/theme/component changes in **Experience Builder** in the dev scratch org
+2. Publish the site (so changes are committed in the org)
+3. Run the retrieval command above to pull the updated bundle into `unpackaged/config/experiences/`
+4. Commit the changes to git — the bundle is now the new template baseline
+5. On the next `cci flow run dev_org` (fresh scratch org), run `create_community_experience_cloud_bundle` to replay the template
+
+### Bundle name gotcha
+
+Salesforce names the bundle `Alumni1` (not `Alumni`) because it appends a counter to avoid collisions at creation time. The SF CLI full name is `site/Alumni1`. This is expected — don't rename the folder.
+
+---
+
 ## Code Coverage Requirement
 
 Minimum org-wide coverage: **75%** (set in `cumulusci.yml` → `tasks.run_tests`)
