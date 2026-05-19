@@ -706,6 +706,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#ust_portal_widget__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UST_Portal_Widget__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alumni_preference__c" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -997,6 +1008,17 @@
   
     <nav class="md-nav" aria-label="Custom Objects to Build">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ust_portal_widget__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UST_Portal_Widget__c
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#alumni_preference__c" class="md-nav__link">
@@ -1371,6 +1393,71 @@
 </blockquote>
 <hr />
 <h2 id="custom-objects-to-build">Custom Objects to Build<a class="headerlink" href="#custom-objects-to-build" title="Permanent link">&para;</a></h2>
+<h3 id="ust_portal_widget__c">UST_Portal_Widget__c<a class="headerlink" href="#ust_portal_widget__c" title="Permanent link">&para;</a></h3>
+<p>Admin-controlled registry driving the widget zone system. Each record tells one <code>ustWidgetZone</code> LWC instance which component to render, on which page, and for which audience segment.</p>
+<table>
+<thead>
+<tr>
+<th>Field Label</th>
+<th>API Name</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Widget Name</td>
+<td><code>Name</code></td>
+<td>Text</td>
+<td>Admin label (e.g. "Profile Card - Home")</td>
+</tr>
+<tr>
+<td>Zone</td>
+<td><code>Zone__c</code></td>
+<td>Picklist</td>
+<td>body; sidebar; banner; above_footer</td>
+</tr>
+<tr>
+<td>Component Name</td>
+<td><code>Component_Name__c</code></td>
+<td>Picklist</td>
+<td>Registry key — must match entry in <code>ustWidgetZone.js</code></td>
+</tr>
+<tr>
+<td>Page Context</td>
+<td><code>Page_Context__c</code></td>
+<td>Multi-select Picklist</td>
+<td>all; home; giving; events; profile; directory; news</td>
+</tr>
+<tr>
+<td>Sort Order</td>
+<td><code>Sort_Order__c</code></td>
+<td>Number</td>
+<td>Lower = higher on page; ties broken by Name</td>
+</tr>
+<tr>
+<td>Audience Rule</td>
+<td><code>Audience_Rule__c</code></td>
+<td>Picklist</td>
+<td>All; Donor; Parent; Faculty_Staff</td>
+</tr>
+<tr>
+<td>Is Active</td>
+<td><code>Is_Active__c</code></td>
+<td>Checkbox</td>
+<td>Kill switch; default true</td>
+</tr>
+<tr>
+<td>Description</td>
+<td><code>Description__c</code></td>
+<td>Long Text Area</td>
+<td>Admin notes only</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Implementation note:</strong> Donor, Parent, and Faculty_Staff audience rules are wired up in <code>PortalWidgetController.resolveUserAudiences()</code> with TODO markers. Activate by un-commenting the Contact query block once the field API names for Donor_Flag__c, Parent_Flag__c, and Faculty_Staff_Flag__c are confirmed (see Open Questions below).</p>
+</blockquote>
 <h3 id="alumni_preference__c">Alumni_Preference__c<a class="headerlink" href="#alumni_preference__c" title="Permanent link">&para;</a></h3>
 <p>Stores the alumni's self-declared preferences for portal personalization.</p>
 <table>

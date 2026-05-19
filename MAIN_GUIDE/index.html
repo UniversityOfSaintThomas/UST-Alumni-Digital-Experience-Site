@@ -547,6 +547,67 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#widget-zone-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Widget Zone System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Widget Zone System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#experience-builder-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experience Builder Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-widget-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring Widget Records
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#audience-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audience Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-a-new-widget-to-the-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a New Widget to the Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#personalization-dimensions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -904,6 +965,67 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#widget-zone-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Widget Zone System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Widget Zone System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#experience-builder-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experience Builder Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-widget-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring Widget Records
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#audience-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audience Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-a-new-widget-to-the-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a New Widget to the Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#personalization-dimensions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1078,11 +1200,186 @@
 <li><strong>SSO</strong>: Federated ID on Community User record maps to alumni personal email</li>
 </ul>
 <h3 id="widget-first-design">Widget-First Design<a class="headerlink" href="#widget-first-design" title="Permanent link">&para;</a></h3>
-<p>Every section of the portal is a self-contained LWC "widget" component. Widgets are:
-- Added to Experience Builder pages via drag-and-drop
-- Personalized using the logged-in user's Contact record and related data
-- Conditionally shown/hidden based on the alumni's profile (donor, faculty/staff, parent, college, etc.)</p>
-<p>See <code>WIDGET-CATALOG.md</code> for the full widget inventory.</p>
+<p>Every section of the portal is a self-contained LWC "widget" component. The portal uses a <strong>record-driven widget zone system</strong> to control which widgets appear, on which pages, in what order, and for which audience segments — admins manage this through <code>UST_Portal_Widget__c</code> records, without touching Experience Builder or code.</p>
+<p>See <code>WIDGET-CATALOG.md</code> for the full widget inventory and component registry.<br />
+See <a href="#widget-zone-system">Widget Zone System</a> below for implementation and configuration details.</p>
+<h3 id="widget-zone-system">Widget Zone System<a class="headerlink" href="#widget-zone-system" title="Permanent link">&para;</a></h3>
+<p>Replaces the legacy EASY Widgets pattern with an admin-facing Salesforce object. Admins create and edit <code>UST_Portal_Widget__c</code> records to control the portal without any deployment.</p>
+<p><strong>Flow:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Admin creates/edits UST_Portal_Widget__c record
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  Zone = body | Page = home | Component = ust_profile_card | Sort = 10 | Audience = All
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>         |
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Experience Builder page loads ustWidgetZone (zoneName=&quot;body&quot;, pageContext=&quot;home&quot;)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>         |
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>PortalWidgetController.getWidgetsForZone() queries active matching records
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  - filters by zone, page context, and current user&#39;s audience segments
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  - returns ordered list of widget DTOs
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>         |
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>ustWidgetZone renders each widget in sort order
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  - registered component  →  renders the real widget LWC
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  - unregistered component →  renders ustPortalWidgetStub
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>       (stub is visible in Experience Builder, invisible in the live site)
+</code></pre></div>
+<p><strong>Files involved:</strong></p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>objects/UST_Portal_Widget__c/</code></td>
+<td>Object + 7 field definitions</td>
+</tr>
+<tr>
+<td><code>classes/PortalWidgetController.cls</code></td>
+<td>Apex — queries widgets, checks audience segments</td>
+</tr>
+<tr>
+<td><code>lwc/ustWidgetZone/</code></td>
+<td>Host container — drag onto pages in Experience Builder</td>
+</tr>
+<tr>
+<td><code>lwc/ustPortalWidgetStub/</code></td>
+<td>Dev placeholder — Builder-visible, live-site-invisible</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="experience-builder-setup">Experience Builder Setup<a class="headerlink" href="#experience-builder-setup" title="Permanent link">&para;</a></h4>
+<p>Place one <strong>UST Widget Zone</strong> component per zone on each page:</p>
+<ol>
+<li>Open Experience Builder → from the component panel, drag <strong>UST Widget Zone</strong> onto the page</li>
+<li>In the component property panel, set:</li>
+<li><strong>Zone Name</strong> — one of: <code>body</code>, <code>sidebar</code>, <code>banner</code>, <code>above_footer</code></li>
+<li><strong>Page Context</strong> — the page slug, e.g. <code>home</code>, <code>events</code>, <code>giving</code>, <code>profile</code></li>
+<li>Repeat for each zone on that page</li>
+<li>Publish the site after placing zones</li>
+</ol>
+<blockquote>
+<p>The same <code>UST Widget Zone</code> component is placed on every page. Different <code>Zone Name</code> + <code>Page Context</code> values on each instance mean each zone only loads the records targeting it.</p>
+</blockquote>
+<hr />
+<h4 id="configuring-widget-records">Configuring Widget Records<a class="headerlink" href="#configuring-widget-records" title="Permanent link">&para;</a></h4>
+<p>Create <code>UST_Portal_Widget__c</code> records via <strong>Setup → Object Manager → UST Portal Widget → Records</strong>, or create a List View for easy admin access.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Widget Name</td>
+<td>Admin label — be descriptive</td>
+<td><code>Profile Card - Home Page</code></td>
+</tr>
+<tr>
+<td>Zone</td>
+<td>Which zone instance renders this widget</td>
+<td><code>body</code></td>
+</tr>
+<tr>
+<td>Page Context</td>
+<td>Pages where this widget appears <em>(multi-select)</em></td>
+<td><code>home; profile</code></td>
+</tr>
+<tr>
+<td>Component Name</td>
+<td>Registry key — selects the LWC to render</td>
+<td><code>ust_profile_card</code></td>
+</tr>
+<tr>
+<td>Sort Order</td>
+<td>Position within the zone; lower numbers appear first</td>
+<td><code>10</code>, <code>20</code>, <code>30</code></td>
+</tr>
+<tr>
+<td>Audience Rule</td>
+<td>Which alumni segment sees this widget</td>
+<td><code>All</code></td>
+</tr>
+<tr>
+<td>Is Active</td>
+<td>Kill switch — uncheck to hide without deleting</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Admin notes; not shown to alumni</td>
+<td><em>(optional)</em></td>
+</tr>
+</tbody>
+</table>
+<p>A widget that should appear on multiple pages uses one record — select multiple values in <strong>Page Context</strong> rather than duplicating the record.</p>
+<hr />
+<h4 id="audience-rules">Audience Rules<a class="headerlink" href="#audience-rules" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Current State</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>All</code></td>
+<td>✅ <strong>Active</strong></td>
+<td>Shown to every authenticated user</td>
+</tr>
+<tr>
+<td><code>Donor</code></td>
+<td>⏳ <strong>Stubbed</strong></td>
+<td>Awaiting Contact donor flag field confirmation (see DATA-MODEL.md)</td>
+</tr>
+<tr>
+<td><code>Parent</code></td>
+<td>⏳ <strong>Stubbed</strong></td>
+<td>Awaiting Contact parent flag field confirmation</td>
+</tr>
+<tr>
+<td><code>Faculty_Staff</code></td>
+<td>⏳ <strong>Stubbed</strong></td>
+<td>Awaiting Contact faculty/staff flag confirmation</td>
+</tr>
+</tbody>
+</table>
+<p>To activate a stubbed rule: confirm the Contact field API name with the advancement team, then un-comment the corresponding block in <code>PortalWidgetController.resolveUserAudiences()</code>.</p>
+<p>A user who qualifies for multiple segments sees widgets for all of them. Create separate records for widgets that target one segment but not all alumni (e.g. a Donor-only tile alongside an All-alumni tile in the same zone).</p>
+<hr />
+<h4 id="adding-a-new-widget-to-the-registry">Adding a New Widget to the Registry<a class="headerlink" href="#adding-a-new-widget-to-the-registry" title="Permanent link">&para;</a></h4>
+<p>When a new widget LWC is built and deployed, activate it in the zone system with three changes:</p>
+<p><strong>1 — Uncomment the boolean flag in <code>ustWidgetZone.js</code> → <code>buildWidgetRegistry()</code>:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">isProfileCard</span><span class="o">:</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">componentName</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;ust_profile_card&#39;</span><span class="p">,</span>
+</code></pre></div></p>
+<p><strong>2 — Add a <code>lwc:if</code> (or <code>lwc:elseif</code>) block in <code>ustWidgetZone.html</code>, above the <code>lwc:else</code> stub:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">&lt;!-- First registered widget: use lwc:if --&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:if</span><span class="o">=</span><span class="s">{widget.isProfileCard}</span><span class="p">&gt;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">&lt;</span><span class="nt">c-ust-profile-card</span><span class="p">&gt;&lt;/</span><span class="nt">c-ust-profile-card</span><span class="p">&gt;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cm">&lt;!-- Additional widgets: use lwc:elseif --&gt;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:elseif</span><span class="o">=</span><span class="s">{widget.isEventsWidget}</span><span class="p">&gt;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">&lt;</span><span class="nt">c-ust-events-widget</span><span class="p">&gt;&lt;/</span><span class="nt">c-ust-events-widget</span><span class="p">&gt;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="cm">&lt;!-- Keep this stub block as the final lwc:else — catches any unregistered component names --&gt;</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:else</span><span class="p">&gt;</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="p">&lt;</span><span class="nt">c-ust-portal-widget-stub</span> <span class="err">...</span><span class="p">&gt;&lt;/</span><span class="nt">c-ust-portal-widget-stub</span><span class="p">&gt;</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div></p>
+<p><strong>3 — Deploy both the zone and the new widget together:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">lwc</span><span class="p">/</span><span class="n">ustWidgetZone</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">lwc</span><span class="p">/</span><span class="n">ustProfileCard</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
+</code></pre></div></p>
+<p>No Experience Builder changes are needed. The zone component already on the page calls the same Apex query and automatically renders the real widget the next time the page loads.</p>
+<blockquote>
+<p><strong>Stub behavior:</strong> Until Step 1–2 are deployed, a widget record with <code>Component_Name__c = ust_profile_card</code> renders the stub placeholder (visible in Builder, invisible to alumni in the live site). This lets admins configure records ahead of the LWC being built.</p>
+</blockquote>
+<hr />
 <h3 id="personalization-dimensions">Personalization Dimensions<a class="headerlink" href="#personalization-dimensions" title="Permanent link">&para;</a></h3>
 <p>The following data points drive what is shown per alumni:</p>
 <table>
@@ -1134,54 +1431,62 @@
 <hr />
 <h2 id="development-workflow">Development Workflow<a class="headerlink" href="#development-workflow" title="Permanent link">&para;</a></h2>
 <h3 id="initial-org-setup">Initial Org Setup<a class="headerlink" href="#initial-org-setup" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c"># Create a fresh dev scratch org (7-day lifespan)</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">cci</span> <span class="n">flow</span> <span class="n">run</span> <span class="n">dev_org</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c"># Create a fresh dev scratch org (7-day lifespan)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">cci</span> <span class="n">flow</span> <span class="n">run</span> <span class="n">dev_org</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
 </code></pre></div>
 <h3 id="incremental-deploys">Incremental Deploys<a class="headerlink" href="#incremental-deploys" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c"># Deploy all LWC components</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">lwc</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c"># Deploy a single component</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">lwc</span><span class="p">/</span><span class="n">myComponent</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c"># Deploy Apex classes</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">classes</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c"># Deploy all LWC components</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">lwc</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c"># Deploy a single component</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">lwc</span><span class="p">/</span><span class="n">myComponent</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c"># Deploy Apex classes</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-path</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span><span class="p">/</span><span class="n">classes</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
 </code></pre></div>
 <h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c"># LWC Jest tests</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">npm</span> <span class="n">test</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c"># LWC Jest with coverage</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">npm</span> <span class="n">test</span> <span class="p">--</span> <span class="p">-</span><span class="n">-coverage</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="c"># Apex tests (single class) — dev scratch org has EDA via EASY snapshot</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">sf</span> <span class="n">apex</span> <span class="n">run</span> <span class="n">test</span> <span class="p">-</span><span class="n">-class-names</span> <span class="n">ClassName_TEST</span> <span class="p">-</span><span class="n">-target-org</span> <span class="n">UST-Alumni-Digital-Experience-Site__dev</span> <span class="p">-</span><span class="n">-result-format</span> <span class="n">human</span> <span class="p">-</span><span class="n">-code-coverage</span> <span class="p">-</span><span class="n">-wait</span> <span class="n">20</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c"># All Apex tests</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">run_tests</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c"># LWC Jest tests</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">npm</span> <span class="n">test</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c"># LWC Jest with coverage</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">npm</span> <span class="n">test</span> <span class="p">--</span> <span class="p">-</span><span class="n">-coverage</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="c"># Apex tests (single class) — dev scratch org has EDA via EASY snapshot</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">sf</span> <span class="n">apex</span> <span class="n">run</span> <span class="n">test</span> <span class="p">-</span><span class="n">-class-names</span> <span class="n">ClassName_TEST</span> <span class="p">-</span><span class="n">-target-org</span> <span class="n">UST-Alumni-Digital-Experience-Site__dev</span> <span class="p">-</span><span class="n">-result-format</span> <span class="n">human</span> <span class="p">-</span><span class="n">-code-coverage</span> <span class="p">-</span><span class="n">-wait</span> <span class="n">20</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c"># All Apex tests</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="n">cci</span> <span class="n">task</span> <span class="n">run</span> <span class="n">run_tests</span> <span class="p">-</span><span class="n">-org</span> <span class="n">dev</span>
 </code></pre></div>
 <h3 id="code-analysis">Code Analysis<a class="headerlink" href="#code-analysis" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">sf</span> <span class="n">code-analyzer</span> <span class="n">run</span> <span class="p">-</span><span class="n">-target</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span> <span class="p">-</span><span class="n">-output</span><span class="o">-file</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">code-analyzer</span><span class="p">.</span><span class="n">json</span> <span class="p">-</span><span class="n">-output</span><span class="o">-file</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">code-analyzer</span><span class="p">.</span><span class="n">html</span> <span class="p">-</span><span class="n">-severity-threshold</span> <span class="n">3</span> <span class="n">2</span><span class="p">&gt;&amp;</span><span class="n">1</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">ca-run</span><span class="p">.</span><span class="n">txt</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">sf</span> <span class="n">code-analyzer</span> <span class="n">run</span> <span class="p">-</span><span class="n">-target</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span> <span class="p">-</span><span class="n">-output</span><span class="o">-file</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">code-analyzer</span><span class="p">.</span><span class="n">json</span> <span class="p">-</span><span class="n">-output</span><span class="o">-file</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">code-analyzer</span><span class="p">.</span><span class="n">html</span> <span class="p">-</span><span class="n">-severity-threshold</span> <span class="n">3</span> <span class="n">2</span><span class="p">&gt;&amp;</span><span class="n">1</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">ca-run</span><span class="p">.</span><span class="n">txt</span>
 </code></pre></div>
 <hr />
 <h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>force-app/main/default/
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  lwc/                  # Lightning Web Components (portal widgets + support components)
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  classes/              # Apex controllers
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  objects/              # Custom object/field metadata
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  permissionsets/       # Permission sets for community users and admins
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  experiences/          # Experience Cloud site metadata
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  staticresources/      # Images, fonts, global CSS
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>docs/
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>force-app/main/default/
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  lwc/                  # Lightning Web Components (portal widgets + support components)
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    ustAlumniTheme/     # Theme layout shell (header + main slot + footer)
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    ustAlumniHeader/    # Site header and navigation
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    ustAlumniFooter/    # Site footer
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    ustWidgetZone/      # Widget zone host — drag onto Experience Builder pages
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  classes/              # Apex controllers
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    NavMenuController   # Experience Cloud navigation menu fetcher
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    PortalWidgetController # Widget zone registry query + audience filtering
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>  objects/              # Custom object and field metadata
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    UST_Portal_Widget__c/  # Widget zone control object (zone, page, component, audience)
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>  permissionsets/       # Permission sets for community users and admins
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  experiences/          # Experience Cloud site metadata
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>  staticresources/      # Images, fonts, global CSS
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>docs/
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
 </code></pre></div>
 <hr />
 <h2 id="key-dependencies">Key Dependencies<a class="headerlink" href="#key-dependencies" title="Permanent link">&para;</a></h2>

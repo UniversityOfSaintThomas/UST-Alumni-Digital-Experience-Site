@@ -556,6 +556,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#component-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Registry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#widget-index" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -847,6 +858,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#component-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Registry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#widget-index" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1040,8 +1062,125 @@
 
 
 <h1 id="widget-catalog-ust-alumni-portal">Widget Catalog — UST Alumni Portal<a class="headerlink" href="#widget-catalog-ust-alumni-portal" title="Permanent link">&para;</a></h1>
-<p>Each row is a potential portal widget surfaced on the Experience Cloud alumni page. Widgets are LWC components added to pages via Experience Builder and personalized by the logged-in alumni's data.</p>
+<p>Each section of the portal is an independent LWC widget component. Widgets are placed in Experience Builder via the <strong>widget zone system</strong>: admins create <code>UST_Portal_Widget__c</code> records to control which widgets appear on which pages, in which zones, and for which audience segments. See <strong>Widget Zone System</strong> in <code>MAIN_GUIDE.md</code> for setup and configuration instructions.</p>
 <p><strong>Status key:</strong> <code>Planned</code> | <code>In Design</code> | <code>In Progress</code> | <code>Done</code></p>
+<hr />
+<h2 id="component-registry">Component Registry<a class="headerlink" href="#component-registry" title="Permanent link">&para;</a></h2>
+<p>Maps each widget to its <code>Component_Name__c</code> picklist value (the registry key used in <code>ustWidgetZone</code>) and its Audience Rule options.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Widget Name</th>
+<th><code>Component_Name__c</code></th>
+<th>LWC Component</th>
+<th>Audience Options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Profile Card</td>
+<td><code>ust_profile_card</code></td>
+<td><code>c-ust-profile-card</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Events — Upcoming &amp; Registered</td>
+<td><code>ust_events_widget</code></td>
+<td><code>c-ust-events-widget</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Give / Donor Widget</td>
+<td><code>ust_give_widget</code></td>
+<td><code>c-ust-give-widget</code></td>
+<td>All, Donor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Engagement Summary</td>
+<td><code>ust_engagement_summary</code></td>
+<td><code>c-ust-engagement-summary</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>5</td>
+<td>St. Thomas Connection Messages</td>
+<td><code>ust_connection_messages</code></td>
+<td><code>c-ust-connection-messages</code></td>
+<td>All, Donor, Parent, Faculty_Staff</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Preference Center</td>
+<td><code>ust_preference_center</code></td>
+<td><code>c-ust-preference-center</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Alumni Directory &amp; Connect</td>
+<td><code>ust_alumni_directory</code></td>
+<td><code>c-ust-alumni-directory</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Links Hub</td>
+<td><code>ust_links_hub</code></td>
+<td><code>c-ust-links-hub</code></td>
+<td>All, Parent</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Communications History</td>
+<td><code>ust_communications_history</code></td>
+<td><code>c-ust-communications-history</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Photo &amp; Story Sharing</td>
+<td><code>ust_photo_story</code></td>
+<td><code>c-ust-photo-story</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Athletics</td>
+<td><code>ust_athletics</code></td>
+<td><code>c-ust-athletics</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Videos &amp; Media</td>
+<td><code>ust_videos_media</code></td>
+<td><code>c-ust-videos-media</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Volunteer Management</td>
+<td><code>ust_volunteer</code></td>
+<td><code>c-ust-volunteer</code></td>
+<td>All</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Alumni News &amp; UST Updates</td>
+<td><code>ust_alumni_news</code></td>
+<td><code>c-ust-alumni-news</code></td>
+<td>All</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Registry activation:</strong> The LWC component tag listed above only renders once its boolean flag is uncommented in <code>ustWidgetZone.js</code> and a matching <code>lwc:if</code> block is added to <code>ustWidgetZone.html</code>. Until then, a stub placeholder shows in Experience Builder and nothing shows in the live site. See MAIN_GUIDE.md → Widget Zone System → Adding a New Widget.</p>
+</blockquote>
 <hr />
 <h2 id="widget-index">Widget Index<a class="headerlink" href="#widget-index" title="Permanent link">&para;</a></h2>
 <table>
@@ -1052,6 +1191,7 @@
 <th>Phase</th>
 <th>Priority</th>
 <th>Status</th>
+<th>Zone-Ready</th>
 <th>Notes</th>
 </tr>
 </thead>
@@ -1062,6 +1202,7 @@
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Includes Business Info update</td>
 </tr>
 <tr>
@@ -1070,6 +1211,7 @@
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Alumni events, non-alumni events, registrations</td>
 </tr>
 <tr>
@@ -1078,6 +1220,7 @@
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Includes Assigned Gift Officer section</td>
 </tr>
 <tr>
@@ -1086,6 +1229,7 @@
 <td>2</td>
 <td>High</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Needs data model definition</td>
 </tr>
 <tr>
@@ -1094,6 +1238,7 @@
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Personalized by role</td>
 </tr>
 <tr>
@@ -1102,6 +1247,7 @@
 <td>2</td>
 <td>High</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Full pref center is Phase 2; see notes</td>
 </tr>
 <tr>
@@ -1110,6 +1256,7 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>❓ Native messaging vs. PeopleGrove TBD</td>
 </tr>
 <tr>
@@ -1118,6 +1265,7 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Expanded link list from 2026 CSV</td>
 </tr>
 <tr>
@@ -1126,6 +1274,7 @@
 <td>2</td>
 <td>Medium</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>❓ MC Connect status TBD</td>
 </tr>
 <tr>
@@ -1134,6 +1283,7 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
+<td>⬜</td>
 <td></td>
 </tr>
 <tr>
@@ -1142,6 +1292,7 @@
 <td>1</td>
 <td>Low</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Phase 1 = link only</td>
 </tr>
 <tr>
@@ -1150,6 +1301,7 @@
 <td>1</td>
 <td>Low</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>Phase 1 = curated playlist</td>
 </tr>
 <tr>
@@ -1158,6 +1310,7 @@
 <td>2</td>
 <td>Low</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>❓ V4SF package TBD</td>
 </tr>
 <tr>
@@ -1166,10 +1319,14 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
+<td>⬜</td>
 <td>❓ Content source TBD</td>
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p><strong>Zone-Ready</strong> (⬜ Not yet / ✅ Active): A widget is zone-ready once its <code>lwc:if</code> block and boolean flag are added to <code>ustWidgetZone</code> and deployed. Until then, the zone system shows a stub placeholder in Experience Builder and nothing in the live site.</p>
+</blockquote>
 <hr />
 <h2 id="1-profile-card">1. Profile Card<a class="headerlink" href="#1-profile-card" title="Permanent link">&para;</a></h2>
 <p><strong>Purpose:</strong> Surface the alumni's own information on the portal. Give them confidence the portal "knows" them and let them keep their record current.</p>
