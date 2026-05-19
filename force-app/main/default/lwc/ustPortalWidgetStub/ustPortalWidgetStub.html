@@ -1,0 +1,26 @@
+<!--
+  ustPortalWidgetStub
+  ===================
+  Development placeholder rendered by ustWidgetZone for widget registry
+  entries that do not yet have a real LWC implementation.
+
+  - In Experience Builder (isBuilderMode = true): renders a labeled purple
+    placeholder card showing the widget name and Component_Name__c key.
+  - In the live published site (isBuilderMode = false): renders nothing.
+
+  This component is replaced entry-by-entry in the ustWidgetZone registry
+  as real widget LWCs are built. When all entries have real components,
+  this file can be retired.
+-->
+<template>
+    <template lwc:if={isBuilderMode}>
+        <div class="ust-widget-stub" role="region" aria-label={stubAriaLabel}>
+            <div class="ust-widget-stub-icon" aria-hidden="true">🧩</div>
+            <div class="ust-widget-stub-label">{widgetLabel}</div>
+            <div class="ust-widget-stub-component">{componentName}</div>
+            <div class="ust-widget-stub-status">Widget not yet implemented</div>
+        </div>
+    </template>
+    <!-- Live site: renders nothing - placeholder is invisible to alumni -->
+</template>
+

@@ -1,0 +1,57 @@
+/* ustWidgetZone */
+
+.ust-widget-zone {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.ust-widget-slot {
+    width: 100%;
+}
+
+/* --- Loading spinner --- */
+
+.ust-widget-zone-loading {
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 0;
+}
+
+.ust-zone-spinner {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid rgba(79, 45, 127, 0.15); /* UST purple tint */
+    border-top-color: #4f2d7f;                 /* UST purple */
+    animation: ust-zone-spin 0.75s linear infinite;
+}
+
+@keyframes ust-zone-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- Developer states (Builder only) --- */
+
+.ust-widget-zone-empty,
+.ust-widget-zone-error {
+    border: 2px dashed #c9a227; /* UST gold */
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    background: #fff8e6;
+    color: #3b1f5e;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.ust-widget-zone-error {
+    border-color: #c0392b;
+    background: #fff0ef;
+    color: #6b1a1a;
+}
+
+.ust-widget-zone-empty p,
+.ust-widget-zone-error p {
+    margin: 0.25rem 0 0;
+}
+

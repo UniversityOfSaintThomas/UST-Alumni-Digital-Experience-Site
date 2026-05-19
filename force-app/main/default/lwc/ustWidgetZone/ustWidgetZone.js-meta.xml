@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>UST Widget Zone</masterLabel>
+    <description>Queries UST_Portal_Widget__c for the configured zone and page, then renders matching widgets in sort order. Place one per zone on each Experience Cloud page.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+                name="zoneName"
+                type="String"
+                label="Zone Name"
+                description="Zone this instance covers. Matches Zone__c picklist: body, sidebar, banner, above_footer."
+                required="true"
+            />
+            <property
+                name="pageContext"
+                type="String"
+                label="Page Context"
+                description="Page slug to filter widgets. Matches Page_Context__c: home, events, giving, profile, directory, news. Use 'all' for all-page widgets."
+                required="true"
+            />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
+
+
+
+
+

@@ -1,0 +1,97 @@
+<!--
+  ustWidgetZone
+  ============
+  Place one instance of this component per zone on each Experience Builder page.
+  Set the "Zone Name" and "Page Context" properties in the component property
+  panel to match values in UST_Portal_Widget__c records.
+
+  ADDING A REAL WIDGET TO THE REGISTRY
+  When a new widget LWC (e.g. c-ust-profile-card) is ready to replace its stub:
+
+  Step 1 - Add a boolean flag to the JS registry in ustWidgetZone.js:
+      isProfileCard: item.componentName === 'ust_profile_card',
+
+  Step 2 - Add a lwc:if / lwc:elseif block to this template, ABOVE the
+      <template lwc:else> stub block, following this pattern:
+
+      <template lwc:if={widget.isProfileCard}>
+          <c-ust-profile-card></c-ust-profile-card>
+      </template>
+      <template lwc:elseif={widget.isEventsWidget}>
+          <c-ust-events-widget></c-ust-events-widget>
+      </template>
+      <template lwc:else>
+          <c-ust-portal-widget-stub ...></c-ust-portal-widget-stub>
+      </template>
+
+  Step 3 - Deploy both ustWidgetZone and the new widget LWC together.
+
+  The stub renders for any componentName that does not have a matching
+  lwc:if/lwc:elseif entry yet. In the live site the stub is invisible;
+  in Experience Builder it shows a labeled placeholder card.
+-->
+<template>
+    <!-- Loading state -->
+    <template lwc:if={isLoading}>
+        <div class="ust-widget-zone-loading" aria-label="Loading widgets" aria-live="polite">
+            <div class="ust-zone-spinner"></div>
+        </div>
+    </template>
+
+    <!-- Error state - silent in live site; visible in Experience Builder -->
+    <template lwc:elseif={hasError}>
+        <template lwc:if={isBuilderMode}>
+            <div class="ust-widget-zone-error" role="alert">
+                <strong>Widget Zone Error</strong>
+                <p>Zone: {zoneName} | Page: {pageContext}</p>
+                <p>{errorMessage}</p>
+            </div>
+        </template>
+    </template>
+
+    <!-- Loaded state -->
+    <template lwc:else>
+        <div class="ust-widget-zone" data-zone={zoneName}>
+
+            <!-- Widget registry loop -->
+            <template lwc:for={activeWidgets} lwc:key={widget.id}>
+                <div class="ust-widget-slot">
+                    <!--
+                        REGISTRY START
+                        Add lwc:if / lwc:elseif entries here as real widget LWCs are built.
+                        See the comment block at the top of this file for the pattern.
+
+                        Example (uncomment when c-ust-profile-card LWC exists):
+                        <template lwc:if={widget.isProfileCard}>
+                            <c-ust-profile-card></c-ust-profile-card>
+                        </template>
+                        <template lwc:else>
+                    -->
+                    <c-ust-portal-widget-stub
+                        widget-label={widget.widgetLabel}
+                        component-name={widget.componentName}
+                        is-builder-mode={isBuilderMode}
+                    ></c-ust-portal-widget-stub>
+                    <!--
+                        </template>
+                        REGISTRY END
+                    -->
+                </div>
+            </template>
+
+            <!-- Empty state - only shown in Experience Builder when zone has no records -->
+            <template lwc:if={isEmpty}>
+                <template lwc:if={isBuilderMode}>
+                    <div class="ust-widget-zone-empty">
+                        <p><strong>Widget Zone:</strong> {zoneName}</p>
+                        <p><strong>Page Context:</strong> {pageContext}</p>
+                        <p>No active UST_Portal_Widget__c records found for this zone and page.
+                           Create records in Salesforce to populate this zone.</p>
+                    </div>
+                </template>
+            </template>
+
+        </div>
+    </template>
+</template>
+

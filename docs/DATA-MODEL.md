@@ -99,6 +99,22 @@ Tracks the alumnus's academic program (degree, major, minor).
 
 ## Custom Objects to Build
 
+### UST_Portal_Widget__c
+Admin-controlled registry driving the widget zone system. Each record tells one `ustWidgetZone` LWC instance which component to render, on which page, and for which audience segment.
+
+| Field Label | API Name | Type | Notes |
+|------------|----------|------|-------|
+| Widget Name | `Name` | Text | Admin label (e.g. "Profile Card - Home") |
+| Zone | `Zone__c` | Picklist | body; sidebar; banner; above_footer |
+| Component Name | `Component_Name__c` | Picklist | Registry key — must match entry in `ustWidgetZone.js` |
+| Page Context | `Page_Context__c` | Multi-select Picklist | all; home; giving; events; profile; directory; news |
+| Sort Order | `Sort_Order__c` | Number | Lower = higher on page; ties broken by Name |
+| Audience Rule | `Audience_Rule__c` | Picklist | All; Donor; Parent; Faculty_Staff |
+| Is Active | `Is_Active__c` | Checkbox | Kill switch; default true |
+| Description | `Description__c` | Long Text Area | Admin notes only |
+
+> **Implementation note:** Donor, Parent, and Faculty_Staff audience rules are wired up in `PortalWidgetController.resolveUserAudiences()` with TODO markers. Activate by un-commenting the Contact query block once the field API names for Donor_Flag__c, Parent_Flag__c, and Faculty_Staff_Flag__c are confirmed (see Open Questions below).
+
 ### Alumni_Preference__c
 Stores the alumni's self-declared preferences for portal personalization.
 

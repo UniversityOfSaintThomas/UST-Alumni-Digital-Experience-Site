@@ -17,12 +17,129 @@ Rebuild the University of St. Thomas alumni portal on **Salesforce Experience Cl
 - **SSO**: Federated ID on Community User record maps to alumni personal email
 
 ### Widget-First Design
-Every section of the portal is a self-contained LWC "widget" component. Widgets are:
-- Added to Experience Builder pages via drag-and-drop
-- Personalized using the logged-in user's Contact record and related data
-- Conditionally shown/hidden based on the alumni's profile (donor, faculty/staff, parent, college, etc.)
+Every section of the portal is a self-contained LWC "widget" component. The portal uses a **record-driven widget zone system** to control which widgets appear, on which pages, in what order, and for which audience segments — admins manage this through `UST_Portal_Widget__c` records, without touching Experience Builder or code.
 
-See `WIDGET-CATALOG.md` for the full widget inventory.
+See `WIDGET-CATALOG.md` for the full widget inventory and component registry.  
+See [Widget Zone System](#widget-zone-system) below for implementation and configuration details.
+
+### Widget Zone System
+
+Replaces the legacy EASY Widgets pattern with an admin-facing Salesforce object. Admins create and edit `UST_Portal_Widget__c` records to control the portal without any deployment.
+
+**Flow:**
+
+```
+Admin creates/edits UST_Portal_Widget__c record
+  Zone = body | Page = home | Component = ust_profile_card | Sort = 10 | Audience = All
+         |
+Experience Builder page loads ustWidgetZone (zoneName="body", pageContext="home")
+         |
+PortalWidgetController.getWidgetsForZone() queries active matching records
+  - filters by zone, page context, and current user's audience segments
+  - returns ordered list of widget DTOs
+         |
+ustWidgetZone renders each widget in sort order
+  - registered component  →  renders the real widget LWC
+  - unregistered component →  renders ustPortalWidgetStub
+       (stub is visible in Experience Builder, invisible in the live site)
+```
+
+**Files involved:**
+
+| File | Role |
+|------|------|
+| `objects/UST_Portal_Widget__c/` | Object + 7 field definitions |
+| `classes/PortalWidgetController.cls` | Apex — queries widgets, checks audience segments |
+| `lwc/ustWidgetZone/` | Host container — drag onto pages in Experience Builder |
+| `lwc/ustPortalWidgetStub/` | Dev placeholder — Builder-visible, live-site-invisible |
+
+---
+
+#### Experience Builder Setup
+
+Place one **UST Widget Zone** component per zone on each page:
+
+1. Open Experience Builder → from the component panel, drag **UST Widget Zone** onto the page
+2. In the component property panel, set:
+   - **Zone Name** — one of: `body`, `sidebar`, `banner`, `above_footer`
+   - **Page Context** — the page slug, e.g. `home`, `events`, `giving`, `profile`
+3. Repeat for each zone on that page
+4. Publish the site after placing zones
+
+> The same `UST Widget Zone` component is placed on every page. Different `Zone Name` + `Page Context` values on each instance mean each zone only loads the records targeting it.
+
+---
+
+#### Configuring Widget Records
+
+Create `UST_Portal_Widget__c` records via **Setup → Object Manager → UST Portal Widget → Records**, or create a List View for easy admin access.
+
+| Field | Purpose | Example |
+|-------|---------|---------|
+| Widget Name | Admin label — be descriptive | `Profile Card - Home Page` |
+| Zone | Which zone instance renders this widget | `body` |
+| Page Context | Pages where this widget appears *(multi-select)* | `home; profile` |
+| Component Name | Registry key — selects the LWC to render | `ust_profile_card` |
+| Sort Order | Position within the zone; lower numbers appear first | `10`, `20`, `30` |
+| Audience Rule | Which alumni segment sees this widget | `All` |
+| Is Active | Kill switch — uncheck to hide without deleting | ✓ |
+| Description | Admin notes; not shown to alumni | *(optional)* |
+
+A widget that should appear on multiple pages uses one record — select multiple values in **Page Context** rather than duplicating the record.
+
+---
+
+#### Audience Rules
+
+| Rule | Current State | Notes |
+|------|--------------|-------|
+| `All` | ✅ **Active** | Shown to every authenticated user |
+| `Donor` | ⏳ **Stubbed** | Awaiting Contact donor flag field confirmation (see DATA-MODEL.md) |
+| `Parent` | ⏳ **Stubbed** | Awaiting Contact parent flag field confirmation |
+| `Faculty_Staff` | ⏳ **Stubbed** | Awaiting Contact faculty/staff flag confirmation |
+
+To activate a stubbed rule: confirm the Contact field API name with the advancement team, then un-comment the corresponding block in `PortalWidgetController.resolveUserAudiences()`.
+
+A user who qualifies for multiple segments sees widgets for all of them. Create separate records for widgets that target one segment but not all alumni (e.g. a Donor-only tile alongside an All-alumni tile in the same zone).
+
+---
+
+#### Adding a New Widget to the Registry
+
+When a new widget LWC is built and deployed, activate it in the zone system with three changes:
+
+**1 — Uncomment the boolean flag in `ustWidgetZone.js` → `buildWidgetRegistry()`:**
+```javascript
+isProfileCard: item.componentName === 'ust_profile_card',
+```
+
+**2 — Add a `lwc:if` (or `lwc:elseif`) block in `ustWidgetZone.html`, above the `lwc:else` stub:**
+```html
+<!-- First registered widget: use lwc:if -->
+<template lwc:if={widget.isProfileCard}>
+    <c-ust-profile-card></c-ust-profile-card>
+</template>
+<!-- Additional widgets: use lwc:elseif -->
+<template lwc:elseif={widget.isEventsWidget}>
+    <c-ust-events-widget></c-ust-events-widget>
+</template>
+<!-- Keep this stub block as the final lwc:else — catches any unregistered component names -->
+<template lwc:else>
+    <c-ust-portal-widget-stub ...></c-ust-portal-widget-stub>
+</template>
+```
+
+**3 — Deploy both the zone and the new widget together:**
+```powershell
+cci task run deploy --path force-app/main/default/lwc/ustWidgetZone --org dev
+cci task run deploy --path force-app/main/default/lwc/ustProfileCard --org dev
+```
+
+No Experience Builder changes are needed. The zone component already on the page calls the same Apex query and automatically renders the real widget the next time the page loads.
+
+> **Stub behavior:** Until Step 1–2 are deployed, a widget record with `Component_Name__c = ust_profile_card` renders the stub placeholder (visible in Builder, invisible to alumni in the live site). This lets admins configure records ahead of the LWC being built.
+
+---
 
 ### Personalization Dimensions
 The following data points drive what is shown per alumni:
@@ -88,8 +205,16 @@ sf code-analyzer run --target force-app/main/default --output-file ai-logs/code-
 ```
 force-app/main/default/
   lwc/                  # Lightning Web Components (portal widgets + support components)
+    ustAlumniTheme/     # Theme layout shell (header + main slot + footer)
+    ustAlumniHeader/    # Site header and navigation
+    ustAlumniFooter/    # Site footer
+    ustWidgetZone/      # Widget zone host — drag onto Experience Builder pages
+    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
   classes/              # Apex controllers
-  objects/              # Custom object/field metadata
+    NavMenuController   # Experience Cloud navigation menu fetcher
+    PortalWidgetController # Widget zone registry query + audience filtering
+  objects/              # Custom object and field metadata
+    UST_Portal_Widget__c/  # Widget zone control object (zone, page, component, audience)
   permissionsets/       # Permission sets for community users and admins
   experiences/          # Experience Cloud site metadata
   staticresources/      # Images, fonts, global CSS

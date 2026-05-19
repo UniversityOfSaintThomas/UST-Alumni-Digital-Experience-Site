@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>false</isExposed>
+    <masterLabel>UST Portal Widget Stub</masterLabel>
+    <description>Development placeholder rendered by ustWidgetZone for widget registry slots that do not yet have a real LWC implementation. Visible in Experience Builder only; renders nothing in the live published site.</description>
+</LightningComponentBundle>
+

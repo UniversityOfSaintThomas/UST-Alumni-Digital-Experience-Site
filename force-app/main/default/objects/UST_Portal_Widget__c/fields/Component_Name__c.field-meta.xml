@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Component_Name__c</fullName>
+    <description>Registry key that maps this record to one entry in the ustWidgetZone component registry. Value must exactly match the key used in the JS mapping and the lwc:if condition in the template. Add a new picklist value here AND a corresponding entry in ustWidgetZone when a new widget LWC is built.</description>
+    <externalId>false</externalId>
+    <label>Component Name</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value><fullName>ust_profile_card</fullName><default>false</default><label>Profile Card</label></value>
+            <value><fullName>ust_events_widget</fullName><default>false</default><label>Events Widget</label></value>
+            <value><fullName>ust_give_widget</fullName><default>false</default><label>Give / Donor Widget</label></value>
+            <value><fullName>ust_engagement_summary</fullName><default>false</default><label>Engagement Summary</label></value>
+            <value><fullName>ust_connection_messages</fullName><default>false</default><label>St. Thomas Connection Messages</label></value>
+            <value><fullName>ust_preference_center</fullName><default>false</default><label>Preference Center</label></value>
+            <value><fullName>ust_alumni_directory</fullName><default>false</default><label>Alumni Directory and Connect</label></value>
+            <value><fullName>ust_links_hub</fullName><default>false</default><label>Links Hub</label></value>
+            <value><fullName>ust_communications_history</fullName><default>false</default><label>Communications History</label></value>
+            <value><fullName>ust_photo_story</fullName><default>false</default><label>Photo and Story Sharing</label></value>
+            <value><fullName>ust_athletics</fullName><default>false</default><label>Athletics</label></value>
+            <value><fullName>ust_videos_media</fullName><default>false</default><label>Videos and Media</label></value>
+            <value><fullName>ust_volunteer</fullName><default>false</default><label>Volunteer Management</label></value>
+            <value><fullName>ust_alumni_news</fullName><default>false</default><label>Alumni News and UST Updates</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
+

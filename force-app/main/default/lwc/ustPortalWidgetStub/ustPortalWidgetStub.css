@@ -1,0 +1,44 @@
+/* ustPortalWidgetStub - visible in Experience Builder only */
+
+.ust-widget-stub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 120px;
+    padding: 2rem 1.5rem;
+    border: 2px dashed #4f2d7f; /* UST purple */
+    border-radius: 8px;
+    background: #f4effa;
+    text-align: center;
+    font-family: sans-serif;
+    color: #3b1f5e;
+}
+
+.ust-widget-stub-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.ust-widget-stub-label {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.ust-widget-stub-component {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-family: monospace;
+    background: #e0d0f7;
+    color: #3b1f5e;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+}
+
+.ust-widget-stub-status {
+    font-size: 0.75rem;
+    color: #7a5fa0;
+    font-style: italic;
+}
+

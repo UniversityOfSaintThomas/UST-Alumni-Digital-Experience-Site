@@ -1,29 +1,56 @@
 # Widget Catalog — UST Alumni Portal
 
-Each row is a potential portal widget surfaced on the Experience Cloud alumni page. Widgets are LWC components added to pages via Experience Builder and personalized by the logged-in alumni's data.
+Each section of the portal is an independent LWC widget component. Widgets are placed in Experience Builder via the **widget zone system**: admins create `UST_Portal_Widget__c` records to control which widgets appear on which pages, in which zones, and for which audience segments. See **Widget Zone System** in `MAIN_GUIDE.md` for setup and configuration instructions.
 
 **Status key:** `Planned` | `In Design` | `In Progress` | `Done`
 
 ---
 
+## Component Registry
+
+Maps each widget to its `Component_Name__c` picklist value (the registry key used in `ustWidgetZone`) and its Audience Rule options.
+
+| # | Widget Name | `Component_Name__c` | LWC Component | Audience Options |
+|---|------------|---------------------|---------------|-----------------|
+| 1 | Profile Card | `ust_profile_card` | `c-ust-profile-card` | All |
+| 2 | Events — Upcoming & Registered | `ust_events_widget` | `c-ust-events-widget` | All |
+| 3 | Give / Donor Widget | `ust_give_widget` | `c-ust-give-widget` | All, Donor |
+| 4 | Engagement Summary | `ust_engagement_summary` | `c-ust-engagement-summary` | All |
+| 5 | St. Thomas Connection Messages | `ust_connection_messages` | `c-ust-connection-messages` | All, Donor, Parent, Faculty_Staff |
+| 6 | Preference Center | `ust_preference_center` | `c-ust-preference-center` | All |
+| 7 | Alumni Directory & Connect | `ust_alumni_directory` | `c-ust-alumni-directory` | All |
+| 8 | Links Hub | `ust_links_hub` | `c-ust-links-hub` | All, Parent |
+| 9 | Communications History | `ust_communications_history` | `c-ust-communications-history` | All |
+| 10 | Photo & Story Sharing | `ust_photo_story` | `c-ust-photo-story` | All |
+| 11 | Athletics | `ust_athletics` | `c-ust-athletics` | All |
+| 12 | Videos & Media | `ust_videos_media` | `c-ust-videos-media` | All |
+| 13 | Volunteer Management | `ust_volunteer` | `c-ust-volunteer` | All |
+| 14 | Alumni News & UST Updates | `ust_alumni_news` | `c-ust-alumni-news` | All |
+
+> **Registry activation:** The LWC component tag listed above only renders once its boolean flag is uncommented in `ustWidgetZone.js` and a matching `lwc:if` block is added to `ustWidgetZone.html`. Until then, a stub placeholder shows in Experience Builder and nothing shows in the live site. See MAIN_GUIDE.md → Widget Zone System → Adding a New Widget.
+
+---
+
 ## Widget Index
 
-| # | Widget Name | Phase | Priority | Status | Notes |
-|---|------------|-------|---------|--------|-------|
-| 1 | [Profile Card](#1-profile-card) | 1 | High | Planned | Includes Business Info update |
-| 2 | [Events — Upcoming & Registered](#2-events-upcoming-registered) | 1 | High | Planned | Alumni events, non-alumni events, registrations |
-| 3 | [Give / Donor Widget](#3-give-donor-widget) | 1 | High | Planned | Includes Assigned Gift Officer section |
-| 4 | [Engagement Summary (Year in Review)](#4-engagement-summary-year-in-review) | 2 | High | Planned | Needs data model definition |
-| 5 | [St. Thomas Connection Messages](#5-st-thomas-connection-messages) | 1 | High | Planned | Personalized by role |
-| 6 | [Preference Center](#6-preference-center) | 2 | High | Planned | Full pref center is Phase 2; see notes |
-| 7 | [Alumni Directory & Connect](#7-alumni-directory-connect) | 1 | Medium | Planned | ❓ Native messaging vs. PeopleGrove TBD |
-| 8 | [Links Hub](#8-links-hub) | 1 | Medium | Planned | Expanded link list from 2026 CSV |
-| 9 | [Communications History](#9-communications-history) | 2 | Medium | Planned | ❓ MC Connect status TBD |
-| 10 | [Photo & Story Sharing](#10-photo-story-sharing) | 1 | Medium | Planned | |
-| 11 | [Athletics](#11-athletics) | 1 | Low | Planned | Phase 1 = link only |
-| 12 | [Videos & Media](#12-videos-media) | 1 | Low | Planned | Phase 1 = curated playlist |
-| 13 | [Volunteer Management](#13-volunteer-management) | 2 | Low | Planned | ❓ V4SF package TBD |
-| 14 | [Alumni News & UST Updates](#14-alumni-news-ust-updates) | 1 | Medium | Planned | ❓ Content source TBD |
+| # | Widget Name | Phase | Priority | Status | Zone-Ready | Notes |
+|---|------------|-------|---------|--------|-----------|-------|
+| 1 | [Profile Card](#1-profile-card) | 1 | High | Planned | ⬜ | Includes Business Info update |
+| 2 | [Events — Upcoming & Registered](#2-events-upcoming-registered) | 1 | High | Planned | ⬜ | Alumni events, non-alumni events, registrations |
+| 3 | [Give / Donor Widget](#3-give-donor-widget) | 1 | High | Planned | ⬜ | Includes Assigned Gift Officer section |
+| 4 | [Engagement Summary (Year in Review)](#4-engagement-summary-year-in-review) | 2 | High | Planned | ⬜ | Needs data model definition |
+| 5 | [St. Thomas Connection Messages](#5-st-thomas-connection-messages) | 1 | High | Planned | ⬜ | Personalized by role |
+| 6 | [Preference Center](#6-preference-center) | 2 | High | Planned | ⬜ | Full pref center is Phase 2; see notes |
+| 7 | [Alumni Directory & Connect](#7-alumni-directory-connect) | 1 | Medium | Planned | ⬜ | ❓ Native messaging vs. PeopleGrove TBD |
+| 8 | [Links Hub](#8-links-hub) | 1 | Medium | Planned | ⬜ | Expanded link list from 2026 CSV |
+| 9 | [Communications History](#9-communications-history) | 2 | Medium | Planned | ⬜ | ❓ MC Connect status TBD |
+| 10 | [Photo & Story Sharing](#10-photo-story-sharing) | 1 | Medium | Planned | ⬜ | |
+| 11 | [Athletics](#11-athletics) | 1 | Low | Planned | ⬜ | Phase 1 = link only |
+| 12 | [Videos & Media](#12-videos-media) | 1 | Low | Planned | ⬜ | Phase 1 = curated playlist |
+| 13 | [Volunteer Management](#13-volunteer-management) | 2 | Low | Planned | ⬜ | ❓ V4SF package TBD |
+| 14 | [Alumni News & UST Updates](#14-alumni-news-ust-updates) | 1 | Medium | Planned | ⬜ | ❓ Content source TBD |
+
+> **Zone-Ready** (⬜ Not yet / ✅ Active): A widget is zone-ready once its `lwc:if` block and boolean flag are added to `ustWidgetZone` and deployed. Until then, the zone system shows a stub placeholder in Experience Builder and nothing in the live site.
 
 ---
 

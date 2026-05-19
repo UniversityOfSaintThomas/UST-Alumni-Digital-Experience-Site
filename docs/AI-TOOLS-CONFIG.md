@@ -106,6 +106,8 @@ The portal has a **Guest User** for unauthenticated/public-facing pages. Access 
 |----------------|-------------|---------|
 | `Alumni_Portal_Guest` | Guest User | Grants access to `NavMenuController` (and any other Apex needed by guest pages) |
 
+> **Widget zone permissions:** `PortalWidgetController` and `UST_Portal_Widget__c` (Read on all fields) must be added to `Alumni_Portal_Guest` (for guest-accessible pages) and to the logged-in community user profile or a permission set. Without this, `ustWidgetZone` silently returns an empty widget list.
+
 > **Best Practice:** Always use permission sets (not profiles) to grant Apex class access to guest users. This keeps the Guest profile minimal and makes grants auditable and reversible.
 
 > **⚠️ Republish required:** After assigning or changing a permission set on the guest user, you **must republish the site** from Experience Builder. `@AuraEnabled(cacheable=true)` responses for guest pages are cached at the CDN/platform level. Without republishing, the stale cached response (error or empty) continues to be served.

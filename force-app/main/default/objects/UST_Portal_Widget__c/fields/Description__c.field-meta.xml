@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Description__c</fullName>
+    <description>Admin notes about this widget configuration. Not shown to end users. Use this to document why a widget is targeted to a specific audience, page, or zone.</description>
+    <externalId>false</externalId>
+    <label>Description</label>
+    <length>1000</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>
+
