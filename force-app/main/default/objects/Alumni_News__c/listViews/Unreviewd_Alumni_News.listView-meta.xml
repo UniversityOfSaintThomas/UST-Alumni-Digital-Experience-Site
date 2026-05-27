@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unreviewd_Alumni_News</fullName>
+    <columns>Reviewed_for_Community_Display__c</columns>
+    <columns>NAME</columns>
+    <columns>News_Date__c</columns>
+    <columns>Contact__c</columns>
+    <columns>Category__c</columns>
+    <columns>Alumni_News__c</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Reviewed_for_Community_Display__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <label>Unreviewed Alumni News</label>
+</ListView>

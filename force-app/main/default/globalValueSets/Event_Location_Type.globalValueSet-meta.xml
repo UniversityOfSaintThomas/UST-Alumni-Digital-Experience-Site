@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Minneapolis</fullName>
+        <default>false</default>
+        <label>Minneapolis</label>
+    </customValue>
+    <customValue>
+        <fullName>Off Campus</fullName>
+        <default>false</default>
+        <label>Off Campus</label>
+    </customValue>
+    <customValue>
+        <fullName>Off-Campus</fullName>
+        <default>false</default>
+        <label>Off-Campus</label>
+    </customValue>
+    <customValue>
+        <fullName>On Campus</fullName>
+        <default>false</default>
+        <label>On Campus</label>
+    </customValue>
+    <customValue>
+        <fullName>Online</fullName>
+        <default>false</default>
+        <label>Online</label>
+    </customValue>
+    <customValue>
+        <fullName>On-Site</fullName>
+        <default>false</default>
+        <label>On-Site</label>
+    </customValue>
+    <customValue>
+        <fullName>On-Site Minneapolis</fullName>
+        <default>false</default>
+        <label>On-Site Minneapolis</label>
+    </customValue>
+    <customValue>
+        <fullName>On-Site Rome</fullName>
+        <default>false</default>
+        <label>On-Site Rome</label>
+    </customValue>
+    <customValue>
+        <fullName>On-Site St. Paul</fullName>
+        <default>false</default>
+        <label>On-Site St. Paul</label>
+    </customValue>
+    <customValue>
+        <fullName>Rome</fullName>
+        <default>false</default>
+        <label>Rome</label>
+    </customValue>
+    <customValue>
+        <fullName>St. Paul</fullName>
+        <default>false</default>
+        <label>St. Paul</label>
+    </customValue>
+    <customValue>
+        <fullName>St. Paul - North</fullName>
+        <default>false</default>
+        <label>St. Paul - North</label>
+    </customValue>
+    <customValue>
+        <fullName>St. Paul - South</fullName>
+        <default>false</default>
+        <label>St. Paul - South</label>
+    </customValue>
+    <description>List matched to summit__Location_Type__c</description>
+    <masterLabel>Event Location Type</masterLabel>
+    <sorted>true</sorted>
+</GlobalValueSet>

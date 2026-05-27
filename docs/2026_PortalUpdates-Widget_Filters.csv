@@ -1,0 +1,46 @@
+﻿Description,Notes,,SF Global Picklist Value Set,Alumni Directory Field,UST Widget Field
+By college,Affliation,,School_College,College__c,
+"Alumni Level - UG, Grad, No degree?",,,Degree_Types,Degree_Level_s__c,
+St Thomas connection ; Faculty/staff – special message,Can we add donor to this list?,,St_Thomas_Connection,St_Thomas_Connection,
+By major/minor,,,Academic_Majors,Academic_Majors__c,
+"Event preferences virtual vs in person, audience, others?",Affliation,,Event_Location_Type,Event_Location_Type_s,
+Athletic participation ,Affliation,,Varsity_Sports,Athletic_Affiliation_s,
+Geo location -   There are some LinkedIn groups by city.  Tommie tailgates – certain city even messages – such as events and maybe weather related.,,,Geo_Locations,Geo_Locations,
+Content / Sender Keys,"Athletics
+Birthday Greeting
+Book of the Month
+Diversity and Inclusion
+First Friday Speaker Series
+General Information
+Mentoring
+National Programming
+Planned Giving
+Reunions
+Solicitations
+Tommie Give Day
+University Development and Alumni Relations
+Webinars
+Women Connect
+Young Alumni","UDAR_Athletics
+UDAR_BU
+UDAR_BirthdayGreetings
+UDAR_BookoftheMonth
+UDAR_DiversityandInclusion
+UDAR_FirstFridaySpeakerSeries
+UDAR_GeneralInformation
+UDAR_Mentoring
+UDAR_NationalProgramming
+UDAR_PlannedGiving
+UDAR_Reunions
+UDAR_Solicitations
+UDAR_TommieGiveDay
+UDAR_Webinars
+UDAR_WomenConnect
+UDAR_YoungAlumni
+",Sender_Key,Content_Sender_Keys,
+Class Year,Affliation,,Class_Year,Class_Year,
+Tommie Score (Athletic reward system),Where is this stored? ,,,,
+Engagement Score,Not currently in Salesforce,,,,
+Employer data/Industry,Affiliation and Contact (Employer / Job Title),,,,
+Volunteer Status,Misc attributes / affiliations,,Volunteer_Status,Volunteer_Status,
+Gift Officer Photo  and contact information,Contact - Gift Officer,,,,

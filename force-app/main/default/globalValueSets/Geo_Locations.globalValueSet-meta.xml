@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Location 1</fullName>
+        <default>false</default>
+        <label>Location 1</label>
+    </customValue>
+    <customValue>
+        <fullName>Location 2</fullName>
+        <default>false</default>
+        <label>Location 2</label>
+    </customValue>
+    <masterLabel>Geo Locations</masterLabel>
+    <sorted>true</sorted>
+</GlobalValueSet>

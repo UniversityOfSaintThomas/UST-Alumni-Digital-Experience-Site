@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>In_Memorium</fullName>
+    <columns>NAME</columns>
+    <columns>Category__c</columns>
+    <columns>Contact__c</columns>
+    <columns>News_Date__c</columns>
+    <columns>News_Source__c</columns>
+    <columns>Alumni_News__c</columns>
+    <columns>Public_Display__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Public_Display__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Category__c</field>
+        <operation>equals</operation>
+        <value>In Memoriam</value>
+    </filters>
+    <label>In Memorium</label>
+    <language>en_US</language>
+</ListView>
