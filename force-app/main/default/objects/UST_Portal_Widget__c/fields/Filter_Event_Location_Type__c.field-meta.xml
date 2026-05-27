@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_Event_Location_Type__c</fullName>
+    <description>Widget targeting filter: Event location type preference (Virtual/Online vs. In-Person). Leave blank to show to alumni regardless of event preference. When populated, only alumni whose Event_Location_Type_s__c field contains one of the selected values will see this widget. References the Event_Location_Type global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: Event Location Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Event_Location_Type</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

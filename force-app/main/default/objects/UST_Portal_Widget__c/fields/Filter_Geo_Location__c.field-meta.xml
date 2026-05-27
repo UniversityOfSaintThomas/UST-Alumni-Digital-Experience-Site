@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_Geo_Location__c</fullName>
+    <description>Widget targeting filter: Geographic location (city or region). Leave blank to show to alumni in any location. When populated, only alumni whose Geo_Locations__c field contains one of the selected values will see this widget. Useful for Tommie Tailgate city-specific messaging and regional event promotion. References the Geo_Locations global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: Geo Location</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Geo_Locations</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

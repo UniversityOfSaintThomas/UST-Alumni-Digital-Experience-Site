@@ -122,4 +122,3 @@ export default class UstWidgetZone extends LightningElement {
         return !this.isLoading && !this.hasError && this.activeWidgets.length === 0;
     }
 }
-

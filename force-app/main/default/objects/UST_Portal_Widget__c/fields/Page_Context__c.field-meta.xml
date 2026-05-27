@@ -1,25 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Page_Context__c</fullName>
-    <description>One or more pages where this widget should appear. Select "All Pages" to show on every page that hosts a zone with the matching Zone value. Multi-select: a single record can appear on several pages without duplication.</description>
-    <externalId>false</externalId>
+    <description>One or more pages where this widget should appear. Select &quot;All Pages&quot; to show on every page that hosts a zone with the matching Zone value. Multi-select: a single record can appear on several pages without duplication.</description>
     <label>Page Context</label>
     <required>true</required>
     <trackTrending>false</trackTrending>
     <type>MultiselectPicklist</type>
-    <visibleLines>4</visibleLines>
     <valueSet>
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
-            <value><fullName>all</fullName><default>false</default><label>All Pages</label></value>
-            <value><fullName>home</fullName><default>false</default><label>Home</label></value>
-            <value><fullName>giving</fullName><default>false</default><label>Giving</label></value>
-            <value><fullName>events</fullName><default>false</default><label>Events</label></value>
-            <value><fullName>profile</fullName><default>false</default><label>Profile</label></value>
-            <value><fullName>directory</fullName><default>false</default><label>Directory</label></value>
-            <value><fullName>news</fullName><default>false</default><label>News</label></value>
+            <value>
+                <fullName>all</fullName>
+                <default>false</default>
+                <label>All Pages</label>
+            </value>
+            <value>
+                <fullName>home</fullName>
+                <default>false</default>
+                <label>Home</label>
+            </value>
+            <value>
+                <fullName>giving</fullName>
+                <default>false</default>
+                <label>Giving</label>
+            </value>
+            <value>
+                <fullName>events</fullName>
+                <default>false</default>
+                <label>Events</label>
+            </value>
+            <value>
+                <fullName>profile</fullName>
+                <default>false</default>
+                <label>Profile</label>
+            </value>
+            <value>
+                <fullName>directory</fullName>
+                <default>false</default>
+                <label>Directory</label>
+            </value>
+            <value>
+                <fullName>news</fullName>
+                <default>false</default>
+                <label>News</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
+    <visibleLines>4</visibleLines>
 </CustomField>
-

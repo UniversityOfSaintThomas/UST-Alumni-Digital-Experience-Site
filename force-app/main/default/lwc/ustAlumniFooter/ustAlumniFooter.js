@@ -145,4 +145,3 @@ export default class UstAlumniFooter extends NavigationMixin(LightningElement) {
         return basePath + '/' + item.actionValue;
     }
 }
-

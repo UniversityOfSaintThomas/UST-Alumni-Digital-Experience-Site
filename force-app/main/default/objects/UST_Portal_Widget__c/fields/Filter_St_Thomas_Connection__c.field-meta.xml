@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_St_Thomas_Connection__c</fullName>
+    <description>Widget targeting filter: St. Thomas Connection type (e.g. Faculty/Staff, Parent, Donor, Alumni). Leave blank to show to all connection types. When populated, only contacts whose St_Thomas_Connection__c field contains one of the selected values will see this widget. Replaces the old Faculty_Staff, Parent, and Donor Audience_Rule__c values. References the St_Thomas_Connection global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: St. Thomas Connection</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>St_Thomas_Connection</valueSetName>
+    </valueSet>
+    <visibleLines>6</visibleLines>
+</CustomField>

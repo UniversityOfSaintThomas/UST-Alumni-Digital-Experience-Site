@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_Academic_Majors__c</fullName>
+    <description>Widget targeting filter: Academic major or minor. Leave blank to show to alumni from any major. When populated, only alumni whose Academic_Majors__c field contains one of the selected values will see this widget. References the Academic_Majors global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: Academic Majors</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Academic_Majors</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

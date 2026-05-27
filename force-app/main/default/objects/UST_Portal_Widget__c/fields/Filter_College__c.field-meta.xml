@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_College__c</fullName>
+    <description>Widget targeting filter: College or School affiliation. Leave blank to show this widget to alumni from any college. When populated, only alumni whose College__c field contains one of the selected values will see this widget. References the School_College global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: College</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>School_College</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

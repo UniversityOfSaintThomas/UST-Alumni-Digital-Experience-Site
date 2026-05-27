@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_Volunteer_Status__c</fullName>
+    <description>Widget targeting filter: Volunteer status or category. Leave blank to show to all alumni. When populated, only alumni whose Volunteer_Status__c field contains one of the selected values will see this widget. References the Volunteer_Status global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: Volunteer Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Volunteer_Status</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

@@ -292,4 +292,3 @@ export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
         return basePath + '/' + item.actionValue;
     }
 }
-

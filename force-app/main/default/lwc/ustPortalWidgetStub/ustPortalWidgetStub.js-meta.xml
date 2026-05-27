@@ -5,4 +5,3 @@
     <masterLabel>UST Portal Widget Stub</masterLabel>
     <description>Development placeholder rendered by ustWidgetZone for widget registry slots that do not yet have a real LWC implementation. Visible in Experience Builder only; renders nothing in the live published site.</description>
 </LightningComponentBundle>
-

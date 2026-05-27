@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_Content_Sender_Key__c</fullName>
+    <description>Widget targeting filter: SFMC Content/Sender Key subscription. Leave blank to show to all alumni. When populated, only alumni whose Content_Sender_Keys__c field contains one of the selected SFMC sender key values will see this widget. Use UDAR_ prefixed keys for Alumni Relations content (e.g. UDAR_Athletics, UDAR_Reunions, UDAR_WomenConnect). References the Sender_Key global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: Content / Sender Key</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Sender_Key</valueSetName>
+    </valueSet>
+    <visibleLines>6</visibleLines>
+</CustomField>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Placeholder</fullName>
+        <default>false</default>
+        <label>Placeholder</label>
+    </customValue>
+    <customValue>
+        <fullName>Bachelor&apos;s</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Bachelor&apos;s</label>
+    </customValue>
+    <customValue>
+        <fullName>Master&apos;s</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Master&apos;s</label>
+    </customValue>
+    <customValue>
+        <fullName>Doctoral</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Doctoral</label>
+    </customValue>
+    <customValue>
+        <fullName>Certificate</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Certificate</label>
+    </customValue>
+    <customValue>
+        <fullName>Education Specialist</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Education Specialist</label>
+    </customValue>
+    <customValue>
+        <fullName>Juris Doctor (JD)</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Juris Doctor (JD)</label>
+    </customValue>
+    <customValue>
+        <fullName>Associate&apos;s</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Associate&apos;s</label>
+    </customValue>
+    <customValue>
+        <fullName>Non-Degree</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Non-Degree</label>
+    </customValue>
+    <customValue>
+        <fullName>Post-Masters Certificate</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Post-Masters Certificate</label>
+    </customValue>
+    <customValue>
+        <fullName>Pre-Professional Program</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Pre-Professional Program</label>
+    </customValue>
+    <customValue>
+        <fullName>Master in the Study of Law (MSL)</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Master in the Study of Law (MSL)</label>
+    </customValue>
+    <customValue>
+        <fullName>Master of Laws (LLM)</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Master of Laws (LLM)</label>
+    </customValue>
+    <customValue>
+        <fullName>Micro-credential</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Micro-credential</label>
+    </customValue>
+    <customValue>
+        <fullName>Licensure</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Licensure</label>
+    </customValue>
+    <description>Alumni degree level values (UG, Grad, Non-Degree). Sourced from the Alumni Directory Degree_Types picklist. Populate from EDA-Staging before production use.</description>
+    <masterLabel>Degree Types</masterLabel>
+    <sorted>true</sorted>
+</GlobalValueSet>

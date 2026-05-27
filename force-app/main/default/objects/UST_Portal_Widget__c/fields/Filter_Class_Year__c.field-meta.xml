@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_Class_Year__c</fullName>
+    <description>Widget targeting filter: Graduation class year. Leave blank to show to alumni from any class year. When populated, only alumni whose Class_Year__c field matches one of the selected years will see this widget. Useful for reunion-year messaging and milestone communications. References the Class_Year global picklist. Source: 2026_PortalUpdates-Widget_Filters.csv</description>
+    <label>Filter: Class Year</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Class_Year</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>
