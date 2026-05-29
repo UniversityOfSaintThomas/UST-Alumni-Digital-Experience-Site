@@ -1,0 +1,72 @@
+{
+  "type" : "sfdc_cms__themeLayout",
+  "title" : "Scoped Header and Footer",
+  "contentBody" : {
+    "component" : {
+      "attributes" : { },
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"844569fd-bb08-4122-81b9-42f3c6b6b6a7\",\"columns\":[{\"UUID\":\"e8036abd-01cf-4e38-86d2-f05658883723\",\"columnName\":\"Column 1\",\"columnKey\":\"headerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "id" : "e8036abd-01cf-4e38-86d2-f05658883723",
+            "name" : "headerSection",
+            "title" : "Theme Header",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "844569fd-bb08-4122-81b9-42f3c6b6b6a7",
+          "type" : "component"
+        } ],
+        "id" : "d1e85fec-3c54-43a2-a97b-c7eb3e96ebde",
+        "name" : "header",
+        "title" : "Theme Header",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"62d32f80-acfd-4bf1-8b0c-26afecd3ebe5\",\"columns\":[{\"UUID\":\"6d86ecc3-576d-45fa-86d1-bd01efb9161f\",\"columnName\":\"Column 1\",\"columnKey\":\"footerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "id" : "6d86ecc3-576d-45fa-86d1-bd01efb9161f",
+            "name" : "footerSection",
+            "title" : "Theme Footer",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "62d32f80-acfd-4bf1-8b0c-26afecd3ebe5",
+          "type" : "component"
+        } ],
+        "id" : "b88b467c-85c8-4ddf-89c4-d64380dca70e",
+        "name" : "footer",
+        "title" : "Theme Footer",
+        "type" : "region"
+      } ],
+      "definition" : "c:ustAlumniTheme",
+      "id" : "e8b0f0d3-695b-40d6-9bc6-42a27ae47031",
+      "type" : "component"
+    }
+  },
+  "urlName" : "scoped-header-and-footer"
+}

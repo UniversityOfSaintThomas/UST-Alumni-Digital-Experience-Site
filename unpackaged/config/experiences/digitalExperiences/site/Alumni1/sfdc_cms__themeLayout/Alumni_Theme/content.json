@@ -1,0 +1,72 @@
+{
+  "type" : "sfdc_cms__themeLayout",
+  "title" : "Alumni Theme",
+  "contentBody" : {
+    "component" : {
+      "attributes" : { },
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"91e39bdb-0adb-4774-b2d2-203d676ea235\",\"columns\":[{\"UUID\":\"c93af739-d153-44dc-86e1-06805592d0f3\",\"columnName\":\"Column 1\",\"columnKey\":\"headerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "id" : "c93af739-d153-44dc-86e1-06805592d0f3",
+            "name" : "headerSection",
+            "title" : "Theme Header",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "91e39bdb-0adb-4774-b2d2-203d676ea235",
+          "type" : "component"
+        } ],
+        "id" : "fab08b12-8181-4e07-ad5c-b5dddeceb90b",
+        "name" : "header",
+        "title" : "Theme Header",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"e3d1d64f-6aa7-4edc-9ae4-9da5a6d6257a\",\"columns\":[{\"UUID\":\"f55f8132-3342-4d12-bab3-4171f80bb960\",\"columnName\":\"Column 1\",\"columnKey\":\"footerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "id" : "f55f8132-3342-4d12-bab3-4171f80bb960",
+            "name" : "footerSection",
+            "title" : "Theme Footer",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "e3d1d64f-6aa7-4edc-9ae4-9da5a6d6257a",
+          "type" : "component"
+        } ],
+        "id" : "a14352b6-20a6-4cc3-8916-447606f1b93a",
+        "name" : "footer",
+        "title" : "Theme Footer",
+        "type" : "region"
+      } ],
+      "definition" : "c:ustAlumniTheme",
+      "id" : "bdc719e3-9fc4-4700-b7de-886eba8d3b7f",
+      "type" : "component"
+    }
+  },
+  "urlName" : "alumni-theme"
+}
