@@ -14,10 +14,14 @@ export default class UstStaticContent extends LightningElement {
      * Passed in by ustWidgetZone from the PortalWidgetDto.staticContent property.
      */
     @api richTextContent;
+    @api textHeader;
 
     /** Returns true only when there is content to render. */
     get hasContent() {
         return !!this.richTextContent;
+    }
+    get hasHeader() {
+        return !!this.textHeader;
     }
 }
 

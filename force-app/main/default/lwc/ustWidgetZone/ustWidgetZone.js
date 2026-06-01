@@ -117,6 +117,7 @@ export default class UstWidgetZone extends LightningElement {
                 sortOrder:     item.sortOrder,
                 description:   item.description,
                 staticContent: item.staticContent,
+                staticContentHeader: item.staticContentHeader,
                 ...flags
             };
         });

@@ -1,6 +1,9 @@
 <template>
     <template lwc:if={hasContent}>
         <div class="ust-static-content">
+            <template lwc:if={hasHeader}>
+                <h2 class="slds-text-heading_medium slds-p-bottom_small slds-text-color_brand">{textHeader}</h2>
+            </template>
             <lightning-formatted-rich-text value={richTextContent}></lightning-formatted-rich-text>
         </div>
     </template>

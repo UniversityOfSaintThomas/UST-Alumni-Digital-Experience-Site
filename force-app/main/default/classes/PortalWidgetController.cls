@@ -59,23 +59,24 @@ public without sharing class PortalWidgetController {
             // SOQL INCLUDES with bind variables on multi-select picklists can behave
             // inconsistently across API versions. The result set is always small.
             List<UST_Portal_Widget__c> candidateWidgets = [
-                SELECT Id, Name, Component_Name__c, Sort_Order__c, Page_Context__c,
-                       Description__c,
-                       Static_Content__c,
-                       Filter_College__c,
-                       Filter_Degree_Level__c,
-                       Filter_St_Thomas_Connection__c,
-                       Filter_Academic_Majors__c,
-                       Filter_Event_Location_Type__c,
-                       Filter_Athletic_Affiliation__c,
-                       Filter_Geo_Location__c,
-                       Filter_Content_Sender_Key__c,
-                       Filter_Class_Year__c,
-                       Filter_Volunteer_Status__c
-                FROM UST_Portal_Widget__c
-                WHERE Zone__c = :zoneName
-                  AND Is_Active__c = TRUE
-                ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
+                    SELECT Id, Name, Component_Name__c, Sort_Order__c, Page_Context__c,
+                            Description__c,
+                            Static_Content__c,
+                            Static_Content_Header__c,
+                            Filter_College__c,
+                            Filter_Degree_Level__c,
+                            Filter_St_Thomas_Connection__c,
+                            Filter_Academic_Majors__c,
+                            Filter_Event_Location_Type__c,
+                            Filter_Athletic_Affiliation__c,
+                            Filter_Geo_Location__c,
+                            Filter_Content_Sender_Key__c,
+                            Filter_Class_Year__c,
+                            Filter_Volunteer_Status__c
+                    FROM UST_Portal_Widget__c
+                    WHERE Zone__c = :zoneName
+                    AND Is_Active__c = TRUE
+                    ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
             ];
             System.debug(LoggingLevel.INFO, 'PortalWidgetController: ' + candidateWidgets.size() + ' candidate widgets for zone ' + zoneName);
             System.debug(JSON.serializePretty(candidateWidgets));
@@ -84,14 +85,15 @@ public without sharing class PortalWidgetController {
                 if (widgetMatchesPage(widget.Page_Context__c, pageContext)
                         && widgetMatchesContactFilters(widget, userFilters)) {
                     PortalWidgetDto dto = new PortalWidgetDto();
-                    dto.id            = widget.Id;
-                    dto.widgetLabel   = widget.Name;
+                    dto.id = widget.Id;
+                    dto.widgetLabel = widget.Name;
                     dto.componentName = widget.Component_Name__c;
-                    dto.sortOrder     = widget.Sort_Order__c != null
-                                        ? Integer.valueOf(widget.Sort_Order__c)
-                                        : 999;
-                    dto.description   = widget.Description__c;
+                    dto.sortOrder = widget.Sort_Order__c != null
+                            ? Integer.valueOf(widget.Sort_Order__c)
+                            : 999;
+                    dto.description = widget.Description__c;
                     dto.staticContent = widget.Static_Content__c;
+                    dto.staticContentHeader = String.isNotBlank(widget.Static_Content_Header__c) ? widget.Static_Content_Header__c : '';
                     dto.isStaticContent = String.isNotBlank(widget.Static_Content__c);
                     results.add(dto);
                 }
@@ -101,7 +103,7 @@ public without sharing class PortalWidgetController {
 
         } catch (Exception caught) {
             throw new AuraHandledException(
-                'Unable to load portal widgets: ' + caught.getMessage()
+                    'Unable to load portal widgets: ' + caught.getMessage()
             );
         }
     }
@@ -146,10 +148,10 @@ public without sharing class PortalWidgetController {
 
         Id userId = UserInfo.getUserId();
         List<User> users = [
-            SELECT ContactId
-            FROM User
-            WHERE Id = :userId
-            LIMIT 1
+                SELECT ContactId
+                FROM User
+                WHERE Id = :userId
+                LIMIT 1
         ];
 
         if (users.isEmpty() || users[0].ContactId == null) {
@@ -178,20 +180,20 @@ public without sharing class PortalWidgetController {
         //   Volunteer Status      Volunteer_Status            Volunteer_Status__c
 
         List<Contact> contacts = [
-            SELECT College__c,
-                   Degree_Level_s__c,
-                   St_Thomas_Connection__c,
-                   Academic_Majors__c,
-                   Event_Location_Type_s__c,
-                   Athletic_Affiliation_s__c,
-                   Geo_Locations__c,
-                   Content_Sender_Keys__c,
-                   Class_Year__c,
-                   Volunteer_Status__c
-            FROM Contact
-            WHERE Id = :contactId
-            WITH USER_MODE
-            LIMIT 1
+                SELECT College__c,
+                        Degree_Level_s__c,
+                        St_Thomas_Connection__c,
+                        Academic_Majors__c,
+                        Event_Location_Type_s__c,
+                        Athletic_Affiliation_s__c,
+                        Geo_Locations__c,
+                        Content_Sender_Keys__c,
+                        Class_Year__c,
+                        Volunteer_Status__c
+                FROM Contact
+                WHERE Id = :contactId
+                WITH USER_MODE
+                LIMIT 1
         ];
 
         if (contacts.isEmpty()) {
@@ -199,16 +201,16 @@ public without sharing class PortalWidgetController {
         }
 
         Contact contact = contacts[0];
-        filterValues.colleges             = splitMultiPicklist(contact.College__c);
-        filterValues.degreeLevels         = splitMultiPicklist(contact.Degree_Level_s__c);
-        filterValues.stThomasConnections  = splitMultiPicklist(contact.St_Thomas_Connection__c);
-        filterValues.academicMajors       = splitMultiPicklist(contact.Academic_Majors__c);
-        filterValues.eventLocationTypes   = splitMultiPicklist(contact.Event_Location_Type_s__c);
+        filterValues.colleges = splitMultiPicklist(contact.College__c);
+        filterValues.degreeLevels = splitMultiPicklist(contact.Degree_Level_s__c);
+        filterValues.stThomasConnections = splitMultiPicklist(contact.St_Thomas_Connection__c);
+        filterValues.academicMajors = splitMultiPicklist(contact.Academic_Majors__c);
+        filterValues.eventLocationTypes = splitMultiPicklist(contact.Event_Location_Type_s__c);
         filterValues.athleticAffiliations = splitMultiPicklist(contact.Athletic_Affiliation_s__c);
-        filterValues.geoLocations         = splitMultiPicklist(contact.Geo_Locations__c);
-        filterValues.contentSenderKeys    = splitMultiPicklist(contact.Content_Sender_Keys__c);
-        filterValues.classYears           = splitMultiPicklist(contact.Class_Year__c);
-        filterValues.volunteerStatuses    = splitMultiPicklist(contact.Volunteer_Status__c);
+        filterValues.geoLocations = splitMultiPicklist(contact.Geo_Locations__c);
+        filterValues.contentSenderKeys = splitMultiPicklist(contact.Content_Sender_Keys__c);
+        filterValues.classYears = splitMultiPicklist(contact.Class_Year__c);
+        filterValues.volunteerStatuses = splitMultiPicklist(contact.Volunteer_Status__c);
 
         return filterValues;
     }
@@ -231,16 +233,16 @@ public without sharing class PortalWidgetController {
     private static Boolean widgetMatchesContactFilters(
             UST_Portal_Widget__c widget,
             ContactFilterValues userFilters) {
-        return dimensionMatches(widget.Filter_College__c,                userFilters.colleges)
-            && dimensionMatches(widget.Filter_Degree_Level__c,           userFilters.degreeLevels)
-            && dimensionMatches(widget.Filter_St_Thomas_Connection__c,   userFilters.stThomasConnections)
-            && dimensionMatches(widget.Filter_Academic_Majors__c,        userFilters.academicMajors)
-            && dimensionMatches(widget.Filter_Event_Location_Type__c,    userFilters.eventLocationTypes)
-            && dimensionMatches(widget.Filter_Athletic_Affiliation__c,   userFilters.athleticAffiliations)
-            && dimensionMatches(widget.Filter_Geo_Location__c,           userFilters.geoLocations)
-            && dimensionMatches(widget.Filter_Content_Sender_Key__c,     userFilters.contentSenderKeys)
-            && dimensionMatches(widget.Filter_Class_Year__c,             userFilters.classYears)
-            && dimensionMatches(widget.Filter_Volunteer_Status__c,       userFilters.volunteerStatuses);
+        return dimensionMatches(widget.Filter_College__c, userFilters.colleges)
+                && dimensionMatches(widget.Filter_Degree_Level__c, userFilters.degreeLevels)
+                && dimensionMatches(widget.Filter_St_Thomas_Connection__c, userFilters.stThomasConnections)
+                && dimensionMatches(widget.Filter_Academic_Majors__c, userFilters.academicMajors)
+                && dimensionMatches(widget.Filter_Event_Location_Type__c, userFilters.eventLocationTypes)
+                && dimensionMatches(widget.Filter_Athletic_Affiliation__c, userFilters.athleticAffiliations)
+                && dimensionMatches(widget.Filter_Geo_Location__c, userFilters.geoLocations)
+                && dimensionMatches(widget.Filter_Content_Sender_Key__c, userFilters.contentSenderKeys)
+                && dimensionMatches(widget.Filter_Class_Year__c, userFilters.classYears)
+                && dimensionMatches(widget.Filter_Volunteer_Status__c, userFilters.volunteerStatuses);
     }
 
     /**
@@ -298,25 +300,25 @@ public without sharing class PortalWidgetController {
     @TestVisible
     private class ContactFilterValues {
         /** College__c values from the user's Contact */
-        Set<String> colleges             = new Set<String>();
+        Set<String> colleges = new Set<String>();
         /** Degree_Level_s__c values from the user's Contact */
-        Set<String> degreeLevels         = new Set<String>();
+        Set<String> degreeLevels = new Set<String>();
         /** St_Thomas_Connection__c values from the user's Contact */
-        Set<String> stThomasConnections  = new Set<String>();
+        Set<String> stThomasConnections = new Set<String>();
         /** Academic_Majors__c values from the user's Contact */
-        Set<String> academicMajors       = new Set<String>();
+        Set<String> academicMajors = new Set<String>();
         /** Event_Location_Type_s__c values from the user's Contact */
-        Set<String> eventLocationTypes   = new Set<String>();
+        Set<String> eventLocationTypes = new Set<String>();
         /** Athletic_Affiliation_s__c values from the user's Contact */
         Set<String> athleticAffiliations = new Set<String>();
         /** Geo_Locations__c values from the user's Contact */
-        Set<String> geoLocations         = new Set<String>();
+        Set<String> geoLocations = new Set<String>();
         /** Content_Sender_Keys__c values from the user's Contact */
-        Set<String> contentSenderKeys    = new Set<String>();
+        Set<String> contentSenderKeys = new Set<String>();
         /** Class_Year__c value from the user's Contact */
-        Set<String> classYears           = new Set<String>();
+        Set<String> classYears = new Set<String>();
         /** Volunteer_Status__c value from the user's Contact */
-        Set<String> volunteerStatuses    = new Set<String>();
+        Set<String> volunteerStatuses = new Set<String>();
     }
 
     /**
@@ -337,7 +339,8 @@ public without sharing class PortalWidgetController {
         @AuraEnabled public String description;
         /** Rich-text content (Static_Content__c); rendered when componentName === 'ust_static_content' */
         @AuraEnabled public String staticContent;
-
+        @AuraEnabled public String staticContentHeader;
         @AuraEnabled public Boolean isStaticContent;
+
     }
 }
