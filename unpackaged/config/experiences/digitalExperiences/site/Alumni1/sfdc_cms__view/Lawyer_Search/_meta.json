@@ -1,0 +1,5 @@
+{
+  "apiName" : "Lawyer_Search",
+  "type" : "sfdc_cms__view",
+  "path" : "views"
+}

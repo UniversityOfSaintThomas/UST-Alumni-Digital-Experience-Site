@@ -1,0 +1,13 @@
+// Gemini Campaign master entry point
+// Compiles all three partials in dependency order:
+//   1. _gemini_utility   — breakpoint variables + shared classes
+//   2. _gemini_header-campaign — HeaderCampaign component styles
+//   3. _gemini_footer-campaign — FooterCampaign component styles
+//
+// Originals are preserved as-is. Compile with:
+//   sass --no-source-map gemini-campaign.scss gemini-campaign.css
+
+@import 'gemini_utility';
+@import 'gemini_header-campaign';
+@import 'gemini_footer-campaign';
+

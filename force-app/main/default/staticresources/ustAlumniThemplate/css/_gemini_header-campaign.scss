@@ -1,0 +1,81 @@
+.HeaderCampaign {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    background-color: var(--purple-dk);
+
+    @media (min-width: $md) {
+      display: block;
+      padding: 0;
+    }
+
+    .lora-md {
+      padding-right: 0.75rem;
+      margin-right: 0.75rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .HeaderCampaign:has(.lora-md) {
+    .HeaderCampaign__logo {
+      margin-left: 0;
+      padding-left: 0;
+    }
+  }
+
+  .HeaderCampaign__logo {
+    display: block;
+    position: relative;
+    max-width: max-content;
+    padding-left: 0.75rem;
+    z-index: 0;
+    fill: white;
+
+    @media (min-width: $sm) {
+      position: static;
+      margin-left: 0.75rem;
+    }
+
+    &::before {
+      background: var(--white);
+    }
+
+    & svg {
+      width: 100%;
+      max-width: max-content;
+      height: 35px;
+      max-height: max-content;
+    }
+    @media (min-width: $lg) {
+      padding-left: 1.5rem;
+    }
+  }
+
+  .HeaderCampaign__group {
+    --heading-color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+    padding-inline: var(--container);
+    color: var(--white);
+    font-size: 0.875rem;
+    
+  }
+
+  .HeaderCampaign__logo-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 0 1 auto;
+
+    & a {
+      color: var(--white);
+      text-decoration: none;
+    }
+  }

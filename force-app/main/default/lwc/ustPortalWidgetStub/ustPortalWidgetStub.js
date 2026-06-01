@@ -22,3 +22,4 @@ export default class UstPortalWidgetStub extends LightningElement {
         return 'Placeholder: ' + (this.widgetLabel || this.componentName || 'Unregistered Widget');
     }
 }
+

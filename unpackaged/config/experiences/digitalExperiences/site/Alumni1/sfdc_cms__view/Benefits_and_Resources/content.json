@@ -1,0 +1,61 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Benefits and Resources",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"d1d4e2a9-82ca-47c2-9e2b-59aee8c08859\",\"columns\":[{\"UUID\":\"3afc80e9-e895-429e-9123-a8791b123236\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "id" : "3afc80e9-e895-429e-9123-a8791b123236",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "d1d4e2a9-82ca-47c2-9e2b-59aee8c08859",
+          "type" : "component"
+        } ],
+        "id" : "ab1e6dae-4d53-4f90-9cc7-923d8c869455",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "Benefits and Resources",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "8c5bcf7f-1f93-46dd-8eab-8be8e26a9c82",
+          "type" : "component"
+        } ],
+        "id" : "2f5d319d-ccc8-4647-b109-9af9b8338da1",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "8e3a6cfe-7432-4c36-a8e3-ba553e0a1ec8",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-benefits-and-resources"
+  },
+  "urlName" : "benefits-and-resources"
+}

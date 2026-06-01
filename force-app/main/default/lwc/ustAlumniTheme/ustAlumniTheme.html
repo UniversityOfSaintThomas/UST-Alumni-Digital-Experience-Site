@@ -1,8 +1,16 @@
 <template>
     <a href="#main-content" class="ust-skip-link">Skip to main content</a>
-    <c-ust-alumni-header nav-menu-name={navMenuName}></c-ust-alumni-header>
-    <main id="main-content" class="ust-main" tabindex="-1">
-        <slot></slot>
-    </main>
-    <c-ust-alumni-footer footer-menu-name={footerMenuName}></c-ust-alumni-footer>
+    <header data-f6-region class="ust-header" role="banner">
+        <c-ust-alumni-header></c-ust-alumni-header>
+        <div class="ust-main-nav">
+            <slot name="navHeader" class="ust-max-width"></slot>
+        </div>
+    </header>
+    <section data-f6-region>
+        <main id="main-content" class="ust-main" tabindex="-1">
+            <slot></slot>
+        </main>
+    </section>
+    <slot name="preFooter"></slot>
+    <c-ust-alumni-footer></c-ust-alumni-footer>
 </template>

@@ -1,0 +1,131 @@
+.FooterCampaign {
+    background-color: var(--purple);
+    color: var(--white);
+    overflow: hidden;
+    font-family: lato,sans-serif;
+    font-family: var(--lato);
+    font-size: clamp(1rem,.208vw + .958rem,1.125rem);
+    line-height: 1.5;
+
+    & .Button {
+      width: 100%;
+
+      @media (min-width: $lg) {
+        width: auto;
+      }
+    }
+
+    & a:not(.Button, .FooterCampaign__icon) {
+      color: inherit;
+    }
+  }
+
+  .button-container {
+    @media (min-width: $lg) {
+      display: flex;
+      flex-direction: row;
+
+      & .Button {
+        margin: 0 1rem;
+      }
+    }
+  }
+
+  .FooterCampaign__logo {
+    display: block;
+    max-width: 15rem;
+    position: relative;
+    width: 100%;
+    fill: var(--white);
+
+    @media (--min-width: $md) {
+      max-width: 12rem;
+    }
+  }
+
+  .FooterCampaign__contact {
+    padding-inline: var(--container);
+    background: none;
+    margin-block: 2rem;
+    font-size: 1rem;
+
+    & p {
+      margin: 2rem 0;
+    }
+
+    @media (min-width: $lg) {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      align-items: center;
+      margin-block: 0;
+    }
+  }
+
+  .FooterCampaign__main {
+    padding-inline: var(--container);
+    background-color: var(--purple-dk);
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-block: 1rem;
+
+    @media (min-width: $lg) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .FooterCampaign__link {
+    font-size: 1rem;
+  }
+
+  .FooterCampaign__legal {
+    font-weight: normal;
+    display: flex;
+
+    & a {
+      font-weight: normal;
+    }
+
+    @media (min-width: $md) {
+      margin-block: 0;
+    }
+
+    &.small-only {
+      border-top: solid var(--white-25);
+      margin-block: 1rem;
+      padding-top: 2rem;
+    }
+  }
+
+  .FooterCampaign__links {
+    padding-top: 1rem;
+    display: flex;
+    & ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+
+      @media (min-width: $md) {
+        flex-direction: column;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+      }
+    }
+    & li {
+      font-size: 0.875rem;
+    }
+    @media (min-width: $lg) {
+      padding-top: 0;
+      & ul {
+        flex-direction: row;
+        gap: 0.5rem 2rem;
+      }
+      & li {
+        margin-bottom: 0;
+      }
+    }
+  }

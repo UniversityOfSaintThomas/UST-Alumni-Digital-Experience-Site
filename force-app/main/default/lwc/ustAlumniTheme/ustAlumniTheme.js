@@ -1,14 +1,13 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import UST_ALUMNI_TEMPLATE from '@salesforce/resourceUrl/ustAlumniThemplate';
 
+/**
+ * @slot navHeader Top Navigation area
+ * @slot preFooter Full width pre footer
+ * @slot default Main content
+ */
 export default class UstAlumniTheme extends LightningElement {
-    /** Developer Name of the primary navigation menu set in Experience Builder */
-    @api navMenuName = 'Alumni_Portal_Navigation';
-
-    /** Developer Name of the footer navigation menu set in Experience Builder */
-    @api footerMenuName = 'Alumni_Portal_Footer';
-
     /**
      * Load brand assets from the static resource zip at the document level so
      * they apply outside shadow DOM boundaries:

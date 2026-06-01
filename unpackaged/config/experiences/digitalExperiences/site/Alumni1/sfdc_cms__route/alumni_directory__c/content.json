@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Alumni Directory",
+  "contentBody" : {
+    "activeViewId" : "Alumni_Directory",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-alumni-directory",
+    "urlPrefix" : "alumni-directory"
+  },
+  "urlName" : "alumni-directory"
+}

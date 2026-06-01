@@ -62,6 +62,144 @@
         "name" : "footer",
         "title" : "Theme Footer",
         "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "dxpStyle" : {
+              "padding" : {
+                "bottom" : "5px",
+                "left" : "5px",
+                "right" : "5px",
+                "top" : "5px"
+              }
+            }
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "activeLineColor" : "rgb(255, 255, 255)",
+                "activeLineWeight" : "1px",
+                "backgroundColor" : "rgba(255, 255, 255, 0)",
+                "dropdownAccordionIconSize" : "xx-small",
+                "dropdownActiveLineWeight" : "5px",
+                "dropdownBackgroundActiveColor" : "rgba(0, 0, 0, 0)",
+                "dropdownBackgroundColor" : "",
+                "dropdownBackgroundHoverColor" : "",
+                "dropdownBottomBorderRadius" : "5px",
+                "dropdownFontSizeOverride" : "",
+                "dropdownFontWeightOverride" : "300",
+                "dropdownItemPadding" : "{\"top\":\"10px\",\"right\":\"10px\",\"bottom\":\"10px\",\"left\":\"10px\"}",
+                "dropdownLineHeightOverride" : "",
+                "dropdownMenuPadding" : "{\"top\":\"0px\",\"right\":\"0px\",\"bottom\":\"0px\",\"left\":\"0px\"}",
+                "dropdownOverrideTextStyle" : true,
+                "dropdownShowDividerLines" : false,
+                "dropdownTextDecorationOverride" : "",
+                "dropdownTextStyle" : "body-regular",
+                "dropdownTopBorderRadius" : "5px",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "0px",
+                    "left" : "0px",
+                    "right" : "0px",
+                    "top" : "0px"
+                  },
+                  "padding" : {
+                    "bottom" : "0px",
+                    "left" : "0px",
+                    "right" : "0px",
+                    "top" : "0px"
+                  }
+                },
+                "fontSizeOverride" : "",
+                "fontWeightOverride" : "",
+                "hoverLineColor" : "rgba(0, 95, 178, 0)",
+                "iconSize" : "xx-small",
+                "itemBackgroundActiveColor" : "rgba(255, 255, 255, 0)",
+                "itemBackgroundHoverColor" : "rgba(255, 255, 255, 0)",
+                "lineHeightOverride" : "",
+                "menuHorizontalAlignment" : "left",
+                "navigationMenuEditor" : "Default_Navigation2",
+                "overrideTextStyle" : false,
+                "showHomeLink" : true,
+                "showParentMenuIcon" : true,
+                "spaceBetweenMenuItems" : "30px",
+                "textActiveColor" : "rgb(255, 255, 255)",
+                "textColor" : "rgb(255, 255, 255)",
+                "textDecorationOverride" : "",
+                "textHoverColor" : "rgb(255, 255, 255)",
+                "textStyle" : "body-regular"
+              },
+              "definition" : "community_navigation:customizableNavigationBarContainer",
+              "id" : "ce3906f2-b8a3-496f-8419-7520e7df42df",
+              "type" : "component"
+            } ],
+            "id" : "6275faad-1542-4c32-a01c-0d6c40f70e41",
+            "name" : "desktop",
+            "title" : "Desktop View",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "burgerIconHorizontalAlignment" : "left",
+                "modalAccordionIconSize" : "xx-small",
+                "modalActiveBackgroundColor" : "rgba(255, 255, 255, 0)",
+                "modalActiveLineWeight" : "5px",
+                "modalFontSizeOverride" : "",
+                "modalFontWeightOverride" : "",
+                "modalItemPadding" : "{\"top\":\"10px\",\"right\":\"10px\",\"bottom\":\"10px\",\"left\":\"15px\"}",
+                "modalLineHeightOverride" : "",
+                "modalMenuPadding" : "{\"top\":\"0px\",\"right\":\"0px\",\"bottom\":\"0px\",\"left\":\"0px\"}",
+                "modalOverrideTextStyle" : false,
+                "modalShowDividerLines" : true,
+                "modalSubmenuFontSizeOverride" : "",
+                "modalSubmenuFontWeightOverride" : "300",
+                "modalSubmenuLineHeightOverride" : "",
+                "modalSubmenuOverrideTextStyle" : true,
+                "modalSubmenuTextDecorationOverride" : "",
+                "modalSubmenuTextStyle" : "body-regular",
+                "modalTextDecorationOverride" : "",
+                "modalTextStyle" : "body-regular",
+                "showHomeLink" : true
+              },
+              "definition" : "community_navigation:customizableNavigationHamburgerMenuContainer",
+              "id" : "ee3110fc-7205-4bd7-9d88-be9d499e5e8a",
+              "type" : "component"
+            } ],
+            "id" : "2d23b046-9ce5-4806-8857-a6ac9d0ad75d",
+            "name" : "mobile",
+            "title" : "Mobile View",
+            "type" : "region"
+          } ],
+          "definition" : "community_navigation:customizableNavigationMenu",
+          "id" : "5cfda7fe-d2ea-4fde-a61a-ed3c0d7f6b30",
+          "type" : "component"
+        } ],
+        "id" : "b9f6a3a2-7017-4ef5-b51e-71c6d3a86220",
+        "name" : "navHeader",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "alignment" : "center",
+            "lineStyle" : "solid",
+            "size" : 1,
+            "width" : 100
+          },
+          "definition" : "dxp_base:horizontalLine",
+          "id" : "ccfccf8a-f37b-433c-97f6-a598f3272ea3",
+          "type" : "component"
+        } ],
+        "id" : "fe59c675-0793-43bb-a025-d87b005c223b",
+        "name" : "preFooter",
+        "type" : "region"
+      }, {
+        "id" : "26af2503-fc1f-4841-8992-52a6b8491a44",
+        "name" : "default",
+        "type" : "region"
+      }, {
+        "id" : "aa2443ce-f38b-4089-b232-0714e659188f",
+        "name" : "footerNav",
+        "type" : "region"
       } ],
       "definition" : "c:ustAlumniTheme",
       "id" : "e8b0f0d3-695b-40d6-9bc6-42a27ae47031",
