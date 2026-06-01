@@ -6,6 +6,7 @@ import UST_ALUMNI_TEMPLATE from '@salesforce/resourceUrl/ustAlumniThemplate';
  * @slot navHeader Top Navigation area
  * @slot preFooter Full width pre footer
  * @slot default Main content
+ * @slot heroHead For hero/full width content
  */
 export default class UstAlumniTheme extends LightningElement {
     /**
