@@ -7,19 +7,47 @@ import getWidgetsForZone from '@salesforce/apex/PortalWidgetController.getWidget
  *
  * Host container placed once per zone in Experience Builder. Queries
  * UST_Portal_Widget__c via PortalWidgetController and renders the matching
- * widgets in sort order. Each widget is mapped to a boolean flag that drives
- * the lwc:if/lwc:elseif registry chain in the template.
+ * widgets in sort order.
  *
  * ADDING A WIDGET TO THE REGISTRY
  * When a new widget LWC is built (e.g. c-ust-profile-card):
- *   1. Add a boolean entry to buildWidgetRegistry() below.
- *   2. Add the matching lwc:if/lwc:elseif block in ustWidgetZone.html.
+ *   1. Add a boolean entry to WIDGET_REGISTRY below.
+ *   2. Add the matching lwc:if / lwc:elseif block in ustWidgetZone.html.
  *   3. Deploy both files together.
  *
  * The stub (ustPortalWidgetStub) renders for any componentName that does not
- * yet have a matching lwc:if entry. In the live site the stub is invisible;
+ * yet have a matching entry. In the live site the stub is invisible;
  * in Experience Builder it shows a labeled placeholder card.
  */
+
+/**
+ * Registry of known Widget Type values → boolean flag name.
+ * Each key must exactly match a Component_Name__c picklist value.
+ * Each value is the flag property set on the widget object and referenced
+ * by lwc:if in the template.
+ *
+ * HOW TO ADD A NEW WIDGET
+ * 1. Add:  ust_profile_card: 'isProfileCard'
+ * 2. Add matching lwc:if block in ustWidgetZone.html
+ */
+const WIDGET_REGISTRY = {
+    ust_static_content: 'isStaticContent',
+    // ust_profile_card:           'isProfileCard',
+    // ust_events_widget:          'isEventsWidget',
+    // ust_give_widget:            'isGiveWidget',
+    // ust_engagement_summary:     'isEngagementSummary',
+    // ust_connection_messages:    'isConnectionMessages',
+    // ust_preference_center:      'isPreferenceCenter',
+    // ust_alumni_directory:       'isAlumniDirectory',
+    // ust_links_hub:              'isLinksHub',
+    // ust_communications_history: 'isCommunicationsHistory',
+    // ust_photo_story:            'isPhotoStory',
+    // ust_athletics:              'isAthletics',
+    // ust_videos_media:           'isVideosMedia',
+    // ust_volunteer:              'isVolunteer',
+    // ust_alumni_news:            'isAlumniNews',
+};
+
 export default class UstWidgetZone extends LightningElement {
     /** Zone identifier - set in Experience Builder property panel.
      *  Must match Zone__c picklist value: body, sidebar, banner, above_footer */
@@ -47,7 +75,6 @@ export default class UstWidgetZone extends LightningElement {
     @wire(getWidgetsForZone, { zoneName: '$zoneName', pageContext: '$pageContext' })
     loadWidgetsResult({ data, error }) {
         if (data === undefined && error === undefined) {
-            // Wire not yet ready (params not set)
             return;
         }
         this.isLoading = false;
@@ -63,55 +90,36 @@ export default class UstWidgetZone extends LightningElement {
     }
 
     connectedCallback() {
-        // If zoneName or pageContext are not configured in Experience Builder,
-        // clear the loading state immediately so the empty-state message renders.
         if (!this.zoneName || !this.pageContext) {
             this.isLoading = false;
         }
     }
 
     /**
-     * Maps each PortalWidgetDto from Apex into a plain object augmented with
-     * boolean flags. The flags power the lwc:if/lwc:elseif registry chain in
-     * the template - they cannot be getters on a class instance because LWC
-     * templates can only access plain object properties in lwc:for iterations.
-     *
-     * HOW TO ADD A NEW WIDGET
-     * Uncomment (or add) one boolean line per new widget component:
-     *   isProfileCard: item.componentName === 'ust_profile_card',
-     * Then add the matching <template lwc:if={widget.isProfileCard}> block
-     * in ustWidgetZone.html.
+     * Maps each PortalWidgetDto from Apex into a plain object with boolean flags
+     * derived from WIDGET_REGISTRY. The flags drive the lwc:if/lwc:elseif chain
+     * in the template.
      *
      * @param {Array} items - PortalWidgetDto list from Apex
      * @return {Array} enriched widget objects with boolean registry flags
      */
     buildWidgetRegistry(items) {
-        return (items || []).map(item => ({
-            id:            item.id,
-            widgetLabel:   item.widgetLabel,
-            componentName: item.componentName,
-            sortOrder:     item.sortOrder,
-            description:   item.description,
-
-            // ----- COMPONENT REGISTRY -----
-            // Uncomment one line per widget as its LWC is built and deployed.
-            // Keep this list in the same order as the lwc:if chain in the HTML.
-            //
-            // isProfileCard:          item.componentName === 'ust_profile_card',
-            // isEventsWidget:         item.componentName === 'ust_events_widget',
-            // isGiveWidget:           item.componentName === 'ust_give_widget',
-            // isEngagementSummary:    item.componentName === 'ust_engagement_summary',
-            // isConnectionMessages:   item.componentName === 'ust_connection_messages',
-            // isPreferenceCenter:     item.componentName === 'ust_preference_center',
-            // isAlumniDirectory:      item.componentName === 'ust_alumni_directory',
-            // isLinksHub:             item.componentName === 'ust_links_hub',
-            // isCommunicationsHistory:item.componentName === 'ust_communications_history',
-            // isPhotoStory:           item.componentName === 'ust_photo_story',
-            // isAthletics:            item.componentName === 'ust_athletics',
-            // isVideosMedia:          item.componentName === 'ust_videos_media',
-            // isVolunteer:            item.componentName === 'ust_volunteer',
-            // isAlumniNews:           item.componentName === 'ust_alumni_news',
-        }));
+        return (items || []).map(item => {
+            const flags = {};
+            const flagName = WIDGET_REGISTRY[item.componentName];
+            if (flagName) {
+                flags[flagName] = true;
+            }
+            return {
+                id:            item.id,
+                widgetLabel:   item.widgetLabel,
+                componentName: item.componentName,
+                sortOrder:     item.sortOrder,
+                description:   item.description,
+                staticContent: item.staticContent,
+                ...flags
+            };
+        });
     }
 
     get isBuilderMode() {

@@ -5,30 +5,26 @@
   Set the "Zone Name" and "Page Context" properties in the component property
   panel to match values in UST_Portal_Widget__c records.
 
-  ADDING A REAL WIDGET TO THE REGISTRY
-  When a new widget LWC (e.g. c-ust-profile-card) is ready to replace its stub:
+  ADDING A WIDGET TO THE REGISTRY
+  When a new widget LWC (e.g. c-ust-profile-card) is ready:
 
-  Step 1 - Add a boolean flag to the JS registry in ustWidgetZone.js:
-      isProfileCard: item.componentName === 'ust_profile_card',
+    Step 1 — Add an entry to WIDGET_REGISTRY in ustWidgetZone.js:
+        ust_profile_card: 'isProfileCard',
 
-  Step 2 - Add a lwc:if / lwc:elseif block to this template, ABOVE the
-      <template lwc:else> stub block, following this pattern:
+    Step 2 — Add a lwc:if / lwc:elseif block to this template ABOVE the
+        <template lwc:else> stub block:
 
-      <template lwc:if={widget.isProfileCard}>
-          <c-ust-profile-card></c-ust-profile-card>
-      </template>
-      <template lwc:elseif={widget.isEventsWidget}>
-          <c-ust-events-widget></c-ust-events-widget>
-      </template>
-      <template lwc:else>
-          <c-ust-portal-widget-stub ...></c-ust-portal-widget-stub>
-      </template>
+        <template lwc:if={widget.isProfileCard}>
+            <c-ust-profile-card ...></c-ust-profile-card>
+        </template>
+        <template lwc:elseif={widget.isEventsWidget}>
+            ...
+        </template>
+        <template lwc:else>
+            <c-ust-portal-widget-stub ...></c-ust-portal-widget-stub>
+        </template>
 
-  Step 3 - Deploy both ustWidgetZone and the new widget LWC together.
-
-  The stub renders for any componentName that does not have a matching
-  lwc:if/lwc:elseif entry yet. In the live site the stub is invisible;
-  in Experience Builder it shows a labeled placeholder card.
+    Step 3 — Deploy both files together.
 -->
 <template>
     <!-- Loading state -->
@@ -40,13 +36,11 @@
 
     <!-- Error state - silent in live site; visible in Experience Builder -->
     <template lwc:elseif={hasError}>
-        <template lwc:if={isBuilderMode}>
-            <div class="ust-widget-zone-error" role="alert">
-                <strong>Widget Zone Error</strong>
-                <p>Zone: {zoneName} | Page: {pageContext}</p>
-                <p>{errorMessage}</p>
-            </div>
-        </template>
+        <div class="ust-widget-zone-error" role="alert">
+            <strong>Widget Zone Error</strong>
+            <p>Zone: {zoneName} | Page: {pageContext}</p>
+            <p>{errorMessage}</p>
+        </div>
     </template>
 
     <!-- Loaded state -->
@@ -54,28 +48,36 @@
         <div class="ust-widget-zone" data-zone={zoneName}>
 
             <!-- Widget registry loop -->
-            <template lwc:for={activeWidgets} lwc:key={widget.id}>
-                <div class="ust-widget-slot">
-                    <!--
-                        REGISTRY START
-                        Add lwc:if / lwc:elseif entries here as real widget LWCs are built.
-                        See the comment block at the top of this file for the pattern.
+            <template for:each={activeWidgets} for:item="widget">
+                <div class="ust-widget-slot" key={widget.id}>
 
-                        Example (uncomment when c-ust-profile-card LWC exists):
-                        <template lwc:if={widget.isProfileCard}>
-                            <c-ust-profile-card></c-ust-profile-card>
-                        </template>
-                        <template lwc:else>
-                    -->
-                    <c-ust-portal-widget-stub
-                        widget-label={widget.widgetLabel}
-                        component-name={widget.componentName}
-                        is-builder-mode={isBuilderMode}
-                    ></c-ust-portal-widget-stub>
+                    <!-- REGISTRY START — add lwc:if/lwc:elseif blocks here -->
+
+                    <template lwc:if={widget.isStaticContent}>
+                        <c-ust-static-content
+                            rich-text-content={widget.staticContent}
+                        ></c-ust-static-content>
+                    </template>
+
                     <!--
-                        </template>
-                        REGISTRY END
+                    <template lwc:elseif={widget.isProfileCard}>
+                        <c-ust-profile-card
+                            widget-label={widget.widgetLabel}
+                        ></c-ust-profile-card>
+                    </template>
                     -->
+
+                    <!-- Stub fallback for any unregistered Widget Type -->
+                    <template lwc:else>
+                        <c-ust-portal-widget-stub
+                            widget-label={widget.widgetLabel}
+                            component-name={widget.componentName}
+                            is-builder-mode={isBuilderMode}
+                        ></c-ust-portal-widget-stub>
+                    </template>
+
+                    <!-- REGISTRY END -->
+
                 </div>
             </template>
 
@@ -94,4 +96,3 @@
         </div>
     </template>
 </template>
-

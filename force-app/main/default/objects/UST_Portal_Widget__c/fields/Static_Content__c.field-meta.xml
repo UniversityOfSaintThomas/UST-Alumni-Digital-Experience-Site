@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Static_Content__c</fullName>
+    <description>Rich-text content displayed when Widget Type is set to &quot;Static Content&quot;. Supports formatted text, links, and images entered via the Salesforce rich-text editor.</description>
+    <label>Static Content</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>Html</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

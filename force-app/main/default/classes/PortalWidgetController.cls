@@ -39,7 +39,7 @@ public without sharing class PortalWidgetController {
      * @return Ordered list of PortalWidgetDto; empty if user has no matching widgets
      *         or if the running user lacks Read access to UST_Portal_Widget__c
      */
-    @AuraEnabled
+    @AuraEnabled(Cacheable=true)
     public static List<PortalWidgetDto> getWidgetsForZone(String zoneName, String pageContext) {
         try {
             if (String.isBlank(zoneName) || String.isBlank(pageContext)) {
@@ -61,6 +61,7 @@ public without sharing class PortalWidgetController {
             List<UST_Portal_Widget__c> candidateWidgets = [
                 SELECT Id, Name, Component_Name__c, Sort_Order__c, Page_Context__c,
                        Description__c,
+                       Static_Content__c,
                        Filter_College__c,
                        Filter_Degree_Level__c,
                        Filter_St_Thomas_Connection__c,
@@ -76,7 +77,8 @@ public without sharing class PortalWidgetController {
                   AND Is_Active__c = TRUE
                 ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
             ];
-
+            System.debug(LoggingLevel.INFO, 'PortalWidgetController: ' + candidateWidgets.size() + ' candidate widgets for zone ' + zoneName);
+            System.debug(JSON.serializePretty(candidateWidgets));
             List<PortalWidgetDto> results = new List<PortalWidgetDto>();
             for (UST_Portal_Widget__c widget : candidateWidgets) {
                 if (widgetMatchesPage(widget.Page_Context__c, pageContext)
@@ -89,9 +91,12 @@ public without sharing class PortalWidgetController {
                                         ? Integer.valueOf(widget.Sort_Order__c)
                                         : 999;
                     dto.description   = widget.Description__c;
+                    dto.staticContent = widget.Static_Content__c;
+                    dto.isStaticContent = String.isNotBlank(widget.Static_Content__c);
                     results.add(dto);
                 }
             }
+            System.debug(JSON.serializePretty(results));
             return results;
 
         } catch (Exception caught) {
@@ -330,5 +335,9 @@ public without sharing class PortalWidgetController {
         @AuraEnabled public Integer sortOrder;
         /** Admin notes (Description__c); surfaced by stub placeholder in development */
         @AuraEnabled public String description;
+        /** Rich-text content (Static_Content__c); rendered when componentName === 'ust_static_content' */
+        @AuraEnabled public String staticContent;
+
+        @AuraEnabled public Boolean isStaticContent;
     }
 }

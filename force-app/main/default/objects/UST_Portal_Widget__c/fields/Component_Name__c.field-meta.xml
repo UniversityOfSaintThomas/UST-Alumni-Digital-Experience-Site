@@ -71,6 +71,11 @@
                 <label>St. Thomas Connection Messages</label>
             </value>
             <value>
+                <fullName>ust_static_content</fullName>
+                <default>false</default>
+                <label>Static Content</label>
+            </value>
+            <value>
                 <fullName>ust_videos_media</fullName>
                 <default>false</default>
                 <label>Videos and Media</label>
