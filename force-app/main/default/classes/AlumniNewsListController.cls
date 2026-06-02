@@ -26,7 +26,7 @@ public without sharing class AlumniNewsListController {
     }
 
 
-    @AuraEnabled (cacheable = true)
+    @AuraEnabled (Cacheable=true)
     public static List<alumniNews> getNews(Integer pagenumber, Integer pageSize, String searchString, String classYearString) {
         List<alumniNews> newsOut = new List<alumniNews>();
         List<Alumni_News__c> newsIn = new List<Alumni_News__c>();
@@ -34,59 +34,62 @@ public without sharing class AlumniNewsListController {
         if (queryCountIn > 0) {
             newsIn = getAlumniNewsList(pagenumber, pageSize, searchString, classYearString);
             for (Alumni_News__c an : newsIn) {
-                AlumniNews newsItem = new AlumniNews();
-                newsItem.queryCount = queryCountIn;
-                newsItem.key = an.Id;
-                newsItem.adId = null;
-                if (String.isNotBlank(an.Contact__r.Name)) {
-                    newsItem.Name = an.Contact__r.Name;
-                } else if (String.isNotBlank(an.Contact__r.firstName)) {
-                    if (String.isNotBlank(an.Contact__r.lastName)) {
-                        newsItem.Name = an.Contact__r.firstName + ' ' + an.Contact__r.lastName;
-                    }
-                } else {
-                    newsItem.Name = '';
-                }
-
-                if (String.isNotBlank(an.Details_Link__c)) {
-                    newsItem.detailLink = an.Details_Link__c;
-                } else {
-                    newsItem.detailLink = '';
-                }
-
                 if (String.isNotBlank(an.Alumni_News__c)) {
-                    newsItem.newsItem = an.Alumni_News__c;
-                } else {
-                    newsItem.newsItem = '';
-                }
+                    alumniNews newsItem = new alumniNews();
+                    newsItem.queryCount = queryCountIn;
+                    newsItem.key = an.Id;
+                    newsItem.adId = null;
+                    if (String.isNotBlank(an.Contact__r.Name)) {
+                        newsItem.Name = an.Contact__r.Name;
+                    } else if (String.isNotBlank(an.Contact__r.FirstName)) {
+                        if (String.isNotBlank(an.Contact__r.LastName)) {
+                            newsItem.Name = an.Contact__r.FirstName + ' ' + an.Contact__r.lastName;
+                        }
+                    } else {
+                        newsItem.Name = '';
+                    }
 
-                if (an.News_Date__c != null) {
-                    newsItem.newsDate = an.News_Date__c;
-                } else {
-                    newsItem.newsDate = Date.today();
-                }
+                    if (String.isNotBlank(an.Details_Link__c)) {
+                        newsItem.detailLink = an.Details_Link__c;
+                    } else {
+                        newsItem.detailLink = '';
+                    }
 
-                if (String.isNotBlank(an.Category__c)) {
-                    newsItem.category = an.Category__c;
-                } else {
-                    newsItem.category = 'Unknown';
-                }
+                    if (String.isNotBlank(an.Alumni_News__c)) {
+                        newsItem.newsItem = an.Alumni_News__c;
+                        //If Alumni_News__c contains a link (https:// or http://), then format it as a hyperlink with
+                        newsItem.newsItem = '';
+                    }
 
-                if (String.isNotBlank(an.Contact__r.Preferred_Class_Year__c)) {
-                    newsItem.classYear = an.Contact__r.Preferred_Class_Year__c;
-                } else {
-                    newsItem.classYear = '----';
-                }
+                    if (an.News_Date__c != null) {
+                        newsItem.newsDate = an.News_Date__c;
+                    } else {
+                        newsItem.newsDate = Date.today();
+                    }
 
-                if (String.isNotBlank(an.Alumni_Directory__c)) {
-                    newsItem.adId = an.Alumni_Directory__c;
-                }
+                    if (String.isNotBlank(an.Category__c)) {
+                        newsItem.category = an.Category__c;
+                    } else {
+                        newsItem.category = 'Unknown';
+                    }
 
-                newsOut.add(newsItem);
+                    if (String.isNotBlank(an.Contact__r.Preferred_Class_Year__c)) {
+                        newsItem.classYear = an.Contact__r.Preferred_Class_Year__c;
+                    } else {
+                        newsItem.classYear = '----';
+                    }
+
+                    if (String.isNotBlank(an.Alumni_Directory__c)) {
+                        newsItem.adId = an.Alumni_Directory__c;
+                    }
+
+                    newsOut.add(newsItem);
+                }
             }
         }
         return newsOut;
     }
+
 
     private static List<Alumni_News__c> getAlumniNewsList(Integer pagenumber, Integer pageSize, String searchString, String classYearString) {
         List<Alumni_News__c> alumniNewsList = new List<Alumni_News__c>();
@@ -116,7 +119,7 @@ public without sharing class AlumniNewsListController {
 
 
         System.debug(query);
-        alumniNewsList = database.query(query);
+        alumniNewsList = Database.query(query);
         if (alumniNewsList.size() > 0) {
             return alumniNewsList;
         }

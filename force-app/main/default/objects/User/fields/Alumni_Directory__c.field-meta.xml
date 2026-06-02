@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alumni_Directory__c</fullName>
+    <description>Links up to Alumni Directory Record through contact record.</description>
+    <externalId>false</externalId>
+    <formula>Contact.Alumni_Directory_Record__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Links up to Alumni Directory Record through contact record.</inlineHelpText>
+    <label>Alumni Directory</label>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -208,7 +208,7 @@
           "type" : "component"
         } ],
         "id" : "fe59c675-0793-43bb-a025-d87b005c223b",
-        "name" : "preFooter",
+        "name" : "bottom",
         "type" : "region"
       }, {
         "id" : "26af2503-fc1f-4841-8992-52a6b8491a44",
@@ -229,7 +229,7 @@
           "type" : "component"
         } ],
         "id" : "8ea29546-7e68-48aa-bbf0-f05874e33784",
-        "name" : "heroHead",
+        "name" : "hero",
         "type" : "region"
       } ],
       "definition" : "c:ustAlumniTheme",
