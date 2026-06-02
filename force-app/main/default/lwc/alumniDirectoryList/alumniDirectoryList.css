@@ -1,0 +1,6 @@
+/**
+ * Created by dahl3702 on 6/11/2019.
+ */
+tbody tr:nth-child(2n) {
+    background-color:#f5edf9;
+}

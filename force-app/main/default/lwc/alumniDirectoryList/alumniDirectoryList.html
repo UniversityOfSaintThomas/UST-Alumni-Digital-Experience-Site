@@ -1,0 +1,78 @@
+<!--
+ - Created by dahl3702 on 6/11/2019.
+ -->
+<!-- Alumni Directory List -->
+<template>
+
+    <div class="slds-grid slds-wrap slds-is-relative">
+        <div class="slds-p-right_small slds-size_1-of-1 slds-large-size_8-of-12">
+            <lightning-input type="search" onchange={handleKeyChange} class="slds-m-bottom_small" label="Search Term (Enter a person’s name, employer, city or state to search)" value={searchKey}></lightning-input>
+        </div>
+        <div class="slds-size_1-of-1 slds-large-size_4-of-12">
+            <lightning-input type="search" onchange={handleClassChange} class="slds-m-bottom_small" label="Class Year" value={classYear}></lightning-input>
+        </div>
+    </div>
+    <div class="slds-grid slds-wrap slds-is-relative">
+        <lightning-spinner if:true={loading} alternative-text="Loading" size="medium" class="slds-size_1-of-1 slds-large-size_12-of-12"></lightning-spinner>
+        <div if:true={totalrecords} class="slds-size_1-of-1 slds-large-size_12-of-12">
+            <div class="slds-size_1-of-1">
+
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                    <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Name">Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Class">Previous Last Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Name">Class</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="City, State">City, State</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Employer">Employer</div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template for:each={alumni} for:item="al">
+                        <tr key={al.key}>
+                            <th data-label="Name" scope="row">
+                                <div class="slds-truncate" title="Name">
+                                    <a onclick={handleAlumniClick} data-aid={al.key}>{al.Name}</a>
+                                </div>
+                            </th>
+                            <td data-label="Class">
+                                <div class="slds-truncate" title={al.previousLastName}>
+                                    <a onclick={handleAlumniClick} data-aid={al.key}>{al.previousLastName}</a>
+                                </div>
+                            </td>
+                            <td data-label="Year">
+                                <div class="slds-truncate" title={al.classYear}>
+                                    <a onclick={handleAlumniClick} data-aid={al.key}>{al.classYear}</a>
+                                </div>
+                            </td>
+                            <td data-label="City, State">
+                                <div class="slds-truncate" title={al.cityState}>
+                                    <a onclick={handleAlumniClick} data-aid={al.key}>{al.cityState}</a>
+                                </div>
+                            </td>
+                            <td data-label="Employer">
+                                <div class="slds-truncate" title={al.employer}>
+                                    <a onclick={handleAlumniClick} data-aid={al.key}>{al.employer}</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+                <div class="slds-col slds-size_1-of-1">
+                    <p>Total records: <strong>{totalrecords}</strong> Page <strong>{currentpage}</strong> of <strong>{totalpages}</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

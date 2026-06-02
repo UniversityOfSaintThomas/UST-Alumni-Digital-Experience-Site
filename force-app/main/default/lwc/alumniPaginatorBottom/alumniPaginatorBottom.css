@@ -1,0 +1,11 @@
+/**
+ * Created by dahl3702 on 6/11/2019.
+ */
+.this .nobreak {
+    white-space: nowrap!important;
+}
+
+
+.this .medium-purple svg {
+    fill: lightgray!important;
+}

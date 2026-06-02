@@ -10,6 +10,7 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
+            "dxpStyle" : { },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
@@ -39,6 +40,7 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
+            "dxpStyle" : { },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
@@ -66,11 +68,17 @@
         "children" : [ {
           "attributes" : {
             "dxpStyle" : {
+              "margin" : {
+                "bottom" : "0px",
+                "left" : "0px",
+                "right" : "0px",
+                "top" : "0px"
+              },
               "padding" : {
-                "bottom" : "5px",
-                "left" : "5px",
-                "right" : "5px",
-                "top" : "5px"
+                "bottom" : "0px",
+                "left" : "0px",
+                "right" : "0px",
+                "top" : "0px"
               }
             }
           },
@@ -78,7 +86,7 @@
             "children" : [ {
               "attributes" : {
                 "activeLineColor" : "rgb(255, 255, 255)",
-                "activeLineWeight" : "1px",
+                "activeLineWeight" : "2px",
                 "backgroundColor" : "rgba(255, 255, 255, 0)",
                 "dropdownAccordionIconSize" : "xx-small",
                 "dropdownActiveLineWeight" : "5px",
@@ -86,7 +94,7 @@
                 "dropdownBackgroundColor" : "",
                 "dropdownBackgroundHoverColor" : "",
                 "dropdownBottomBorderRadius" : "5px",
-                "dropdownFontSizeOverride" : "",
+                "dropdownFontSizeOverride" : ".75rem",
                 "dropdownFontWeightOverride" : "300",
                 "dropdownItemPadding" : "{\"top\":\"10px\",\"right\":\"10px\",\"bottom\":\"10px\",\"left\":\"10px\"}",
                 "dropdownLineHeightOverride" : "",
@@ -112,7 +120,7 @@
                 },
                 "fontSizeOverride" : "",
                 "fontWeightOverride" : "",
-                "hoverLineColor" : "rgba(0, 95, 178, 0)",
+                "hoverLineColor" : "rgb(89, 0, 123)",
                 "iconSize" : "xx-small",
                 "itemBackgroundActiveColor" : "rgba(255, 255, 255, 0)",
                 "itemBackgroundHoverColor" : "rgba(255, 255, 255, 0)",
@@ -141,6 +149,7 @@
             "children" : [ {
               "attributes" : {
                 "burgerIconHorizontalAlignment" : "left",
+                "dxpStyle" : { },
                 "modalAccordionIconSize" : "xx-small",
                 "modalActiveBackgroundColor" : "rgba(255, 255, 255, 0)",
                 "modalActiveLineWeight" : "5px",
@@ -181,12 +190,21 @@
         "children" : [ {
           "attributes" : {
             "alignment" : "center",
+            "dxpStyle" : { },
             "lineStyle" : "solid",
             "size" : 1,
             "width" : 100
           },
           "definition" : "dxp_base:horizontalLine",
           "id" : "ccfccf8a-f37b-433c-97f6-a598f3272ea3",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "pageContext" : "home",
+            "zoneName" : "Above Footer"
+          },
+          "definition" : "c:ustWidgetZone",
+          "id" : "2176e69b-2d47-4986-b5f1-053ce6764ec7",
           "type" : "component"
         } ],
         "id" : "fe59c675-0793-43bb-a025-d87b005c223b",
@@ -199,6 +217,19 @@
       }, {
         "id" : "aa2443ce-f38b-4089-b232-0714e659188f",
         "name" : "footerNav",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "pageContext" : "home",
+            "zoneName" : "Banner"
+          },
+          "definition" : "c:ustWidgetZone",
+          "id" : "496d6594-88a1-4297-b9d9-9b78183236df",
+          "type" : "component"
+        } ],
+        "id" : "8ea29546-7e68-48aa-bbf0-f05874e33784",
+        "name" : "heroHead",
         "type" : "region"
       } ],
       "definition" : "c:ustAlumniTheme",

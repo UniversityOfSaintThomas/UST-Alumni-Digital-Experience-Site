@@ -1,0 +1,29 @@
+<!--
+ - Created by dahl3702 on 6/11/2019.
+ -->
+
+<!-- Alumni Paginator Bottom -->
+<template>
+    <template if:true={showPagination}>
+        <div class="slds-button-group" role="group">
+            <button onclick={handleFirst} disabled={showFirstButton} class="slds-button slds-button_neutral nobreak">
+                <lightning-icon icon-name="utility:chevronleft" size="x-small" slot="icon" class="slds-show_small medium-purple " style="margin:0px -7px -3px 12px;"></lightning-icon>
+                <lightning-icon icon-name="utility:chevronleft" size="x-small" slot="icon" class="slds-show_small medium-purple " style="margin:0px 5px -3px 0px;"></lightning-icon>
+                First
+            </button>
+            <button onclick={handlePrevious} disabled={showFirstButton} class="slds-button slds-button_neutral nobreak">
+                <lightning-icon icon-name="utility:chevronleft" size="x-small" slot="icon" class="slds-show_small medium-purple " style="margin:0px 5px -3px 0px;"></lightning-icon>
+                Previous
+            </button>
+            <button onclick={handleNext} disabled={showLastButton} class="slds-button slds-button_neutral nobreak">
+                Next
+                <lightning-icon icon-name="utility:chevronright" size="x-small" slot="icon" class="slds-show_small medium-purple " style="margin:0px 0px -3px 5px;"></lightning-icon>
+            </button>
+            <button onclick={handleLast} disabled={showLastButton} class="slds-button slds-button_neutral nobreak">
+                Last
+                <lightning-icon icon-name="utility:chevronright" size="x-small" slot="icon" class="slds-show_small medium-purple " style="margin:0px 0px -3px 5px;"></lightning-icon>
+                <lightning-icon icon-name="utility:chevronright" size="x-small" slot="icon" class="slds-show_small medium-purple" style="margin:0px 12px -3px -7px;"></lightning-icon>
+            </button>
+        </div>
+    </template>
+</template>

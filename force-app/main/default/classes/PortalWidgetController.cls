@@ -179,38 +179,38 @@ public without sharing class PortalWidgetController {
         //   Class Year            Class_Year                  Class_Year__c
         //   Volunteer Status      Volunteer_Status            Volunteer_Status__c
 
-        List<Contact> contacts = [
+        List<Alumni_Directory__c> alumniDirectories = [
                 SELECT College__c,
                         Degree_Level_s__c,
                         St_Thomas_Connection__c,
-                        Academic_Majors__c,
+                        // Contact__r.Academic_Majors__c,
                         Event_Location_Type_s__c,
                         Athletic_Affiliation_s__c,
                         Geo_Locations__c,
                         Content_Sender_Keys__c,
                         Class_Year__c,
                         Volunteer_Status__c
-                FROM Contact
-                WHERE Id = :contactId
+                FROM Alumni_Directory__c
+                WHERE Contact__r.Id = :contactId
                 WITH USER_MODE
                 LIMIT 1
         ];
 
-        if (contacts.isEmpty()) {
+        if (alumniDirectories.isEmpty()) {
             return filterValues;
         }
 
-        Contact contact = contacts[0];
-        filterValues.colleges = splitMultiPicklist(contact.College__c);
-        filterValues.degreeLevels = splitMultiPicklist(contact.Degree_Level_s__c);
-        filterValues.stThomasConnections = splitMultiPicklist(contact.St_Thomas_Connection__c);
-        filterValues.academicMajors = splitMultiPicklist(contact.Academic_Majors__c);
-        filterValues.eventLocationTypes = splitMultiPicklist(contact.Event_Location_Type_s__c);
-        filterValues.athleticAffiliations = splitMultiPicklist(contact.Athletic_Affiliation_s__c);
-        filterValues.geoLocations = splitMultiPicklist(contact.Geo_Locations__c);
-        filterValues.contentSenderKeys = splitMultiPicklist(contact.Content_Sender_Keys__c);
-        filterValues.classYears = splitMultiPicklist(contact.Class_Year__c);
-        filterValues.volunteerStatuses = splitMultiPicklist(contact.Volunteer_Status__c);
+        Alumni_Directory__c alumniDirectory = alumniDirectories[0];
+        filterValues.colleges = splitMultiPicklist(alumniDirectory.College__c);
+        filterValues.degreeLevels = splitMultiPicklist(alumniDirectory.Degree_Level_s__c);
+        filterValues.stThomasConnections = splitMultiPicklist(alumniDirectory.St_Thomas_Connection__c);
+       // filterValues.academicMajors = splitMultiPicklist(alumniDirectory.Contact__r.Academic_Majors__c);
+        filterValues.eventLocationTypes = splitMultiPicklist(alumniDirectory.Event_Location_Type_s__c);
+        filterValues.athleticAffiliations = splitMultiPicklist(alumniDirectory.Athletic_Affiliation_s__c);
+        filterValues.geoLocations = splitMultiPicklist(alumniDirectory.Geo_Locations__c);
+        filterValues.contentSenderKeys = splitMultiPicklist(alumniDirectory.Content_Sender_Keys__c);
+        filterValues.classYears = splitMultiPicklist(alumniDirectory.Class_Year__c);
+        filterValues.volunteerStatuses = splitMultiPicklist(alumniDirectory.Volunteer_Status__c);
 
         return filterValues;
     }

@@ -1,0 +1,31 @@
+<!--
+ - Created by dahl3702 on 6/11/2019.
+ -->
+
+<!-- Alumni Directory -->
+<template>
+    <div class="slds-grid slds-wrap ">
+        <article class="slds-card slds-size_1-of-1">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-account" title="account">
+                          <lightning-icon icon-name="standard:visits" size="x-medium" slot="icon" class="medium-purple"></lightning-icon>
+                          <span class="slds-assistive-text">account</span>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h1 class="slds-card__header-title">
+                            <span>Alumni Directory Search</span>
+                        </h1>
+                    </div>
+                </header>
+            </div>
+            <lightning-spinner if:true={isSearchChangeExecuted} alternative-text="Loading" size="medium" class="">TEST</lightning-spinner>
+            <div class="slds-card__body slds-card__body_inner">
+                <c-alumni-directory-list currentpage={page} onrecordsload={handleRecordsLoad} pagesize={pagesize}></c-alumni-directory-list>
+                <c-alumni-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst} onlast={handleLast} currentpage={page} totalrecords={totalrecords} pagesize={pagesize}></c-alumni-paginator-bottom>
+            </div>
+        </article>
+    </div>
+</template>
