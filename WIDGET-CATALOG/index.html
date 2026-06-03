@@ -578,6 +578,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#static-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static Content
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#1-profile-card" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -873,6 +884,17 @@
     <span class="md-ellipsis">
       
         Widget Index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#static-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static Content
       
     </span>
   </a>
@@ -1191,18 +1213,24 @@
 <th>Phase</th>
 <th>Priority</th>
 <th>Status</th>
-<th>Zone-Ready</th>
 <th>Notes</th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>—</td>
+<td><a href="#static-content">Static Content</a></td>
+<td>1</td>
+<td>—</td>
+<td>✅ Done</td>
+<td>Built-in; no separate LWC needed</td>
+</tr>
 <tr>
 <td>1</td>
 <td><a href="#1-profile-card">Profile Card</a></td>
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Includes Business Info update</td>
 </tr>
 <tr>
@@ -1211,7 +1239,6 @@
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Alumni events, non-alumni events, registrations</td>
 </tr>
 <tr>
@@ -1220,7 +1247,6 @@
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Includes Assigned Gift Officer section</td>
 </tr>
 <tr>
@@ -1229,7 +1255,6 @@
 <td>2</td>
 <td>High</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Needs data model definition</td>
 </tr>
 <tr>
@@ -1238,7 +1263,6 @@
 <td>1</td>
 <td>High</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Personalized by role</td>
 </tr>
 <tr>
@@ -1247,7 +1271,6 @@
 <td>2</td>
 <td>High</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Full pref center is Phase 2; see notes</td>
 </tr>
 <tr>
@@ -1256,7 +1279,6 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>❓ Native messaging vs. PeopleGrove TBD</td>
 </tr>
 <tr>
@@ -1265,7 +1287,6 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Expanded link list from 2026 CSV</td>
 </tr>
 <tr>
@@ -1274,7 +1295,6 @@
 <td>2</td>
 <td>Medium</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>❓ MC Connect status TBD</td>
 </tr>
 <tr>
@@ -1283,7 +1303,6 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
-<td>⬜</td>
 <td></td>
 </tr>
 <tr>
@@ -1292,7 +1311,6 @@
 <td>1</td>
 <td>Low</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Phase 1 = link only</td>
 </tr>
 <tr>
@@ -1301,7 +1319,6 @@
 <td>1</td>
 <td>Low</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>Phase 1 = curated playlist</td>
 </tr>
 <tr>
@@ -1310,7 +1327,6 @@
 <td>2</td>
 <td>Low</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>❓ V4SF package TBD</td>
 </tr>
 <tr>
@@ -1319,14 +1335,33 @@
 <td>1</td>
 <td>Medium</td>
 <td>Planned</td>
-<td>⬜</td>
 <td>❓ Content source TBD</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p><strong>Zone-Ready</strong> (⬜ Not yet / ✅ Active): A widget is zone-ready once its <code>lwc:if</code> block and boolean flag are added to <code>ustWidgetZone</code> and deployed. Until then, the zone system shows a stub placeholder in Experience Builder and nothing in the live site.</p>
+<p><strong>Zone-Ready</strong> means the widget's boolean flag is in <code>WIDGET_REGISTRY</code> in <code>ustWidgetZone.js</code> and its <code>lwc:if</code> block is in <code>ustWidgetZone.html</code>. Until then, the zone system shows a stub placeholder in Experience Builder and nothing in the live site.</p>
 </blockquote>
+<hr />
+<h2 id="static-content">Static Content<a class="headerlink" href="#static-content" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose:</strong> Allow admins to place arbitrary rich-text content in any zone on any page, without building a dedicated LWC component. Use for banners, announcements, intro copy, or any static HTML content block.</p>
+<p><strong>Widget Type value:</strong> <code>ust_static_content</code><br />
+<strong>LWC:</strong> <code>c-ust-static-content</code> (built ✅)<br />
+<strong>Zone-Ready:</strong> ✅ Active</p>
+<p><strong>How to use:</strong>
+1. Create a <code>UST_Portal_Widget__c</code> record
+2. Set <strong>Widget Type</strong> = <code>Static Content</code>
+3. Enter the content in the <strong>Static Content</strong> field (supports full rich-text HTML via the platform rich-text editor)
+4. Set Zone, Page Context, Sort Order, and Is Active as normal</p>
+<p><strong>Data flow:</strong>
+- <code>PortalWidgetController.getWidgetsForZone()</code> includes <code>Static_Content__c</code> in its SOQL query and maps it to <code>PortalWidgetDto.staticContent</code>
+- <code>ustWidgetZone.buildWidgetRegistry()</code> passes <code>staticContent</code> through to each widget object
+- <code>ustWidgetZone.html</code> renders <code>&lt;c-ust-static-content rich-text-content={widget.staticContent}&gt;</code> when <code>widget.isStaticContent</code> is true
+- <code>ustStaticContent</code> renders the HTML using <code>&lt;lightning-formatted-rich-text&gt;</code> (XSS-safe platform renderer)</p>
+<p><strong>Notes:</strong>
+- No deployment needed to add new static content — all content is managed in widget records
+- The <code>Static Content</code> field is an Html type (32,768 character limit)
+- Only renders if <code>richTextContent</code> is non-empty (guarded by <code>hasContent</code> getter)</p>
 <hr />
 <h2 id="1-profile-card">1. Profile Card<a class="headerlink" href="#1-profile-card" title="Permanent link">&para;</a></h2>
 <p><strong>Purpose:</strong> Surface the alumni's own information on the portal. Give them confidence the portal "knows" them and let them keep their record current.</p>

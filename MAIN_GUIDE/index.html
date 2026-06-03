@@ -1354,17 +1354,21 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 <hr />
 <h4 id="adding-a-new-widget-to-the-registry">Adding a New Widget to the Registry<a class="headerlink" href="#adding-a-new-widget-to-the-registry" title="Permanent link">&para;</a></h4>
 <p>When a new widget LWC is built and deployed, activate it in the zone system with three changes:</p>
-<p><strong>1 — Uncomment the boolean flag in <code>ustWidgetZone.js</code> → <code>buildWidgetRegistry()</code>:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">isProfileCard</span><span class="o">:</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">componentName</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;ust_profile_card&#39;</span><span class="p">,</span>
+<p><strong>1 — Add the boolean flag to <code>WIDGET_REGISTRY</code> in <code>ustWidgetZone.js</code>:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// In the WIDGET_REGISTRY constant at the top of the file:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">WIDGET_REGISTRY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nx">ust_static_content</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;isStaticContent&#39;</span><span class="p">,</span><span class="w">   </span><span class="c1">// ← already active</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nx">ust_profile_card</span><span class="o">:</span><span class="w">   </span><span class="s1">&#39;isProfileCard&#39;</span><span class="p">,</span><span class="w">     </span><span class="c1">// ← uncomment when built</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">};</span>
 </code></pre></div></p>
 <p><strong>2 — Add a <code>lwc:if</code> (or <code>lwc:elseif</code>) block in <code>ustWidgetZone.html</code>, above the <code>lwc:else</code> stub:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">&lt;!-- First registered widget: use lwc:if --&gt;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:if</span><span class="o">=</span><span class="s">{widget.isProfileCard}</span><span class="p">&gt;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">&lt;</span><span class="nt">c-ust-profile-card</span><span class="p">&gt;&lt;/</span><span class="nt">c-ust-profile-card</span><span class="p">&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:if</span><span class="o">=</span><span class="s">{widget.isStaticContent}</span><span class="p">&gt;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">&lt;</span><span class="nt">c-ust-static-content</span> <span class="na">rich-text-content</span><span class="o">=</span><span class="s">{widget.staticContent}</span><span class="p">&gt;&lt;/</span><span class="nt">c-ust-static-content</span><span class="p">&gt;</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cm">&lt;!-- Additional widgets: use lwc:elseif --&gt;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:elseif</span><span class="o">=</span><span class="s">{widget.isEventsWidget}</span><span class="p">&gt;</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">&lt;</span><span class="nt">c-ust-events-widget</span><span class="p">&gt;&lt;/</span><span class="nt">c-ust-events-widget</span><span class="p">&gt;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:elseif</span><span class="o">=</span><span class="s">{widget.isProfileCard}</span><span class="p">&gt;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">&lt;</span><span class="nt">c-ust-profile-card</span><span class="p">&gt;&lt;/</span><span class="nt">c-ust-profile-card</span><span class="p">&gt;</span>
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="cm">&lt;!-- Keep this stub block as the final lwc:else — catches any unregistered component names --&gt;</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">&lt;</span><span class="nt">template</span> <span class="na">lwc:else</span><span class="p">&gt;</span>
@@ -1377,7 +1381,8 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 </code></pre></div></p>
 <p>No Experience Builder changes are needed. The zone component already on the page calls the same Apex query and automatically renders the real widget the next time the page loads.</p>
 <blockquote>
-<p><strong>Stub behavior:</strong> Until Step 1–2 are deployed, a widget record with <code>Component_Name__c = ust_profile_card</code> renders the stub placeholder (visible in Builder, invisible to alumni in the live site). This lets admins configure records ahead of the LWC being built.</p>
+<p><strong>Stub behavior:</strong> Until Step 1–2 are deployed, a widget record with <code>Widget_Type__c = ust_profile_card</code> renders the stub placeholder (visible in Builder, invisible to alumni in the live site). This lets admins configure records ahead of the LWC being built.</p>
+<p><strong>Dynamic imports are NOT supported</strong> in this org's API version. The static <code>lwc:if/lwc:elseif</code> chain in <code>ustWidgetZone.html</code> is the correct pattern. Do not use <code>import()</code> or <code>lwc:is</code> — they will fail with LWC1503.</p>
 </blockquote>
 <hr />
 <h3 id="personalization-dimensions">Personalization Dimensions<a class="headerlink" href="#personalization-dimensions" title="Permanent link">&para;</a></h3>
@@ -1468,25 +1473,30 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 <a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    ustAlumniHeader/    # Site header and navigation
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    ustAlumniFooter/    # Site footer
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    ustWidgetZone/      # Widget zone host — drag onto Experience Builder pages
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  classes/              # Apex controllers
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    NavMenuController   # Experience Cloud navigation menu fetcher
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    PortalWidgetController # Widget zone registry query + audience filtering
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>  objects/              # Custom object and field metadata
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    UST_Portal_Widget__c/  # Widget zone control object (zone, page, component, audience)
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>  permissionsets/       # Permission sets for community users and admins
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  experiences/          # Experience Cloud site metadata
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>  staticresources/      # Images, fonts, global CSS
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>docs/
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    ustStaticContent/   # Renders rich-text static content from a widget record
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>  classes/              # Apex controllers
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    NavMenuController   # Experience Cloud navigation menu fetcher
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    PortalWidgetController # Widget zone registry query + audience filtering
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>  objects/              # Custom object and field metadata
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  permissionsets/       # Permission sets for community users and admins
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>  experiences/          # Experience Cloud site metadata
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>  staticresources/      # Images, fonts, global CSS
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>unpackaged/config/experiences/digitalExperiences/site/Alumni1/
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>  sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json  # Global theme layout (header, footer, nav only)
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>  sfdc_cms__view/home/content.json                          # Home page view (banner, body, sidebar, above_footer zones)
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>docs/
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
+<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
 </code></pre></div>
 <hr />
 <h2 id="key-dependencies">Key Dependencies<a class="headerlink" href="#key-dependencies" title="Permanent link">&para;</a></h2>
