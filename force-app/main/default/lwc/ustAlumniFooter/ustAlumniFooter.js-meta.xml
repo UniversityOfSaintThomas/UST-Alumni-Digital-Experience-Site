@@ -3,8 +3,4 @@
     <apiVersion>66.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>UST Alumni Footer</masterLabel>
-    <targets>
-        <target>lightningCommunity__Page</target>
-        <target>lightningCommunity__Default</target>
-    </targets>
 </LightningComponentBundle>

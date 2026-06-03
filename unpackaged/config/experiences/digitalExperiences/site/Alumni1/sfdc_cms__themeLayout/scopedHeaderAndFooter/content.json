@@ -184,7 +184,7 @@
           "type" : "component"
         } ],
         "id" : "b9f6a3a2-7017-4ef5-b51e-71c6d3a86220",
-        "name" : "navHeader",
+        "name" : "header",
         "type" : "region"
       }, {
         "children" : [ {

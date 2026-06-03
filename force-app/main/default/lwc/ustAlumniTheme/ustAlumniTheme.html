@@ -1,15 +1,21 @@
 <template>
     <a href="#main-content" class="ust-skip-link">Skip to main content</a>
-    <header data-f6-region class="ust-header" role="banner">
-        <c-ust-alumni-header></c-ust-alumni-header>
-        <div class="ust-main-nav">
-            <slot name="navHeader" class="ust-max-width"></slot>
-        </div>
-    </header>
-    <slot name="hero"></slot>
+    <c-ust-alumni-header>
+        <slot name="header"></slot>
+    </c-ust-alumni-header>
     <main id="main-content" class="ust-main" tabindex="-1" data-f6-region>
-        <slot></slot>
+        <section>
+            <slot name="hero">
+            </slot>
+        </section>
+        <section>
+            <slot></slot>
+        </section>
+        <section>
+            <slot name="bottom"></slot>
+        </section>
     </main>
-    <slot name="bottom"></slot>
-    <c-ust-alumni-footer></c-ust-alumni-footer>
+    <c-ust-alumni-footer>
+        <slot name="footer"></slot>
+    </c-ust-alumni-footer>
 </template>

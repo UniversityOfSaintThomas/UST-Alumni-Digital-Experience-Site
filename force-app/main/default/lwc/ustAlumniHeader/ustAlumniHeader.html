@@ -4,7 +4,7 @@
          Top utility bar + primary navigation bar
          ============================================= -->
 
-
+    <header data-f6-region class="ust-header" role="banner">
         <!-- MAIN NAVIGATION BAR ----------------------------- -->
         <div class="ust-header__nav-bar">
 
@@ -13,20 +13,23 @@
                 <div class="ust-header__container ust-header__container--brand">
                     <div class="ust-header__brand-identity">
                         <a href={homeUrl} class="ust-header__alumni-brand" aria-label="Alumni home">Alumni</a>
-                        <a href={homeUrl} class="ust-header__logo-link" aria-label="University of St. Thomas Alumni — home">
-                            <img src={logoUrl} alt="University of St. Thomas" class="ust-header__logo" />
+                        <a href={homeUrl} class="ust-header__logo-link"
+                           aria-label="University of St. Thomas Alumni — home">
+                            <img src={logoUrl} alt="University of St. Thomas" class="ust-header__logo"/>
                         </a>
                     </div>
                     <!-- Header actions: search (right side of brand row) -->
                     <div class="ust-header__actions">
                         <button
-                            class="ust-header__search-btn"
-                            onclick={handleSearchToggle}
-                            aria-label="Toggle search"
-                            aria-expanded={isSearchOpen}
-                            aria-controls="ust-search-panel">
-                            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M13.273 7.818a5.455 5.455 0 1 1-10.91 0 5.455 5.455 0 0 1 10.91 0Zm-1.167 6.32a7.636 7.636 0 1 1 1.617-1.477l5.741 5.262a1.091 1.091 0 0 1-1.474 1.608l-5.884-5.393Z"/>
+                                class="ust-header__search-btn"
+                                onclick={handleSearchToggle}
+                                aria-label="Toggle search"
+                                aria-expanded={isSearchOpen}
+                                aria-controls="ust-search-panel">
+                            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false"
+                                 aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                      d="M13.273 7.818a5.455 5.455 0 1 1-10.91 0 5.455 5.455 0 0 1 10.91 0Zm-1.167 6.32a7.636 7.636 0 1 1 1.617-1.477l5.741 5.262a1.091 1.091 0 0 1-1.474 1.608l-5.884-5.393Z"/>
                             </svg>
                         </button>
                     </div>
@@ -42,13 +45,13 @@
                         </label>
                         <div class="ust-header__search-row">
                             <input
-                                id="ust-search-input"
-                                type="search"
-                                class="ust-header__search-input"
-                                placeholder="Search..."
-                                aria-label="Search the alumni portal"
-                                value={searchQuery}
-                                onchange={handleSearchInput} />
+                                    id="ust-search-input"
+                                    type="search"
+                                    class="ust-header__search-input"
+                                    placeholder="Search..."
+                                    aria-label="Search the alumni portal"
+                                    value={searchQuery}
+                                    onchange={handleSearchInput}/>
                             <button type="submit" class="ust-header__search-submit">
                                 Search
                             </button>
@@ -57,6 +60,8 @@
                 </div>
             </div>
         </div>
-
-
+        <div class="ust-main-nav">
+            <slot></slot>
+        </div>
+    </header>
 </template>

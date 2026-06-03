@@ -7,8 +7,8 @@
          - Legal bar
          - Back to top
          ============================================================ -->
-    <footer data-f6-region class="ust-footer" role="contentinfo">
 
+    <footer data-f6-region class="ust-footer" role="contentinfo" slot>
         <!-- MAIN FOOTER BODY -->
         <div class="ust-footer__body">
             <div class="ust-footer__container">
@@ -99,26 +99,26 @@
 
                 <!-- Footer navigation columns -->
                 <nav class="ust-footer__nav" aria-label="Footer navigation">
-                    <slot name="navFooter"></slot>
-        <!--            <template for:each={footerColumns} for:item="col">
-                        <div key={col.id} class="ust-footer__nav-col">
-                            <h3 class="ust-footer__nav-heading">{col.label}</h3>
-                            <ul class="ust-footer__nav-list">
-                                <template for:each={col.items} for:item="item">
-                                    <li key={item.id}>
-                                        <a
-                                            href={item.actionValue}
-                                            class="ust-footer__nav-link"
-                                            data-url={item.actionValue}
-                                            data-type={item.actionType}
-                                            onclick={handleNavClick}>
-                                            {item.label}
-                                        </a>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
-                    </template>-->
+                    <slot></slot>
+                    <!--            <template for:each={footerColumns} for:item="col">
+                                    <div key={col.id} class="ust-footer__nav-col">
+                                        <h3 class="ust-footer__nav-heading">{col.label}</h3>
+                                        <ul class="ust-footer__nav-list">
+                                            <template for:each={col.items} for:item="item">
+                                                <li key={item.id}>
+                                                    <a
+                                                        href={item.actionValue}
+                                                        class="ust-footer__nav-link"
+                                                        data-url={item.actionValue}
+                                                        data-type={item.actionType}
+                                                        onclick={handleNavClick}>
+                                                        {item.label}
+                                                    </a>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>-->
                 </nav>
 
             </div>
@@ -129,25 +129,25 @@
             <div class="ust-footer__container ust-footer__legal-container">
                 <ul class="ust-footer__legal-links">
                     <li>
-                        <a class="link-underline" href="https://stthomas.az1.qualtrics.com/jfe/form/SV_29nqe0td5nH798q">Report a Website Problem</a>
+                        <a class="link-underline" href="https://stthomas.az1.qualtrics.com/jfe/form/SV_29nqe0td5nH798q">Report
+                            a Website Problem</a>
                     </li>
                     <li>
-                        <a class="link-underline" href="https://www.stthomas.edu/policies/equal-opportunity/">EO Statement</a>
+                        <a class="link-underline" href="https://www.stthomas.edu/policies/equal-opportunity/">EO
+                            Statement</a>
                     </li>
                     <li>
-                        <a class="link-underline" href="https://www.stthomas.edu/accessibility-statement/">Accessibility</a>
+                        <a class="link-underline"
+                           href="https://www.stthomas.edu/accessibility-statement/">Accessibility</a>
                     </li>
                     <li>
-                        <a class="link-underline" href="https://www.stthomas.edu/policies/online-privacy/">Privacy Policy</a>
+                        <a class="link-underline" href="https://www.stthomas.edu/policies/online-privacy/">Privacy
+                            Policy</a>
                     </li>
                     <li>
                         <a class="link-underline" href="https://www.stthomas.edu/emergency/">Emergency</a>
                     </li>
                 </ul>
-            </div>
-            <div class="FooterCampaign__legal t-xs zero small-only">
-                <p>&#169; <span id="date2"></span> University of St. Thomas, Minnesota
-                </p>
             </div>
         </div>
     </footer>
