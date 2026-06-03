@@ -88,15 +88,6 @@
     border-radius: 0 0 var(--ust-border-radius) 0;
     transition: top var(--ust-transition);
 }
-.ust-main-nav {
-    background-color: var(--ust-nav-bg);
-    max-width: var(--ust-container-max, 1280px);
-    margin: 0 auto;
-    padding: 0 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
 .ust-header {
 background-color: var(--ust-nav-bg);
     display: block;

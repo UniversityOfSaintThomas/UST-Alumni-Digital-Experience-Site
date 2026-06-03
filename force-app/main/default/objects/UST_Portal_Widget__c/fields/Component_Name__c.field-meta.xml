@@ -3,7 +3,7 @@
     <fullName>Component_Name__c</fullName>
     <description>Registry key that maps this record to one entry in the ustWidgetZone component registry. Value must exactly match the key used in the JS mapping and the lwc:if condition in the template. Add a new picklist value here AND a corresponding entry in ustWidgetZone when a new widget LWC is built.</description>
     <label>Component Name</label>
-    <required>true</required>
+    <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>

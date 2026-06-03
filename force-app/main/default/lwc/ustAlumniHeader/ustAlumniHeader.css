@@ -92,6 +92,16 @@
     font-size: 0.75rem;
 }
 
+.ust-main-nav {
+    background-color: var(--ust-nav-bg);
+    max-width: var(--ust-container-max, 1280px);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 /* Audience switcher links */
 .ust-header__audience-link {
     position: relative;

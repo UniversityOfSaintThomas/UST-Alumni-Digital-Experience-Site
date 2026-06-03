@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "News",
+  "contentBody" : {
+    "activeViewId" : "News",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-news",
+    "urlPrefix" : "news"
+  },
+  "urlName" : "news"
+}

@@ -109,7 +109,6 @@ Admin-controlled registry driving the widget zone system. Each record tells one 
 | Component Name | `Component_Name__c` | Picklist | Registry key — must match entry in `ustWidgetZone.js` |
 | Page Context | `Page_Context__c` | Multi-select Picklist | all; home; giving; events; profile; directory; news |
 | Sort Order | `Sort_Order__c` | Number | Lower = higher on page; ties broken by Name |
-| Audience Rule | `Audience_Rule__c` | Picklist | All; Donor; Parent; Faculty_Staff |
 | Is Active | `Is_Active__c` | Checkbox | Kill switch; default true |
 | Description | `Description__c` | Long Text Area | Admin notes only |
 

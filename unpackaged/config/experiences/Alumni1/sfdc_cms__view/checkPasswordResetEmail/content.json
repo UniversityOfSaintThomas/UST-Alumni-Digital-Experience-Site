@@ -1,6 +1,6 @@
 {
   "type" : "sfdc_cms__view",
-  "title" : "Home",
+  "title" : "Check Password",
   "contentBody" : {
     "component" : {
       "children" : [ {
@@ -15,42 +15,43 @@
             "layoutDirectionTablet" : "column",
             "maxContentWidth" : "",
             "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"a18b4127-af46-46bd-8320-b103cedd63a8\",\"columns\":[{\"UUID\":\"9b14ee25-a986-4637-bc3b-ed9666974ece\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"8\",\"seedComponents\":null},{\"UUID\":\"4be18969-1559-46de-8a28-87ce85c5b28b\",\"columnName\":\"Column 2\",\"columnKey\":\"42220\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}",
+            "sectionConfig" : "{\"UUID\":\"2622c9b5-f3e7-4d22-9ffb-e35454f4552e\",\"columns\":[{\"UUID\":\"135acdc2-c417-4eef-a8cb-e2071b519c60\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
             "sectionMinHeight" : "",
             "sectionVerticalAlign" : "flex-start"
           },
           "children" : [ {
             "children" : [ {
               "attributes" : {
-                "zoneName" : "body"
+                "alignment" : "left",
+                "dxpStyle" : { },
+                "imageInfo" : "",
+                "imageInfoMobile" : "",
+                "logoWidth" : 250
               },
-              "definition" : "c:ustWidgetZone",
-              "id" : "2d013dd8-aa14-4b75-9b4b-f99071ae4e04",
+              "definition" : "dxp_content_layout:siteLogo",
+              "id" : "20260eef-b0a8-4a1d-99dc-5d9c382c6d11",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "checkEmailMessage" : "Check the email account associated with your username for the link to reset your password. If you didn't get an email, check your Spam folder. Or contact your administrator.",
+                "dxpStyle" : { },
+                "returnButtonLabel" : "Back to login",
+                "titleLabel" : "Now check your email"
+              },
+              "definition" : "community_login:checkEmail",
+              "id" : "46685ff1-282c-4ae5-9c36-c6cc3a01e3d9",
               "type" : "component"
             } ],
-            "id" : "9b14ee25-a986-4637-bc3b-ed9666974ece",
+            "id" : "135acdc2-c417-4eef-a8cb-e2071b519c60",
             "name" : "col1",
             "title" : "Column 1",
             "type" : "region"
-          }, {
-            "children" : [ {
-              "attributes" : {
-                "zoneName" : "sidebar"
-              },
-              "definition" : "c:ustWidgetZone",
-              "id" : "c81ad2c9-fdc0-449a-a6b0-a787b9c38d5e",
-              "type" : "component"
-            } ],
-            "id" : "4be18969-1559-46de-8a28-87ce85c5b28b",
-            "name" : "42220",
-            "title" : "Column 2",
-            "type" : "region"
           } ],
           "definition" : "community_layout:section",
-          "id" : "a18b4127-af46-46bd-8320-b103cedd63a8",
+          "id" : "2622c9b5-f3e7-4d22-9ffb-e35454f4552e",
           "type" : "component"
         } ],
-        "id" : "7af80d88-b8a4-4c06-bb32-fe2f8c4d5f80",
+        "id" : "554f88ae-9499-482a-9f8a-aa4156be118b",
         "name" : "content",
         "title" : "Content",
         "type" : "region"
@@ -60,25 +61,25 @@
             "customHeadTags" : "",
             "description" : "",
             "dxpStyle" : { },
-            "pageTitle" : "Home",
+            "pageTitle" : "Check Password",
             "recordId" : "{!recordId}"
           },
           "definition" : "community_builder:seoAssistant",
-          "id" : "03e800ab-91c1-46e5-a6aa-38dd3b71112e",
+          "id" : "ea803e72-6e38-4aa8-849b-a399f7db70fb",
           "type" : "component"
         } ],
-        "id" : "eee0286c-0098-4e82-927a-6c0f53624af0",
+        "id" : "ad7bdebb-9f65-4a43-91da-902b7c7a5608",
         "name" : "sfdcHiddenRegion",
         "title" : "sfdcHiddenRegion",
         "type" : "region"
       } ],
       "definition" : "community_layout:sldsFlexibleLayout",
-      "id" : "ca8da70c-b9d2-4cc2-987e-2967fdb01c30",
+      "id" : "c714a796-ef09-44cc-9e27-55e8d8bb5522",
       "type" : "component"
     },
     "dataProviders" : [ ],
     "themeLayoutType" : "Inner",
-    "viewType" : "home"
+    "viewType" : "check-password"
   },
-  "urlName" : "home"
+  "urlName" : "check-password"
 }

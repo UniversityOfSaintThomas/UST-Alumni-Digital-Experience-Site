@@ -4,7 +4,7 @@
          Top utility bar + primary navigation bar
          ============================================= -->
 
-    <header data-f6-region class="ust-header" role="banner">
+    <header data-f6-region class="ust-header scoped-header" role="banner">
         <!-- MAIN NAVIGATION BAR ----------------------------- -->
         <div class="ust-header__nav-bar">
 
@@ -59,9 +59,9 @@
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="ust-main-nav">
-            <slot></slot>
+            <div class="ust-main-nav">
+                <slot class="ust-max-width"></slot>
+            </div>
         </div>
     </header>
 </template>

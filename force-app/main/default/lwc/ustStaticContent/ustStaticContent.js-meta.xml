@@ -4,4 +4,3 @@
     <isExposed>false</isExposed>
     <description>Renders admin-authored rich-text content from the UST_Portal_Widget__c Static_Content__c field. Used internally by ustWidgetZone when Widget Type is "Static Content".</description>
 </LightningComponentBundle>
-

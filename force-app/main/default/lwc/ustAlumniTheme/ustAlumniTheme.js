@@ -3,10 +3,10 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import UST_ALUMNI_TEMPLATE from '@salesforce/resourceUrl/ustAlumniThemplate';
 
 /**
- * @slot header Top Navigation area
- * @slot hero For hero/full width content
- * @slot bottom Full width pre footer
+ * @slot header
+ * @slot banner
  * @slot footer
+ * @slot above_footer
  */
 export default class UstAlumniTheme extends LightningElement {
     /**

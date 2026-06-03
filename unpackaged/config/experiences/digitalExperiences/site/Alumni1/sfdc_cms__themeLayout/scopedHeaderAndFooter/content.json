@@ -201,14 +201,14 @@
         }, {
           "attributes" : {
             "pageContext" : "home",
-            "zoneName" : "Above Footer"
+            "zoneName" : "above_footer"
           },
           "definition" : "c:ustWidgetZone",
           "id" : "2176e69b-2d47-4986-b5f1-053ce6764ec7",
           "type" : "component"
         } ],
         "id" : "fe59c675-0793-43bb-a025-d87b005c223b",
-        "name" : "bottom",
+        "name" : "above_footer",
         "type" : "region"
       }, {
         "id" : "26af2503-fc1f-4841-8992-52a6b8491a44",
@@ -216,20 +216,20 @@
         "type" : "region"
       }, {
         "id" : "aa2443ce-f38b-4089-b232-0714e659188f",
-        "name" : "footerNav",
+        "name" : "footer",
         "type" : "region"
       }, {
         "children" : [ {
           "attributes" : {
             "pageContext" : "home",
-            "zoneName" : "Banner"
+            "zoneName" : "banner"
           },
           "definition" : "c:ustWidgetZone",
           "id" : "496d6594-88a1-4297-b9d9-9b78183236df",
           "type" : "component"
         } ],
         "id" : "8ea29546-7e68-48aa-bbf0-f05874e33784",
-        "name" : "hero",
+        "name" : "banner",
         "type" : "region"
       } ],
       "definition" : "c:ustAlumniTheme",

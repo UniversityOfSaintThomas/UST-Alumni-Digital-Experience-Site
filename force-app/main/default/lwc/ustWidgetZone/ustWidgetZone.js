@@ -53,9 +53,11 @@ export default class UstWidgetZone extends LightningElement {
      *  Must match Zone__c picklist value: body, sidebar, banner, above_footer */
     @api zoneName;
 
-    /** Page context slug - set in Experience Builder property panel.
-     *  Must match Page_Context__c value: home, events, giving, profile, directory, news, all */
-    @api pageContext;
+    // pageContext is no longer an @api prop - it is derived automatically
+    // from CurrentPageReference so admins do not need to configure it.
+    // Widget records use Page_Context__c (multi-select picklist) to opt in
+    // to pages by their API name. Add a new picklist value when a new page
+    // is created in Experience Builder.
 
     @track activeWidgets = [];
     @track isLoading = true;
@@ -64,15 +66,43 @@ export default class UstWidgetZone extends LightningElement {
 
     _isBuilderMode = false;
 
-    /** Detects whether the component is rendering inside Experience Builder (commeditor). */
+    /** Derived page context - resolved from CurrentPageReference and used
+     *  as the reactive param for the getWidgetsForZone wire adapter.
+     *  Initialized to null so the wire does not fire until the page name
+     *  is known (LWC skips wire calls when params are null/undefined). */
+    _derivedPageContext = null;
+
+    /**
+     * Resolves both builder-mode detection and the current page's API name.
+     * LWR Experience Cloud named pages expose their name via
+     * currentPageReference.attributes.name (comm__namedPage) or
+     * currentPageReference.attributes.pageName (standard__namedPage).
+     * The value is lowercased to match Page_Context__c picklist values.
+     */
     @wire(CurrentPageReference)
     setCurrentPageReference(currentPageReference) {
-        const application = currentPageReference && currentPageReference.state && currentPageReference.state.app;
+        if (!currentPageReference) return;
+
+        const application = currentPageReference.state && currentPageReference.state.app;
         this._isBuilderMode = application === 'commeditor';
+
+        // Resolve the page name from whichever attribute the page type exposes.
+        const rawName = (currentPageReference.attributes && (
+                            currentPageReference.attributes.name ||
+                            currentPageReference.attributes.pageName
+                        )) || null;
+
+        this._derivedPageContext = rawName ? rawName.toLowerCase() : null;
+
+        // If no page name is available (e.g. an unrecognised page type), clear
+        // the loading spinner so the zone does not hang indefinitely.
+        if (!this._derivedPageContext) {
+            this.isLoading = false;
+        }
     }
 
-    /** Wire adapter - fires reactively when zoneName or pageContext are set or change. */
-    @wire(getWidgetsForZone, { zoneName: '$zoneName', pageContext: '$pageContext' })
+    /** Wire adapter - fires reactively when zoneName or _derivedPageContext change. */
+    @wire(getWidgetsForZone, { zoneName: '$zoneName', pageContext: '$_derivedPageContext' })
     loadWidgetsResult({ data, error }) {
         if (data === undefined && error === undefined) {
             return;
@@ -90,7 +120,9 @@ export default class UstWidgetZone extends LightningElement {
     }
 
     connectedCallback() {
-        if (!this.zoneName || !this.pageContext) {
+        // If zoneName is not yet configured in Experience Builder, exit loading
+        // immediately so the empty-state message renders instead of a spinner.
+        if (!this.zoneName) {
             this.isLoading = false;
         }
     }

@@ -3,7 +3,7 @@
     <apiVersion>66.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>UST Widget Zone</masterLabel>
-    <description>Queries UST_Portal_Widget__c for the configured zone and page, then renders matching widgets in sort order. Place one per zone on each Experience Cloud page.</description>
+    <description>Queries UST_Portal_Widget__c for the configured zone. The current page context is detected automatically from CurrentPageReference — no manual configuration needed. Place one per zone on each Experience Cloud page.</description>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
@@ -14,14 +14,9 @@
                 name="zoneName"
                 type="String"
                 label="Zone Name"
-                description="Zone this instance covers. Matches Zone__c picklist: body, sidebar, banner, above_footer."
-                required="true"
-            />
-            <property
-                name="pageContext"
-                type="String"
-                label="Page Context"
-                description="Page slug to filter widgets. Matches Page_Context__c: home, events, giving, profile, directory, news. Use 'all' for all-page widgets."
+                datasource="body,sidebar,banner,above_footer"
+                default="body"
+                description="Zone this portal widget will appear in."
                 required="true"
             />
         </targetConfig>

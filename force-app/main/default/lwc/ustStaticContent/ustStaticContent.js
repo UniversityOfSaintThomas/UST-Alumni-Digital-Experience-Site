@@ -24,4 +24,3 @@ export default class UstStaticContent extends LightningElement {
         return !!this.textHeader;
     }
 }
-

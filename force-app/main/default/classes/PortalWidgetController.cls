@@ -22,9 +22,6 @@
  * must still grant Read access to the object and all queried fields.
  *
  * See AI-TOOLS-CONFIG.md - Experience Cloud Guest User Access
- *
- * NOTE: Audience_Rule__c is no longer used. It has been superseded by the 10
- * Filter_* fields added in the 2026 portal update. See WIDGET-CATALOG.md.
  */
 public without sharing class PortalWidgetController {
 
@@ -95,7 +92,7 @@ public without sharing class PortalWidgetController {
                     dto.description = widget.Description__c;
                     dto.staticContent = widget.Static_Content__c;
                     dto.staticContentHeader = String.isNotBlank(widget.Static_Content_Header__c) ? widget.Static_Content_Header__c : '';
-                    dto.isStaticContent = String.isNotBlank(widget.Static_Content__c);
+                    dto.isStaticContent = String.isNotBlank(widget.Static_Content__c) || String.isNotBlank(widget.Static_Content_Header__c);
                     results.add(dto);
                 }
             }
