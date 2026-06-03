@@ -108,20 +108,24 @@ A user who qualifies for multiple segments sees widgets for all of them. Create 
 
 When a new widget LWC is built and deployed, activate it in the zone system with three changes:
 
-**1 — Uncomment the boolean flag in `ustWidgetZone.js` → `buildWidgetRegistry()`:**
+**1 — Add the boolean flag to `WIDGET_REGISTRY` in `ustWidgetZone.js`:**
 ```javascript
-isProfileCard: item.componentName === 'ust_profile_card',
+// In the WIDGET_REGISTRY constant at the top of the file:
+const WIDGET_REGISTRY = {
+    ust_static_content: 'isStaticContent',   // ← already active
+    ust_profile_card:   'isProfileCard',     // ← uncomment when built
+};
 ```
 
 **2 — Add a `lwc:if` (or `lwc:elseif`) block in `ustWidgetZone.html`, above the `lwc:else` stub:**
 ```html
 <!-- First registered widget: use lwc:if -->
-<template lwc:if={widget.isProfileCard}>
-    <c-ust-profile-card></c-ust-profile-card>
+<template lwc:if={widget.isStaticContent}>
+    <c-ust-static-content rich-text-content={widget.staticContent}></c-ust-static-content>
 </template>
 <!-- Additional widgets: use lwc:elseif -->
-<template lwc:elseif={widget.isEventsWidget}>
-    <c-ust-events-widget></c-ust-events-widget>
+<template lwc:elseif={widget.isProfileCard}>
+    <c-ust-profile-card></c-ust-profile-card>
 </template>
 <!-- Keep this stub block as the final lwc:else — catches any unregistered component names -->
 <template lwc:else>
@@ -137,7 +141,9 @@ cci task run deploy --path force-app/main/default/lwc/ustProfileCard --org dev
 
 No Experience Builder changes are needed. The zone component already on the page calls the same Apex query and automatically renders the real widget the next time the page loads.
 
-> **Stub behavior:** Until Step 1–2 are deployed, a widget record with `Component_Name__c = ust_profile_card` renders the stub placeholder (visible in Builder, invisible to alumni in the live site). This lets admins configure records ahead of the LWC being built.
+> **Stub behavior:** Until Step 1–2 are deployed, a widget record with `Widget_Type__c = ust_profile_card` renders the stub placeholder (visible in Builder, invisible to alumni in the live site). This lets admins configure records ahead of the LWC being built.
+
+> **Dynamic imports are NOT supported** in this org's API version. The static `lwc:if/lwc:elseif` chain in `ustWidgetZone.html` is the correct pattern. Do not use `import()` or `lwc:is` — they will fail with LWC1503.
 
 ---
 
@@ -209,15 +215,20 @@ force-app/main/default/
     ustAlumniHeader/    # Site header and navigation
     ustAlumniFooter/    # Site footer
     ustWidgetZone/      # Widget zone host — drag onto Experience Builder pages
+    ustStaticContent/   # Renders rich-text static content from a widget record
     ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
   classes/              # Apex controllers
     NavMenuController   # Experience Cloud navigation menu fetcher
     PortalWidgetController # Widget zone registry query + audience filtering
   objects/              # Custom object and field metadata
-    UST_Portal_Widget__c/  # Widget zone control object (zone, page, component, audience)
+    UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
   permissionsets/       # Permission sets for community users and admins
   experiences/          # Experience Cloud site metadata
   staticresources/      # Images, fonts, global CSS
+
+unpackaged/config/experiences/digitalExperiences/site/Alumni1/
+  sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json  # Global theme layout (header, footer, nav only)
+  sfdc_cms__view/home/content.json                          # Home page view (banner, body, sidebar, above_footer zones)
 
 docs/
   MAIN_GUIDE.md         # This file — project overview and workflow

@@ -33,24 +33,52 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 
 ## Widget Index
 
-| # | Widget Name | Phase | Priority | Status | Zone-Ready | Notes |
-|---|------------|-------|---------|--------|-----------|-------|
-| 1 | [Profile Card](#1-profile-card) | 1 | High | Planned | ⬜ | Includes Business Info update |
-| 2 | [Events — Upcoming & Registered](#2-events-upcoming-registered) | 1 | High | Planned | ⬜ | Alumni events, non-alumni events, registrations |
-| 3 | [Give / Donor Widget](#3-give-donor-widget) | 1 | High | Planned | ⬜ | Includes Assigned Gift Officer section |
-| 4 | [Engagement Summary (Year in Review)](#4-engagement-summary-year-in-review) | 2 | High | Planned | ⬜ | Needs data model definition |
-| 5 | [St. Thomas Connection Messages](#5-st-thomas-connection-messages) | 1 | High | Planned | ⬜ | Personalized by role |
-| 6 | [Preference Center](#6-preference-center) | 2 | High | Planned | ⬜ | Full pref center is Phase 2; see notes |
-| 7 | [Alumni Directory & Connect](#7-alumni-directory-connect) | 1 | Medium | Planned | ⬜ | ❓ Native messaging vs. PeopleGrove TBD |
-| 8 | [Links Hub](#8-links-hub) | 1 | Medium | Planned | ⬜ | Expanded link list from 2026 CSV |
-| 9 | [Communications History](#9-communications-history) | 2 | Medium | Planned | ⬜ | ❓ MC Connect status TBD |
-| 10 | [Photo & Story Sharing](#10-photo-story-sharing) | 1 | Medium | Planned | ⬜ | |
-| 11 | [Athletics](#11-athletics) | 1 | Low | Planned | ⬜ | Phase 1 = link only |
-| 12 | [Videos & Media](#12-videos-media) | 1 | Low | Planned | ⬜ | Phase 1 = curated playlist |
-| 13 | [Volunteer Management](#13-volunteer-management) | 2 | Low | Planned | ⬜ | ❓ V4SF package TBD |
-| 14 | [Alumni News & UST Updates](#14-alumni-news-ust-updates) | 1 | Medium | Planned | ⬜ | ❓ Content source TBD |
+| # | Widget Name | Phase | Priority | Status | Notes |
+|---|------------|-------|---------|--------|-------|
+| — | [Static Content](#static-content) | 1 | — | ✅ Done | Built-in; no separate LWC needed |
+| 1 | [Profile Card](#1-profile-card) | 1 | High | Planned | Includes Business Info update |
+| 2 | [Events — Upcoming & Registered](#2-events-upcoming-registered) | 1 | High | Planned | Alumni events, non-alumni events, registrations |
+| 3 | [Give / Donor Widget](#3-give-donor-widget) | 1 | High | Planned | Includes Assigned Gift Officer section |
+| 4 | [Engagement Summary (Year in Review)](#4-engagement-summary-year-in-review) | 2 | High | Planned | Needs data model definition |
+| 5 | [St. Thomas Connection Messages](#5-st-thomas-connection-messages) | 1 | High | Planned | Personalized by role |
+| 6 | [Preference Center](#6-preference-center) | 2 | High | Planned | Full pref center is Phase 2; see notes |
+| 7 | [Alumni Directory & Connect](#7-alumni-directory-connect) | 1 | Medium | Planned | ❓ Native messaging vs. PeopleGrove TBD |
+| 8 | [Links Hub](#8-links-hub) | 1 | Medium | Planned | Expanded link list from 2026 CSV |
+| 9 | [Communications History](#9-communications-history) | 2 | Medium | Planned | ❓ MC Connect status TBD |
+| 10 | [Photo & Story Sharing](#10-photo-story-sharing) | 1 | Medium | Planned | |
+| 11 | [Athletics](#11-athletics) | 1 | Low | Planned | Phase 1 = link only |
+| 12 | [Videos & Media](#12-videos-media) | 1 | Low | Planned | Phase 1 = curated playlist |
+| 13 | [Volunteer Management](#13-volunteer-management) | 2 | Low | Planned | ❓ V4SF package TBD |
+| 14 | [Alumni News & UST Updates](#14-alumni-news-ust-updates) | 1 | Medium | Planned | ❓ Content source TBD |
 
-> **Zone-Ready** (⬜ Not yet / ✅ Active): A widget is zone-ready once its `lwc:if` block and boolean flag are added to `ustWidgetZone` and deployed. Until then, the zone system shows a stub placeholder in Experience Builder and nothing in the live site.
+> **Zone-Ready** means the widget's boolean flag is in `WIDGET_REGISTRY` in `ustWidgetZone.js` and its `lwc:if` block is in `ustWidgetZone.html`. Until then, the zone system shows a stub placeholder in Experience Builder and nothing in the live site.
+
+---
+
+## Static Content
+
+**Purpose:** Allow admins to place arbitrary rich-text content in any zone on any page, without building a dedicated LWC component. Use for banners, announcements, intro copy, or any static HTML content block.
+
+**Widget Type value:** `ust_static_content`  
+**LWC:** `c-ust-static-content` (built ✅)  
+**Zone-Ready:** ✅ Active
+
+**How to use:**
+1. Create a `UST_Portal_Widget__c` record
+2. Set **Widget Type** = `Static Content`
+3. Enter the content in the **Static Content** field (supports full rich-text HTML via the platform rich-text editor)
+4. Set Zone, Page Context, Sort Order, and Is Active as normal
+
+**Data flow:**
+- `PortalWidgetController.getWidgetsForZone()` includes `Static_Content__c` in its SOQL query and maps it to `PortalWidgetDto.staticContent`
+- `ustWidgetZone.buildWidgetRegistry()` passes `staticContent` through to each widget object
+- `ustWidgetZone.html` renders `<c-ust-static-content rich-text-content={widget.staticContent}>` when `widget.isStaticContent` is true
+- `ustStaticContent` renders the HTML using `<lightning-formatted-rich-text>` (XSS-safe platform renderer)
+
+**Notes:**
+- No deployment needed to add new static content — all content is managed in widget records
+- The `Static Content` field is an Html type (32,768 character limit)
+- Only renders if `richTextContent` is non-empty (guarded by `hasContent` getter)
 
 ---
 
