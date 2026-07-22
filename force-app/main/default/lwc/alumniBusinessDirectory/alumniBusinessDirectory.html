@@ -1,0 +1,327 @@
+<!--
+ - Created by nguy0092 on 3/19/2026.
+ -->
+
+<!-- Alumni Business Directory -->
+<template>
+    <div class="slds-p-horizontal_medium">
+        <!-- ─── Search & Filter Controls ──────────────────────────────────── -->
+        <div class="slds-p-horizontal_x-small">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-large-size_1-of-4 slds-p-around_x-small">
+                    <lightning-input type="search"
+                                     label="Search Company, Owner or Description"
+                                     placeholder="keywords"
+                                     value={searchWordsFilter}
+                                     data-filtertype="filterSearchWords"
+                                     onchange={searchFilter}
+                                     class="ust-search-company-owner-description">
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-large-size_1-of-4 slds-p-around_x-small">
+                    <lightning-combobox name="company industry"
+                                        label="Filter By Company Industry"
+                                        value={industryFilter}
+                                        placeholder=""
+                                        options={companyIndustryPickList}
+                                        data-filtertype="filterIndustry"
+                                        onchange={searchFilter}
+                                        class="ust-filter-company-industry">
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-large-size_1-of-4 slds-p-around_x-small">
+                    <lightning-combobox name="company special interest"
+                                        label="Filter By Company Interest"
+                                        value={interestFilter}
+                                        placeholder=""
+                                        options={companySpecialInterestPicklist}
+                                        data-filtertype="filterInterest"
+                                        onchange={searchFilter}
+                                        class="ust-filter-company-special-interest">
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-large-size_1-of-4 slds-p-around_x-small">
+                    <lightning-combobox name="company state"
+                                        label="Filter By State/Province (US and Canada)"
+                                        value={stateFilter}
+                                        placeholder=""
+                                        options={UsCanadaStates}
+                                        data-filtertype="filterState"
+                                        onchange={searchFilter}
+                                        class="ust-filter-state">
+                    </lightning-combobox>
+                </div>
+            </div>
+            <div class="slds-p-around_small">
+                <lightning-input type="checkbox"
+                                 label="Available St. Thomas Discounts"
+                                 checked={discountFilter}
+                                 data-filtertype="filterDiscount"
+                                 onchange={searchFilter}
+                                 class="ust-filter-discount">
+                </lightning-input>
+            </div>
+
+            <!-- Active filter chips — only shown when at least one chip-generating filter is active -->
+            <div class="slds-p-horizontal_x-small" lwc:if={hasActiveFilters}>
+                <div class="slds-p-horizontal_xx-small slds-p-vertical_x-small search-filter-buttons-box">
+                    <template for:each={activeFilterButtons} for:item="btn">
+                        <lightning-button key={btn.key}
+                                          variant="base"
+                                          label={btn.label}
+                                          icon-name="utility:clear"
+                                          icon-position="right"
+                                          disable-animation
+                                          data-buttontype={btn.buttontype}
+                                          onclick={clearSearchFilter}
+                                          class="slds-m-around_xx-small clear-search-filter-buttons">
+                        </lightning-button>
+                    </template>
+                    <lightning-button lwc:if={moreThanOneFilter}
+                                      variant="base"
+                                      label="Clear All"
+                                      disable-animation
+                                      data-buttontype="clearAll"
+                                      onclick={clearSearchFilter}
+                                      class="slds-m-around_xx-small clear-search-filter-buttons">
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Record Grid ─────────────────────────────────────────────────── -->
+        <div class="slds-grid slds-wrap slds-m-top_small">
+            <template lwc:if={hasRecords}>
+                <template for:each={visibleRecords} for:item="record">
+                    <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-large-size_1-of-3 slds-p-around_medium" key={record.Id}>
+                        <!-- role="button" + tabindex + onkeydown makes the card keyboard-accessible -->
+                        <div class="grid-record-display"
+                             role="button"
+                             tabindex="0"
+                             data-id={record.Id}
+                             onclick={openRecordModal}
+                             onkeydown={handleCardKeydown}>
+                            <div class="slds-m-top_x-small slds-align_absolute-center logo-container">
+                                <img src={record.Company_Logo_URL__c} alt="Company Logo" class="ust-grid-record-company-logo">
+                            </div>
+                            <div class="slds-text-align_center slds-p-around_small slds-m-top_small">
+                                <p class="ust-grid-record-business-name-display">{record.Company_Name__c}</p>
+                                <p lwc:if={record.Company_State__c} class="ust-grid-record-company-city-state">
+                                    {record.Company_City__c},
+                                    {record.Company_State__c}</p>
+                                <p class="slds-m-top_xx-small ust-grid-record-first-name-last-name-degree">
+                                    {record.First_Name__c}
+                                    {record.Last_Name__c} {record.degreesFormatted}</p>
+                                <p class="slds-m-top_small ust-grid-record-company-description">{record.Company_Description__c}</p>
+                                <p class="slds-m-top_x-small ust-grid-record-company-industry" lwc:if={record.Company_Industry__c}>
+                                    <span class="slds-text-color_weak">Company Industry</span><br>{record.Company_Industry__c}
+                                </p>
+                                <p class="slds-m-top_xx-small ust-grid-record-company-special-interest" lwc:if={record.Company_Special_Interests__c}>
+                                    <span class="slds-text-color_weak">Company Interest</span><br>{record.Company_Special_Interests__c}
+                                </p>
+                                <p class="slds-m-top_xx-small ust-grid-record-st-thomas-discount" lwc:if={record.StThomasDiscount}>{record.StThomasDiscount}</p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </template>
+
+            <!-- Spinner shown while Apex is in-flight and no records are loaded yet -->
+            <template lwc:elseif={isLoadingSearchFilter}>
+                <div class="slds-col slds-size_1-of-1 slds-p-around_large slds-text-align_center">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Empty state shown only after loading completes with zero results — prevents flash on initial load / filter change -->
+            <template lwc:elseif={showEmptyState}>
+                <div class="slds-col slds-size_1-of-1 slds-p-around_large slds-text-align_center">
+                    <lightning-icon icon-name="utility:search" size="large"
+                                    alternative-text="No results"></lightning-icon>
+                    <p class="slds-text-heading_small slds-m-top_medium ust-grid-record-no-results-found">No results
+                        found</p>
+                    <p class="slds-text-color_weak slds-m-top_x-small ust-grid-record-adjusting-your-search">Try
+                        adjusting your
+                        search or filter criteria.</p>
+                </div>
+            </template>
+        </div>
+
+        <!-- ─── Footer ──────────────────────────────────────────────────────── -->
+        <div class="slds-m-vertical_small">
+            <div class="slds-text-align_center" lwc:if={showLoadMore}>
+                <lightning-button label="Load More"
+                                  disable-animation
+                                  onclick={loadMoreRecords}
+                                  variant="base"
+                                  disabled={isLoadingSearchFilter}
+                                  class="ust-grid-record-load-more-button">
+                </lightning-button>
+            </div>
+            <p class="slds-text-align_center slds-m-vertical_x-small">
+                Showing {visibleRecordsSize} of {totalMatchingCount} Records
+            </p>
+        </div>
+    </div>
+
+    <!-- ─── Record Detail Modal ─────────────────────────────────────────── -->
+    <section role="dialog"
+             tabindex="-1"
+             aria-modal="true"
+             aria-labelledby="modal-heading-01"
+             aria-hidden={modalAriaHidden}
+             class="selected-record-modal slds-modal">
+        <div class="slds-modal__container" onclick={ignoreModalClickInside}>
+            <!-- Modal Header -->
+            <div class="slds-modal__header">
+                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate ust-modal-company-name">
+                    {selectedDirectoryRecord.Company_Name__c}
+                </h2>
+                <div class="ust-modal-actions-row">
+                    <div class="ust-modal-nav-buttons">
+                        <lightning-button-icon icon-name="utility:chevronleft"
+                                               variant="bare"
+                                               size="large"
+                                               alternative-text="Previous Record"
+                                               data-buttontype="previousRecord"
+                                               onclick={previousNextRecord}
+                                               disabled={previousRecordDisable}
+                                               class="slds-m-right_xx-small ust-modal-action-button-previous"
+                                               icon-class="slds-m-around_xx-small">
+                        </lightning-button-icon>
+                        <lightning-button-icon icon-name="utility:chevronright"
+                                               variant="bare"
+                                               size="large"
+                                               alternative-text="Next Record"
+                                               data-buttontype="nextRecord"
+                                               onclick={previousNextRecord}
+                                               disabled={nextRecordDisable}
+                                               class="ust-modal-modal-action-button-next"
+                                               icon-class="slds-m-around_xx-small">
+                        </lightning-button-icon>
+                    </div>
+                    <lightning-button-icon icon-name="utility:close"
+                                           variant="bare"
+                                           size="large"
+                                           alternative-text="Close Record"
+                                           data-buttontype="closeRecord"
+                                           onclick={closeRecordModal}
+                                           class="ust-modal-modal-action-button-close"
+                                           icon-class="slds-m-around_xx-small">
+                    </lightning-button-icon>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="slds-modal__content" id="modal-content-id-1">
+                <div class="slds-grid slds-wrap">
+                    <!-- Left column: Alumni photo + description -->
+                    <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2">
+                        <div class="slds-grid slds-wrap slds-p-horizontal_small">
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-align_absolute-center slds-p-right_small slds-p-bottom_small">
+                                <img src={selectedDirectoryRecord.Picture_URL__c} alt="Alumni Picture" class="ust-modal-alumni-image">
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-align-middle">
+                                <p class="ust-modal-first-name-last-name-degree">{selectedDirectoryRecord.First_Name__c}
+                                    {selectedDirectoryRecord.Last_Name__c} {selectedDirectoryRecord.degreesFormatted}</p>
+                                <p class="ust-modal-title">{selectedDirectoryRecord.Title__c}</p>
+                            </div>
+                        </div>
+                        <div class="slds-p-horizontal_small slds-p-bottom_small">
+                            <!-- "Company Overview" -->
+                            <p class="slds-text-heading_small slds-border_bottom slds-m-top_large slds-p-bottom_xx-small ust-modal-company-overview">Company Overview</p>
+                            <p class="slds-m-top_small ust-modal-company-discription">{selectedDirectoryRecord.Company_Description__c}</p>
+                        </div>
+                    </div>
+
+                    <!-- Right column: Company details + social media -->
+                    <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-p-horizontal_small">
+                        <div class="slds-align_absolute-center logo-container">
+                            <img src={selectedDirectoryRecord.Company_Logo_URL__c} alt="Company Logo" class="ust-modal-company-logo">
+                        </div>
+                        <div class="slds-m-top_medium">
+                            <!-- Location — wrapped in <address> for semantic correctness -->
+                            <div class="slds-grid slds-grid_vertical-align-start slds-p-vertical_x-small">
+                                <lightning-icon icon-name="utility:checkin" alternative-text="Location" title="Location" size="small"></lightning-icon>
+                                <address class="slds-col slds-grid slds-grid_vertical slds-m-left_small ust-modal-address-reset">
+                                    <span class="slds-col ust-modal-company-address-1" lwc:if={selectedDirectoryRecord.Company_Address_Line_1__c}>{selectedDirectoryRecord.Company_Address_Line_1__c}</span>
+                                    <span class="slds-col ust-modal-company-address-2" lwc:if={selectedDirectoryRecord.Company_Address_Line_2__c}>{selectedDirectoryRecord.Company_Address_Line_2__c}</span>
+                                    <span class="slds-col ust-modal-company-city-state-zipcode">{selectedDirectoryRecord.Company_City__c}, {selectedDirectoryRecord.Company_State__c} {selectedDirectoryRecord.Company_Zipcode__c}</span>
+                                </address>
+                            </div>
+                            <!-- Phone -->
+                            <div class="slds-p-vertical_x-small">
+                                <lightning-icon icon-name="utility:phone_portrait" alternative-text="Phone" title="Phone" size="small" class="slds-align-middle"></lightning-icon>
+                                <lightning-formatted-phone class="slds-align-middle slds-m-left_small ust-modal-company-phone" value={selectedDirectoryRecord.Company_Phone__c}></lightning-formatted-phone>
+                            </div>
+                            <!-- Email -->
+                            <div class="slds-p-vertical_x-small">
+                                <lightning-icon icon-name="utility:email" alternative-text="Email" title="Email" size="small" class="slds-align-middle"></lightning-icon>
+                                <a class="slds-align-middle slds-m-left_small ust-modal-company-email" href={selectedEmailMailto}>{selectedDirectoryRecord.Company_Email_Address__c}</a>
+                            </div>
+                            <!-- Website -->
+                            <div class="slds-grid slds-grid_vertical-align-start slds-p-vertical_x-small">
+                                <lightning-icon icon-name="utility:world" alternative-text="Website" title="Website" size="small"></lightning-icon>
+                                <lightning-formatted-url class="slds-col slds-m-left_small ust-modal-company-website"
+                                                         value={selectedDirectoryRecord.Company_Website__c}
+                                                         label={selectedDirectoryRecord.Company_Website__c}
+                                                         target="_blank">
+                                </lightning-formatted-url>
+                            </div>
+                            <!-- Founded -->
+                            <div class="slds-p-vertical_x-small" lwc:if={selectedDirectoryRecord.Company_Year_Founded__c}>
+                                <lightning-icon icon-name="utility:priority" alternative-text="Founded" title="Founded" size="small" class="slds-align-middle"></lightning-icon>
+                                <span class="slds-m-left_small ust-modal-company-founded">Founded in {selectedDirectoryRecord.Company_Year_Founded__c}</span>
+                            </div>
+                            <!-- Industry -->
+                            <div class="slds-grid slds-grid_vertical-align-start slds-p-vertical_x-small" lwc:if={selectedDirectoryRecord.Company_Industry__c}>
+                                <lightning-icon icon-name="utility:company" alternative-text="Industry" title="Industry" size="small"></lightning-icon>
+                                <span class="slds-col slds-m-left_small ust-modal-company-industry">{selectedDirectoryRecord.Company_Industry__c}</span>
+                            </div>
+                            <!-- Special Interests -->
+                            <div class="slds-grid slds-grid_vertical-align-start slds-p-vertical_x-small" lwc:if={selectedDirectoryRecord.Company_Special_Interests__c}>
+                                <lightning-icon icon-name="utility:groups" alternative-text="Special Interests" title="Special Interests" size="small"></lightning-icon>
+                                <span class="slds-col slds-m-left_small ust-modal-company-interest">{selectedDirectoryRecord.Company_Special_Interests__c}</span>
+                            </div>
+                            <!-- Discounts -->
+                            <div class="slds-grid slds-grid_vertical-align-start slds-p-vertical_x-small ust-modal-company-st-thomas-discount-check" lwc:if={selectedDirectoryRecord.StThomasDiscount}>
+                                <lightning-icon icon-name="utility:coupon_codes" alternative-text="Discounts" title="Discounts" size="small"></lightning-icon>
+                                <div class="slds-col slds-grid slds-wrap slds-m-left_small">
+                                    <span class="slds-col slds-size_1-of-1 ust-modal-company-discount-description" lwc:if={selectedDirectoryRecord.Discount_Description__c}>{selectedDirectoryRecord.Discount_Description__c}</span>
+                                    <span class="slds-col slds-size_1-of-1 ust-modal-company-discount-code" lwc:if={selectedDirectoryRecord.Discount_Code__c}>Discount Code: {selectedDirectoryRecord.Discount_Code__c}</span>
+                                </div>
+                            </div>
+                            <!-- Social Media — rel="noopener noreferrer" prevents tab-napping -->
+                            <div class="slds-p-vertical_x-small">
+                                <a href={selectedDirectoryRecord.FacebookLink} target="_blank" rel="noopener noreferrer"
+                                   class="slds-p-right_x-small ust-modal-company-facebook-link"
+                                   lwc:if={selectedDirectoryRecord.FacebookLink}><img src={facebookIcon} alt="Facebook" class="socialMediaIcon"></a>
+                                <a href={selectedDirectoryRecord.InstagramLink} target="_blank" rel="noopener noreferrer"
+                                   class="slds-p-right_x-small ust-modal-company-instagram-link"
+                                   lwc:if={selectedDirectoryRecord.InstagramLink}><img src={instagramIcon} alt="Instagram" class="socialMediaIcon"></a>
+                                <a href={selectedDirectoryRecord.LinkedinLink} target="_blank" rel="noopener noreferrer"
+                                   class="slds-p-right_x-small ust-modal-company-linkedin-link"
+                                   lwc:if={selectedDirectoryRecord.LinkedinLink}><img src={linkedinIcon} alt="LinkedIn" class="socialMediaIcon"></a>
+                                <a href={selectedDirectoryRecord.TiktokLink} target="_blank" rel="noopener noreferrer"
+                                   class="slds-p-right_x-small ust-modal-company-tiktok-link"
+                                   lwc:if={selectedDirectoryRecord.TiktokLink}><img src={tiktokIcon} alt="TikTok" class="socialMediaIcon"></a>
+                                <a href={selectedDirectoryRecord.XtwitterLink} target="_blank" rel="noopener noreferrer"
+                                   class="slds-p-right_x-small ust-modal-company-xtwitter-link"
+                                   lwc:if={selectedDirectoryRecord.XtwitterLink}><img src={xtwitterIcon} alt="X (Twitter)" class="socialMediaIcon"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="slds-modal__footer ust-modal-footer">
+                <div class="slds-text-align_center slds-size_1-of-1">
+                    <p class="ust-modal-record-seq-size">Record {selectedDirectoryRecordSeq} of {visibleRecordsSize} loaded</p>
+                    <p class="ust-modal-total-records">({totalMatchingCount} total records)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="selected-record-modal-backdrop slds-backdrop" role="presentation"></div>
+</template>

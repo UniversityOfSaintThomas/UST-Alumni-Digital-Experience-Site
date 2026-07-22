@@ -1,0 +1,92 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Lawyer Search",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"83b31cda-d6ff-4d90-9ed3-26c0abb8bcd8\",\"columns\":[{\"UUID\":\"c3ad5249-bde7-4e0d-8f0c-65664d336b77\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "backgroundColor" : "",
+                "isLinkable" : false,
+                "linkAssistiveText" : "",
+                "paddingHorizontal" : "none",
+                "paddingVertical" : "none",
+                "text" : "",
+                "textAlign" : "left",
+                "textDecoration" : "{}",
+                "textDisplayInfo" : "{\"headingTag\":\"h3\",\"textStyle\":\"heading-medium\"}"
+              },
+              "definition" : "dxp_base:textBlock",
+              "id" : "9b6c4efc-84dc-4ad9-9a72-534415315796",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "imageInfos" : "",
+                "richTextValue" : "<p><span style=\"color: inherit;\">Lawyer Search is a public-facing tool designed to connect the talents, wisdom and gifts of St. Thomas Law graduates with individuals and organizations that could benefit from their services. By participating in Lawyer Search, you may be contacted by a potential client, a prospective student considering law school at St. Thomas, a current St. Thomas law student, or a peer looking to collaborate on or refer business. Participation is free, and the tool is designed to support our alumni and bring additional value to their work in a professional setting.&nbsp;</span></p><p><br></p><p>All University of St. Thomas School of Law graduates are eligible to participate in Lawyer Search. Please complete this form by providing as much information as you would like to share. Maximize the impact of your Lawyer Search profile by adding a picture, contact details, practice information, and more. Lawyer Search profile submissions are reviewed by the School of Law before being published online.&nbsp;</p><p><br></p><p>Your privacy matters. Your personal address and phone number(s) will only be used internally and will not be publicly displayed or shared. We will not sell or share your personal information with any other organization or business outside of St. Thomas.</p><p><br></p><p>For quality control purposes, Lawyer Search profiles must be renewed annually to maintain active status in the Lawyer Search directory. We will notify you at your registered email address when your renewal date is approaching.&nbsp;</p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "4474a8e3-77e8-47d0-a669-7aa956a738b8",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "flowName" : "{\"flowName\":\"SF_LawyersearchFiltered\",\"flowLabel\":\"SF-LawyersearchFiltered\"}"
+              },
+              "definition" : "dxp_flow:flow",
+              "id" : "4aeef106-a028-4a70-8121-5a3937d23a1a",
+              "type" : "component"
+            } ],
+            "id" : "c3ad5249-bde7-4e0d-8f0c-65664d336b77",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "83b31cda-d6ff-4d90-9ed3-26c0abb8bcd8",
+          "type" : "component"
+        } ],
+        "id" : "d2323575-d3e0-437e-9821-f7d20e125098",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "Lawyer Search",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "1e3ebfbe-3da2-4a23-8a74-0ab60eb62187",
+          "type" : "component"
+        } ],
+        "id" : "ab0bc00b-d122-4c09-97a2-0f6f85690fe8",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "0c4339ff-a206-4db4-9a6e-561821f90844",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-lawyer-search"
+  },
+  "urlName" : "lawyer-search"
+}

@@ -1,0 +1,76 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Alumni Event Creation",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"947292a9-884e-478a-bcbc-f2c654a1c39b\",\"columns\":[{\"UUID\":\"fc9c4a39-cd69-419c-864f-51afab0ed183\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "flowName" : "{\"flowName\":\"SF_Community_Event_Creation\",\"flowLabel\":\"SF - Community Event Creation\"}"
+              },
+              "definition" : "dxp_flow:flow",
+              "id" : "c31f241a-1b93-4d57-9a87-83145992d4da",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "flowName" : "{\"flowName\":\"SF_Summit_Events_Review_by_Owner\",\"flowLabel\":\"SF - Summit Events Review by Owner\"}"
+              },
+              "definition" : "dxp_flow:flow",
+              "id" : "0906fa88-b513-4041-abea-e773495a6a62",
+              "type" : "component"
+            } ],
+            "id" : "fc9c4a39-cd69-419c-864f-51afab0ed183",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "947292a9-884e-478a-bcbc-f2c654a1c39b",
+          "type" : "component"
+        } ],
+        "id" : "54b1fb66-49de-4cbb-aa26-30634c487458",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "Alumni Event Creation",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "c53762ca-d087-4f4e-82b8-13444d5e59a3",
+          "type" : "component"
+        } ],
+        "id" : "762c4e17-5089-466c-aaf5-9746ac20d1bd",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "af3431e2-27be-4df7-a9c6-d4db3cd2f823",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-alumni-event-creation"
+  },
+  "urlName" : "alumni-event-creation"
+}

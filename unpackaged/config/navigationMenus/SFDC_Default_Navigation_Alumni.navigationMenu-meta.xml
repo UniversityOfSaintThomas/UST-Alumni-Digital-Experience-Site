@@ -10,4 +10,69 @@
         <target>ShowMoreTopics</target>
         <type>NavigationalTopic</type>
     </navigationMenuItem>
+    <navigationMenuItem>
+        <label>My Account</label>
+        <position>2</position>
+        <publiclyAvailable>false</publiclyAvailable>
+        <target>/my-account</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Directory</label>
+        <position>3</position>
+        <publiclyAvailable>false</publiclyAvailable>
+        <target>/alumni-directory</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Notes</label>
+        <position>4</position>
+        <publiclyAvailable>false</publiclyAvailable>
+        <target>/alumni-notes</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Businesses</label>
+        <position>5</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <subMenu>
+            <navigationMenuItem>
+                <label>Business Directory</label>
+                <position>0</position>
+                <publiclyAvailable>false</publiclyAvailable>
+                <target>/business-directory</target>
+                <type>InternalLink</type>
+            </navigationMenuItem>
+            <navigationMenuItem>
+                <label>My Business</label>
+                <position>1</position>
+                <publiclyAvailable>false</publiclyAvailable>
+                <target>/my-business</target>
+                <type>InternalLink</type>
+            </navigationMenuItem>
+        </subMenu>
+        <type>MenuLabel</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Events</label>
+        <position>6</position>
+        <publiclyAvailable>false</publiclyAvailable>
+        <subMenu>
+            <navigationMenuItem>
+                <label>Create your own event</label>
+                <position>0</position>
+                <publiclyAvailable>false</publiclyAvailable>
+                <target>/alumni-event-creation</target>
+                <type>InternalLink</type>
+            </navigationMenuItem>
+        </subMenu>
+        <type>MenuLabel</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Lawyer Search</label>
+        <position>7</position>
+        <publiclyAvailable>false</publiclyAvailable>
+        <target>/lawyer-search</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
 </NavigationMenu>

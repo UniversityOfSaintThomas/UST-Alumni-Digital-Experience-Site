@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alumni_Business_Needs_Business_Review</fullName>
+    <columns>NAME</columns>
+    <columns>First_Name__c</columns>
+    <columns>Last_Name__c</columns>
+    <columns>Alumni__c</columns>
+    <columns>Company_Status__c</columns>
+    <columns>Opt_in_Date__c</columns>
+    <columns>Company_Name__c</columns>
+    <columns>Graduation_YearSR__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Professional_Directory__c.Alumni_Business</value>
+    </filters>
+    <filters>
+        <field>Company_Status__c</field>
+        <operation>equals</operation>
+        <value>Submitted</value>
+    </filters>
+    <filters>
+        <field>UST_Test_Contact__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <label>Alumni Business - Needs Business Review</label>
+</ListView>

@@ -14,21 +14,21 @@
             "layoutDirectionTablet" : "column",
             "maxContentWidth" : "",
             "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"4fd735a6-d370-443f-b1f1-5e74f1c9cd03\",\"columns\":[{\"UUID\":\"f43e4be7-0cf7-4ba8-a458-030f2bd88a01\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionConfig" : "{\"UUID\":\"5c453415-730b-4ec8-9276-63806dc3e4d9\",\"columns\":[{\"UUID\":\"434e9f75-1efd-4de0-ba5b-e5904389c619\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
             "sectionMinHeight" : "",
             "sectionVerticalAlign" : "flex-start"
           },
           "children" : [ {
-            "id" : "f43e4be7-0cf7-4ba8-a458-030f2bd88a01",
+            "id" : "434e9f75-1efd-4de0-ba5b-e5904389c619",
             "name" : "col1",
             "title" : "Column 1",
             "type" : "region"
           } ],
           "definition" : "community_layout:section",
-          "id" : "4fd735a6-d370-443f-b1f1-5e74f1c9cd03",
+          "id" : "5c453415-730b-4ec8-9276-63806dc3e4d9",
           "type" : "component"
         } ],
-        "id" : "3ed9453c-0e65-4433-9eff-094876a1de5f",
+        "id" : "a58529de-0d8d-4bde-ac67-9d2c1e8ee3db",
         "name" : "content",
         "title" : "Content",
         "type" : "region"
@@ -41,16 +41,16 @@
             "recordId" : "{!recordId}"
           },
           "definition" : "community_builder:seoAssistant",
-          "id" : "c559dac5-5075-4bd1-8815-15d11cf9856c",
+          "id" : "b755e5f1-df29-408b-ab61-3689a515e8de",
           "type" : "component"
         } ],
-        "id" : "435916ab-c57a-4608-a349-8221ab54322d",
+        "id" : "ad1df493-68de-4aef-b4d8-d5248786491f",
         "name" : "sfdcHiddenRegion",
         "title" : "sfdcHiddenRegion",
         "type" : "region"
       } ],
       "definition" : "community_layout:sldsFlexibleLayout",
-      "id" : "ef93f0ce-52b1-4a6e-b614-70d600eaab84",
+      "id" : "1a1a4915-f9e0-457b-ad35-12e306d53796",
       "type" : "component"
     },
     "dataProviders" : [ ],

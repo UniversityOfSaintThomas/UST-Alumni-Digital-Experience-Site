@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>blank_specialty_area_with_percentage__c</fullName>
+    <formula>OR(
+Specialty_Area_1_Percentage__c &gt; 0 &amp;&amp; ISPICKVAL(Specialty_Area_1__c,&quot;&quot;),
+
+Specialty_Area_2_Percentage__c &gt; 0 &amp;&amp; ISPICKVAL(Specialty_Area_2__c,&quot;&quot;),
+
+Specialty_Area_3_Percentage__c &gt; 0 &amp;&amp; ISPICKVAL(Specialty_Area_3__c,&quot;&quot;),
+
+Specialty_Area_4_Percentage__c &gt; 0 &amp;&amp; ISPICKVAL(Specialty_Area_4__c,&quot;&quot;),
+
+Specialty_Area_5_Percentage__c &gt; 0 &amp;&amp; ISPICKVAL(Specialty_Area_5__c,&quot;&quot;)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>used to mean that a specialty area is blank but has been assigned a percentage. Please fix before making public</inlineHelpText>
+    <label>blank specialty area with percentage</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,113 @@
+/**
+ * Created by nguy0092 on 3/19/2026.
+ * Local styling commented out. Production styling managed by parent reference sheet.
+ */
+
+.ust-modal-actions-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ust-modal-nav-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.ust-modal-modal-action-button-close {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/*.company-website-label {*/
+/*    font-size: 22px;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*.checkbox-display-label {*/
+/*    display: inline-block;*/
+/*}*/
+
+/*.search-filter-buttons-box {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    background-color: #e1e1e1;*/
+/*}*/
+
+/*.clear-search-filter-buttons {*/
+/*    --slds-c-button-color-border: white;*/
+/*    --slds-c-button-color-background: white;*/
+/*    --slds-c-button-text-color: black;*/
+/*    --slds-c-button-line-height: 23px;*/
+/*    --slds-c-button-radius-border: 12px;*/
+/*    --slds-c-button-spacing-inline-start: 8px;*/
+/*    --slds-c-button-spacing-inline-end: 8px;*/
+/*}*/
+
+/*.grid-record-display {*/
+/*    border: 1px solid #e1e1e1;*/
+/*    height: 450px;*/
+/*    overflow: auto;*/
+/*    scrollbar-width: thin;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.grid-record-display:hover {*/
+/*    border: 1px solid #f0ac04;*/
+/*}*/
+
+/*.grid-record-display:hover .grid-record-business-name-display{*/
+/*    color: #f0ac04;*/
+/*}*/
+
+/*.logoImage{*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    object-fit: contain;*/
+/*}*/
+
+/*.alumniImage{*/
+/*    width: 75%;*/
+/*    height: 75%;*/
+/*    object-fit: contain;*/
+/*}*/
+
+/*.socialMediaIcon{*/
+/*    width: 18px;*/
+/*    height: 18px;*/
+/*    object-fit: contain;*/
+/*}*/
+
+/*.load-more-button {*/
+/*    --slds-c-button-color-border: black;*/
+/*    --slds-c-button-text-color: black;*/
+/*    --slds-c-button-color-border-hover: black;*/
+/*    --slds-c-button-spacing-inline-start: 25px;*/
+/*    --slds-c-button-spacing-inline-end: 25px;*/
+/*    --slds-c-button-line-height: 40px;*/
+/*}*/
+
+/*!* Replaces the inline style="height:150px" that was on the logo wrapper divs *!*/
+/*.logo-container {*/
+/*    height: 150px;*/
+/*}*/
+
+/*!* <address> elements render italic by default in most browsers — reset that *!*/
+/*.address-reset {*/
+/*    font-style: normal;*/
+/*}*/
+
+/*.slds-modal__content {*/
+/*    height: 100%;*/
+/*}*/
+
+/*LEAVE THIS OUT*/
+/*.modal-action-button {*/
+/*    !*--slds-c-button-color-background: green;*!*/
+/*    --slds-c-button-color-border: black;*/
+/*    --slds-c-icon-color-foreground: black;*/
+/*    --slds-c-button-color-border-hover: black;*/
+/*}*/

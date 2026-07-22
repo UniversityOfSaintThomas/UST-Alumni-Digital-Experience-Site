@@ -57,6 +57,25 @@ tasks:
             timeout: 520
             source_format: sfdx
 
+    create_community_navigation:
+        description: Deploys the default navigation menu for the community.
+        class_path: cumulusci.tasks.salesforce.Deploy
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            path: unpackaged/config/navigationMenus
+            unmanaged: True
+
+    sync_navigation_menu:
+        description: >-
+            Rewrites the theme layout's Default Navigation menu binding to match
+            this org's actual auto-generated NavigationLinkSet DeveloperName,
+            since Salesforce assigns it non-deterministically per org and won't
+            allow the Default Navigation menu to be renamed.
+        class_path: tasks.sync_navigation_menu.SyncNavigationMenuBinding
+        options:
+            network_name: Alumni
+            content_path: unpackaged/config/experiences/digitalExperiences/site/Alumni1/sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json
+
     role_to_userUser:
         description: Give Guest User Registrant Permission Set
         class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
@@ -78,8 +97,12 @@ flows:
                 task: create_community
             4:
                 task: create_community_network
+            4.5:
+                task: sync_navigation_menu
             5:
                 task: create_community_experience_cloud_bundle
+            5.5:
+                task: create_community_navigation
             6:
                 task: create_community_publish
 

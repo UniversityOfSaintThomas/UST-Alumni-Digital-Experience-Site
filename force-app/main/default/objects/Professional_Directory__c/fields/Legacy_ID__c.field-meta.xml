@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Legacy_ID__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>ID from the legacy Law Net application</description>
+    <externalId>true</externalId>
+    <inlineHelpText>ID from the legacy Law Net application</inlineHelpText>
+    <label>Legacy ID (LawNet)</label>
+    <length>9</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

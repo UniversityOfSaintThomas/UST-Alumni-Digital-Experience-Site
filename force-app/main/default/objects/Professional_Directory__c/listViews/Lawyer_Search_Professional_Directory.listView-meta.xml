@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lawyer_Search_Professional_Directory</fullName>
+    <columns>NAME</columns>
+    <columns>Active_Display__c</columns>
+    <columns>Alumni__c</columns>
+    <columns>Community_User__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>Internal_Use_Only_Email__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>Picture_Approved__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Professional_Directory__c.Lawyer_Search</value>
+    </filters>
+    <label>Lawyer Search</label>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

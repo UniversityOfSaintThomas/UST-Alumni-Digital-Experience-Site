@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Name_as_Student__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>If first or last name has changed, please enter your name as it was as a student to aid in matching</inlineHelpText>
+    <label>Name as Student</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

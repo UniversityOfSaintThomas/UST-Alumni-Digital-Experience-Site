@@ -1,0 +1,69 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "My Business",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"f1f5f91b-9e45-48c2-9dbc-21922ea1337b\",\"columns\":[{\"UUID\":\"a814f197-6b47-4d7d-a0f9-4fcb36057388\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "flowName" : "{\"flowName\":\"SF_Business_Directory\",\"flowLabel\":\"SF - Business Directory\"}"
+              },
+              "definition" : "dxp_flow:flow",
+              "id" : "0936579e-4a06-4347-b522-c934ecec13ca",
+              "type" : "component"
+            } ],
+            "id" : "a814f197-6b47-4d7d-a0f9-4fcb36057388",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "f1f5f91b-9e45-48c2-9dbc-21922ea1337b",
+          "type" : "component"
+        } ],
+        "id" : "ac7ed26a-5b79-439b-a78f-b127283f6e5b",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "My Business",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "2faa8a7e-f096-4bb9-ab80-838777c87ede",
+          "type" : "component"
+        } ],
+        "id" : "27fe984a-79c3-4475-bcb8-53df75679701",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "76d334f3-35f2-4f34-94d3-da1b6934cb40",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-my-business"
+  },
+  "urlName" : "my-business"
+}

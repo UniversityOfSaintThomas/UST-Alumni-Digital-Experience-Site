@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Lawyer Search",
+  "contentBody" : {
+    "activeViewId" : "Lawyer_Search",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-lawyer-search",
+    "urlPrefix" : "lawyer-search"
+  },
+  "urlName" : "lawyer-search"
+}

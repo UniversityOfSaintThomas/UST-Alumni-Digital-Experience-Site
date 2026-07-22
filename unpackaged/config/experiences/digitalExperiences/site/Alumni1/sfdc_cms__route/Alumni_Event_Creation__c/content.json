@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Alumni Event Creation",
+  "contentBody" : {
+    "activeViewId" : "Alumni_Event_Creation",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-alumni-event-creation",
+    "urlPrefix" : "alumni-event-creation"
+  },
+  "urlName" : "alumni-event-creation"
+}

@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Specialty_Area_2__c</fullName>
+    <label>Specialty Area 2</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>Administrative Law</fullName>
+                <default>false</default>
+                <label>Administrative Law</label>
+            </value>
+            <value>
+                <fullName>Alternative Dispute Resolution</fullName>
+                <default>false</default>
+                <label>Alternative Dispute Resolution</label>
+            </value>
+            <value>
+                <fullName>Alternative Dispute Resolution - Arbitration</fullName>
+                <default>false</default>
+                <label>Alternative Dispute Resolution - Arbitration</label>
+            </value>
+            <value>
+                <fullName>Alternative Dispute Resolution - Mediation</fullName>
+                <default>false</default>
+                <label>Alternative Dispute Resolution - Mediation</label>
+            </value>
+            <value>
+                <fullName>Animal Law</fullName>
+                <default>false</default>
+                <label>Animal Law</label>
+            </value>
+            <value>
+                <fullName>Antitrust</fullName>
+                <default>false</default>
+                <label>Antitrust</label>
+            </value>
+            <value>
+                <fullName>Appellate</fullName>
+                <default>false</default>
+                <label>Appellate</label>
+            </value>
+            <value>
+                <fullName>Artificial Intelligence</fullName>
+                <default>false</default>
+                <label>Artificial Intelligence</label>
+            </value>
+            <value>
+                <fullName>Aviation and Aerospace</fullName>
+                <default>false</default>
+                <label>Aviation and Aerospace</label>
+            </value>
+            <value>
+                <fullName>Banking</fullName>
+                <default>false</default>
+                <label>Banking</label>
+            </value>
+            <value>
+                <fullName>Bankruptcy</fullName>
+                <default>false</default>
+                <label>Bankruptcy</label>
+            </value>
+            <value>
+                <fullName>Business/Corporate</fullName>
+                <default>false</default>
+                <label>Business/Corporate</label>
+            </value>
+            <value>
+                <fullName>Business - Closely Held</fullName>
+                <default>false</default>
+                <label>Business - Closely Held</label>
+            </value>
+            <value>
+                <fullName>Cannabis Law</fullName>
+                <default>false</default>
+                <label>Cannabis Law</label>
+            </value>
+            <value>
+                <fullName>Catastrophic Injury</fullName>
+                <default>false</default>
+                <label>Catastrophic Injury</label>
+            </value>
+            <value>
+                <fullName>Civil Rights</fullName>
+                <default>false</default>
+                <label>Civil Rights</label>
+            </value>
+            <value>
+                <fullName>Class Action/Mass Torts</fullName>
+                <default>false</default>
+                <label>Class Action/Mass Torts</label>
+            </value>
+            <value>
+                <fullName>Collections</fullName>
+                <default>false</default>
+                <label>Collections</label>
+            </value>
+            <value>
+                <fullName>Communications</fullName>
+                <default>false</default>
+                <label>Communications</label>
+            </value>
+            <value>
+                <fullName>Complex Litigation</fullName>
+                <default>false</default>
+                <label>Complex Litigation</label>
+            </value>
+            <value>
+                <fullName>Compliance</fullName>
+                <default>false</default>
+                <label>Compliance</label>
+            </value>
+            <value>
+                <fullName>Computer/Internet Law</fullName>
+                <default>false</default>
+                <label>Computer/Internet Law</label>
+            </value>
+            <value>
+                <fullName>Constitutional Law</fullName>
+                <default>false</default>
+                <label>Constitutional Law</label>
+            </value>
+            <value>
+                <fullName>Construction</fullName>
+                <default>false</default>
+                <label>Construction</label>
+            </value>
+            <value>
+                <fullName>Construction Litigation</fullName>
+                <default>false</default>
+                <label>Construction Litigation</label>
+            </value>
+            <value>
+                <fullName>Consumer Law</fullName>
+                <default>false</default>
+                <label>Consumer Law</label>
+            </value>
+            <value>
+                <fullName>Creditor Rights</fullName>
+                <default>false</default>
+                <label>Creditor Rights</label>
+            </value>
+            <value>
+                <fullName>Criminal - DUI/DWI Defense</fullName>
+                <default>false</default>
+                <label>Criminal - DUI/DWI Defense</label>
+            </value>
+            <value>
+                <fullName>Criminal - Private Defense</fullName>
+                <default>false</default>
+                <label>Criminal - Private Defense</label>
+            </value>
+            <value>
+                <fullName>Criminal - Prosecution</fullName>
+                <default>false</default>
+                <label>Criminal - Prosecution</label>
+            </value>
+            <value>
+                <fullName>Criminal - Public Defense</fullName>
+                <default>false</default>
+                <label>Criminal - Public Defense</label>
+            </value>
+            <value>
+                <fullName>Criminal - White Collar</fullName>
+                <default>false</default>
+                <label>Criminal - White Collar</label>
+            </value>
+            <value>
+                <fullName>Cybersecurity</fullName>
+                <default>false</default>
+                <label>Cybersecurity</label>
+            </value>
+            <value>
+                <fullName>Data protection</fullName>
+                <default>false</default>
+                <label>Data protection</label>
+            </value>
+            <value>
+                <fullName>Debtor Rights</fullName>
+                <default>false</default>
+                <label>Debtor Rights</label>
+            </value>
+            <value>
+                <fullName>E-Discovery</fullName>
+                <default>false</default>
+                <label>E-Discovery</label>
+            </value>
+            <value>
+                <fullName>Education</fullName>
+                <default>false</default>
+                <label>Education</label>
+            </value>
+            <value>
+                <fullName>Elder Law</fullName>
+                <default>false</default>
+                <label>Elder Law</label>
+            </value>
+            <value>
+                <fullName>Eminent Domain</fullName>
+                <default>false</default>
+                <label>Eminent Domain</label>
+            </value>
+            <value>
+                <fullName>Employee Benefits</fullName>
+                <default>false</default>
+                <label>Employee Benefits</label>
+            </value>
+            <value>
+                <fullName>Employment Law</fullName>
+                <default>false</default>
+                <label>Employment Law</label>
+            </value>
+            <value>
+                <fullName>Employment Litigation</fullName>
+                <default>false</default>
+                <label>Employment Litigation</label>
+            </value>
+            <value>
+                <fullName>Energy, Public Utilities, Regulated Industries</fullName>
+                <default>false</default>
+                <label>Energy, Public Utilities, Regulated Industries</label>
+            </value>
+            <value>
+                <fullName>Entertainment and Sports</fullName>
+                <default>false</default>
+                <label>Entertainment and Sports</label>
+            </value>
+            <value>
+                <fullName>Environmental</fullName>
+                <default>false</default>
+                <label>Environmental</label>
+            </value>
+            <value>
+                <fullName>Environmental Litigation</fullName>
+                <default>false</default>
+                <label>Environmental Litigation</label>
+            </value>
+            <value>
+                <fullName>Estate Planning</fullName>
+                <default>false</default>
+                <label>Estate Planning</label>
+            </value>
+            <value>
+                <fullName>Family Law</fullName>
+                <default>false</default>
+                <label>Family Law</label>
+            </value>
+            <value>
+                <fullName>Finance</fullName>
+                <default>false</default>
+                <label>Finance</label>
+            </value>
+            <value>
+                <fullName>Food and Drugs</fullName>
+                <default>false</default>
+                <label>Food and Drugs</label>
+            </value>
+            <value>
+                <fullName>Franchise</fullName>
+                <default>false</default>
+                <label>Franchise</label>
+            </value>
+            <value>
+                <fullName>Gaming</fullName>
+                <default>false</default>
+                <label>Gaming</label>
+            </value>
+            <value>
+                <fullName>General Counsel</fullName>
+                <default>false</default>
+                <label>General Counsel</label>
+            </value>
+            <value>
+                <fullName>Government</fullName>
+                <default>false</default>
+                <label>Government</label>
+            </value>
+            <value>
+                <fullName>Government Contracts</fullName>
+                <default>false</default>
+                <label>Government Contracts</label>
+            </value>
+            <value>
+                <fullName>Government Finance</fullName>
+                <default>false</default>
+                <label>Government Finance</label>
+            </value>
+            <value>
+                <fullName>Government Relations</fullName>
+                <default>false</default>
+                <label>Government Relations</label>
+            </value>
+            <value>
+                <fullName>Guardianships</fullName>
+                <default>false</default>
+                <label>Guardianships</label>
+            </value>
+            <value>
+                <fullName>Health</fullName>
+                <default>false</default>
+                <label>Health</label>
+            </value>
+            <value>
+                <fullName>Housing</fullName>
+                <default>false</default>
+                <label>Housing</label>
+            </value>
+            <value>
+                <fullName>Immigration</fullName>
+                <default>false</default>
+                <label>Immigration</label>
+            </value>
+            <value>
+                <fullName>In-House Counsel</fullName>
+                <default>false</default>
+                <label>In-House Counsel</label>
+            </value>
+            <value>
+                <fullName>Insurance</fullName>
+                <default>false</default>
+                <label>Insurance</label>
+            </value>
+            <value>
+                <fullName>Intellectual Property</fullName>
+                <default>false</default>
+                <label>Intellectual Property</label>
+            </value>
+            <value>
+                <fullName>Intellectual Property - Copyright</fullName>
+                <default>false</default>
+                <label>Intellectual Property - Copyright</label>
+            </value>
+            <value>
+                <fullName>Intellectual Property Litigation</fullName>
+                <default>false</default>
+                <label>Intellectual Property Litigation</label>
+            </value>
+            <value>
+                <fullName>Intellectual Property - Patent</fullName>
+                <default>false</default>
+                <label>Intellectual Property - Patent</label>
+            </value>
+            <value>
+                <fullName>Intellectual Property - Trademark</fullName>
+                <default>false</default>
+                <label>Intellectual Property - Trademark</label>
+            </value>
+            <value>
+                <fullName>International</fullName>
+                <default>false</default>
+                <label>International</label>
+            </value>
+            <value>
+                <fullName>Judge - Federal</fullName>
+                <default>false</default>
+                <label>Judge - Federal</label>
+            </value>
+            <value>
+                <fullName>Judge - State</fullName>
+                <default>false</default>
+                <label>Judge - State</label>
+            </value>
+            <value>
+                <fullName>Judicial Clerk - Federal</fullName>
+                <default>false</default>
+                <label>Judicial Clerk - Federal</label>
+            </value>
+            <value>
+                <fullName>Judicial Clerk - State</fullName>
+                <default>false</default>
+                <label>Judicial Clerk - State</label>
+            </value>
+            <value>
+                <fullName>Knowledge Management</fullName>
+                <default>false</default>
+                <label>Knowledge Management</label>
+            </value>
+            <value>
+                <fullName>Labor Law</fullName>
+                <default>false</default>
+                <label>Labor Law</label>
+            </value>
+            <value>
+                <fullName>Land Use, Planning, Zoning</fullName>
+                <default>false</default>
+                <label>Land Use, Planning, Zoning</label>
+            </value>
+            <value>
+                <fullName>Legal Aid</fullName>
+                <default>false</default>
+                <label>Legal Aid</label>
+            </value>
+            <value>
+                <fullName>Legal Management</fullName>
+                <default>false</default>
+                <label>Legal Management</label>
+            </value>
+            <value>
+                <fullName>Librarian/Information Professional</fullName>
+                <default>false</default>
+                <label>Librarian/Information Professional</label>
+            </value>
+            <value>
+                <fullName>Litigation - Business/Corporate</fullName>
+                <default>false</default>
+                <label>Litigation - Business/Corporate</label>
+            </value>
+            <value>
+                <fullName>Litigation - Civil</fullName>
+                <default>false</default>
+                <label>Litigation - Civil</label>
+            </value>
+            <value>
+                <fullName>Litigation - Commercial</fullName>
+                <default>false</default>
+                <label>Litigation - Commercial</label>
+            </value>
+            <value>
+                <fullName>Litigation - General</fullName>
+                <default>false</default>
+                <label>Litigation - General</label>
+            </value>
+            <value>
+                <fullName>Lobbying</fullName>
+                <default>false</default>
+                <label>Lobbying</label>
+            </value>
+            <value>
+                <fullName>Maritime</fullName>
+                <default>false</default>
+                <label>Maritime</label>
+            </value>
+            <value>
+                <fullName>Marketing</fullName>
+                <default>false</default>
+                <label>Marketing</label>
+            </value>
+            <value>
+                <fullName>Media and Advertising</fullName>
+                <default>false</default>
+                <label>Media and Advertising</label>
+            </value>
+            <value>
+                <fullName>Medical Facility/Provider</fullName>
+                <default>false</default>
+                <label>Medical Facility/Provider</label>
+            </value>
+            <value>
+                <fullName>Medical Insurance</fullName>
+                <default>false</default>
+                <label>Medical Insurance</label>
+            </value>
+            <value>
+                <fullName>Medical Provider</fullName>
+                <default>false</default>
+                <label>Medical Provider</label>
+            </value>
+            <value>
+                <fullName>Mergers and Acquisitions</fullName>
+                <default>false</default>
+                <label>Mergers and Acquisitions</label>
+            </value>
+            <value>
+                <fullName>Military Law</fullName>
+                <default>false</default>
+                <label>Military Law</label>
+            </value>
+            <value>
+                <fullName>Municipal Law</fullName>
+                <default>false</default>
+                <label>Municipal Law</label>
+            </value>
+            <value>
+                <fullName>Native American Law</fullName>
+                <default>false</default>
+                <label>Native American Law</label>
+            </value>
+            <value>
+                <fullName>Nonprofit</fullName>
+                <default>false</default>
+                <label>Nonprofit</label>
+            </value>
+            <value>
+                <fullName>Nonprofit Organizations</fullName>
+                <default>false</default>
+                <label>Nonprofit Organizations</label>
+            </value>
+            <value>
+                <fullName>Payments Industry</fullName>
+                <default>false</default>
+                <label>Payments Industry</label>
+            </value>
+            <value>
+                <fullName>Personal Injury - Food</fullName>
+                <default>false</default>
+                <label>Personal Injury - Food</label>
+            </value>
+            <value>
+                <fullName>Personal Injury - General</fullName>
+                <default>false</default>
+                <label>Personal Injury - General</label>
+            </value>
+            <value>
+                <fullName>Personal Injury - Medical Malpractice</fullName>
+                <default>false</default>
+                <label>Personal Injury - Medical Malpractice</label>
+            </value>
+            <value>
+                <fullName>Personal Injury - Products</fullName>
+                <default>false</default>
+                <label>Personal Injury - Products</label>
+            </value>
+            <value>
+                <fullName>Poverty Law</fullName>
+                <default>false</default>
+                <label>Poverty Law</label>
+            </value>
+            <value>
+                <fullName>Privacy</fullName>
+                <default>false</default>
+                <label>Privacy</label>
+            </value>
+            <value>
+                <fullName>Private Equity</fullName>
+                <default>false</default>
+                <label>Private Equity</label>
+            </value>
+            <value>
+                <fullName>Probate</fullName>
+                <default>false</default>
+                <label>Probate</label>
+            </value>
+            <value>
+                <fullName>Pro Bono</fullName>
+                <default>false</default>
+                <label>Pro Bono</label>
+            </value>
+            <value>
+                <fullName>Products Liability</fullName>
+                <default>false</default>
+                <label>Products Liability</label>
+            </value>
+            <value>
+                <fullName>Professional Development</fullName>
+                <default>false</default>
+                <label>Professional Development</label>
+            </value>
+            <value>
+                <fullName>Professional Development and Marketing</fullName>
+                <default>false</default>
+                <label>Professional Development and Marketing</label>
+            </value>
+            <value>
+                <fullName>Professional Liability</fullName>
+                <default>false</default>
+                <label>Professional Liability</label>
+            </value>
+            <value>
+                <fullName>Protective Orders</fullName>
+                <default>false</default>
+                <label>Protective Orders</label>
+            </value>
+            <value>
+                <fullName>Public Interest</fullName>
+                <default>false</default>
+                <label>Public Interest</label>
+            </value>
+            <value>
+                <fullName>Public Policy</fullName>
+                <default>false</default>
+                <label>Public Policy</label>
+            </value>
+            <value>
+                <fullName>Real Estate</fullName>
+                <default>false</default>
+                <label>Real Estate</label>
+            </value>
+            <value>
+                <fullName>Regulatory Law</fullName>
+                <default>false</default>
+                <label>Regulatory Law</label>
+            </value>
+            <value>
+                <fullName>Religious Organization</fullName>
+                <default>false</default>
+                <label>Religious Organization</label>
+            </value>
+            <value>
+                <fullName>Securities and Corporate Finance</fullName>
+                <default>false</default>
+                <label>Securities and Corporate Finance</label>
+            </value>
+            <value>
+                <fullName>Securities Litigation</fullName>
+                <default>false</default>
+                <label>Securities Litigation</label>
+            </value>
+            <value>
+                <fullName>Social Security Disability</fullName>
+                <default>false</default>
+                <label>Social Security Disability</label>
+            </value>
+            <value>
+                <fullName>Surety</fullName>
+                <default>false</default>
+                <label>Surety</label>
+            </value>
+            <value>
+                <fullName>Tax</fullName>
+                <default>false</default>
+                <label>Tax</label>
+            </value>
+            <value>
+                <fullName>Technology Transactions</fullName>
+                <default>false</default>
+                <label>Technology Transactions</label>
+            </value>
+            <value>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+                <label>Transportation</label>
+            </value>
+            <value>
+                <fullName>Trucking Collisions</fullName>
+                <default>false</default>
+                <label>Trucking Collisions</label>
+            </value>
+            <value>
+                <fullName>Trusts</fullName>
+                <default>false</default>
+                <label>Trusts</label>
+            </value>
+            <value>
+                <fullName>Unemployment appeals</fullName>
+                <default>false</default>
+                <label>Unemployment appeals</label>
+            </value>
+            <value>
+                <fullName>Utilities</fullName>
+                <default>false</default>
+                <label>Utilities</label>
+            </value>
+            <value>
+                <fullName>Venture Capital and Emerging Companies</fullName>
+                <default>false</default>
+                <label>Venture Capital and Emerging Companies</label>
+            </value>
+            <value>
+                <fullName>Veterans Law</fullName>
+                <default>false</default>
+                <label>Veterans Law</label>
+            </value>
+            <value>
+                <fullName>Workers&apos; Compensation</fullName>
+                <default>false</default>
+                <label>Workers&apos; Compensation</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

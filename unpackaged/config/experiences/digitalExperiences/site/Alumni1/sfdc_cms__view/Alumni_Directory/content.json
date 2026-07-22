@@ -1,0 +1,80 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Alumni Directory",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"79fdde6e-6bea-4eff-bc3a-5cbfb1951a24\",\"columns\":[{\"UUID\":\"bcb9e24f-22cd-40e9-9b86-234e19604ce7\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"8\",\"seedComponents\":[]},{\"UUID\":\"d8444ff1-e290-4a9e-86cd-bc843903abf2\",\"columnName\":\"Column 2\",\"columnKey\":\"622d1\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : { },
+              "definition" : "c:alumniDirectory",
+              "id" : "de122e68-8291-4bdf-a391-cd7133a2c5e6",
+              "type" : "component"
+            } ],
+            "id" : "bcb9e24f-22cd-40e9-9b86-234e19604ce7",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "zoneName" : "sidebar"
+              },
+              "definition" : "c:ustWidgetZone",
+              "id" : "4b98b75e-c361-4954-ac0d-5dfdb07b5700",
+              "type" : "component"
+            } ],
+            "id" : "d8444ff1-e290-4a9e-86cd-bc843903abf2",
+            "name" : "622d1",
+            "title" : "Column 2",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "79fdde6e-6bea-4eff-bc3a-5cbfb1951a24",
+          "type" : "component"
+        } ],
+        "id" : "2977fa4d-b05a-499c-834e-391b95526c2d",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "Alumni Directory",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "ad4b1993-3351-42f2-8bec-1305e62adff2",
+          "type" : "component"
+        } ],
+        "id" : "237f84cd-6f45-460f-9cd2-d8e5fe1961a6",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "54578bc3-6301-4d03-bcdf-f8898606e873",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-alumni-directory"
+  },
+  "urlName" : "alumni-directory"
+}

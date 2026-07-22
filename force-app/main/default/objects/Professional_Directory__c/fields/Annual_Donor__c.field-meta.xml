@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Annual_Donor__c</fullName>
+    <formula>ISPICKVAL(Alumni__r.Donor_Status__c , &quot;Acquired&quot;) || ISPICKVAL(Alumni__r.Donor_Status__c ,&quot;Retained&quot;)|| ISPICKVAL(Alumni__r.Donor_Status__c , &quot;Renewed&quot;)||ISPICKVAL(Alumni__r.Donor_Status__c , &quot;Sustainer&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Annual Donor</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

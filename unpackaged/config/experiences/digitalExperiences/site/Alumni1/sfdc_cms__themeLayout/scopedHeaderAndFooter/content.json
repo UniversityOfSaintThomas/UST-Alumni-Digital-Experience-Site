@@ -1,6 +1,6 @@
 {
   "type" : "sfdc_cms__themeLayout",
-  "title" : "Scoped Header and Footer",
+  "title" : "Alumni Default Theme",
   "contentBody" : {
     "component" : {
       "attributes" : { },
@@ -10,27 +10,151 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
-            "dxpStyle" : { },
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "0px",
+                "left" : "0px",
+                "right" : "0px",
+                "top" : "0px"
+              },
+              "padding" : {
+                "bottom" : "0px",
+                "left" : "0px",
+                "right" : "0px",
+                "top" : "0px"
+              }
+            },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
             "maxContentWidth" : "",
             "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"844569fd-bb08-4122-81b9-42f3c6b6b6a7\",\"columns\":[{\"UUID\":\"e8036abd-01cf-4e38-86d2-f05658883723\",\"columnName\":\"Column 1\",\"columnKey\":\"headerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionConfig" : "{\"UUID\":\"4ead32d1-48f8-4198-b82f-4a4b01a26600\",\"columns\":[{\"UUID\":\"9c389362-1b23-47c3-9ea2-e081aff4945d\",\"columnName\":\"Column 1\",\"columnKey\":\"headerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
             "sectionMinHeight" : "",
             "sectionVerticalAlign" : "flex-start"
           },
           "children" : [ {
-            "id" : "e8036abd-01cf-4e38-86d2-f05658883723",
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : {
+                  "padding" : {
+                    "bottom" : "5px",
+                    "left" : "5px",
+                    "right" : "5px",
+                    "top" : "5px"
+                  }
+                }
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "activeLineColor" : "rgb(255, 255, 255)",
+                    "activeLineWeight" : "3px",
+                    "backgroundColor" : "rgba(255, 255, 255, 0)",
+                    "dropdownAccordionIconSize" : "xx-small",
+                    "dropdownActiveLineWeight" : "5px",
+                    "dropdownBackgroundActiveColor" : "rgba(0, 0, 0, 0)",
+                    "dropdownBackgroundColor" : "",
+                    "dropdownBackgroundHoverColor" : "",
+                    "dropdownBottomBorderRadius" : "5px",
+                    "dropdownFontSizeOverride" : "",
+                    "dropdownFontWeightOverride" : "300",
+                    "dropdownItemPadding" : "{\"top\":\"10px\",\"right\":\"10px\",\"bottom\":\"10px\",\"left\":\"10px\"}",
+                    "dropdownLineHeightOverride" : "",
+                    "dropdownMenuPadding" : "{\"top\":\"0px\",\"right\":\"0px\",\"bottom\":\"0px\",\"left\":\"0px\"}",
+                    "dropdownOverrideTextStyle" : true,
+                    "dropdownShowDividerLines" : false,
+                    "dropdownTextDecorationOverride" : "",
+                    "dropdownTextStyle" : "body-regular",
+                    "dropdownTopBorderRadius" : "5px",
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "0px",
+                        "left" : "0px",
+                        "right" : "0px",
+                        "top" : "0px"
+                      },
+                      "padding" : {
+                        "bottom" : "0px",
+                        "left" : "0px",
+                        "right" : "0px",
+                        "top" : "0px"
+                      }
+                    },
+                    "fontSizeOverride" : "",
+                    "fontWeightOverride" : "",
+                    "hoverLineColor" : "rgb(153, 47, 180)",
+                    "iconSize" : "xx-small",
+                    "itemBackgroundActiveColor" : "rgba(255, 255, 255, 0)",
+                    "itemBackgroundHoverColor" : "rgba(255, 255, 255, 0)",
+                    "lineHeightOverride" : "",
+                    "menuHorizontalAlignment" : "left",
+                    "navigationMenuEditor" : "Default_Navigation2",
+                    "overrideTextStyle" : false,
+                    "showHomeLink" : true,
+                    "showParentMenuIcon" : true,
+                    "spaceBetweenMenuItems" : "30px",
+                    "textActiveColor" : "rgb(255, 255, 255)",
+                    "textColor" : "rgb(255, 255, 255)",
+                    "textDecorationOverride" : "",
+                    "textHoverColor" : "rgb(255, 255, 255)",
+                    "textStyle" : "body-regular"
+                  },
+                  "definition" : "community_navigation:customizableNavigationBarContainer",
+                  "id" : "68853710-70b7-4482-a92d-bf84433b9b92",
+                  "type" : "component"
+                } ],
+                "id" : "794b5822-7ecb-4917-a9b6-b4b7dd999bdf",
+                "name" : "desktop",
+                "title" : "Desktop View",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "burgerIconHorizontalAlignment" : "left",
+                    "modalAccordionIconSize" : "xx-small",
+                    "modalActiveBackgroundColor" : "rgba(255, 255, 255, 0)",
+                    "modalActiveLineWeight" : "5px",
+                    "modalFontSizeOverride" : "",
+                    "modalFontWeightOverride" : "",
+                    "modalItemPadding" : "{\"top\":\"10px\",\"right\":\"10px\",\"bottom\":\"10px\",\"left\":\"15px\"}",
+                    "modalLineHeightOverride" : "",
+                    "modalMenuPadding" : "{\"top\":\"0px\",\"right\":\"0px\",\"bottom\":\"0px\",\"left\":\"0px\"}",
+                    "modalOverrideTextStyle" : false,
+                    "modalShowDividerLines" : true,
+                    "modalSubmenuFontSizeOverride" : "",
+                    "modalSubmenuFontWeightOverride" : "300",
+                    "modalSubmenuLineHeightOverride" : "",
+                    "modalSubmenuOverrideTextStyle" : true,
+                    "modalSubmenuTextDecorationOverride" : "",
+                    "modalSubmenuTextStyle" : "body-regular",
+                    "modalTextDecorationOverride" : "",
+                    "modalTextStyle" : "body-regular",
+                    "showHomeLink" : true
+                  },
+                  "definition" : "community_navigation:customizableNavigationHamburgerMenuContainer",
+                  "id" : "d18ee180-d35a-4898-bb68-597f258ffd9f",
+                  "type" : "component"
+                } ],
+                "id" : "c0b49b7b-d695-4459-b6c1-b2192c5bcc1b",
+                "name" : "mobile",
+                "title" : "Mobile View",
+                "type" : "region"
+              } ],
+              "definition" : "community_navigation:customizableNavigationMenu",
+              "id" : "65fbff89-1acb-4072-af04-ea4371399a74",
+              "type" : "component"
+            } ],
+            "id" : "9c389362-1b23-47c3-9ea2-e081aff4945d",
             "name" : "headerSection",
             "title" : "Theme Header",
             "type" : "region"
           } ],
           "definition" : "community_layout:section",
-          "id" : "844569fd-bb08-4122-81b9-42f3c6b6b6a7",
+          "id" : "4ead32d1-48f8-4198-b82f-4a4b01a26600",
           "type" : "component"
         } ],
-        "id" : "d1e85fec-3c54-43a2-a97b-c7eb3e96ebde",
+        "id" : "60b229d8-4203-4b8c-aebb-ff314e92d6b4",
         "name" : "header",
         "title" : "Theme Header",
         "type" : "region"
@@ -40,27 +164,35 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
-            "dxpStyle" : { },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
-            "maxContentWidth" : "",
+            "maxContentWidth" : "none",
             "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"62d32f80-acfd-4bf1-8b0c-26afecd3ebe5\",\"columns\":[{\"UUID\":\"6d86ecc3-576d-45fa-86d1-bd01efb9161f\",\"columnName\":\"Column 1\",\"columnKey\":\"footerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionConfig" : "{\"UUID\":\"7378dd9a-95e2-4553-96d8-c40e92bc9f21\",\"columns\":[{\"UUID\":\"5a506375-228f-4020-9ecc-cf645fa654e9\",\"columnName\":\"Column 1\",\"columnKey\":\"footerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
             "sectionMinHeight" : "",
             "sectionVerticalAlign" : "flex-start"
           },
           "children" : [ {
-            "id" : "6d86ecc3-576d-45fa-86d1-bd01efb9161f",
+            "children" : [ {
+              "attributes" : {
+                "imageInfos" : "",
+                "richTextValue" : "<p><br></p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "dfc22b2a-0abe-42cc-89a1-14c5464fd0ba",
+              "type" : "component"
+            } ],
+            "id" : "5a506375-228f-4020-9ecc-cf645fa654e9",
             "name" : "footerSection",
-            "title" : "Theme Footer",
+            "title" : "Column 1",
             "type" : "region"
           } ],
           "definition" : "community_layout:section",
-          "id" : "62d32f80-acfd-4bf1-8b0c-26afecd3ebe5",
+          "id" : "7378dd9a-95e2-4553-96d8-c40e92bc9f21",
           "type" : "component"
         } ],
-        "id" : "b88b467c-85c8-4ddf-89c4-d64380dca70e",
+        "id" : "15511f1a-1b56-4895-b159-913d66d23401",
         "name" : "footer",
         "title" : "Theme Footer",
         "type" : "region"
@@ -86,7 +218,7 @@
             "children" : [ {
               "attributes" : {
                 "activeLineColor" : "rgb(255, 255, 255)",
-                "activeLineWeight" : "2px",
+                "activeLineWeight" : "3px",
                 "backgroundColor" : "rgba(255, 255, 255, 0)",
                 "dropdownAccordionIconSize" : "xx-small",
                 "dropdownActiveLineWeight" : "5px",
@@ -94,7 +226,7 @@
                 "dropdownBackgroundColor" : "",
                 "dropdownBackgroundHoverColor" : "",
                 "dropdownBottomBorderRadius" : "5px",
-                "dropdownFontSizeOverride" : ".75rem",
+                "dropdownFontSizeOverride" : "",
                 "dropdownFontWeightOverride" : "300",
                 "dropdownItemPadding" : "{\"top\":\"10px\",\"right\":\"10px\",\"bottom\":\"10px\",\"left\":\"10px\"}",
                 "dropdownLineHeightOverride" : "",
@@ -130,7 +262,7 @@
                 "overrideTextStyle" : false,
                 "showHomeLink" : true,
                 "showParentMenuIcon" : true,
-                "spaceBetweenMenuItems" : "30px",
+                "spaceBetweenMenuItems" : "20px",
                 "textActiveColor" : "rgb(255, 255, 255)",
                 "textColor" : "rgb(255, 255, 255)",
                 "textDecorationOverride" : "",
@@ -138,18 +270,19 @@
                 "textStyle" : "body-regular"
               },
               "definition" : "community_navigation:customizableNavigationBarContainer",
-              "id" : "ce3906f2-b8a3-496f-8419-7520e7df42df",
+              "id" : "e8aa41c0-233c-4d92-96db-872d016ea162",
               "type" : "component"
             } ],
-            "id" : "6275faad-1542-4c32-a01c-0d6c40f70e41",
+            "id" : "032c3230-0403-433a-bf1a-6b4a1d4a4d49",
             "name" : "desktop",
             "title" : "Desktop View",
             "type" : "region"
           }, {
             "children" : [ {
               "attributes" : {
+                "burgerIconColor" : "rgb(255, 255, 255)",
                 "burgerIconHorizontalAlignment" : "left",
-                "dxpStyle" : { },
+                "closeIconColor" : "",
                 "modalAccordionIconSize" : "xx-small",
                 "modalActiveBackgroundColor" : "rgba(255, 255, 255, 0)",
                 "modalActiveLineWeight" : "5px",
@@ -166,74 +299,195 @@
                 "modalSubmenuOverrideTextStyle" : true,
                 "modalSubmenuTextDecorationOverride" : "",
                 "modalSubmenuTextStyle" : "body-regular",
+                "modalTextActiveColor" : "",
                 "modalTextDecorationOverride" : "",
                 "modalTextStyle" : "body-regular",
                 "showHomeLink" : true
               },
               "definition" : "community_navigation:customizableNavigationHamburgerMenuContainer",
-              "id" : "ee3110fc-7205-4bd7-9d88-be9d499e5e8a",
+              "id" : "567e11eb-9b06-4930-bff4-741bb61d2a49",
               "type" : "component"
             } ],
-            "id" : "2d23b046-9ce5-4806-8857-a6ac9d0ad75d",
+            "id" : "f58e1789-91ba-4f67-8bc8-2b3f61ccade6",
             "name" : "mobile",
             "title" : "Mobile View",
             "type" : "region"
           } ],
           "definition" : "community_navigation:customizableNavigationMenu",
-          "id" : "5cfda7fe-d2ea-4fde-a61a-ed3c0d7f6b30",
+          "id" : "2d843853-50db-4a8d-8365-22a53b12b2f3",
           "type" : "component"
         } ],
-        "id" : "b9f6a3a2-7017-4ef5-b51e-71c6d3a86220",
-        "name" : "header",
+        "id" : "3c51f41e-41e4-479e-92dd-6938b845d63c",
+        "name" : "navHeader",
         "type" : "region"
       }, {
-        "children" : [ {
-          "attributes" : {
-            "alignment" : "center",
-            "dxpStyle" : { },
-            "lineStyle" : "solid",
-            "size" : 1,
-            "width" : 100
-          },
-          "definition" : "dxp_base:horizontalLine",
-          "id" : "ccfccf8a-f37b-433c-97f6-a598f3272ea3",
-          "type" : "component"
-        }, {
-          "attributes" : {
-            "pageContext" : "home",
-            "zoneName" : "above_footer"
-          },
-          "definition" : "c:ustWidgetZone",
-          "id" : "2176e69b-2d47-4986-b5f1-053ce6764ec7",
-          "type" : "component"
-        } ],
-        "id" : "fe59c675-0793-43bb-a025-d87b005c223b",
-        "name" : "above_footer",
+        "id" : "096925ac-1ef8-490d-8943-677e8c60b1e1",
+        "name" : "preFooter",
         "type" : "region"
       }, {
-        "id" : "26af2503-fc1f-4841-8992-52a6b8491a44",
+        "id" : "3fd2f482-694e-46d7-a19b-f1ff68c37c5c",
         "name" : "default",
         "type" : "region"
       }, {
-        "id" : "aa2443ce-f38b-4089-b232-0714e659188f",
-        "name" : "footer",
+        "id" : "7b98b43b-34c5-4b54-8a63-b33a4343dcb1",
+        "name" : "heroHead",
+        "type" : "region"
+      }, {
+        "id" : "1f50f13c-e96c-4431-90bf-bcaf21ad45d1",
+        "name" : "bottom",
+        "type" : "region"
+      }, {
+        "id" : "4814ec31-5b71-44b9-a722-ef0cc48f193f",
+        "name" : "hero",
+        "type" : "region"
+      }, {
+        "id" : "47829e87-7a7f-407d-b273-674273545654",
+        "name" : "navFooter",
         "type" : "region"
       }, {
         "children" : [ {
           "attributes" : {
-            "pageContext" : "home",
+            "backgroundColor" : "",
+            "bannerAlignment" : "center",
+            "bannerId" : "",
+            "bannerLinkAssistiveText" : "",
+            "borderColor" : "",
+            "borderRadius" : 0,
+            "borderWidth" : 0,
+            "buttonDirection" : "horizontal",
+            "buttonGroupAlignment" : "center",
+            "buttonGroupHeight" : 50,
+            "buttonGroupSpacingHorizontal" : "space-evenly",
+            "buttonGroupSpacingVertical" : "space-evenly",
+            "buttonGroupWidth" : 50,
+            "contentPadding" : "none",
+            "contentPosition" : "center center",
+            "contentWidth" : 50,
+            "height" : 450,
+            "imageFit" : "cover",
+            "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCP2BJGG6KQNEUVC4WZEVJUNDWDE?lastModifiedDate=Fri Jun 05 19:04:26 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCP2BJGG6KQNEUVC4WZEVJUNDWDE\",\"contentType\":null}}",
+            "imagePosition" : "center center",
+            "isBannerLink" : false,
+            "overlayColor" : "",
+            "showButtons" : true,
+            "showSecondaryButton" : false,
+            "singleButtonAlignment" : "center",
+            "width" : 100
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "backgroundColor" : "",
+                "isLinkable" : false,
+                "linkAssistiveText" : "",
+                "paddingHorizontal" : "none",
+                "paddingVertical" : "none",
+                "text" : "Welcome to the Tommie Network",
+                "textAlign" : "left",
+                "textColor" : "rgb(255, 255, 255)",
+                "textDecoration" : "{\"bold\":true,\"italic\":false}",
+                "textDisplayInfo" : "{\"textStyle\":\"heading-large\",\"headingTag\":\"h2\",\"enableOverride\":false}"
+              },
+              "definition" : "dxp_base:textBlock",
+              "id" : "f9c22f95-3ec6-448c-b5b9-c237e410e956",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "backgroundColor" : "",
+                "isLinkable" : false,
+                "linkAssistiveText" : "",
+                "paddingHorizontal" : "none",
+                "paddingVertical" : "none",
+                "text" : "No matter where your journey has taken you, your Tommie connection is for life. Celebrate at events, cheer on the Tommies, expand your professional network of 120,000+ alumni, and keep learning with St. Thomas — All for the Common Good™. There are countless ways to stay involved and show your Tommie spirit.\n\nWhether you’re looking for ways to stay informed, engage with fellow Tommie families or support the university’s mission, this page is your go-to resource. ",
+                "textAlign" : "left",
+                "textColor" : "rgb(251, 251, 251)",
+                "textDecoration" : "{\"bold\":true}",
+                "textDisplayInfo" : "{\"textStyle\":\"heading-medium\",\"headingTag\":\"h3\",\"enableOverride\":false}"
+              },
+              "definition" : "dxp_base:textBlock",
+              "id" : "d9f5c1f4-789c-4075-b624-93ed1e4b8443",
+              "type" : "component"
+            } ],
+            "id" : "33235bbd-6117-423b-8af0-dc84016cb77d",
+            "name" : "contentRegion",
+            "title" : "Content Region",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "size" : "standard",
+                "stretch" : "standard",
+                "text" : "Learn More",
+                "type" : "primary",
+                "url" : "{\"linkInfo\":{\"pageReference\":{\"type\":\"standard__webPage\",\"attributes\":{\"url\":\"https://alumni.stthomas.edu/\"}}}}"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "edb92043-f4f6-44ae-8b69-c930da198e71",
+              "type" : "component"
+            } ],
+            "id" : "b5014abc-214a-4caf-be54-e090643ad454",
+            "name" : "bannerPrimaryButton",
+            "title" : "Primary Button Region",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "size" : "standard",
+                "stretch" : "standard",
+                "text" : "Contact Us",
+                "type" : "secondary"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "3a6d2c97-dc72-4d6f-993b-e0e9a416c1f0",
+              "type" : "component"
+            } ],
+            "id" : "702e16d2-3c60-4c7a-bd9a-aaaba29ca924",
+            "name" : "bannerSecondaryButton",
+            "title" : "Secondary Button Region",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : { },
+              "definition" : "dxp_page_layout:placeHolder",
+              "id" : "707f9440-643e-493e-a1cb-cb18e2d1e049",
+              "type" : "component"
+            } ],
+            "id" : "1a461593-2d5f-41a5-b116-f0e982ded368",
+            "name" : "placeholder",
+            "title" : "placeholder",
+            "type" : "region"
+          } ],
+          "definition" : "dxp_content_layout:banner",
+          "id" : "63faa450-d51b-48d4-afef-673178dee9ea",
+          "type" : "component"
+        }, {
+          "attributes" : {
             "zoneName" : "banner"
           },
           "definition" : "c:ustWidgetZone",
-          "id" : "496d6594-88a1-4297-b9d9-9b78183236df",
+          "id" : "e6e45ada-a6f3-4140-a05c-7f752d01bc12",
           "type" : "component"
         } ],
-        "id" : "8ea29546-7e68-48aa-bbf0-f05874e33784",
+        "id" : "9ea35133-afcb-483e-afbb-942df32c5643",
         "name" : "banner",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "zoneName" : "above_footer"
+          },
+          "definition" : "c:ustWidgetZone",
+          "id" : "088d1a6a-c045-4b15-a267-2fbef56c09c2",
+          "type" : "component"
+        } ],
+        "id" : "9bafb304-dd72-4920-8f32-43d829d0c2ed",
+        "name" : "above_footer",
         "type" : "region"
       } ],
       "definition" : "c:ustAlumniTheme",
-      "id" : "e8b0f0d3-695b-40d6-9bc6-42a27ae47031",
+      "id" : "8a57d323-29a4-4176-8e9c-eb4c38b827a3",
       "type" : "component"
     }
   },
