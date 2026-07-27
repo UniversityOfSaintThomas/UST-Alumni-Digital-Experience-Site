@@ -517,6 +517,32 @@
     pointer-events: none;
 }
 
+/* Login/Logout link in the actions row */
+.ust-header__auth-btn {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 4px;
+    color: #ffffff !important;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 150ms ease;
+}
+
+.ust-header__auth-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+}
+
+.ust-header__auth-btn:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+}
+
 /* Hamburger only visible on mobile */
 .ust-header__hamburger {
     display: none;
@@ -767,6 +793,15 @@
     }
 
     .ust-header__alumni-brand {
-        font-size: 1.2rem;
+        display: none;
+    }
+
+    .ust-header__actions {
+        gap: 0.1rem;
+    }
+
+    .ust-header__auth-btn {
+        padding: 0 0.65rem;
+        font-size: 0.8125rem;
     }
 }

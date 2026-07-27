@@ -2,16 +2,27 @@ import { LightningElement, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import UST_ALUMNI_TEMPLATE from '@salesforce/resourceUrl/ustAlumniThemplate';
 import basePath from '@salesforce/community/basePath';
+import isGuest from '@salesforce/user/isGuest';
 
 export default class UstAlumniHeader extends NavigationMixin(LightningElement) {
     @track isSearchOpen = false;
     @track searchQuery = '';
 
     logoUrl = UST_ALUMNI_TEMPLATE + '/images/ustLogoPurple.svg';
+    isGuest = isGuest;
 
     /* ------- Community base path ------- */
     get homeUrl() {
         return basePath + '/';
+    }
+
+    get loginUrl() {
+        return basePath + '/login';
+    }
+
+    get logoutUrl() {
+        const sitePrefix = basePath.replace(/\/s$/i, '');
+        return sitePrefix + '/secur/logout.jsp';
     }
 
     get updateContactUrl() {
