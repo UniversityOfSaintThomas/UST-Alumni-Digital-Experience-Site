@@ -57,7 +57,17 @@ public without sharing class AlumniNewsListController {
 
                     if (String.isNotBlank(an.Alumni_News__c)) {
                         newsItem.newsItem = an.Alumni_News__c;
-                        //If Alumni_News__c contains a link (https:// or http://), then format it as a hyperlink with
+                        //Look through content to find http://stite.com/dfdsf and build a link out of it with the label being the word '[Source]'
+                        // build a reg expression first to find all url links
+                        Pattern urlPattern = Pattern.compile('https?://[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-@?^=%&/~\\+#])?');
+                        Matcher urlMatcher = urlPattern.matcher(an.Alumni_News__c);
+                        if (urlMatcher.find()) {
+                            String url = urlMatcher.group();
+                            newsItem.newsItem = newsItem.newsItem.replace(url, '<a href="' + url + '" target="_blank">[Source]</a>');
+                        }
+                        //newsItems often start with a url
+
+                    } else {
                         newsItem.newsItem = '';
                     }
 

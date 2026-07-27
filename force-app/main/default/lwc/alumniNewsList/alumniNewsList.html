@@ -4,11 +4,11 @@
 
 <!-- Alumni News List -->
 <template>
-    <div class="slds-grid slds-wrap slds-box slds-box_small search-box slds-is-relative slds-m-right--small slds-m-left--small">
+    <div class="slds-grid slds-wrap slds-box slds-box_small search-box slds-is-relative slds-m-right_small slds-m-left_small">
         <header class="slds-media slds-media_center slds-has-flexi-truncate slds-size_12-of-12 slds-clearfix">
             <div class="slds-media__figure">
             <span class="slds-icon_container slds-icon-standard-account" title="Alumni News">
-              <lightning-icon icon-name="standard:news" size="x-medium" slot="icon" class="medium-purple"></lightning-icon>
+              <lightning-icon icon-name="standard:news" size="medium" slot="icon" class="medium-purple"></lightning-icon>
               <span class="slds-assistive-text">Alumni News</span>
             </span>
             </div>
@@ -18,10 +18,10 @@
                 </h1>
             </div>
         </header>
-        <div class="slds-p-right_small slds-large-size_8-of-12 slds-small-size--12-of-12">
+        <div class="slds-p-right_small slds-large-size_8-of-12 slds-small-size_12-of-12">
             <lightning-input type="search" onchange={handleKeyChange} class="slds-m-bottom_small" label="Search Name or Category" value={searchKey}></lightning-input>
         </div>
-        <div class="slds-p-right_small slds-large-size_4-of-12 slds-small-size--12-of-12">
+        <div class="slds-p-right_small slds-large-size_4-of-12 slds-small-size_12-of-12">
             <lightning-input type="search" onchange={handleClassChange} class="slds-m-bottom_small" label="Class Year" value={classYear}></lightning-input>
         </div>
     </div>
@@ -29,12 +29,12 @@
         <lightning-spinner if:true={loading} alternative-text="Loading" size="medium" class="slds-size_1-of-1 slds-large-size_12-of-12"></lightning-spinner>
         <template for:each={alumniNews} for:item="news">
             <div class="slds-large-size_1-of-2 slds-small-size_2-of-2 " key={news.key}>
-                <article class="slds-card slds-m-top--small slds-m-right--x-small slds-m-left--x-small">
+                <article class="slds-card slds-m-top_small slds-m-right_x-small slds-m-left_x-small">
                     <div class="slds-card__header slds-grid">
                         <header class="slds-media slds-media_center slds-has-flexi-truncate">
                             <div class="slds-media__figure">
                                 <span class="slds-icon_container slds-icon-standard-account" title="account">
-                                    <lightning-icon icon-name="standard:avatar" size="x-medium" slot="icon" class="medium-purple"></lightning-icon>
+                                    <lightning-icon icon-name="standard:avatar" size="medium" slot="icon" class="medium-purple"></lightning-icon>
                                 <span class="slds-assistive-text">account</span>
                                 </span>
                             </div>
@@ -56,7 +56,7 @@
                         <lightning-formatted-rich-text value={news.newsItem}></lightning-formatted-rich-text>
                     </div>
                     <footer class="slds-card__footer">
-                        <span class="slds-badge slds-show--inline-block slds-m-top--xxx-small slds-m-bottom--xx-small">
+                        <span class="slds-badge slds-show_inline-block slds-m-top_xxx-small slds-m-bottom_xx-small">
                           <span class="slds-badge__icon slds-badge__icon_left slds-badge__icon_inverse">
                             <span class="slds-icon_container slds-icon-utility-moneybag" title="Description of icon when needed">
                                   <lightning-icon icon-name="standard:date_input" size="xx-small" slot="icon" class="medium-purple"></lightning-icon>
@@ -64,14 +64,14 @@
                           </span><lightning-formatted-date-time value={news.newsDate} year="numeric" month="long" day="numeric"></lightning-formatted-date-time>
                         </span>
 
-                        <span class="slds-badge slds-show--inline-block slds-m-top--xxx-small slds-m-bottom--xx-small">
+                        <span class="slds-badge slds-show_inline-block slds-m-top_xxx-small slds-m-bottom_xx-small">
                           <span class="slds-badge__icon slds-badge__icon_left slds-badge__icon_inverse">
                             <span class="slds-icon_container slds-icon-utility-moneybag" title="Description of icon when needed">
                                   <lightning-icon icon-name="standard:category" size="xx-small" slot="icon" class="medium-purple"></lightning-icon>
                             </span>
                           </span>Category: {news.category}
                         </span>
-                        <a class="slds-badge slds-m-left--x-small slds-show--inline-block slds-m-top--xxx-small slds-m-bottom--xx-small" href={news.detailLink}>
+                        <a class="slds-badge slds-m-left_x-small slds-show_inline-block slds-m-top_xxx-small slds-m-bottom_xx-small" href={news.detailLink}>
                          <span class="slds-badge__icon slds-badge__icon_left slds-badge__icon_inverse">
                             <span class="slds-icon_container slds-icon-utility-moneybag" title="Description of icon when needed">
                                   <lightning-icon icon-name="standard:link" size="xx-small" slot="icon" class="medium-purple"></lightning-icon>
@@ -83,8 +83,8 @@
                 </article>
             </div>
         </template>
-        <div class="slds-grid slds-wrap slds-m-right--small slds-m-left--small  slds-size_full">
-            <div class="slds-size_1-of-1 slds-m-top--large slds-m-bottom--medium slds-size_full slds-text-align_center">
+        <div class="slds-grid slds-wrap slds-m-right_small slds-m-left_small  slds-size_full">
+            <div class="slds-size_1-of-1 slds-m-top_large slds-m-bottom_medium slds-size_full slds-text-align_center">
                 <p>Total records: <strong>{totalrecords}</strong> Page <strong>{currentpage}</strong> of <strong>{totalpages}</strong></p>
             </div>
         </div>
