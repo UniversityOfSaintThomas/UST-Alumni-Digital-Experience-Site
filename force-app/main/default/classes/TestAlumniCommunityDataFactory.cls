@@ -47,11 +47,6 @@ public class TestAlumniCommunityDataFactory {
                 Account a = new Account(Name = 'Test Account Name ' + xx);
                 insert a;
 
-                String usCountryValue = 'United States';
-                if (doesPicklistContain(Schema.Interaction__c.Country__c, 'United States of America')) {
-                    usCountryValue = 'United States of America';
-                }
-
                 //Create Contact
                 Contact testContact = new Contact(
                         firstName = 'Hello' + xx,
@@ -61,9 +56,9 @@ public class TestAlumniCommunityDataFactory {
                         Preferred_First_Name__c = 'D' + xx,
                         Preferred_Class_Year__c = '200' + xx,
                         MailingStreet = 'Pet Co. Ave.' + xx,
-                        MailingCountry = usCountryValue,
+                        MailingCountryCode = 'US',
                         MailingCity = 'Snake City' + xx,
-                        MailingState = 'IL',
+                        MailingStateCode = 'IL',
                         MailingPostalCode = '5541' + xx,
                         Employer__c = 'Dog Walker Inc. ' + xx,
                         Job_Title__c = 'Leash Tester ' + xx,

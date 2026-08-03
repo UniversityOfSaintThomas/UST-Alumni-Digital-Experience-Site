@@ -1,0 +1,153 @@
+<template>
+  <div class="slds-card alumni-profile">
+    <template lwc:if={isLoading}>
+      <lightning-spinner alternative-text="Loading profile" size="medium"></lightning-spinner>
+    </template>
+
+    <template lwc:if={errorMessage}>
+      <div class="slds-text-color_error slds-p-around_small" role="alert">{errorMessage}</div>
+    </template>
+
+    <template lwc:if={hasRecord}>
+      <!-- Display mode -->
+      <template lwc:if={showDisplayMode}>
+        <div class="slds-p-around_medium">
+          <h1 class="slds-text-heading_medium">
+            {displayFirstName} {displayLastName}
+          </h1>
+
+          <div class="slds-grid slds-wrap slds-gutters profile-fields">
+            <div class="slds-col slds-size_1-of-2 slds-large-size_1-of-3 slds-p-bottom_small">
+              <p class="slds-text-title_caps">Class Year</p>
+              <p>{profile.classYearText}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-large-size_1-of-3 slds-p-bottom_small">
+              <p class="slds-text-title_caps">St. Thomas Degree</p>
+              <p>{profile.stThomasDegreeText}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-large-size_1-of-3 slds-p-bottom_small">
+              <p class="slds-text-title_caps">City, State</p>
+              <p>{profile.cityState}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-large-size_1-of-3 slds-p-bottom_small">
+              <p class="slds-text-title_caps">Job Title</p>
+              <p>{profile.occupationText}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-large-size_1-of-3 slds-p-bottom_small">
+              <p class="slds-text-title_caps">Employer</p>
+              <p>{profile.employerText}</p>
+            </div>
+          </div>
+
+          <template lwc:if={showEditButton}>
+            <lightning-button
+              label="Edit"
+              variant="brand"
+              onclick={handleEditClick}
+            ></lightning-button>
+          </template>
+        </div>
+      </template>
+
+      <!-- Edit mode -->
+      <template lwc:if={showEditMode}>
+        <div class="slds-p-around_medium">
+          <lightning-input
+            label="First Name"
+            value={draftFirstNameText}
+            data-field="draftFirstNameText"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="Nickname"
+            value={draftNickname}
+            data-field="draftNickname"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="Last Name"
+            value={draftLastNameText}
+            data-field="draftLastNameText"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="Student Last Name"
+            value={draftStudentLastNameText}
+            data-field="draftStudentLastNameText"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="Class Year"
+            value={draftClassYearText}
+            data-field="draftClassYearText"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="St. Thomas Degree"
+            value={draftStThomasDegreeText}
+            data-field="draftStThomasDegreeText"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="City, State"
+            value={draftCityState}
+            data-field="draftCityState"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="Job Title"
+            value={draftOccupationText}
+            data-field="draftOccupationText"
+            onchange={handleFieldChange}
+          ></lightning-input>
+          <lightning-input
+            label="Employer"
+            value={draftEmployerText}
+            data-field="draftEmployerText"
+            onchange={handleFieldChange}
+          ></lightning-input>
+
+          <div class="slds-p-top_small">
+            <lightning-button
+              label="Save"
+              variant="brand"
+              onclick={handleSaveClick}
+              disabled={isSaving}
+            ></lightning-button>
+            <lightning-button
+              label="Cancel"
+              onclick={handleCancelClick}
+              disabled={isSaving}
+              class="slds-m-left_x-small"
+            ></lightning-button>
+          </div>
+        </div>
+      </template>
+
+      <!-- Business Directory sub-list -->
+      <template lwc:if={hasBusinessDirectoryRecords}>
+        <div class="slds-p-around_medium business-directory-list">
+          <h2 class="slds-text-heading_small">Business Directory</h2>
+          <ul>
+            <template for:each={businessDirectoryRecords} for:item="record">
+              <li key={record.Id} class="slds-p-vertical_x-small">
+                <div class="slds-text-heading_small">{record.Company_Name__c}</div>
+                <div>{record.Title__c}</div>
+                <div>{record.Company_City__c}, {record.Company_State__c}</div>
+                <template lwc:if={record.Company_Website__c}>
+                  <a href={record.Company_Website__c} target="_blank" rel="noopener noreferrer">
+                    {record.Company_Website__c}
+                  </a>
+                </template>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </template>
+    </template>
+
+    <template lwc:if={showEmptyState}>
+      <div class="slds-p-around_medium">No alumni profile found.</div>
+    </template>
+  </div>
+</template>
