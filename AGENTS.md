@@ -98,6 +98,14 @@ sf project retrieve start --metadata "DigitalExperienceBundle:site/Alumni1" --ou
 
 ---
 
+## Testing Gotchas
+
+- **`TestAlumniCommunityDataFactory.createTestDATA()` depends on fixture data no CumulusCI task creates:** a `System Administrator` user literally named `ETL User`, and an `Alumni Community User` profile (Customer Community Login license). Neither exists in a scratch org until the `config_dev` flow has actually completed — check the `Network` record for the community isn't still `Status = UnderConstruction` before assuming the org is ready. If `createTestDATA()` throws `List index out of bounds: 0`, check for these two fixtures first, not a code bug. Do **not** "fix" this by pointing shared test code at whatever profile happens to exist in an under-provisioned org (e.g. the site's auto-generated Guest profile) — that breaks the factory for every other test that depends on it and diverges from EDA-Staging's real profile.
+- **Contact `MailingCountry`/`MailingState` (legacy label fields) are unreliable across orgs** — this org's State/Country picklist settings enforce `United States of America` in some environments while a fresh scratch org may only accept `United States`, causing `FIELD_INTEGRITY_EXCEPTION` on insert. Use `MailingCountryCode`/`MailingStateCode` (ISO codes, e.g. `US`/`IL`) in test data factories instead — codes are stable regardless of org-specific picklist label text.
+- **Jest + base Lightning stub components:** `label` (and similar `@api` string props) on components like `lightning-button` are JS properties, not reflected DOM attributes. `shadowRoot.querySelector('lightning-button[label="Save"]')` will not match anything. Query all `lightning-button` elements and filter on the `.label` property instead (see `lwc/alumniProfile/__tests__/alumniProfile.test.js` for the `findButtonByLabel` pattern).
+
+---
+
 ## Data Model Quick Reference
 
 - **Contact** — central record for every alumnus; most widgets read/write here
