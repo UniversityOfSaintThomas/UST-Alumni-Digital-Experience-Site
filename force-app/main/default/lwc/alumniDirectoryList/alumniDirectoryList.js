@@ -6,7 +6,43 @@ import {api, LightningElement, track} from 'lwc';
 import {NavigationMixin} from 'lightning/navigation';
 import getAlumniDirectory from '@salesforce/apex/AlumniDirectoryListController.getAlumniDirectory';
 
+// The existing My Account route (apiName from
+// unpackaged/config/experiences/.../sfdc_cms__route/my_account__c/_meta.json)
+// already hosts c-alumni-profile for "my own profile"; reused here with an
+// ?id= state param so it also serves the read-only "view another alum" case.
+const ALUMNI_PROFILE_PAGE_NAME = 'my_account__c';
+
+// Exported (not just inlined in the click handler) so the old-vs-new routing
+// choice can be unit tested directly, without needing to intercept the
+// NavigationMixin.Navigate call itself.
+export function resolveProfileNavigation(useNewProfileLink, recordId) {
+    if (useNewProfileLink) {
+        return {
+            type: 'comm__namedPage',
+            attributes: {
+                name: ALUMNI_PROFILE_PAGE_NAME,
+            },
+            state: {
+                id: recordId,
+            },
+        };
+    }
+
+    return {
+        type: 'standard__recordPage',
+        attributes: {
+            actionName: 'view',
+            recordId,
+        },
+    };
+}
+
 export default class alumniDirectoryList extends NavigationMixin(LightningElement) {
+
+    // When false (default), clicking an alum opens the legacy standard
+    // record detail page - required for the old Aura-template site. Set to
+    // true on the new LWR site's placement to route to the new Alumni Profile page instead.
+    @api useNewProfileLink = false;
 
     @api pagesize;
 
@@ -55,14 +91,9 @@ export default class alumniDirectoryList extends NavigationMixin(LightningElemen
     }
 
     handleAlumniClick(event) {
-        // Navigate to a URL
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                actionName: 'view',
-                recordId: event.target.dataset.aid,
-            },
-        });
+        this[NavigationMixin.Navigate](
+            resolveProfileNavigation(this.useNewProfileLink, event.target.dataset.aid)
+        );
     }
 
     getDirectory() {

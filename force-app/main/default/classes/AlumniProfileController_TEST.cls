@@ -99,6 +99,59 @@ private class AlumniProfileController_TEST {
         System.assertEquals(0, dto.businessDirectoryRecords.size());
     }
 
+    // ─── getProfileByRecordId ─────────────────────────────────────────────────
+
+    @IsTest
+    static void testGetProfileByRecordId_positive_ownerViewingOwnRecordCanEdit() {
+        User owner = getTestUser(1);
+        Alumni_Directory__c ownRecord = getDirectoryForUser(owner);
+
+        AlumniProfileController.AlumniProfileDto dto;
+        System.runAs(owner) {
+            Test.startTest();
+            dto = AlumniProfileController.getProfileByRecordId(ownRecord.Id);
+            Test.stopTest();
+        }
+
+        System.assertEquals(true, dto.hasRecord);
+        System.assertEquals(true, dto.canEdit, 'Owner viewing their own record via record Id should be editable');
+        System.assertEquals(ownRecord.Id, dto.recordId);
+    }
+
+    @IsTest
+    static void testGetProfileByRecordId_positive_nonOwnerViewingAnotherRecordIsReadOnly() {
+        User owner = getTestUser(1);
+        User otherUser = getTestUser(2);
+        Alumni_Directory__c ownersRecord = getDirectoryForUser(owner);
+
+        AlumniProfileController.AlumniProfileDto dto;
+        System.runAs(otherUser) {
+            Test.startTest();
+            dto = AlumniProfileController.getProfileByRecordId(ownersRecord.Id);
+            Test.stopTest();
+        }
+
+        System.assertEquals(true, dto.hasRecord, 'Any community user should be able to view another alum\'s directory record');
+        System.assertEquals(false, dto.canEdit, 'A non-owner viewing another alum\'s record must not be able to edit it');
+        System.assertEquals('Nick', dto.nickname);
+    }
+
+    @IsTest
+    static void testGetProfileByRecordId_negative_nullOrInvalidIdReturnsHasRecordFalse() {
+        User owner = getTestUser(1);
+
+        AlumniProfileController.AlumniProfileDto dto;
+        System.runAs(owner) {
+            Test.startTest();
+            dto = AlumniProfileController.getProfileByRecordId(null);
+            Test.stopTest();
+        }
+
+        System.assertEquals(false, dto.hasRecord);
+        System.assertEquals(false, dto.canEdit);
+        System.assertEquals(0, dto.businessDirectoryRecords.size());
+    }
+
     // ─── saveMyProfile ──────────────────────────────────────────────────────────
 
     @IsTest

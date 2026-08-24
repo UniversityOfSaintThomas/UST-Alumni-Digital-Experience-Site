@@ -1,3 +1,12 @@
+:host {
+  font-family: var(--ust-font-family-ui, 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+h1,
+h2 {
+  font-family: var(--ust-font-family, 'Lora', Georgia, 'Times New Roman', serif);
+}
+
 .profile-fields p {
   margin: 0;
 }

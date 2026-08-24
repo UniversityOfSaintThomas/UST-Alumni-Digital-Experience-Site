@@ -8,4 +8,11 @@
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="useNewProfileLink" type="Boolean" default="false"
+                       label="Use New Alumni Profile Page"
+                       description="Off (default): clicking a news item opens the old standard record detail page - required on the legacy Aura-template site. On: routes to the new Alumni Profile page instead." />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>

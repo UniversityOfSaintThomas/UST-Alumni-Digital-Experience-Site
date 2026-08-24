@@ -18,13 +18,9 @@ public without sharing class AlumniProfileController {
     public static AlumniProfileDto getMyProfile() {
         try {
             Id contactId = resolveCurrentContactId();
-            AlumniProfileDto dto = new AlumniProfileDto();
 
             if (contactId == null) {
-                dto.hasRecord = false;
-                dto.canEdit = false;
-                dto.businessDirectoryRecords = new List<Professional_Directory__c>();
-                return dto;
+                return emptyDto();
             }
 
             List<Alumni_Directory__c> records = [
@@ -39,31 +35,74 @@ public without sharing class AlumniProfileController {
             ];
 
             if (records.isEmpty()) {
-                dto.hasRecord = false;
-                dto.canEdit = false;
-                dto.businessDirectoryRecords = new List<Professional_Directory__c>();
-                return dto;
+                return emptyDto();
             }
 
-            Alumni_Directory__c record = records[0];
-            dto.hasRecord = true;
-            dto.canEdit = (record.Contact__c == contactId);
-            dto.recordId = record.Id;
-            dto.firstNameText = record.First_Name_Text__c;
-            dto.nickname = record.Nickname__c;
-            dto.lastNameText = record.Last_Name_Text__c;
-            dto.studentLastNameText = record.Student_Last_Name_Text__c;
-            dto.classYearText = record.Class_Year_Text__c;
-            dto.stThomasDegreeText = record.St_Thomas_Degree_text__c;
-            dto.cityState = record.City_State__c;
-            dto.occupationText = record.Occupation_Text__c;
-            dto.employerText = record.Employer_Text__c;
-            dto.businessDirectoryRecords = getActiveBusinessDirectoryRecords(contactId);
-
-            return dto;
+            return toDto(records[0], contactId);
         } catch (Exception caught) {
             throw new AuraHandledException('Unable to load your alumni profile: ' + caught.getMessage());
         }
+    }
+
+    /**
+     * Loads any alumnus's profile by their Alumni_Directory__c record Id, for
+     * the read-only "view another member's profile" experience (e.g. from the
+     * Alumni Directory/News lists). canEdit is still computed against the
+     * viewing user's own Contact, so a viewer only gets edit rights when the
+     * requested record happens to be their own.
+     */
+    @AuraEnabled(cacheable=true)
+    public static AlumniProfileDto getProfileByRecordId(Id recordId) {
+        try {
+            if (recordId == null) {
+                return emptyDto();
+            }
+
+            List<Alumni_Directory__c> records = [
+                    SELECT Id, Contact__c, First_Name_Text__c, Nickname__c,
+                            Last_Name_Text__c, Student_Last_Name_Text__c,
+                            Class_Year_Text__c, St_Thomas_Degree_text__c,
+                            City_State__c, Occupation_Text__c, Employer_Text__c
+                    FROM Alumni_Directory__c
+                    WHERE Id = :recordId
+                    WITH SECURITY_ENFORCED
+                    LIMIT 1
+            ];
+
+            if (records.isEmpty()) {
+                return emptyDto();
+            }
+
+            return toDto(records[0], resolveCurrentContactId());
+        } catch (Exception caught) {
+            throw new AuraHandledException('Unable to load this alumni profile: ' + caught.getMessage());
+        }
+    }
+
+    private static AlumniProfileDto toDto(Alumni_Directory__c record, Id viewerContactId) {
+        AlumniProfileDto dto = new AlumniProfileDto();
+        dto.hasRecord = true;
+        dto.canEdit = (viewerContactId != null && record.Contact__c == viewerContactId);
+        dto.recordId = record.Id;
+        dto.firstNameText = record.First_Name_Text__c;
+        dto.nickname = record.Nickname__c;
+        dto.lastNameText = record.Last_Name_Text__c;
+        dto.studentLastNameText = record.Student_Last_Name_Text__c;
+        dto.classYearText = record.Class_Year_Text__c;
+        dto.stThomasDegreeText = record.St_Thomas_Degree_text__c;
+        dto.cityState = record.City_State__c;
+        dto.occupationText = record.Occupation_Text__c;
+        dto.employerText = record.Employer_Text__c;
+        dto.businessDirectoryRecords = getActiveBusinessDirectoryRecords(record.Contact__c);
+        return dto;
+    }
+
+    private static AlumniProfileDto emptyDto() {
+        AlumniProfileDto dto = new AlumniProfileDto();
+        dto.hasRecord = false;
+        dto.canEdit = false;
+        dto.businessDirectoryRecords = new List<Professional_Directory__c>();
+        return dto;
     }
 
     @AuraEnabled

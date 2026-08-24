@@ -1,5 +1,7 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import { CurrentPageReference } from 'lightning/navigation';
 import getMyProfile from '@salesforce/apex/AlumniProfileController.getMyProfile';
+import getProfileByRecordId from '@salesforce/apex/AlumniProfileController.getProfileByRecordId';
 import saveMyProfile from '@salesforce/apex/AlumniProfileController.saveMyProfile';
 
 export default class AlumniProfile extends LightningElement {
@@ -23,19 +25,27 @@ export default class AlumniProfile extends LightningElement {
 
   // ─── Lifecycle ────────────────────────────────────────────────────────────
 
-  connectedCallback() {
+  // Alumni_Directory__c record Id of the profile to view, read from the page
+  // URL's ?id= state (set when navigating in from Alumni Directory/News).
+  // Absent when viewing "my own" profile (e.g. the My Account page).
+  viewRecordId;
+
+  @wire(CurrentPageReference)
+  setCurrentPageReference(pageRef) {
+    this.viewRecordId = pageRef?.state?.id || null;
     this.loadProfile();
   }
 
   loadProfile() {
     this.isLoading = true;
-    getMyProfile()
+    const request = this.viewRecordId ? getProfileByRecordId({ recordId: this.viewRecordId }) : getMyProfile();
+    request
       .then((data) => {
         this.profile = data;
         this.errorMessage = '';
       })
       .catch((error) => {
-        this.errorMessage = error?.body?.message || 'Unable to load your alumni profile.';
+        this.errorMessage = error?.body?.message || 'Unable to load this alumni profile.';
       })
       .finally(() => {
         this.isLoading = false;

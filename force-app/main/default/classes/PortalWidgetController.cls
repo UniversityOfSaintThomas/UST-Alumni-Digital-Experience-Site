@@ -72,7 +72,7 @@ public without sharing class PortalWidgetController {
                             Filter_Volunteer_Status__c
                     FROM UST_Portal_Widget__c
                     WHERE Zone__c = :zoneName
-                    AND Page_Context__c = :pageContext
+                    AND Page_Context__c INCLUDES (:pageContext)
                     AND Is_Active__c = TRUE
                     ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
             ];

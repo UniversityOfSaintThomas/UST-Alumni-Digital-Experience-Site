@@ -8,6 +8,7 @@ export default class AlumniNews extends LightningElement {
     @api page = 1;
     @api totalrecords;
     @api _pagesize = PAGE_SIZE;
+    @api useNewProfileLink = false;
 
 
     get pagesize() {

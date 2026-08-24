@@ -1,0 +1,2 @@
+Legacy sessions/ moved to:
+/home/tcdahlberg/IdeaProjects/UST-Alumni-Digital-Experience-Site/.agentbridge/sessions

@@ -1,10 +1,18 @@
 import { createElement } from 'lwc';
+import { CurrentPageReference } from 'lightning/navigation';
 import AlumniProfile from 'c/alumniProfile';
 import getMyProfile from '@salesforce/apex/AlumniProfileController.getMyProfile';
+import getProfileByRecordId from '@salesforce/apex/AlumniProfileController.getProfileByRecordId';
 import saveMyProfile from '@salesforce/apex/AlumniProfileController.saveMyProfile';
 
 jest.mock(
   '@salesforce/apex/AlumniProfileController.getMyProfile',
+  () => ({ default: jest.fn() }),
+  { virtual: true }
+);
+
+jest.mock(
+  '@salesforce/apex/AlumniProfileController.getProfileByRecordId',
   () => ({ default: jest.fn() }),
   { virtual: true }
 );
@@ -17,6 +25,13 @@ jest.mock(
 
 function flushPromises() {
   return new Promise((resolve) => process.nextTick(resolve));
+}
+
+// Every test views "my own" profile by default (no ?id= state), matching
+// the My Account page. Tests exercising the record-Id-driven read-only path
+// emit a state with an id instead.
+function emitOwnProfilePageReference() {
+  CurrentPageReference.emit({ state: {} });
 }
 
 function findButtonByLabel(element, label) {
@@ -56,6 +71,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     const heading = element.shadowRoot.querySelector('h1');
@@ -68,6 +84,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     const heading = element.shadowRoot.querySelector('h1');
@@ -83,6 +100,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     const heading = element.shadowRoot.querySelector('h1');
@@ -98,6 +116,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     const heading = element.shadowRoot.querySelector('h1');
@@ -109,6 +128,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     const editButton = findButtonByLabel(element, 'Edit');
@@ -120,6 +140,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     const editButton = findButtonByLabel(element, 'Edit');
@@ -134,6 +155,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     findButtonByLabel(element, 'Edit').click();
@@ -157,6 +179,7 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     findButtonByLabel(element, 'Edit').click();
@@ -180,10 +203,36 @@ describe('c-alumni-profile', () => {
 
     const element = createElement('c-alumni-profile', { is: AlumniProfile });
     document.body.appendChild(element);
+    emitOwnProfilePageReference();
     await flushPromises();
 
     const items = element.shadowRoot.querySelectorAll('.business-directory-list li');
     expect(items.length).toBe(1);
     expect(items[0].textContent).toContain('Active Co');
+  });
+
+  it('loads by record Id and renders read-only when the URL carries an id but the viewer is not the owner', async () => {
+    getProfileByRecordId.mockResolvedValue({ ...BASE_PROFILE, canEdit: false });
+
+    const element = createElement('c-alumni-profile', { is: AlumniProfile });
+    document.body.appendChild(element);
+    CurrentPageReference.emit({ state: { id: 'a0B000000000099' } });
+    await flushPromises();
+
+    expect(getProfileByRecordId).toHaveBeenCalledWith({ recordId: 'a0B000000000099' });
+    expect(getMyProfile).not.toHaveBeenCalled();
+    expect(findButtonByLabel(element, 'Edit')).toBeNull();
+  });
+
+  it('loads by record Id and still allows editing when the URL id belongs to the viewer', async () => {
+    getProfileByRecordId.mockResolvedValue({ ...BASE_PROFILE, canEdit: true });
+
+    const element = createElement('c-alumni-profile', { is: AlumniProfile });
+    document.body.appendChild(element);
+    CurrentPageReference.emit({ state: { id: BASE_PROFILE.recordId } });
+    await flushPromises();
+
+    expect(getProfileByRecordId).toHaveBeenCalledWith({ recordId: BASE_PROFILE.recordId });
+    expect(findButtonByLabel(element, 'Edit')).not.toBeNull();
   });
 });

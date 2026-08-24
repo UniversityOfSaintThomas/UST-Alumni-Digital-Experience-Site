@@ -232,11 +232,12 @@ export default class AlumniBusinessDirectory extends LightningElement {
     let node = startNode;
     while (node) {
       node = node.parentNode;
-      // A shadow root has no element parent — jump to its host to keep climbing.
-      if (node instanceof ShadowRoot) {
+
+      if (typeof ShadowRoot !== "undefined" && node instanceof ShadowRoot) {
         node = node.host;
       }
-      if (node && node.nodeType === Node.ELEMENT_NODE && node.id === id) {
+
+      if (node && node.nodeType === 1 && node.id === id) {
         return true;
       }
     }

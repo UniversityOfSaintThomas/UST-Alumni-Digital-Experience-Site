@@ -23,7 +23,7 @@
             </div>
             <lightning-spinner if:true={isSearchChangeExecuted} alternative-text="Loading" size="medium" class="">TEST</lightning-spinner>
             <div class="slds-card__body slds-card__body_inner">
-                <c-alumni-directory-list currentpage={page} onrecordsload={handleRecordsLoad} pagesize={pagesize}></c-alumni-directory-list>
+                <c-alumni-directory-list currentpage={page} onrecordsload={handleRecordsLoad} pagesize={pagesize} use-new-profile-link={useNewProfileLink}></c-alumni-directory-list>
                 <c-alumni-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst} onlast={handleLast} currentpage={page} totalrecords={totalrecords} pagesize={pagesize}></c-alumni-paginator-bottom>
             </div>
         </article>

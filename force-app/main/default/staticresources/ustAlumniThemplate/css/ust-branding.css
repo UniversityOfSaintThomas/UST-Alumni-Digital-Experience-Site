@@ -87,8 +87,49 @@
     --dxp-c-link-color-text-hover:  #8348ad;
     --dxp-c-link-color-text-active: #3a0858;
 
-    /* Inputs — border on focus matches brand */
-    --dxp-c-input-color-border-focus: #510c76;
+    /* Form fields (input/textarea/select) — visible resting border + brand-
+       purple focus + slightly roomier padding, so fields don't get lost in
+       a form. Default SLDS border falls back to --dxp-g-neutral-3, a
+       near-white background tint (~1.05:1 contrast against white) — that's
+       why fields looked nearly invisible before this block existed.
+
+       NOTE: these are --slds-c-{type}-* / --dxp-s-form-element-*, NOT
+       --dxp-c-{type}-*. The generic "--dxp-c-{component}-*" naming (which
+       mirrors the button/link hooks above) does not exist for form fields —
+       verified by inspecting the actual compiled SLDS rule chains in the
+       browser (view-source on the deployed CSS won't show this; it only
+       shows up in the resolved/compiled Salesforce Lightning Design System
+       stylesheet the LWR runtime injects). Real fallback chains:
+         border-color (rest):  --slds-c-{type}-color-border  -> --sds-c-{type}-color-border  -> --dxp-s-form-element-color-border (SHARED) -> --dxp-g-neutral-3
+         border-color (focus): --slds-c-{type}-color-border-focus -> --sds-c-{type}-color-border-focus -> hardcoded SLDS blue (no shared/--dxp-g-* fallback — must set per type)
+         radius:                --slds-c-{type}-radius-border -> --sds-c-{type}-radius-border -> --dxp-s-form-element-radius-border (SHARED) -> 4px
+         padding (input/textarea only): --slds-c-{type}-spacing-inline-start/end, -block-start/end -> ... -> --dxp-s-form-element-spacing-* (input only)
+       select's padding is hardcoded in SLDS (`.slds-select_container .slds-select { padding-left: .5rem; padding-right: 1.5rem }`)
+       with no variable at all — it cannot be adjusted via any hook.
+       These hooks reach inputs nested inside managed-package / Flow screen
+       shadow DOM (e.g. Summit Events "Event in a Box") since custom
+       properties are the only thing that crosses shadow boundaries. */
+    --dxp-s-form-element-color-border:  #6e6e6e;  /* shared rest-state border for input/textarea/select */
+    --dxp-s-form-element-radius-border: 0;        /* square edges — matches St. Thomas's usual input styling */
+    --slds-c-input-color-border-focus:    #510c76;
+    --slds-c-textarea-color-border-focus: #510c76;
+    --slds-c-select-color-border-focus:   #510c76;
+
+    /* Padding — select is excluded; SLDS hardcodes its padding with no hook */
+    --slds-c-input-spacing-inline-start:    1rem;
+    --slds-c-input-spacing-inline-end:      1.25rem;
+    --slds-c-textarea-spacing-inline-start: 1rem;
+    --slds-c-textarea-spacing-inline-end:   1.25rem;
+    --slds-c-textarea-spacing-block-start:  0.65rem;
+    --slds-c-textarea-spacing-block-end:    0.65rem;
+
+    /* Utility icons (help-text tooltips, calendar/clock pickers, etc.) default
+       to --dxp-g-neutral-3 too, making them just as invisible as the borders
+       were. --slds-c-icon-color-foreground-default is the real hook (not
+       --dxp-c-icon-*). Icons that are intentionally light-on-dark (header
+       search/hamburger) use `currentColor` via a more specific selector and
+       are unaffected by this. */
+    --slds-c-icon-color-foreground-default: #6e6e6e;
 
     /* Badges */
     --dxp-c-badge-color-background: #510c76;
@@ -105,8 +146,16 @@
     --dxp-g-font-family-heading: 'Lora', Georgia, 'Times New Roman', serif;
 
     /* Base body size and rhythm */
-    --dxp-g-font-size:       1rem;       /* 16px */
+    --dxp-g-font-size:       1.0625rem;  /* 17px, up from 16px */
     --dxp-g-line-height:     1.6;
+
+    /* Form field text size — separate namespace from --dxp-g-font-size.
+       --dxp-s-form-element-text-font-size is already explicitly set to 1rem
+       somewhere in Salesforce's base stylesheet (not just an unset fallback),
+       so it overrides --dxp-g-font-size/--dxp-s-body-font-size for text
+       typed into input/textarea/select — verified live in the browser.
+       Kept in sync with --dxp-g-font-size above; bump both together. */
+    --dxp-s-form-element-text-font-size: 1.0625rem;
 
     /* Heading scale — maps to h1/h2/h3 throughout the site */
     --dxp-g-font-size-heading-large:  2.25rem;  /* 36px — page titles */
