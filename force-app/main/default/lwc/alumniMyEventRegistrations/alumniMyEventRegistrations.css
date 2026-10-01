@@ -123,6 +123,26 @@
     margin-bottom: 0.25rem;
 }
 
+.alumni-event-listings-popover-location-label {
+    color: #4d4d4d;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.alumni-event-listings-popover-description-label {
+    color: #4d4d4d;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.alumni-event-listings-popover-location {
+    color: #4d4d4d;
+    font-size: 0.8125rem;
+    margin-bottom: 0.5rem;
+}
+
 .alumni-event-listings-popover-schedule {
     color: #4d4d4d;
     font-size: 0.8125rem;

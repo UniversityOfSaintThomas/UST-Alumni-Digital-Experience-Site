@@ -41,7 +41,14 @@
                                     <div class="slds-popover__body">
                                         <h3 class="slds-text-heading_small alumni-event-listings-popover-title">{registration.eventTitle}</h3>
                                         <p class="alumni-event-listings-popover-schedule">{registration.eventSchedule}</p>
-                                        <p>{registration.plainDescription}</p>
+                                        <template lwc:if={registration.locationTitle}>
+                                            <p class="alumni-event-listings-popover-location-label">Location:</p>
+                                            <p class="alumni-event-listings-popover-location">{registration.locationTitle}</p>
+                                        </template>
+                                        <template lwc:if={registration.plainDescription}>
+                                            <p class="alumni-event-listings-popover-description-label">Description:</p>
+                                            <p>{registration.plainDescription}</p>
+                                        </template>
                                     </div>
                                 </div>
                             </div>

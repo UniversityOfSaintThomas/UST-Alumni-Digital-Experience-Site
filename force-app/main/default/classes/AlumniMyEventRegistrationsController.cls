@@ -27,6 +27,7 @@ public without sharing class AlumniMyEventRegistrationsController {
                         summit__Event__r.summit__Event_Name__c,
                         summit__Event__r.summit__Event_description__c,
                         summit__Event__r.summit__Event_Short_Listing_Description__c,
+                        summit__Event__r.summit__Location_Title__c,
                         summit__Event_Instance__r.summit__Instance_Start_Date__c,
                         summit__Event_Instance__r.summit__Instance_Start_Time__c,
                         summit__Event_Instance__r.summit__Instance_End_Date__c,
@@ -56,6 +57,7 @@ public without sharing class AlumniMyEventRegistrationsController {
         @AuraEnabled public Date startDate;
         @AuraEnabled public String startTime;
         @AuraEnabled public String eventSchedule;
+        @AuraEnabled public String locationTitle;
 
         public EventRegistration(summit__Summit_Events_Registration__c registration) {
             this.registrationId = registration.Id;
@@ -70,6 +72,7 @@ public without sharing class AlumniMyEventRegistrationsController {
                     registration.summit__Event_Instance__r?.summit__Instance_Time_Zone__c
             );
             this.eventSchedule = buildEventSchedule(registration.summit__Event_Instance__r);
+            this.locationTitle = registration.summit__Event__r?.summit__Location_Title__c;
         }
     }
 
