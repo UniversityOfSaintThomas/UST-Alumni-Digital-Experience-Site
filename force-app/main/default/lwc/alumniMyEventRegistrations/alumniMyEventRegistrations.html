@@ -1,0 +1,76 @@
+<!--
+ - Created by nguy0092 on 7/31/2026.
+ -->
+
+<!-- Alumni My Event Registrations -->
+<template>
+    <template lwc:if={shouldRender}>
+        <div class="alumni-event-listings">
+            <h2 class="alumni-event-listings-header slds-m-bottom_small"><b>My Event Registrations</b></h2>
+            <ul class="slds-has-dividers_top-space alumni-event-listings-list">
+                <template for:each={decoratedRegistrations} for:item="registration">
+                    <li key={registration.registrationId}
+                        class="alumni-event-listings-row"
+                        data-id={registration.registrationId}
+                        tabindex="0"
+                        onmouseenter={handleRowActivate}
+                        onmouseleave={handleRowDeactivate}
+                        onfocus={handleRowActivate}
+                        onblur={handleRowDeactivate}>
+                        <div class="alumni-event-listings-row-content">
+                            <div class="slds-grid slds-nowrap alumni-event-listings-date-line">
+                                <span class="slds-col slds-no-flex slds-shrink-none alumni-event-listings-row-number">
+                                    {registration.rowNumber}.
+                                </span>
+                                <span class="slds-col slds-no-flex slds-shrink-none alumni-event-listings-date">
+                                    {registration.formattedStartDate}
+                                    <template lwc:if={registration.startTime}>
+                                        , {registration.startTime}
+                                    </template>
+                                </span>
+                            </div>
+                            <div class="slds-truncate alumni-event-listings-title">
+                                {registration.eventTitle}
+                            </div>
+                        </div>
+
+                        <!-- Hover/focus-triggered event description tooltip -->
+                        <template lwc:if={registration.isActive}>
+                            <div class={registration.popoverClass} role="tooltip">
+                                <div class="alumni-event-listings-popover-content">
+                                    <div class="slds-popover__body">
+                                        <h3 class="slds-text-heading_small alumni-event-listings-popover-title">{registration.eventTitle}</h3>
+                                        <p class="alumni-event-listings-popover-schedule">{registration.eventSchedule}</p>
+                                        <p>{registration.plainDescription}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </li>
+                </template>
+            </ul>
+
+            <template lwc:if={showWindowControls}>
+                <div class="alumni-event-listings-window-controls">
+                    <button
+                            type="button"
+                            class="alumni-event-listings-window-link"
+                            disabled={isAtWindowStart}
+                            onclick={handleWindowUp}>
+                        <lightning-icon icon-name="utility:chevronup" size="xx-small" class="alumni-event-listings-window-link-icon"></lightning-icon>
+                        <span>Up</span>
+                    </button>
+                    <span class="alumni-event-listings-window-separator">|</span>
+                    <button
+                            type="button"
+                            class="alumni-event-listings-window-link"
+                            disabled={isAtWindowEnd}
+                            onclick={handleWindowDown}>
+                        <span>Down</span>
+                        <lightning-icon icon-name="utility:chevrondown" size="xx-small" class="alumni-event-listings-window-link-icon"></lightning-icon>
+                    </button>
+                </div>
+            </template>
+        </div>
+    </template>
+</template>
