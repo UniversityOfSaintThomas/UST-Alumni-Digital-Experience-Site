@@ -1,3 +1,240 @@
 /**
  * Created by nguy0092 on 10/1/2026.
  */
+
+/* alumniMyUpcomingEvents */
+
+.alumni-event-listings {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    padding: 1rem 1rem .75rem 1rem;
+}
+
+.alumni-event-listings-header {
+    font-size: 1.10rem;
+    font-weight: 700;
+    color: #3b1f5e;
+}
+
+.alumni-event-listings-row {
+    padding: 0.10rem 0.25rem;
+    cursor: pointer;
+    position: relative;
+}
+
+.alumni-event-listings-title {
+    color: #1a1a1a;
+    /*font-weight: 600;*/
+}
+
+.alumni-event-listings-toggle-dates {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0.15rem 0 0 1.25rem;
+    color: #4f2d7f;
+    font-size: 0.80rem;
+    text-decoration: underline;
+    cursor: pointer;
+    --slds-c-icon-color-foreground-default: #4f2d7f;
+}
+
+.alumni-event-listings-toggle-dates:hover,
+.alumni-event-listings-toggle-dates:focus-visible {
+    color: #3b1f5e;
+    --slds-c-icon-color-foreground-default: #3b1f5e;
+}
+
+.alumni-event-listings-instances {
+    list-style: none;
+    margin: 0.25rem 0 0 1.25rem;
+    padding: 0;
+}
+
+.alumni-event-listings-instance-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    padding: 0.05rem 0;
+}
+
+.alumni-event-listings-instance-date {
+    color: #3b1f5e;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.alumni-event-listings-row-number {
+    flex: 0 0 1.25rem;
+    width: 1.25rem;
+    color: #706e6b;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.alumni-event-listings-date-line {
+    align-items: baseline;
+    flex-wrap: nowrap;
+}
+
+.alumni-event-listings-row:focus-visible {
+    outline: 2px solid #4f2d7f;
+    outline-offset: 2px;
+}
+
+.alumni-event-listings-row:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.alumni-event-listings-popover {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    z-index: 9001;
+    width: 18rem;
+    max-width: 90vw;
+    padding-bottom: 0.5rem;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.alumni-event-listings-popover-content {
+    background: #ffffff;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.alumni-event-listings-popover-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 1.25rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    background: #ffffff;
+    border-right: 1px solid #dddbda;
+    border-bottom: 1px solid #dddbda;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.alumni-event-listings-popover_below {
+    bottom: auto;
+    top: 100%;
+    padding-bottom: 0;
+    padding-top: 0.5rem;
+}
+
+.alumni-event-listings-popover_below .alumni-event-listings-popover-content::after {
+    top: auto;
+    bottom: 100%;
+    border-right: none;
+    border-bottom: none;
+    border-left: 1px solid #dddbda;
+    border-top: 1px solid #dddbda;
+    transform: translateY(50%) rotate(45deg);
+}
+
+.alumni-event-listings-popover .slds-popover__body {
+    position: relative;
+    background: #ffffff;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    color: #1a1a1a;
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+.alumni-event-listings-popover-title {
+    color: #3b1f5e;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.alumni-event-listings-popover-description-label {
+    color: #4d4d4d;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.alumni-event-listings-register-link {
+    font-style: italic;
+    font-size: 0.8125rem;
+    margin-left: 0.5rem;
+}
+
+.alumni-event-listings-register-link a {
+    color: #4f2d7f;
+    text-decoration: underline;
+}
+
+.alumni-event-listings-register-link a:hover,
+.alumni-event-listings-register-link a:focus-visible {
+    color: #3b1f5e;
+}
+
+.alumni-event-listings-window-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dddbda;
+}
+
+.alumni-event-listings-window-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    padding: 0;
+    color: #4f2d7f;
+    font-size: 0.8rem;
+    text-decoration: underline;
+    cursor: pointer;
+    --slds-c-icon-color-foreground-default: #4f2d7f;
+}
+
+.alumni-event-listings-window-link-icon {
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.alumni-event-listings-window-link-icon_up {
+    margin-right: 0.175rem;
+}
+
+.alumni-event-listings-window-link:hover:not(:disabled),
+.alumni-event-listings-window-link:focus-visible:not(:disabled) {
+    color: #3b1f5e;
+    --slds-c-icon-color-foreground-default: #3b1f5e;
+}
+
+.alumni-event-listings-window-link:disabled {
+    color: #b3b3b3;
+    text-decoration: none;
+    cursor: not-allowed;
+    --slds-c-icon-color-foreground-default: #b3b3b3;
+}
+
+.alumni-event-listings-window-separator {
+    color: #b3b3b3;
+    font-size: 0.75rem;
+}
+
+.alumni-event-listings-total {
+    text-align: center;
+    margin-top: 0.25rem;
+    color: #3b1f5e;
+    font-size: 0.8rem;
+}

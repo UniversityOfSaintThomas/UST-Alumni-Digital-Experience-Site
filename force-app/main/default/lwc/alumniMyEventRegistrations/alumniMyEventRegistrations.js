@@ -22,6 +22,8 @@ export default class AlumniMyEventRegistrations extends LightningElement {
     popoverBelow = false;
     windowStart = 0;
     WINDOW_SIZE = 3;
+    HOVER_DELAY_MS = 300;
+    hoverTimeoutId;
 
     @wire(getRecord, { recordId: '$currentUserId', fields: [CONTACTID] })
     wiredUser({ data, error }) {
@@ -77,6 +79,11 @@ export default class AlumniMyEventRegistrations extends LightningElement {
         return this.windowStart + this.WINDOW_SIZE >= this.registrations.length;
     }
 
+    get totalEventsLabel() {
+        const total = this.registrations.length;
+        return `${total} total event${total === 1 ? '' : 's'}`;
+    }
+
     handleWindowUp() {
         if (!this.isAtWindowStart) {
             this.windowStart -= 1;
@@ -117,14 +124,46 @@ export default class AlumniMyEventRegistrations extends LightningElement {
     }
 
     handleRowActivate(event) {
-        this.activeEventId = event.currentTarget.dataset.id;
+        const currentTarget = event.currentTarget;
+        const registrationId = currentTarget.dataset.id;
 
-        const POPOVER_MIN_SPACE_ABOVE = 150;
-        const rowRect = event.currentTarget.getBoundingClientRect();
-        this.popoverBelow = rowRect.top < POPOVER_MIN_SPACE_ABOVE;
+        // Keyboard focus should show the popover immediately for accessibility.
+        if (event.type === 'focus') {
+            this.activateRow(currentTarget, registrationId);
+            return;
+        }
+
+        // Delay hover activation slightly so quickly passing over a row
+        // (e.g. to reach a row above/below it) doesn't flash its popover.
+        this.clearHoverTimeout();
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        this.hoverTimeoutId = setTimeout(() => {
+            this.hoverTimeoutId = undefined;
+            this.activateRow(currentTarget, registrationId);
+        }, this.HOVER_DELAY_MS);
     }
 
     handleRowDeactivate() {
+        this.clearHoverTimeout();
         this.activeEventId = undefined;
+    }
+
+    activateRow(currentTarget, registrationId) {
+        this.activeEventId = registrationId;
+
+        const POPOVER_MIN_SPACE_ABOVE = 150;
+        const rowRect = currentTarget.getBoundingClientRect();
+        this.popoverBelow = rowRect.top < POPOVER_MIN_SPACE_ABOVE;
+    }
+
+    clearHoverTimeout() {
+        if (this.hoverTimeoutId) {
+            clearTimeout(this.hoverTimeoutId);
+            this.hoverTimeoutId = undefined;
+        }
+    }
+
+    disconnectedCallback() {
+        this.clearHoverTimeout();
     }
 }

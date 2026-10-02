@@ -64,7 +64,7 @@
                             class="alumni-event-listings-window-link"
                             disabled={isAtWindowStart}
                             onclick={handleWindowUp}>
-                        <lightning-icon icon-name="utility:chevronup" size="xx-small" class="alumni-event-listings-window-link-icon"></lightning-icon>
+                        <lightning-icon icon-name="utility:chevronup" size="x-small" class="alumni-event-listings-window-link-icon alumni-event-listings-window-link-icon_up"></lightning-icon>
                         <span>Up</span>
                     </button>
                     <span class="alumni-event-listings-window-separator">|</span>
@@ -74,9 +74,10 @@
                             disabled={isAtWindowEnd}
                             onclick={handleWindowDown}>
                         <span>Down</span>
-                        <lightning-icon icon-name="utility:chevrondown" size="xx-small" class="alumni-event-listings-window-link-icon"></lightning-icon>
+                        <lightning-icon icon-name="utility:chevrondown" size="x-small" class="alumni-event-listings-window-link-icon"></lightning-icon>
                     </button>
                 </div>
+                <div class="alumni-event-listings-total">{totalEventsLabel}</div>
             </template>
         </div>
     </template>

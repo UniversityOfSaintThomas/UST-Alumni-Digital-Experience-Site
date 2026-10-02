@@ -7,7 +7,7 @@
 .alumni-event-listings {
     border: 1px solid #dddbda;
     border-radius: 0.25rem;
-    padding: 1rem;
+    padding: 1rem 1rem .75rem 1rem;
 }
 
 .alumni-event-listings-header {
@@ -156,7 +156,7 @@
     align-items: center;
     gap: 0.5rem;
     margin-top: 0.5rem;
-    padding-top: 0.5rem;
+    padding-top: 0.75rem;
     border-top: 1px solid #dddbda;
 }
 
@@ -168,15 +168,19 @@
     border: none;
     padding: 0;
     color: #4f2d7f;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     text-decoration: underline;
     cursor: pointer;
     --slds-c-icon-color-foreground-default: #4f2d7f;
 }
 
 .alumni-event-listings-window-link-icon {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.alumni-event-listings-window-link-icon_up {
+    margin-right: 0.175rem;
 }
 
 .alumni-event-listings-window-link:hover:not(:disabled),
@@ -195,4 +199,11 @@
 .alumni-event-listings-window-separator {
     color: #b3b3b3;
     font-size: 0.75rem;
+}
+
+.alumni-event-listings-total {
+    text-align: center;
+    margin-top: 0.25rem;
+    color: #3b1f5e;
+    font-size: 0.8rem;
 }
