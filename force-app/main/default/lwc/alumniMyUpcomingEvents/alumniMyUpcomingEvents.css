@@ -16,8 +16,33 @@
     color: #3b1f5e;
 }
 
+.alumni-event-listings-header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.alumni-event-listings-toggle-all {
+    flex: 0 0 auto;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 0.5rem;
+    color: #4f2d7f;
+    font-size: 0.80rem;
+    text-decoration: underline;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.alumni-event-listings-toggle-all:hover,
+.alumni-event-listings-toggle-all:focus-visible {
+    color: #3b1f5e;
+}
+
 .alumni-event-listings-row {
-    padding: 0.10rem 0.25rem;
+    padding: 0 0 0.5rem 0.25rem;
     cursor: pointer;
     position: relative;
 }

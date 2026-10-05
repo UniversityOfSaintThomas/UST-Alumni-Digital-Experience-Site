@@ -6,7 +6,18 @@
 <template>
     <template lwc:if={shouldRender}>
         <div class="alumni-event-listings">
-            <h2 class="alumni-event-listings-header slds-m-bottom_small"><b>Events you might like</b></h2>
+            <div class="alumni-event-listings-header-row">
+                <h2 class="alumni-event-listings-header slds-m-bottom_small"><b>Upcoming Events For You</b></h2>
+                <template lwc:if={decoratedUpcomingEvents.length}>
+                    <button
+                            type="button"
+                            class="alumni-event-listings-toggle-all"
+                            aria-expanded={allExpanded}
+                            onclick={handleToggleAllDates}>
+                        {toggleAllLabel}
+                    </button>
+                </template>
+            </div>
             <ul class="slds-has-dividers_top-space alumni-event-listings-list">
                 <template for:each={decoratedUpcomingEvents} for:item="upcomingEvent">
                     <li key={upcomingEvent.eventId}
@@ -44,7 +55,10 @@
                                                     , {instance.startTime}
                                                 </template>
                                             </span>
-                                            <template lwc:if={instance.registrationLink}>
+                                            <template lwc:if={instance.registeredStatus}>
+                                                <span class="alumni-event-listings-register-link">Already registered</span>
+                                            </template>
+                                            <template lwc:elseif={instance.registrationLink}>
                                                 <span class="alumni-event-listings-register-link">
                                                     <a href={instance.registrationLink} target="_blank" rel="noopener noreferrer">Register</a>
                                                 </span>

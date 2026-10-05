@@ -79,23 +79,7 @@ public without sharing class AlumniMyEventRegistrationsController {
         }
     }
 
-    private static String formatInstanceTime(Date instanceDate, Time instanceTime, String timeZoneName) {
-        if (instanceDate == null || instanceTime == null) {
-            return null;
-        }
 
-        Datetime instanceDateTime = Datetime.newInstance(instanceDate, instanceTime);
-        String timeZoneId = extractTimeZoneId(timeZoneName);
-        if (String.isNotBlank(timeZoneId)) {
-            try {
-                return instanceDateTime.format('h:mm a zzz', timeZoneId);
-            } catch (Exception e) {
-                // Falls through to the org default timezone below if the stored
-                // zone name/ID cannot be resolved by Datetime.format().
-            }
-        }
-        return instanceDateTime.format('h:mm a zzz');
-    }
 
     private static String buildEventSchedule(summit__Summit_Events_Instance__c instance) {
         if (instance == null) {
@@ -124,6 +108,43 @@ public without sharing class AlumniMyEventRegistrationsController {
         return startPortion + ' - ' + endPortion;
     }
 
+    private static String formatInstanceTime(Date instanceDate, Time instanceTime, String timeZoneName) {
+        if (instanceDate == null || instanceTime == null) {
+            return null;
+        }
+
+        String timeZoneId = extractTimeZoneId(timeZoneName);
+        Datetime instanceDateTime = buildZonedDatetime(instanceDate, instanceTime, timeZoneId);
+
+        if (String.isNotBlank(timeZoneId)) {
+            try {
+                return instanceDateTime.format('h:mm a zzz', timeZoneId);
+            } catch (Exception e) {
+                // Falls through if the zone ID can't be resolved by format().
+            }
+        }
+        return instanceDateTime.format('h:mm a zzz');
+    }
+
+    private static String formatInstanceDateTime(Date instanceDate, Time instanceTime, String timeZoneName) {
+        if (instanceDate == null) {
+            return null;
+        }
+
+        Time effectiveTime = (instanceTime != null) ? instanceTime : Time.newInstance(0, 0, 0, 0);
+        String timeZoneId = extractTimeZoneId(timeZoneName);
+        Datetime instanceDateTime = buildZonedDatetime(instanceDate, effectiveTime, timeZoneId);
+
+        if (String.isNotBlank(timeZoneId)) {
+            try {
+                return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz', timeZoneId);
+            } catch (Exception e) {
+                // Falls through if the zone ID can't be resolved by format().
+            }
+        }
+        return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz');
+    }
+
     private static String extractTimeZoneId(String rawTimeZoneValue) {
         if (String.isBlank(rawTimeZoneValue)) {
             return null;
@@ -137,23 +158,23 @@ public without sharing class AlumniMyEventRegistrationsController {
         return rawTimeZoneValue.trim();
     }
 
-    private static String formatInstanceDateTime(Date instanceDate, Time instanceTime, String timeZoneName) {
-        if (instanceDate == null) {
-            return null;
+    /**
+ * Builds the correct Datetime instant for a wall-clock date/time that is
+ * expressed in the given IANA timezone (not the org/user default timezone).
+ * @param instanceDate  Semicolon-delimited filter values from the event record (may be null)
+ * @param instanceTime Semicolon-delimited values from the alumni record (may be null)
+ * @param timeZoneId Semicolon-delimited values from the alumni record (may be null)
+ * @return true if the alumnus qualifies for this filter dimension
+ */
+    private static Datetime buildZonedDatetime(Date instanceDate, Time instanceTime, String timeZoneId) {
+        if (String.isBlank(timeZoneId)) {
+            return Datetime.newInstance(instanceDate, instanceTime);
         }
-
-        Time effectiveTime = (instanceTime != null) ? instanceTime : Time.newInstance(0, 0, 0, 0);
-        Datetime instanceDateTime = Datetime.newInstance(instanceDate, effectiveTime);
-
-        String timeZoneId = extractTimeZoneId(timeZoneName);
-        if (String.isNotBlank(timeZoneId)) {
-            try {
-                return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz', timeZoneId);
-            } catch (Exception e) {
-                // Falls through to the org default timezone below if the stored
-                // zone name/ID cannot be resolved by Datetime.format().
-            }
-        }
-        return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz');
+        TimeZone tz = TimeZone.getTimeZone(timeZoneId);
+        // First guess the instant as if the wall-clock time were UTC, then
+        // subtract that zone's offset (at this date) to get the true instant.
+        Datetime utcGuess = Datetime.newInstanceGmt(instanceDate, instanceTime);
+        Integer offsetMillis = tz.getOffset(utcGuess);
+        return utcGuess.addSeconds(-offsetMillis / 1000);
     }
 }

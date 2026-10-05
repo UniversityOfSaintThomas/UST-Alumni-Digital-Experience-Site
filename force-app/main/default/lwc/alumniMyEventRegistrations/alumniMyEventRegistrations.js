@@ -150,10 +150,34 @@ export default class AlumniMyEventRegistrations extends LightningElement {
 
     activateRow(currentTarget, registrationId) {
         this.activeEventId = registrationId;
+        this.popoverBelow = false;
 
-        const POPOVER_MIN_SPACE_ABOVE = 150;
-        const rowRect = currentTarget.getBoundingClientRect();
-        this.popoverBelow = rowRect.top < POPOVER_MIN_SPACE_ABOVE;
+        // Measure after the popover renders above (default placement) so we know
+        // its real height, then flip below if there isn't enough room above —
+        // this is what was clipping at the top of short/mobile viewports before.
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        requestAnimationFrame(() => {
+            if (this.activeEventId !== registrationId) {
+                return;
+            }
+
+            const popoverElement = this.template.querySelector('.alumni-event-listings-popover');
+            if (!popoverElement) {
+                return;
+            }
+
+            const rowRect = currentTarget.getBoundingClientRect();
+            const popoverRect = popoverElement.getBoundingClientRect();
+            const popoverHeight = popoverRect.height;
+            const spaceAbove = rowRect.top;
+            const spaceBelow = window.innerHeight - rowRect.bottom;
+
+            // Prefer above; only flip below if above doesn't fit but below does
+            // (or below simply has more room when neither fits).
+            if (spaceAbove < popoverHeight && spaceBelow > spaceAbove) {
+                this.popoverBelow = true;
+            }
+        });
     }
 
     clearHoverTimeout() {

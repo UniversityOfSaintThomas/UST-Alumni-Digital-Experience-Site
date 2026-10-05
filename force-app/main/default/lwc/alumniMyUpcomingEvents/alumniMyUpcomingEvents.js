@@ -27,6 +27,7 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
     HOVER_DELAY_MS = 300;
     hoverTimeoutId;
     expandedEventIds = new Set();
+    expandAllMode = false;
 
     @wire(getRecord, { recordId: '$currentUserId', fields: [CONTACTID] })
     wiredUser({ data, error }) {
@@ -48,6 +49,7 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
         }
         if (data) {
             this.upcomingEvents = data;
+            this.applyExpandAllModeToVisibleEvents();
         } else if (error) {
             console.error('Error fetching upcoming events', error);
             this.upcomingEvents = [];
@@ -56,7 +58,7 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
     }
 
     get shouldRender() {
-        return !this.isUserGuest && !this.isLoading && this.upcomingEvents.length > 0;
+        return !this.isUserGuest && !this.isLoading;
     }
 
     get decoratedUpcomingEvents() {
@@ -69,7 +71,7 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
                 plainDescription: this.stripHtml(upcomingEvent.description),
                 rowNumber: this.windowStart + index + 1,
                 isExpanded,
-                toggleLabel: isExpanded ? 'Close dates' : 'See dates and register for event',
+                toggleLabel: isExpanded ? 'Hide registration dates' : 'Show dates and register',
                 decoratedInstances: upcomingEvent.instances.map((instance) => ({
                     ...instance,
                     formattedStartDate: this.formatDateMmDdYyyy(instance.startDate)
@@ -80,6 +82,19 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
 
     get showWindowControls() {
         return this.upcomingEvents.length > this.WINDOW_SIZE;
+    }
+
+    get visibleEventIds() {
+        return this.upcomingEvents.slice(this.windowStart, this.windowStart + this.WINDOW_SIZE).map((upcomingEvent) => upcomingEvent.eventId);
+    }
+
+    get allExpanded() {
+        const visibleEventIds = this.visibleEventIds;
+        return visibleEventIds.length > 0 && visibleEventIds.every((eventId) => this.expandedEventIds.has(eventId));
+    }
+
+    get toggleAllLabel() {
+        return this.allExpanded ? 'Hide all dates' : 'Show all dates';
     }
 
     get isAtWindowStart() {
@@ -98,12 +113,14 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
     handleWindowUp() {
         if (!this.isAtWindowStart) {
             this.windowStart -= 1;
+            this.applyExpandAllModeToVisibleEvents();
         }
     }
 
     handleWindowDown() {
         if (!this.isAtWindowEnd) {
             this.windowStart += 1;
+            this.applyExpandAllModeToVisibleEvents();
         }
     }
 
@@ -115,9 +132,38 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
         const expandedEventIds = new Set(this.expandedEventIds);
         if (expandedEventIds.has(eventId)) {
             expandedEventIds.delete(eventId);
+            // Manually collapsing a row means "all" is no longer expanded;
+            // stop auto-expanding events brought into view by paging.
+            this.expandAllMode = false;
         } else {
             expandedEventIds.add(eventId);
         }
+        this.expandedEventIds = expandedEventIds;
+    }
+
+    handleToggleAllDates() {
+        if (this.allExpanded) {
+            // Collapse everything, including events on other pages, so no
+            // previously-expanded event reappears expanded when paging back to it.
+            this.expandedEventIds = new Set();
+            this.expandAllMode = false;
+        } else {
+            const expandedEventIds = new Set(this.expandedEventIds);
+            this.visibleEventIds.forEach((eventId) => expandedEventIds.add(eventId));
+            this.expandedEventIds = expandedEventIds;
+            // Stay in "expand all" mode so events brought into view by paging
+            // Up/Down are automatically expanded too.
+            this.expandAllMode = true;
+        }
+    }
+
+    applyExpandAllModeToVisibleEvents() {
+        if (!this.expandAllMode) {
+            return;
+        }
+
+        const expandedEventIds = new Set(this.expandedEventIds);
+        this.visibleEventIds.forEach((eventId) => expandedEventIds.add(eventId));
         this.expandedEventIds = expandedEventIds;
     }
 
@@ -175,10 +221,34 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
 
     activateRow(currentTarget, eventId) {
         this.activeEventId = eventId;
+        this.popoverBelow = false;
 
-        const POPOVER_MIN_SPACE_ABOVE = 150;
-        const rowRect = currentTarget.getBoundingClientRect();
-        this.popoverBelow = rowRect.top < POPOVER_MIN_SPACE_ABOVE;
+        // Measure after the popover renders above (default placement) so we know
+        // its real height, then flip below if there isn't enough room above —
+        // this is what was clipping at the top of short/mobile viewports before.
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        requestAnimationFrame(() => {
+            if (this.activeEventId !== eventId) {
+                return;
+            }
+
+            const popoverElement = this.template.querySelector('.alumni-event-listings-popover');
+            if (!popoverElement) {
+                return;
+            }
+
+            const rowRect = currentTarget.getBoundingClientRect();
+            const popoverRect = popoverElement.getBoundingClientRect();
+            const popoverHeight = popoverRect.height;
+            const spaceAbove = rowRect.top;
+            const spaceBelow = window.innerHeight - rowRect.bottom;
+
+            // Prefer above; only flip below if above doesn't fit but below does
+            // (or below simply has more room when neither fits).
+            if (spaceAbove < popoverHeight && spaceBelow > spaceAbove) {
+                this.popoverBelow = true;
+            }
+        });
     }
 
     clearHoverTimeout() {

@@ -5,7 +5,7 @@
 public without sharing class AlumniMyUpcomingEventsController {
     private static final Id recordTypeId = Schema.SObjectType.summit__Summit_Events__c.getRecordTypeInfosByDeveloperName().get('University_Advancement').getRecordTypeId();
 
-    @AuraEnabled(Cacheable=true)
+    @AuraEnabled(cacheable=true)
     public static List<UpcomingEvent> getFilteredUpcomingEvents(Id contactId) {
         List<UpcomingEvent> results = new List<UpcomingEvent>();
 
@@ -82,7 +82,7 @@ public without sharing class AlumniMyUpcomingEventsController {
                 upcomingEventsByEventId.put(eventId, upcomingEvent);
                 orderedEventIds.add(eventId);
             }
-            upcomingEvent.instances.add(new UpcomingEventInstance(instance));
+            upcomingEvent.instances.add(new UpcomingEventInstance(instance, contactId));
         }
 
         for (Id eventId : orderedEventIds) {
@@ -119,8 +119,9 @@ public without sharing class AlumniMyUpcomingEventsController {
         @AuraEnabled public String startTime;
         @AuraEnabled public String eventSchedule;
         @AuraEnabled public String registrationLink;
+        @AuraEnabled public Boolean registeredStatus;
 
-        public UpcomingEventInstance(summit__Summit_Events_Instance__c instance) {
+        public UpcomingEventInstance(summit__Summit_Events_Instance__c instance,  Id contactId) {
             this.instanceId = instance.Id;
             this.startDate = instance?.summit__Instance_Start_Date__c;
             this.startTime = formatInstanceTime(
@@ -129,8 +130,54 @@ public without sharing class AlumniMyUpcomingEventsController {
                     instance?.summit__Instance_Time_Zone__c
             );
             this.eventSchedule = buildEventSchedule(instance);
-            this.registrationLink = instance.summit__Registration_Link__c;
+            this.registrationLink = extractHrefUrl(instance.summit__Registration_Link__c);
+            this.registeredStatus = getregisteredStatus(instance.Id, contactId);
         }
+    }
+
+    /**
+     * summit__Registration_Link__c is a formula field that returns a ready-made
+     * HTML anchor tag (e.g. '<a href="https://...">Register</a>'). The LWC template
+     * binds registrationLink to a native <a href> element, so pull just the URL
+     * out of the formula's HTML rather than passing the HTML through as-is.
+     *  @param registrationLinkHtml The HTML anchor tag from the formula field
+     *  @return The URL extracted from the HTML anchor tag
+     */
+    private static String extractHrefUrl(String registrationLinkHtml) {
+        if (String.isBlank(registrationLinkHtml)) {
+            return null;
+        }
+
+        Matcher hrefMatcher = Pattern.compile('href\\s*=\\s*"([^"]*)"').matcher(registrationLinkHtml);
+        if (hrefMatcher.find()) {
+            return hrefMatcher.group(1);
+        }
+
+        Matcher hrefMatcherSingleQuote = Pattern.compile('href\\s*=\\s*\'([^\']*)\'').matcher(registrationLinkHtml);
+        if (hrefMatcherSingleQuote.find()) {
+            return hrefMatcherSingleQuote.group(1);
+        }
+
+        // Fall back to treating the value as a plain URL if no href attribute is found.
+        return registrationLinkHtml;
+    }
+
+    private static Boolean getregisteredStatus(Id eventInstanceId, Id contactId) {
+        final Set<String> ACTIVE_REGISTRATION_STATUSES = new Set<String>{
+                'Registered',
+                'Confirmed'
+        };
+
+        List<summit__Summit_Events_Registration__c> registrations = [
+                SELECT Id
+                FROM summit__Summit_Events_Registration__c
+                WHERE summit__Contact__c = :contactId
+                AND summit__Status__c IN :ACTIVE_REGISTRATION_STATUSES
+                AND summit__Event_Instance__r.Id = :eventInstanceId
+                LIMIT 1
+        ];
+
+        return !registrations.isEmpty();
     }
 
     /**
@@ -186,24 +233,6 @@ public without sharing class AlumniMyUpcomingEventsController {
         return false;
     }
 
-    private static String formatInstanceTime(Date instanceDate, Time instanceTime, String timeZoneName) {
-        if (instanceDate == null || instanceTime == null) {
-            return null;
-        }
-
-        Datetime instanceDateTime = Datetime.newInstance(instanceDate, instanceTime);
-        String timeZoneId = extractTimeZoneId(timeZoneName);
-        if (String.isNotBlank(timeZoneId)) {
-            try {
-                return instanceDateTime.format('h:mm a zzz', timeZoneId);
-            } catch (Exception e) {
-                // Falls through to the org default timezone below if the stored
-                // zone name/ID cannot be resolved by Datetime.format().
-            }
-        }
-        return instanceDateTime.format('h:mm a zzz');
-    }
-
     private static String buildEventSchedule(summit__Summit_Events_Instance__c instance) {
         if (instance == null) {
             return null;
@@ -231,6 +260,43 @@ public without sharing class AlumniMyUpcomingEventsController {
         return startPortion + ' - ' + endPortion;
     }
 
+    private static String formatInstanceTime(Date instanceDate, Time instanceTime, String timeZoneName) {
+        if (instanceDate == null || instanceTime == null) {
+            return null;
+        }
+
+        String timeZoneId = extractTimeZoneId(timeZoneName);
+        Datetime instanceDateTime = buildZonedDatetime(instanceDate, instanceTime, timeZoneId);
+
+        if (String.isNotBlank(timeZoneId)) {
+            try {
+                return instanceDateTime.format('h:mm a zzz', timeZoneId);
+            } catch (Exception e) {
+                // Falls through if the zone ID can't be resolved by format().
+            }
+        }
+        return instanceDateTime.format('h:mm a zzz');
+    }
+
+    private static String formatInstanceDateTime(Date instanceDate, Time instanceTime, String timeZoneName) {
+        if (instanceDate == null) {
+            return null;
+        }
+
+        Time effectiveTime = (instanceTime != null) ? instanceTime : Time.newInstance(0, 0, 0, 0);
+        String timeZoneId = extractTimeZoneId(timeZoneName);
+        Datetime instanceDateTime = buildZonedDatetime(instanceDate, effectiveTime, timeZoneId);
+
+        if (String.isNotBlank(timeZoneId)) {
+            try {
+                return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz', timeZoneId);
+            } catch (Exception e) {
+                // Falls through if the zone ID can't be resolved by format().
+            }
+        }
+        return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz');
+    }
+
     private static String extractTimeZoneId(String rawTimeZoneValue) {
         if (String.isBlank(rawTimeZoneValue)) {
             return null;
@@ -244,24 +310,24 @@ public without sharing class AlumniMyUpcomingEventsController {
         return rawTimeZoneValue.trim();
     }
 
-    private static String formatInstanceDateTime(Date instanceDate, Time instanceTime, String timeZoneName) {
-        if (instanceDate == null) {
-            return null;
+    /**
+     * Builds the correct Datetime instant for a wall-clock date/time that is
+     * expressed in the given IANA timezone (not the org/user default timezone).
+     * @param instanceDate  Semicolon-delimited filter values from the event record (may be null)
+     * @param instanceTime Semicolon-delimited values from the alumni record (may be null)
+     * @param timeZoneId Semicolon-delimited values from the alumni record (may be null)
+     * @return Datetime for timezone
+     */
+    private static Datetime buildZonedDatetime(Date instanceDate, Time instanceTime, String timeZoneId) {
+        if (String.isBlank(timeZoneId)) {
+            return Datetime.newInstance(instanceDate, instanceTime);
         }
-
-        Time effectiveTime = (instanceTime != null) ? instanceTime : Time.newInstance(0, 0, 0, 0);
-        Datetime instanceDateTime = Datetime.newInstance(instanceDate, effectiveTime);
-
-        String timeZoneId = extractTimeZoneId(timeZoneName);
-        if (String.isNotBlank(timeZoneId)) {
-            try {
-                return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz', timeZoneId);
-            } catch (Exception e) {
-                // Falls through to the org default timezone below if the stored
-                // zone name/ID cannot be resolved by Datetime.format().
-            }
-        }
-        return instanceDateTime.format('EEEE, MMMM d, yyyy, h:mm a zzz');
+        TimeZone tz = TimeZone.getTimeZone(timeZoneId);
+        // First guess the instant as if the wall-clock time were UTC, then
+        // subtract that zone's offset (at this date) to get the true instant.
+        Datetime utcGuess = Datetime.newInstanceGmt(instanceDate, instanceTime);
+        Integer offsetMillis = tz.getOffset(utcGuess);
+        return utcGuess.addSeconds(-offsetMillis / 1000);
     }
 
 }
