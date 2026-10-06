@@ -47,6 +47,12 @@
     position: relative;
 }
 
+.alumni-event-listings-date {
+    color: #3b1f5e;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
 .alumni-event-listings-title {
     color: #1a1a1a;
     /*font-weight: 600;*/
@@ -75,22 +81,41 @@
 
 .alumni-event-listings-instances {
     list-style: none;
-    margin: 0.25rem 0 0 1.25rem;
+    margin: 0.25rem 0 0 2.2rem;
     padding: 0;
 }
 
 .alumni-event-listings-instance-row {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     flex-wrap: nowrap;
     white-space: nowrap;
     padding: 0.05rem 0;
 }
 
 .alumni-event-listings-instance-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
     color: #3b1f5e;
     font-weight: 600;
     font-size: 0.875rem;
+    text-decoration: none;
+}
+
+a.alumni-event-listings-instance-date {
+    cursor: pointer;
+}
+
+a.alumni-event-listings-instance-date:hover,
+a.alumni-event-listings-instance-date:focus-visible {
+    text-decoration: underline;
+}
+
+.alumni-event-listings-instance-date-icon {
+    display: inline-flex;
+    align-items: center;
+    --slds-c-icon-color-foreground-default: #3b1f5e;
 }
 
 .alumni-event-listings-row-number {
@@ -196,16 +221,6 @@
     margin-left: 0.5rem;
 }
 
-.alumni-event-listings-register-link a {
-    color: #4f2d7f;
-    text-decoration: underline;
-}
-
-.alumni-event-listings-register-link a:hover,
-.alumni-event-listings-register-link a:focus-visible {
-    color: #3b1f5e;
-}
-
 .alumni-event-listings-window-controls {
     display: flex;
     justify-content: center;
@@ -213,7 +228,6 @@
     gap: 0.5rem;
     margin-top: 0.5rem;
     padding-top: 0.75rem;
-    border-top: 1px solid #dddbda;
 }
 
 .alumni-event-listings-window-link {
@@ -233,6 +247,10 @@
 .alumni-event-listings-window-link-icon {
     width: 0.8rem;
     height: 0.8rem;
+}
+
+.alumni-event-listings-toggle-dates-icon {
+    --slds-c-icon-color-foreground-default: #4f2d7f;
 }
 
 .alumni-event-listings-window-link-icon_up {
@@ -259,7 +277,9 @@
 
 .alumni-event-listings-total {
     text-align: center;
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dddbda;
     color: #3b1f5e;
     font-size: 0.8rem;
 }

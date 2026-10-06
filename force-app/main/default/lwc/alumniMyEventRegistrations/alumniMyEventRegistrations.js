@@ -21,7 +21,7 @@ export default class AlumniMyEventRegistrations extends LightningElement {
     activeEventId;
     popoverBelow = false;
     windowStart = 0;
-    WINDOW_SIZE = 3;
+    WINDOW_SIZE = 4;
     HOVER_DELAY_MS = 300;
     hoverTimeoutId;
 
@@ -53,7 +53,8 @@ export default class AlumniMyEventRegistrations extends LightningElement {
     }
 
     get shouldRender() {
-        return !this.isUserGuest && !this.isLoading && this.registrations.length > 0;
+        // return !this.isUserGuest && !this.isLoading && this.registrations.length > 0;
+        return !this.isUserGuest && !this.isLoading;
     }
 
     get decoratedRegistrations() {
@@ -69,6 +70,10 @@ export default class AlumniMyEventRegistrations extends LightningElement {
 
     get showWindowControls() {
         return this.registrations.length > this.WINDOW_SIZE;
+    }
+
+    get hasRegistrations() {
+        return this.registrations.length > 0;
     }
 
     get isAtWindowStart() {

@@ -77,6 +77,8 @@
                         <lightning-icon icon-name="utility:chevrondown" size="x-small" class="alumni-event-listings-window-link-icon"></lightning-icon>
                     </button>
                 </div>
+            </template>
+            <template lwc:if={hasRegistrations}>
                 <div class="alumni-event-listings-total">{totalEventsLabel}</div>
             </template>
         </div>

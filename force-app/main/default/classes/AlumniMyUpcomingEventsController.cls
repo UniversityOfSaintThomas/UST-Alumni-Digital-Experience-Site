@@ -62,7 +62,8 @@ public without sharing class AlumniMyUpcomingEventsController {
                 AND summit__Open_Registration__c = TRUE
                 AND summit__Private_Instance__c = FALSE
                 AND summit__Instance_Start_Date__c >= TODAY
-                ORDER BY summit__Instance_Start_Date__c ASC
+                ORDER BY summit__Instance_Start_Date__c ASC,
+                        summit__Event__r.summit__Event_Name__c ASC
         ];
 
         Alumni_Directory__c alumni = alumniDirectoryRecord[0];
@@ -86,7 +87,12 @@ public without sharing class AlumniMyUpcomingEventsController {
         }
 
         for (Id eventId : orderedEventIds) {
-            results.add(upcomingEventsByEventId.get(eventId));
+            UpcomingEvent upcomingEvent = upcomingEventsByEventId.get(eventId);
+            upcomingEvent.minStartDate = minInstanceStartDate(upcomingEvent.instances);
+            results.add(upcomingEvent);
+//            Date minEventStartDate = minInstanceStartDate(upcomingEventsByEventId.get(eventId).instances);
+//            upcomingEventsByEventId.get(eventId).minStartDate = minEventStartDate;
+//            results.add(upcomingEventsByEventId.get(eventId));
         }
 
         System.debug('Upcoming events: ' + results);
@@ -99,6 +105,7 @@ public without sharing class AlumniMyUpcomingEventsController {
         @AuraEnabled public String eventTitle;
         @AuraEnabled public String description;
         @AuraEnabled public String locationTitle;
+        @AuraEnabled public Date minStartDate;
         @AuraEnabled public List<UpcomingEventInstance> instances = new List<UpcomingEventInstance>();
 
         public UpcomingEvent(summit__Summit_Events_Instance__c instance) {
@@ -328,6 +335,24 @@ public without sharing class AlumniMyUpcomingEventsController {
         Datetime utcGuess = Datetime.newInstanceGmt(instanceDate, instanceTime);
         Integer offsetMillis = tz.getOffset(utcGuess);
         return utcGuess.addSeconds(-offsetMillis / 1000);
+    }
+
+    private static Date minInstanceStartDate(List<UpcomingEventInstance> instances) {
+        List<Date> startDates = new List<Date>();
+
+        for (UpcomingEventInstance instance : instances) {
+            if (instance.startDate != null) {
+                startDates.add(instance.startDate);
+            }
+        }
+
+        if (startDates.isEmpty()) {
+            return null;
+        }
+
+        startDates.sort();
+
+        return startDates.get(0);
     }
 
 }

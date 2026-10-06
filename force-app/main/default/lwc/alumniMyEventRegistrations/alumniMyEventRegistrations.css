@@ -157,7 +157,6 @@
     gap: 0.5rem;
     margin-top: 0.5rem;
     padding-top: 0.75rem;
-    border-top: 1px solid #dddbda;
 }
 
 .alumni-event-listings-window-link {
@@ -203,7 +202,9 @@
 
 .alumni-event-listings-total {
     text-align: center;
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dddbda;
     color: #3b1f5e;
     font-size: 0.8rem;
 }

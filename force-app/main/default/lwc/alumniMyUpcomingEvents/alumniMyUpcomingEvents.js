@@ -23,7 +23,7 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
     activeEventId;
     popoverBelow = false;
     windowStart = 0;
-    WINDOW_SIZE = 3;
+    WINDOW_SIZE = 4;
     HOVER_DELAY_MS = 300;
     hoverTimeoutId;
     expandedEventIds = new Set();
@@ -58,6 +58,7 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
     }
 
     get shouldRender() {
+        // return !this.isUserGuest && !this.isLoading && this.upcomingEvents.length > 0;
         return !this.isUserGuest && !this.isLoading;
     }
 
@@ -66,12 +67,13 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
             const isExpanded = this.expandedEventIds.has(upcomingEvent.eventId);
             return {
                 ...upcomingEvent,
+                minFormattedStartDate: this.formatDateMmDdYyyy(upcomingEvent.minStartDate),
                 isActive: upcomingEvent.eventId === this.activeEventId,
                 popoverClass: this.getPopoverClass(upcomingEvent.eventId),
                 plainDescription: this.stripHtml(upcomingEvent.description),
                 rowNumber: this.windowStart + index + 1,
                 isExpanded,
-                toggleLabel: isExpanded ? 'Hide registration dates' : 'Show dates and register',
+                toggleLabel: isExpanded ? 'Hide registration dates' : 'Show registration dates',
                 decoratedInstances: upcomingEvent.instances.map((instance) => ({
                     ...instance,
                     formattedStartDate: this.formatDateMmDdYyyy(instance.startDate)
@@ -82,6 +84,10 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
 
     get showWindowControls() {
         return this.upcomingEvents.length > this.WINDOW_SIZE;
+    }
+
+    get hasEvents() {
+        return this.upcomingEvents.length > 0;
     }
 
     get visibleEventIds() {
@@ -108,6 +114,17 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
     get totalEventsLabel() {
         const total = this.upcomingEvents.length;
         return `${total} total event${total === 1 ? '' : 's'}`;
+    }
+
+    formatDateMmDdYyyy(isoDateString) {
+        if (!isoDateString) {
+            return '';
+        }
+        const [year, month, day] = isoDateString.split('-');
+        if (!year || !month || !day) {
+            return '';
+        }
+        return `${month}/${day}/${year}`;
     }
 
     handleWindowUp() {
@@ -173,17 +190,6 @@ export default class AlumniMyUpcomingEvents extends LightningElement {
             return `${baseClass} alumni-event-listings-popover_below`;
         }
         return baseClass;
-    }
-
-    formatDateMmDdYyyy(isoDateString) {
-        if (!isoDateString) {
-            return '';
-        }
-        const [year, month, day] = isoDateString.split('-');
-        if (!year || !month || !day) {
-            return '';
-        }
-        return `${month}/${day}/${year}`;
     }
 
     stripHtml(htmlString) {
