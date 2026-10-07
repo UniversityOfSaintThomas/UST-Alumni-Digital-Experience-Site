@@ -5,9 +5,9 @@
  * registrations (Registered or Confirmed status), sorted by Event Instance
  * start date ascending, for the Alumni My Event Registrations widget.
  */
-public without sharing class AlumniMyEventRegistrationsController {
+public with sharing class AlumniMyEventRegistrationsController {
 
-    private static final Id recordTypeId = Schema.SObjectType.summit__Summit_Events__c.getRecordTypeInfosByDeveloperName().get('University_Advancement').getRecordTypeId();
+//    private static final Id recordTypeId = Schema.SObjectType.summit__Summit_Events__c.getRecordTypeInfosByDeveloperName().get('University_Advancement').getRecordTypeId();
     private static final Set<String> ACTIVE_REGISTRATION_STATUSES = new Set<String>{
             'Registered',
             'Confirmed'
@@ -36,7 +36,7 @@ public without sharing class AlumniMyEventRegistrationsController {
                         summit__Event_Instance__r.summit__Instance_Time_Zone__c
                 FROM summit__Summit_Events_Registration__c
                 WHERE summit__Contact__c = :contactId
-                AND summit__Event__r.RecordTypeId = :recordTypeId
+//                AND summit__Event__r.RecordTypeId = :recordTypeId
                 AND summit__Status__c IN :ACTIVE_REGISTRATION_STATUSES
                 AND summit__Event_Instance__r.summit__Instance_Start_Date__c >= TODAY
                 ORDER BY summit__Event_Instance__r.summit__Instance_Start_Date__c ASC

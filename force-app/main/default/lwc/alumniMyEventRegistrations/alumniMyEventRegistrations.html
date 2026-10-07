@@ -6,56 +6,61 @@
 <template>
     <template lwc:if={shouldRender}>
         <div class="alumni-event-listings">
-            <h2 class="alumni-event-listings-header slds-m-bottom_small"><b>My Event Registrations</b></h2>
-            <ul class="slds-has-dividers_top-space alumni-event-listings-list">
-                <template for:each={decoratedRegistrations} for:item="registration">
-                    <li key={registration.registrationId}
-                        class="alumni-event-listings-row"
-                        data-id={registration.registrationId}
-                        tabindex="0"
-                        onmouseenter={handleRowActivate}
-                        onmouseleave={handleRowDeactivate}
-                        onfocus={handleRowActivate}
-                        onblur={handleRowDeactivate}>
-                        <div class="alumni-event-listings-row-content">
-                            <div class="slds-grid slds-nowrap alumni-event-listings-date-line">
-                                <span class="slds-col slds-no-flex slds-shrink-none alumni-event-listings-row-number">
-                                    {registration.rowNumber}.
-                                </span>
-                                <span class="slds-col slds-no-flex slds-shrink-none alumni-event-listings-date">
-                                    {registration.formattedStartDate}
-                                    <template lwc:if={registration.startTime}>
-                                        , {registration.startTime}
-                                    </template>
-                                </span>
-                            </div>
-                            <div class="slds-truncate alumni-event-listings-title">
-                                {registration.eventTitle}
-                            </div>
-                        </div>
-
-                        <!-- Hover/focus-triggered event description tooltip -->
-                        <template lwc:if={registration.isActive}>
-                            <div class={registration.popoverClass} role="tooltip">
-                                <div class="alumni-event-listings-popover-content">
-                                    <div class="slds-popover__body">
-                                        <h3 class="slds-text-heading_small alumni-event-listings-popover-title">{registration.eventTitle}</h3>
-                                        <p class="alumni-event-listings-popover-schedule">{registration.eventSchedule}</p>
-                                        <template lwc:if={registration.locationTitle}>
-                                            <p class="alumni-event-listings-popover-location-label">Location:</p>
-                                            <p class="alumni-event-listings-popover-location">{registration.locationTitle}</p>
+            <h2 class="slds-truncate alumni-event-listings-header slds-m-bottom_small"><b>My Event Registrations</b></h2>
+            <template lwc:if={hasRegistrations}>
+                <ul class="slds-has-dividers_top-space alumni-event-listings-list">
+                    <template for:each={decoratedRegistrations} for:item="registration">
+                        <li key={registration.registrationId}
+                            class="alumni-event-listings-row"
+                            data-id={registration.registrationId}
+                            tabindex="0"
+                            onmouseenter={handleRowActivate}
+                            onmouseleave={handleRowDeactivate}
+                            onfocus={handleRowActivate}
+                            onblur={handleRowDeactivate}>
+                            <div class="alumni-event-listings-row-content">
+                                <div class="slds-grid slds-nowrap alumni-event-listings-date-line">
+                                    <span class="slds-col slds-no-flex slds-shrink-none alumni-event-listings-row-number">
+                                        {registration.rowNumber}.
+                                    </span>
+                                    <span class="slds-col slds-no-flex slds-shrink-none slds-truncate alumni-event-listings-date">
+                                        {registration.formattedStartDate}
+                                        <template lwc:if={registration.startTime}>
+                                            , {registration.startTime}
                                         </template>
-                                        <template lwc:if={registration.plainDescription}>
-                                            <p class="alumni-event-listings-popover-description-label">Description:</p>
-                                            <p>{registration.plainDescription}</p>
-                                        </template>
-                                    </div>
+                                    </span>
+                                </div>
+                                <div class="slds-truncate alumni-event-listings-title">
+                                    {registration.eventTitle}
                                 </div>
                             </div>
-                        </template>
-                    </li>
-                </template>
-            </ul>
+
+                            <!-- Hover/focus-triggered event description tooltip -->
+                            <template lwc:if={registration.isActive}>
+                                <div class={registration.popoverClass} role="tooltip">
+                                    <div class="alumni-event-listings-popover-content">
+                                        <div class="slds-popover__body">
+                                            <h3 class="slds-text-heading_small alumni-event-listings-popover-title">{registration.eventTitle}</h3>
+                                            <p class="alumni-event-listings-popover-schedule">{registration.eventSchedule}</p>
+                                            <template lwc:if={registration.locationTitle}>
+                                                <p class="alumni-event-listings-popover-location-label">Location:</p>
+                                                <p class="alumni-event-listings-popover-location">{registration.locationTitle}</p>
+                                            </template>
+                                            <template lwc:if={registration.plainDescription}>
+                                                <p class="alumni-event-listings-popover-description-label">Description:</p>
+                                                <p>{registration.plainDescription}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+            <template lwc:else>
+                <p class="alumni-event-listings-empty">You are not currently registered for any upcoming alumni events</p>
+            </template>
 
             <template lwc:if={showWindowControls}>
                 <div class="alumni-event-listings-window-controls">

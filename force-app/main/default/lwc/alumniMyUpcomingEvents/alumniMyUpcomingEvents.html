@@ -7,7 +7,7 @@
     <template lwc:if={shouldRender}>
         <div class="alumni-event-listings">
             <div class="alumni-event-listings-header-row">
-                <h2 class="alumni-event-listings-header slds-m-bottom_small"><b>Upcoming Events For You</b></h2>
+                <h2 class="slds-truncate alumni-event-listings-header slds-m-bottom_small"><b>Upcoming Alumni Events For You</b></h2>
                 <template lwc:if={decoratedUpcomingEvents.length}>
                     <button
                             type="button"
@@ -18,7 +18,7 @@
                     </button>
                 </template>
             </div>
-            <ul class="slds-has-dividers_top-space alumni-event-listings-list">
+            <ul class="slds-has-dividers_top-space alumni-event-listings-list" lwc:if={hasEvents}>
                 <template for:each={decoratedUpcomingEvents} for:item="upcomingEvent">
                     <li key={upcomingEvent.eventId}
                         class="alumni-event-listings-row"
@@ -59,7 +59,7 @@
                                     <template for:each={upcomingEvent.decoratedInstances} for:item="instance">
                                         <li key={instance.instanceId} class="alumni-event-listings-instance-row">
                                             <template lwc:if={instance.registrationLink}>
-                                                <a href={instance.registrationLink} target="_blank" rel="noopener noreferrer" class="alumni-event-listings-instance-date">
+                                                <a href={instance.registrationLink} target="_blank" rel="noopener noreferrer" class="slds-truncate alumni-event-listings-instance-date">
                                                     <lightning-icon icon-name="utility:event" size="xx-small" class="alumni-event-listings-instance-date-icon"></lightning-icon>
                                                     {instance.formattedStartDate}
                                                     <template lwc:if={instance.startTime}>
@@ -68,7 +68,7 @@
                                                 </a>
                                             </template>
                                             <template lwc:else>
-                                                <span class="alumni-event-listings-instance-date">
+                                                <span class="slds-truncate alumni-event-listings-instance-date">
                                                     <lightning-icon icon-name="utility:event" size="xx-small" class="alumni-event-listings-instance-date-icon"></lightning-icon>
                                                     {instance.formattedStartDate}
                                                     <template lwc:if={instance.startTime}>
@@ -77,7 +77,7 @@
                                                 </span>
                                             </template>
                                             <template lwc:if={instance.registeredStatus}>
-                                                <span class="alumni-event-listings-register-link">Already registered</span>
+                                                <span class="slds-truncate alumni-event-listings-register-link">Already registered</span>
                                             </template>
                                         </li>
                                     </template>
@@ -102,6 +102,9 @@
                     </li>
                 </template>
             </ul>
+            <template lwc:else>
+                <p class="alumni-event-listings-empty">No Upcoming Alumni Events Available - Check Back Later</p>
+            </template>
 
             <template lwc:if={showWindowControls}>
                 <div class="alumni-event-listings-window-controls">

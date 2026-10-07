@@ -275,6 +275,13 @@ a.alumni-event-listings-instance-date:focus-visible {
     font-size: 0.75rem;
 }
 
+.alumni-event-listings-empty {
+    color: #4d4d4d;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+}
+
 .alumni-event-listings-total {
     text-align: center;
     margin-top: 0.5rem;
