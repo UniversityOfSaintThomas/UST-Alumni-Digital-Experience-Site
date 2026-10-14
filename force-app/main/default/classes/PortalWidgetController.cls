@@ -36,7 +36,7 @@ public without sharing class PortalWidgetController {
      * @return Ordered list of PortalWidgetDto; empty if user has no matching widgets
      *         or if the running user lacks Read access to UST_Portal_Widget__c
      */
-    @AuraEnabled(Cacheable=true)
+    @AuraEnabled(cacheable=true)
     public static List<PortalWidgetDto> getWidgetsForZone(String zoneName, String pageContext) {
         try {
             if (String.isBlank(zoneName) || String.isBlank(pageContext)) {
@@ -45,7 +45,7 @@ public without sharing class PortalWidgetController {
 
             // Graceful degradation: return empty list rather than throwing if
             // the community user profile or permission set is missing object access.
-            if (!Schema.sObjectType.UST_Portal_Widget__c.isAccessible()) {
+            if (!Schema.SObjectType.UST_Portal_Widget__c.isAccessible()) {
                 return new List<PortalWidgetDto>();
             }
 
@@ -60,6 +60,7 @@ public without sharing class PortalWidgetController {
                             Description__c,
                             Static_Content__c,
                             Static_Content_Header__c,
+                            Content_CSS_Class__c,
                             Filter_College__c,
                             Filter_Degree_Level__c,
                             Filter_St_Thomas_Connection__c,
@@ -74,10 +75,9 @@ public without sharing class PortalWidgetController {
                     WHERE Zone__c = :zoneName
                     AND Page_Context__c INCLUDES (:pageContext)
                     AND Is_Active__c = TRUE
+                    WITH SYSTEM_MODE
                     ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
             ];
-            System.debug(LoggingLevel.INFO, 'PortalWidgetController: ' + candidateWidgets.size() + ' candidate widgets for zone ' + zoneName);
-            System.debug(JSON.serializePretty(candidateWidgets));
             List<PortalWidgetDto> results = new List<PortalWidgetDto>();
             for (UST_Portal_Widget__c widget : candidateWidgets) {
                 if (widgetMatchesPage(widget.Page_Context__c, pageContext)
@@ -92,11 +92,11 @@ public without sharing class PortalWidgetController {
                     dto.description = widget.Description__c;
                     dto.staticContent = widget.Static_Content__c;
                     dto.staticContentHeader = String.isNotBlank(widget.Static_Content_Header__c) ? widget.Static_Content_Header__c : '';
+                    dto.contentCssClass = widget.Content_CSS_Class__c;
                     dto.isStaticContent = String.isNotBlank(widget.Static_Content__c) || String.isNotBlank(widget.Static_Content_Header__c);
                     results.add(dto);
                 }
             }
-            System.debug(JSON.serializePretty(results));
             return results;
 
         } catch (Exception caught) {
@@ -149,6 +149,7 @@ public without sharing class PortalWidgetController {
                 SELECT ContactId
                 FROM User
                 WHERE Id = :userId
+                WITH SYSTEM_MODE
                 LIMIT 1
         ];
 
@@ -304,7 +305,7 @@ public without sharing class PortalWidgetController {
         /** St_Thomas_Connection__c values from the user's Contact */
         Set<String> stThomasConnections = new Set<String>();
         /** Academic_Majors__c values from the user's Contact */
-        Set<String> academicMajors = new Set<String>();
+        final Set<String> academicMajors = new Set<String>();
         /** Event_Location_Type_s__c values from the user's Contact */
         Set<String> eventLocationTypes = new Set<String>();
         /** Athletic_Affiliation_s__c values from the user's Contact */
@@ -338,6 +339,8 @@ public without sharing class PortalWidgetController {
         /** Rich-text content (Static_Content__c); rendered when componentName === 'ust_static_content' */
         @AuraEnabled public String staticContent;
         @AuraEnabled public String staticContentHeader;
+        /** CSS class API name from Content_CSS_Class__c; styles the whole static content widget */
+        @AuraEnabled public String contentCssClass;
         @AuraEnabled public Boolean isStaticContent;
 
     }

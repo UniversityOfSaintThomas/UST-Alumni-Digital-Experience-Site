@@ -1,0 +1,64 @@
+<template>
+    <div class="slds-card ust-my-favorites">
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Loading favorites" size="medium"></lightning-spinner>
+        </template>
+
+        <template lwc:if={errorMessage}>
+            <div class="slds-text-color_error slds-p-around_small" role="alert">{errorMessage}</div>
+        </template>
+
+        <template lwc:if={showEmptyState}>
+            <div class="slds-p-around_medium slds-text-color_weak">
+                You haven't favorited any alumni or businesses yet. Look for the favorite icon
+                throughout the portal to start curating your list.
+            </div>
+        </template>
+
+        <template lwc:if={hasAlumniFavorites}>
+            <div class="slds-p-around_medium favorites-section">
+                <h2 class="slds-text-heading_small slds-m-bottom_small">Alumni I'm Following</h2>
+                <ul>
+                    <template for:each={alumniFavorites} for:item="favorite">
+                        <li key={favorite.favoriteId} class="slds-p-vertical_x-small favorite-row">
+                            <template lwc:if={favorite.isOrphaned}>
+                                <span class="slds-text-color_weak orphaned-favorite">
+                                    This alumni profile is no longer available.
+                                </span>
+                            </template>
+                            <template lwc:else>
+                                <span class="slds-text-heading_small">{favorite.title}</span>
+                                <template lwc:if={favorite.subtitle}>
+                                    <span class="slds-text-color_weak slds-m-left_x-small">Class of {favorite.subtitle}</span>
+                                </template>
+                            </template>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+
+        <template lwc:if={hasBusinessFavorites}>
+            <div class="slds-p-around_medium favorites-section">
+                <h2 class="slds-text-heading_small slds-m-bottom_small">Businesses I'm Following</h2>
+                <ul>
+                    <template for:each={businessFavorites} for:item="favorite">
+                        <li key={favorite.favoriteId} class="slds-p-vertical_x-small favorite-row">
+                            <template lwc:if={favorite.isOrphaned}>
+                                <span class="slds-text-color_weak orphaned-favorite">
+                                    This business listing is no longer available.
+                                </span>
+                            </template>
+                            <template lwc:else>
+                                <span class="slds-text-heading_small">{favorite.title}</span>
+                                <template lwc:if={favorite.subtitle}>
+                                    <span class="slds-text-color_weak slds-m-left_x-small">{favorite.subtitle}</span>
+                                </template>
+                            </template>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+    </div>
+</template>

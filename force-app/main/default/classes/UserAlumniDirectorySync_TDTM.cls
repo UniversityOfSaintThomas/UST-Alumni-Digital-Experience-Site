@@ -2,7 +2,7 @@
  * Created by dahl3702 on 7/15/2019.
  */
 
-global class UserAlumniDirectorySync_TDTM extends hed.TDTM_Runnable {
+global without sharing class UserAlumniDirectorySync_TDTM extends hed.TDTM_Runnable {
     global override hed.TDTM_Runnable.DmlWrapper run(List<SObject> newlist, List<SObject> oldList, hed.TDTM_Runnable.Action triggerAction, Schema.DescribeSObjectResult objResult) {
         hed.TDTM_Runnable.DmlWrapper dmlWrapper = new hed.TDTM_Runnable.DmlWrapper();
 
@@ -21,12 +21,12 @@ global class UserAlumniDirectorySync_TDTM extends hed.TDTM_Runnable {
                 User changedUsr = (User) newListMap.get(nlm);
                 //Must be a Cspliteportal user
                 if (changedUsr.UserType.equalsIgnoreCase('CspLitePortal')) {
-                    Id AlumniDirectoryId = null;
+                    Id alumniDirectoryId = null;
                     //Must have a Alumni directory id on the user record
                     if (String.isNotBlank(changedUsr.Alumni_Directory__c)) {
-                        AlumniDirectoryId = changedUsr.Alumni_Directory__c;
+                        alumniDirectoryId = changedUsr.Alumni_Directory__c;
                         Alumni_Directory__c updatedDir = new Alumni_Directory__c(
-                                Id = AlumniDirectoryId,
+                                Id = alumniDirectoryId,
                                 Employer_Text__c = changedUsr.CompanyName,
                                 Occupation_Text__c = changedUsr.Title,
                                 City_State__c = changedUsr.City + ', ' + changedUsr.State
@@ -45,7 +45,7 @@ global class UserAlumniDirectorySync_TDTM extends hed.TDTM_Runnable {
             }
 
             if (alumniDirectoryUpdates.size() > 0) {
-                upsert alumniDirectoryUpdates;
+                upsert as system alumniDirectoryUpdates;
             }
         }
         return dmlWrapper;

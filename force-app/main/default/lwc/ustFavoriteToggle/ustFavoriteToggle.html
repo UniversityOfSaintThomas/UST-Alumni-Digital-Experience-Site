@@ -1,0 +1,15 @@
+<template>
+    <div class="ust-favorite-toggle">
+        <template lwc:if={errorMessage}>
+            <span class="slds-text-color_error slds-text-body_small" role="alert">{errorMessage}</span>
+        </template>
+        <lightning-button-icon
+            icon-name={iconName}
+            variant={variant}
+            alternative-text={buttonLabel}
+            title={buttonLabel}
+            disabled={isDisabled}
+            onclick={handleToggleClick}
+        ></lightning-button-icon>
+    </div>
+</template>

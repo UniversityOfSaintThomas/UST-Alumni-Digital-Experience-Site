@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Generic one-directional favorite/curation junction. A community user can favorite another alumnus (Alumni_Directory__c) or a business listing (Professional_Directory__c). Target_Type__c plus Target_Record_Id__c is used instead of separate lookups per target type so this object can be reused for future alumni connection features without adding more junction objects. Duplicate favorites (same Owner_Contact__c + Target_Type__c + Target_Record_Id__c) are prevented in AlumniFavoriteController Apex, not declaratively - Salesforce does not allow a unique constraint on a formula field, and a plain unique text field would require client-composed keys, which is more failure-prone than an Apex existence check before insert.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>false</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <label>Alumni Favorite</label>
+    <nameField>
+        <displayFormat>FAV-{0000}</displayFormat>
+        <label>Alumni Favorite Name</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Alumni Favorites</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,3 +1,45 @@
 .ust-static-content {
     display: block;
 }
+
+/* Header colour: brand purple by default (same as slds-text-color_brand did). */
+.ust-static-content-header {
+    color: var(--dxp-g-brand, #510c76);
+}
+
+/* ---- Widget-wide styles (Content_CSS_Class__c) ---- */
+
+/* Callout Panel: light purple tint with a purple left rule. */
+.ust-content-callout {
+    background-color: #f4eef8;
+    border-left: 0.25rem solid #510c76;
+    border-radius: 0.25rem;
+    padding: 1rem 1.25rem;
+}
+
+/* Purple Banner: dark purple background with light text. */
+.ust-content-inverse {
+    background-color: #510c76;
+    color: #ffffff;
+    border-radius: 0.25rem;
+    padding: 1rem 1.25rem;
+}
+
+.ust-content-inverse .ust-static-content-header {
+    color: #ffffff;
+}
+
+/* Centered Text */
+.ust-content-centered {
+    text-align: center;
+}
+
+/* Muted / Small Print */
+.ust-content-muted {
+    color: #5c5c5c;
+    font-size: 0.8125rem;
+}
+
+.ust-content-muted .ust-static-content-header {
+    color: inherit;
+}

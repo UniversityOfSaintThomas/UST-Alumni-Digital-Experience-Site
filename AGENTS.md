@@ -98,6 +98,15 @@ sf project retrieve start --metadata "DigitalExperienceBundle:site/Alumni1" --ou
 
 ---
 
+## External Dependencies
+
+- **`awsS3DirectoryImage` LWC** (+ `awsDirectoryImageController` Apex, `errorPanel`/`ldsUtils` helpers) — pulled in via a GitHub source dependency in `cumulusci.yml` (`UniversityOfSaintThomas/Salesforce-LWC-S3-Integration`, `force-app` subfolder only). Deploys automatically with every `cci flow run dev_org`. Displays/uploads an image from AWS S3 onto any record's field — usable as-is for profile image upload (e.g. Contact) or a hero image uploader on a new widget's control object. Drop `<c-aws-s3-directory-image record-id={recordId} image-field="Your_Field__c">` into a component/page; the target field just needs Read/Edit FLS granted to the running user (the packaged `AWS_S3_Directory_Image` permission set only covers the Apex/Named Credential/External Credential access, not your specific field).
+  - Auto-assigned to System Administrators via the `assign_aws_s3_directory_image_permset` task (`config_dev` step 1.4).
+  - **Requires one-time manual per-org setup, not automatable via CumulusCI** (secrets/env-specific): set the real S3 bucket URL on the `AWS S3 Directory Image` Named Credential *and* the `AWS_S3_Directory_Image` CSP Trusted Site (both ship with placeholder URLs), and enter the AWS Access Key/Secret on the External Credential's Named Principal. See the dependency repo's README for exact steps and troubleshooting table.
+  - Only JPG/GIF/PNG uploads are accepted (enforced server-side in the controller).
+
+---
+
 ## Testing Gotchas
 
 - **`TestAlumniCommunityDataFactory.createTestDATA()` depends on fixture data no CumulusCI task creates:** a `System Administrator` user literally named `ETL User`, and an `Alumni Community User` profile (Customer Community Login license). Neither exists in a scratch org until the `config_dev` flow has actually completed — check the `Network` record for the community isn't still `Status = UnderConstruction` before assuming the org is ready. If `createTestDATA()` throws `List index out of bounds: 0`, check for these two fixtures first, not a code bug. Do **not** "fix" this by pointing shared test code at whatever profile happens to exist in an under-provisioned org (e.g. the site's auto-generated Guest profile) — that breaks the factory for every other test that depends on it and diverges from EDA-Staging's real profile.

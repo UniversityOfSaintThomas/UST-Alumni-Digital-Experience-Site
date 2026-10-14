@@ -216,6 +216,8 @@ force-app/main/default/
     ustAlumniFooter/    # Site footer
     ustWidgetZone/      # Widget zone host — drag onto Experience Builder pages
     ustStaticContent/   # Renders rich-text static content from a widget record
+    ustWidgetRecordEditor/ # Custom edit layout for UST_Portal_Widget__c (record page)
+    ustRichTextEditor/  # Rich text editor with Paragraph / Heading 2-5 dropdown
     ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
   classes/              # Apex controllers
     NavMenuController   # Experience Cloud navigation menu fetcher

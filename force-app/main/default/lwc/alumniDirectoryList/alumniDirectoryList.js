@@ -78,7 +78,7 @@ export default class alumniDirectoryList extends NavigationMixin(LightningElemen
 
     handleClassChange(event) {
         if (this.classYear !== event.target.value) {
-            let classYearValue = event.target.value;
+            const classYearValue = event.target.value;
             event.target.value = classYearValue.replace(/[^0-9.]/g, "");
             if (event.target.value.length > 4) {
                 event.target.value = event.target.value.substr(0, 4);
@@ -98,9 +98,8 @@ export default class alumniDirectoryList extends NavigationMixin(LightningElemen
 
     getDirectory() {
         this.loading = true;
-        let searchString = this.searchKey;
+        const searchString = this.searchKey;
         if (searchString) {
-            searchString = searchString;
             getAlumniDirectory({
                 pagenumber: this.currentpage,
                 pageSize: 10,

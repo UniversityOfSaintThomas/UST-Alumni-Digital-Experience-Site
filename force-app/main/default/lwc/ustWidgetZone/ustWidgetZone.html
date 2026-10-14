@@ -56,8 +56,9 @@
                     <template lwc:if={widget.isStaticContent}>
                         <c-ust-static-content
                             rich-text-content={widget.staticContent}
-                            text-header={widget.staticContentHeader}>
-                        ></c-ust-static-content>
+                            text-header={widget.staticContentHeader}
+                            content-class={widget.contentCssClass}>
+                        </c-ust-static-content>
                     </template>
 
                     <!--

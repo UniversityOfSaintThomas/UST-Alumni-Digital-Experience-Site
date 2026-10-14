@@ -79,7 +79,7 @@ export default class AlumniNewsList extends NavigationMixin(LightningElement) {
 
     handleClassChange(event) {
         if (this.classYear !== event.target.value) {
-            let classYearValue = event.target.value;
+            const classYearValue = event.target.value;
             event.target.value = classYearValue.replace(/[^0-9.]/g, "");
             if (event.target.value.length > 4) {
                 event.target.value = event.target.value.substr(0, 4);
@@ -97,7 +97,7 @@ export default class AlumniNewsList extends NavigationMixin(LightningElement) {
         );
     }
 
-    getTheNews(pageOne) {
+    getTheNews() {
         this.loading = true;
         getNews({
             pagenumber: this.currentpage,

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Owner_Contact__c</fullName>
+    <deleteConstraint>Cascade</deleteConstraint>
+    <description>The Contact of the community user who favorited the target. Always resolved server-side from the running user; never trusted from client input.</description>
+    <inlineHelpText>The alumnus who created this favorite.</inlineHelpText>
+    <label>Owner Contact</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Alumni Favorites</relationshipLabel>
+    <relationshipName>Alumni_Favorites</relationshipName>
+    <required>true</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

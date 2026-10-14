@@ -30,7 +30,7 @@ public without sharing class AlumniProfileController {
                             City_State__c, Occupation_Text__c, Employer_Text__c
                     FROM Alumni_Directory__c
                     WHERE Contact__c = :contactId
-                    WITH SECURITY_ENFORCED
+                    WITH USER_MODE
                     LIMIT 1
             ];
 
@@ -65,7 +65,7 @@ public without sharing class AlumniProfileController {
                             City_State__c, Occupation_Text__c, Employer_Text__c
                     FROM Alumni_Directory__c
                     WHERE Id = :recordId
-                    WITH SECURITY_ENFORCED
+                    WITH USER_MODE
                     LIMIT 1
             ];
 
@@ -121,7 +121,7 @@ public without sharing class AlumniProfileController {
                     SELECT Id, Contact__c
                     FROM Alumni_Directory__c
                     WHERE Id = :input.recordId
-                    WITH SECURITY_ENFORCED
+                    WITH USER_MODE
                     LIMIT 1
             ];
 
@@ -158,6 +158,7 @@ public without sharing class AlumniProfileController {
                 SELECT ContactId
                 FROM User
                 WHERE Id = :UserInfo.getUserId()
+                WITH SYSTEM_MODE
                 LIMIT 1
         ];
         return (users.isEmpty()) ? null : users[0].ContactId;
@@ -179,7 +180,7 @@ public without sharing class AlumniProfileController {
                 WHERE Alumni__c = :contactId
                 AND RecordTypeId = :recTypeId
                 AND Active_Display__c = :ACTIVE_DISPLAY_ACTIVE
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 ORDER BY Company_Name__c NULLS LAST
         ];
     }

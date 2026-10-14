@@ -22,6 +22,12 @@
     transform: translateY(-50%);
 }
 
+/* New favorite toggle on each business card - top-right corner, above the card content. */
+.favorite-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
 /*.company-website-label {*/
 /*    font-size: 22px;*/
 /*    font-weight: bold;*/

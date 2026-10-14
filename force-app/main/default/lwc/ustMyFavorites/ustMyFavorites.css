@@ -1,0 +1,11 @@
+.ust-my-favorites .favorites-section + .favorites-section {
+    border-top: 1px solid #dddbda;
+}
+
+.ust-my-favorites .favorite-row {
+    border-bottom: 1px solid #f3f2f2;
+}
+
+.ust-my-favorites .orphaned-favorite {
+    font-style: italic;
+}

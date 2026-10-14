@@ -4,8 +4,7 @@
 
 public with sharing class AlumniDirectoryListController {
 
-
-    @TestVisible public class alumniDirectory {
+    @TestVisible public class AlumniDirectory {
         @AuraEnabled @TestVisible
         public String key { get; set; }
         @AuraEnabled
@@ -23,14 +22,14 @@ public with sharing class AlumniDirectoryListController {
     }
 
     @AuraEnabled (cacheable = true)
-    public static List<alumniDirectory> getAlumniDirectory(Integer pagenumber, Integer numberOfRecords, Integer pageSize, String searchString, String classYearString) {
-        List<alumniDirectory> directoryOut = new List<alumniDirectory>();
+    public static List<AlumniDirectory> getAlumniDirectory(Integer pagenumber, Integer numberOfRecords, Integer pageSize, String searchString, String classYearString) {
+        List<AlumniDirectory> directoryOut = new List<AlumniDirectory>();
         List<Alumni_Directory__c> directoryIn = new List<Alumni_Directory__c>();
         Integer queryCountIn = getAlumniCount(searchString, classYearString);
         if (queryCountIn > 0) {
             directoryIn = getAlumniList(pagenumber, numberOfRecords, pageSize, searchString, classYearString);
             for (Alumni_Directory__c ad : directoryIn) {
-                alumniDirectory dirItem = new alumniDirectory();
+                AlumniDirectory dirItem = new AlumniDirectory();
                 dirItem.key = ad.Id;
                 dirItem.queryCount = queryCountIn;
                 dirItem.Name = '';
@@ -81,7 +80,6 @@ public with sharing class AlumniDirectoryListController {
                 query += ' OFFSET ' + (pageSize * (pagenumber - 1));
             }
 
-            System.debug(query);
             if (String.isNotBlank(whereString)) {
                 alumniList = database.query(query);
             }
@@ -113,9 +111,9 @@ public with sharing class AlumniDirectoryListController {
             String[] searchFrag = new List<String>();
             //Check for Mr. Mrs. Dr. at the beginning of string and record it.
             String prefix = '';
-            Pattern MyPattern = Pattern.compile('^Mr\\.|^Mrs\\.|^Ms\\.|^Dr\\.');
-            Matcher MyMatcher = MyPattern.matcher(search);
-            Boolean suffixFound = MyMatcher.find();
+            Pattern myPattern = Pattern.compile('^Mr\\.|^Mrs\\.|^Ms\\.|^Dr\\.');
+            Matcher myMatcher = myPattern.matcher(search);
+            Boolean suffixFound = myMatcher.find();
             if (suffixFound) {
                 prefix = search.substring(0, search.indexOf('.') + 2).trim() + ' ';
                 search = search.substring(search.indexOf('.') + 2, search.length());
@@ -162,7 +160,6 @@ public with sharing class AlumniDirectoryListController {
         if (String.isNotBlank(classYearString) && String.isBlank(search)) {
             whereOut = ' Class_Year_Text__c = \'' + classYearString + '\' ';
         }
-        System.debug(whereOut);
         return whereOut;
     }
 }

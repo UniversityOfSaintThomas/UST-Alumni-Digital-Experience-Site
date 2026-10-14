@@ -6,7 +6,7 @@
  *  - totalMatchingCount drives the footer "Showing X of Y" and hides Load More when X >= Y
  */
 
-import { LightningElement, wire } from "lwc";
+import { LightningElement } from "lwc";
 import { loadStyle } from 'lightning/platformResourceLoader';
 import getCompanyIndustryPicklist from "@salesforce/apex/AlumniBusinessDirectoryController.getCompanyIndustryPicklist";
 import getCompanySpecialInterestPicklist from "@salesforce/apex/AlumniBusinessDirectoryController.getCompanySpecialInterestPicklist";
@@ -483,6 +483,12 @@ export default class AlumniBusinessDirectory extends LightningElement {
       event.preventDefault();
       this.openRecordModal(event);
     }
+  }
+
+  // Prevents a click on the favorite toggle from bubbling up to the card's
+  // onclick={openRecordModal}, so favoriting a card doesn't also open its modal.
+  stopFavoriteToggleClickPropagation(event) {
+    event.stopPropagation();
   }
 
   // ─── Utilities ────────────────────────────────────────────────────────────

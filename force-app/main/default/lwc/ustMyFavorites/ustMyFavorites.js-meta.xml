@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <isExposed>true</isExposed>
+    <description>Displays the alumnus's personal favorites list on their My Profile page, grouped into "Alumni I'm Following" and "Businesses I'm Following". Read-only - favoriting happens via ustFavoriteToggle elsewhere in the portal.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+</LightningComponentBundle>

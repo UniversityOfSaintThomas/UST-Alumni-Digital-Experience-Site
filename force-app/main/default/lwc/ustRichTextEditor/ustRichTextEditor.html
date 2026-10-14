@@ -1,0 +1,48 @@
+<template>
+    <div class="ust-editor">
+        <div class="ust-editor-label slds-form-element__label">{label}</div>
+
+        <div class="ust-editor-style slds-m-bottom_x-small">
+            <lightning-combobox
+                name="paragraphStyle"
+                label="Paragraph style"
+                value={selectedStyle}
+                options={styleOptions}
+                disabled={disabled}
+                onchange={handleStyleChange}>
+            </lightning-combobox>
+        </div>
+
+        <!-- Cursor-tracking handlers live here, not on the outer wrapper:
+             getFormat() focuses the editor, which would close the dropdown above. -->
+        <div class="ust-editor-body" onclick={syncStyleToCursor} onkeyup={syncStyleToCursor}>
+            <lightning-input-rich-text
+                label={label}
+                value={value}
+                formats={formats}
+                disabled-categories={disabledCategories}
+                disabled={disabled}
+                valid={isValid}
+                onchange={handleEditorChange}>
+            </lightning-input-rich-text>
+        </div>
+
+        <div class="slds-m-top_xx-small slds-grid slds-grid_align-spread">
+            <div class="slds-col">
+                <template lwc:if={hasDisallowedHeadings}>
+                    <p class="slds-text-body_small slds-text-color_error" role="alert">
+                        Heading 1 and Heading 6 are not used on the portal. Change them to Heading 2-5.
+                    </p>
+                </template>
+                <template lwc:if={isOverLimit}>
+                    <p class="slds-text-body_small slds-text-color_error" role="alert">
+                        Content is too long. Shorten it to fit within {maxLength} characters.
+                    </p>
+                </template>
+            </div>
+            <div class="slds-col slds-no-flex">
+                <span class={counterClass}>{counterText}</span>
+            </div>
+        </div>
+    </div>
+</template>

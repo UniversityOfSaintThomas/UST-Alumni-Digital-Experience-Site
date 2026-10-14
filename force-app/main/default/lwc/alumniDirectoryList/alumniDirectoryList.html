@@ -35,6 +35,9 @@
                         <th scope="col">
                             <div class="slds-truncate" title="Employer">Employer</div>
                         </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Favorite">Favorite</div>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -64,6 +67,9 @@
                                 <div class="slds-truncate" title={al.employer}>
                                     <a onclick={handleAlumniClick} data-aid={al.key}>{al.employer}</a>
                                 </div>
+                            </td>
+                            <td data-label="Favorite">
+                                <c-ust-favorite-toggle target-type="Alumni_Directory" target-record-id={al.key}></c-ust-favorite-toggle>
                             </td>
                         </tr>
                     </template>

@@ -6,8 +6,8 @@
 <template>
 
     <c-alumni-news-list currentpage={page} onrecordsload={handleRecordsLoad} pagesize={pagesize} use-new-profile-link={useNewProfileLink}></c-alumni-news-list>
-    <div class="slds-grid slds-wrap slds-m-right--small slds-m-left--small  slds-size_full">
-        <div class="slds-size_1-of-1 slds-m-top--large slds-m-bottom--medium slds-size_full slds-text-align_center">
+    <div class="slds-grid slds-wrap slds-m-right_small slds-m-left_small  slds-size_full">
+        <div class="slds-size_1-of-1 slds-m-top_large slds-m-bottom_medium slds-size_full slds-text-align_center">
             <c-alumni-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst} onlast={handleLast} currentpage={page} totalrecords={totalrecords} pagesize={pagesize}></c-alumni-paginator-bottom>
         </div>
     </div>

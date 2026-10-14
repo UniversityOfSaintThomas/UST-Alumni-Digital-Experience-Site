@@ -4,7 +4,7 @@
 
 public without sharing class AlumniNewsListController {
 
-    @TestVisible public class alumniNews {
+    @TestVisible public class AlumniNews {
         @AuraEnabled @TestVisible
         public String key { get; set; }
         @AuraEnabled
@@ -25,17 +25,16 @@ public without sharing class AlumniNewsListController {
         public Id adId { get; set; }
     }
 
-
     @AuraEnabled (Cacheable=true)
-    public static List<alumniNews> getNews(Integer pagenumber, Integer pageSize, String searchString, String classYearString) {
-        List<alumniNews> newsOut = new List<alumniNews>();
+    public static List<AlumniNews> getNews(Integer pagenumber, Integer pageSize, String searchString, String classYearString) {
+        List<AlumniNews> newsOut = new List<AlumniNews>();
         List<Alumni_News__c> newsIn = new List<Alumni_News__c>();
         Integer queryCountIn = getAlumniNewsCount(searchString, classYearString);
         if (queryCountIn > 0) {
             newsIn = getAlumniNewsList(pagenumber, pageSize, searchString, classYearString);
             for (Alumni_News__c an : newsIn) {
                 if (String.isNotBlank(an.Alumni_News__c)) {
-                    alumniNews newsItem = new alumniNews();
+                    AlumniNews newsItem = new AlumniNews();
                     newsItem.queryCount = queryCountIn;
                     newsItem.key = an.Id;
                     newsItem.adId = null;
@@ -48,12 +47,12 @@ public without sharing class AlumniNewsListController {
                     } else {
                         newsItem.Name = '';
                     }
-
-                    if (String.isNotBlank(an.Details_Link__c)) {
-                        newsItem.detailLink = an.Details_Link__c;
-                    } else {
-                        newsItem.detailLink = '';
-                    }
+//
+//                    if (String.isNotBlank(an.Details_Link__c)) {
+//                        newsItem.detailLink = an.Details_Link__c;
+//                    } else {
+//                        newsItem.detailLink = '';
+//                    }
 
                     if (String.isNotBlank(an.Alumni_News__c)) {
                         newsItem.newsItem = an.Alumni_News__c;
@@ -64,6 +63,7 @@ public without sharing class AlumniNewsListController {
                         if (urlMatcher.find()) {
                             String url = urlMatcher.group();
                             newsItem.newsItem = newsItem.newsItem.replace(url, '<a href="' + url + '" target="_blank">[Source]</a>');
+                            newsItem.detailLink = url;
                         }
                         //newsItems often start with a url
 
@@ -100,10 +100,8 @@ public without sharing class AlumniNewsListController {
         return newsOut;
     }
 
-
     private static List<Alumni_News__c> getAlumniNewsList(Integer pagenumber, Integer pageSize, String searchString, String classYearString) {
         List<Alumni_News__c> alumniNewsList = new List<Alumni_News__c>();
-
 
         if (pagenumber == null || pagenumber == 0) {
             pagenumber = 1;
@@ -113,9 +111,7 @@ public without sharing class AlumniNewsListController {
         query += ' Alumni_Directory__c, Category__c, Alumni_News__c, Details_Link__c, News_Source__c, Image__c, External_Link__c, Reviewed_for_Community_Display__c, News_Date__c, Class_Year__c ';
         query += ' FROM Alumni_News__c ';
 
-
         query += ' WHERE ' + generateWhere(searchString, classYearString);
-
 
         query += ' ORDER BY News_Date__c DESC ';
         query += ' LIMIT ' + pageSize;
@@ -127,8 +123,6 @@ public without sharing class AlumniNewsListController {
             query += ' OFFSET ' + (pageSize * (pagenumber - 1));
         }
 
-
-        System.debug(query);
         alumniNewsList = Database.query(query);
         if (alumniNewsList.size() > 0) {
             return alumniNewsList;
@@ -143,7 +137,7 @@ public without sharing class AlumniNewsListController {
         if (String.isNotBlank(searchString) || String.isNotBlank(classYearString)) {
             query += ' WHERE ' + generateWhere(searchString, classYearString);
         }
-        AggregateResult[] AgCount = database.query(query);
+        AggregateResult[] agCount = database.query(query);
         for (AggregateResult ar : agCount) {
             alumniCount = Integer.valueOf(ar.get('expr0'));
         }
@@ -158,9 +152,9 @@ public without sharing class AlumniNewsListController {
             String[] searchFrag = new List<String>();
             //Check for Mr. Mrs. Dr. at the beginning of string and record it.
             String prefix = '';
-            Pattern MyPattern = Pattern.compile('^Mr\\.|^Mrs\\.|^Ms\\.|^Dr\\.');
-            Matcher MyMatcher = MyPattern.matcher(search);
-            Boolean suffixFound = MyMatcher.find();
+            Pattern myPattern = Pattern.compile('^Mr\\.|^Mrs\\.|^Ms\\.|^Dr\\.');
+            Matcher myMatcher = myPattern.matcher(search);
+            Boolean suffixFound = myMatcher.find();
             if (suffixFound) {
                 prefix = search.substring(0, search.indexOf('.') + 2).trim() + ' ';
                 search = search.substring(search.indexOf('.') + 2, search.length());
@@ -206,7 +200,6 @@ public without sharing class AlumniNewsListController {
         if (String.isNotBlank(classYearString) && String.isBlank(search)) {
             whereOut += ' AND Contact__r.Preferred_Class_Year__c = \'' + classYearString + '\' ';
         }
-        System.debug(whereOut);
         return whereOut;
     }
 }

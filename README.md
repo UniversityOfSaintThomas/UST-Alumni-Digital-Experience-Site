@@ -35,4 +35,4 @@ cci task run run_tests --org dev
 - Lightning Web Components (LWC)
 - EDA - Higher Education Data Architecture (`hed__` namespace)
 - CumulusCI (build/deploy tooling)
-- Salesforce API v63.0 / v65.0
+- Salesforce API v68.0

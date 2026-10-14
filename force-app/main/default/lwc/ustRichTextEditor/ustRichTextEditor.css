@@ -1,0 +1,12 @@
+.ust-editor {
+    display: block;
+}
+
+.ust-editor-style {
+    max-width: 14rem;
+}
+
+/* The visible label is a plain caption; the inner editor label stays hidden. */
+.ust-editor-label {
+    margin-bottom: 0.25rem;
+}

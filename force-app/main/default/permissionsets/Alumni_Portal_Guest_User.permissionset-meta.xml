@@ -6,6 +6,11 @@
     </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
+        <field>UST_Portal_Widget__c.Content_CSS_Class__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>UST_Portal_Widget__c.Description__c</field>
         <readable>true</readable>
     </fieldPermissions>

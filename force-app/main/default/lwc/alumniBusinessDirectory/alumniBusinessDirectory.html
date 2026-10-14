@@ -101,6 +101,9 @@
                              data-id={record.Id}
                              onclick={openRecordModal}
                              onkeydown={handleCardKeydown}>
+                            <div class="slds-align_absolute-center favorite-toggle-container" onclick={stopFavoriteToggleClickPropagation}>
+                                <c-ust-favorite-toggle target-type="Professional_Directory" target-record-id={record.Id}></c-ust-favorite-toggle>
+                            </div>
                             <div class="slds-m-top_x-small slds-align_absolute-center logo-container">
                                 <img src={record.Company_Logo_URL__c} alt="Company Logo" class="ust-grid-record-company-logo">
                             </div>

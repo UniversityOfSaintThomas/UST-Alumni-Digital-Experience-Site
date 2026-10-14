@@ -3,9 +3,11 @@ project:
     name: UST-Alumni-Digital-Experience-Site
     package:
         name: UST-Alumni-Digital-Experience-Site
-        api_version: '66.0'
+        api_version: '68.0'
     git:
     source_format: sfdx
+    dependencies:
+        - github: https://github.com/UniversityOfSaintThomas/Salesforce-LWC-S3-Integration
 
 tasks:
     robot:
@@ -88,11 +90,31 @@ tasks:
                 userUser.Country = 'United States';
                 update userUser;
 
+    assign_aws_s3_directory_image_permset:
+        description: >-
+            Assigns the AWS_S3_Directory_Image permission set (from the
+            Salesforce-LWC-S3-Integration dependency) to System Administrators
+            so they can use the awsS3DirectoryImage LWC out of the box.
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            apex: >
+                PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'AWS_S3_Directory_Image' LIMIT 1];
+                List<PermissionSetAssignment> assignments = new List<PermissionSetAssignment>();
+                for (User u : [SELECT Id FROM User WHERE Profile.Name = 'System Administrator']) {
+                    assignments.add(new PermissionSetAssignment(PermissionSetId = ps.Id, AssigneeId = u.Id));
+                }
+                if (!assignments.isEmpty()) {
+                    upsert assignments;
+                }
+
 flows:
     config_dev:
         steps:
             1.3:
                 task: role_to_userUser
+            1.4:
+                task: assign_aws_s3_directory_image_permset
             3:
                 task: create_community
             4:

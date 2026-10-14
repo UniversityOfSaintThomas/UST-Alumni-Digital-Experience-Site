@@ -1,0 +1,90 @@
+<template>
+    <lightning-record-edit-form
+        object-api-name={objectApiName}
+        record-id={recordId}
+        onload={handleLoad}
+        onsubmit={handleSubmit}
+        onsuccess={handleSuccess}
+        onerror={handleError}>
+
+        <lightning-messages></lightning-messages>
+
+        <!-- Widget Setup -->
+        <section class="ust-section" aria-labelledby="ust-setup-heading">
+            <h2 id="ust-setup-heading" class="ust-section-title slds-text-heading_small">Widget Setup</h2>
+            <div class="slds-grid slds-wrap slds-gutters">
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                    <lightning-input-field field-name="Name"></lightning-input-field>
+                    <lightning-input-field field-name="Component_Name__c" onchange={handleComponentChange}></lightning-input-field>
+                    <lightning-input-field field-name="Zone__c"></lightning-input-field>
+                    <lightning-input-field field-name="Page_Context__c"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                    <lightning-input-field field-name="Is_Active__c"></lightning-input-field>
+                    <lightning-input-field field-name="Sort_Order__c"></lightning-input-field>
+                    <lightning-input-field field-name="Description__c"></lightning-input-field>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content (Static Content widgets only) -->
+        <template lwc:if={showContentSection}>
+            <section class="ust-section" aria-labelledby="ust-content-heading">
+                <h2 id="ust-content-heading" class="ust-section-title slds-text-heading_small">Content</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-input-field field-name="Static_Content_Header__c" onchange={handleHeaderChange}></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-input-field field-name="Content_CSS_Class__c" onchange={handleClassChange}></lightning-input-field>
+                    </div>
+                </div>
+                <c-ust-rich-text-editor
+                    label="Static Content"
+                    value={staticContent}
+                    onchange={handleEditorChange}>
+                </c-ust-rich-text-editor>
+
+                <div class="ust-preview slds-m-top_medium">
+                    <h3 class="ust-preview-title slds-text-title_caps">Preview (as shown on the portal)</h3>
+                    <div class="ust-preview-body">
+                        <c-ust-static-content
+                            rich-text-content={staticContent}
+                            text-header={contentHeader}
+                            content-class={contentClass}>
+                        </c-ust-static-content>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <!-- Audience Filters -->
+        <section class="ust-section" aria-labelledby="ust-filters-heading">
+            <h2 id="ust-filters-heading" class="ust-section-title slds-text-heading_small">Audience Filters</h2>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                Leave a filter blank to show the widget to everyone for that dimension.
+            </p>
+            <div class="slds-grid slds-wrap slds-gutters">
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                    <lightning-input-field field-name="Filter_College__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_Degree_Level__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_Class_Year__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_Academic_Majors__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_St_Thomas_Connection__c"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                    <lightning-input-field field-name="Filter_Athletic_Affiliation__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_Event_Location_Type__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_Geo_Location__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_Content_Sender_Key__c"></lightning-input-field>
+                    <lightning-input-field field-name="Filter_Volunteer_Status__c"></lightning-input-field>
+                </div>
+            </div>
+        </section>
+
+        <div class="ust-actions slds-grid slds-grid_align-end slds-m-top_medium">
+            <lightning-button class="slds-m-right_x-small" label="Reset" onclick={handleReset} disabled={isSaving}></lightning-button>
+            <lightning-button type="submit" variant="brand" label="Save" disabled={isSaving}></lightning-button>
+        </div>
+    </lightning-record-edit-form>
+</template>

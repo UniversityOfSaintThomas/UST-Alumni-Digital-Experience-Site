@@ -2,7 +2,7 @@
  * Created by dahl3702 on 6/11/2019.
  */
 
-import {api, LightningElement, track} from 'lwc';
+import {api, LightningElement} from 'lwc';
 const PAGE_SIZE = 10;
 export default class alumniDirectory extends LightningElement {
     @api page = 1;
@@ -33,7 +33,7 @@ export default class alumniDirectory extends LightningElement {
         this.page = 1;
     }
 
-    handleLast() {Obrien
+    handleLast() {
         this.page = this.totalPages;
     }
 

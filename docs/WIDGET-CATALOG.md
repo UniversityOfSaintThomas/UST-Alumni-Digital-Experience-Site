@@ -64,21 +64,34 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 **Zone-Ready:** ✅ Active
 
 **How to use:**
-1. Create a `UST_Portal_Widget__c` record
-2. Set **Widget Type** = `Static Content`
-3. Enter the content in the **Static Content** field (supports full rich-text HTML via the platform rich-text editor)
-4. Set Zone, Page Context, Sort Order, and Is Active as normal
+1. Open (or create) a `UST_Portal_Widget__c` record. The record page uses the **UST Portal Widget Editor** (`ustWidgetRecordEditor`), which replaces the classic layout.
+2. Set **Component Name** = `Static Content`. The **Content** section appears.
+3. Enter an optional header, pick a **Content CSS Class** (optional), and write the content in the rich text editor. Use the **Paragraph style** dropdown for Heading 2-5. The preview below the editor shows how it renders on the portal.
+4. Set Zone, Page Context, Sort Order, and Is Active as normal, then **Save**.
+
+**Content CSS Class (`Content_CSS_Class__c`):** styles the whole widget (not selected text). The classic Quill-based editor cannot round-trip a `class` attribute, so styles are widget-wide. Current values: `ust-content-callout`, `ust-content-inverse`, `ust-content-centered`, `ust-content-muted`. Only inherited properties (text color, alignment, font size) reach the rich text itself, because `lightning-formatted-rich-text` owns its markup.
+
+**Adding a new style class:** (1) add a picklist value on `Content_CSS_Class__c` (API name = CSS class), (2) add it to `ALLOWED_CONTENT_CLASSES` in `ustStaticContent.js`, (3) add its rule in `ustStaticContent.css`. Classes not on the allowlist are ignored.
+
+**Adding a conditional section to the editor later:** add the `Component_Name__c` value and a section key to `COMPONENT_SECTIONS` in `ustWidgetRecordEditor.js`, then add a getter and template block (see the header comment in that file).
+
+**Components:**
+- `ustWidgetRecordEditor` - the record-page layout (Widget Setup, Content, Audience Filters) built on `lightning-record-edit-form`.
+- `ustRichTextEditor` - wraps `lightning-input-rich-text` and adds the Paragraph / Heading 2-5 dropdown (Heading 1 and 6 are deliberately excluded; the page already supplies the h1 and the widget header renders as an h2). It also shows a character counter against the 32,768 field limit.
+- Access: assign the `UST_Portal_Widget_Admin` permission set to admins who manage widgets.
 
 **Data flow:**
-- `PortalWidgetController.getWidgetsForZone()` includes `Static_Content__c` in its SOQL query and maps it to `PortalWidgetDto.staticContent`
-- `ustWidgetZone.buildWidgetRegistry()` passes `staticContent` through to each widget object
-- `ustWidgetZone.html` renders `<c-ust-static-content rich-text-content={widget.staticContent}>` when `widget.isStaticContent` is true
+- `PortalWidgetController.getWidgetsForZone()` includes `Static_Content__c` and `Content_CSS_Class__c` in its SOQL query and maps them to `PortalWidgetDto.staticContent` / `contentCssClass`
+- `ustWidgetZone.buildWidgetRegistry()` passes both through to each widget object
+- `ustWidgetZone.html` renders `<c-ust-static-content rich-text-content={widget.staticContent} content-class={widget.contentCssClass}>` when `widget.isStaticContent` is true
 - `ustStaticContent` renders the HTML using `<lightning-formatted-rich-text>` (XSS-safe platform renderer)
 
 **Notes:**
-- No deployment needed to add new static content — all content is managed in widget records
+- No deployment needed to add new static content - all content is managed in widget records
 - The `Static Content` field is an Html type (32,768 character limit)
 - Only renders if `richTextContent` is non-empty (guarded by `hasContent` getter)
+- After a JS-only deploy, Lightning may serve a stale bundle: clear IndexedDB / Cache Storage and reload twice (about 20 seconds apart)
+- Known limitation: the Heading dropdown and class picker are not available through the standard (non-custom) page layout; use the record page
 
 ---
 

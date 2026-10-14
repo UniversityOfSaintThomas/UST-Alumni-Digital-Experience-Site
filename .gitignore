@@ -85,3 +85,7 @@ code-analyzer.yml
 
 .playwright-report/
 .playwright-mcp/
+ai-logs/
+/.agentbridge/
+/.agent-work/
+/.husky/

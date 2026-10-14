@@ -50,6 +50,9 @@
                                     {news.classYear}
                                 </div>
                             </div>
+                            <div class="slds-no-flex slds-m-left_xx-small" lwc:if={news.adId}>
+                                <c-ust-favorite-toggle target-type="Alumni_Directory" target-record-id={news.adId}></c-ust-favorite-toggle>
+                            </div>
                         </header>
                     </div>
                     <div class="slds-card__body slds-card__body_inner slds-size_full">
