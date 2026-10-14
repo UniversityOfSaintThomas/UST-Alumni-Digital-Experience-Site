@@ -1,0 +1,1323 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design, planning, and roadmap documentation for the UST Alumni Digital Experience Portal">
+      
+      
+      
+        <link rel="canonical" href="https://universityofsaintthomas.github.io/UST-Alumni-Digital-Experience-Site/WIDGET-AUTHORING-PLAN/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../fav-icons/favicon-32x32.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Portal Widget Authoring Experience — Implementation Plan - UST Alumni Portal</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ust-theme.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#portal-widget-authoring-experience-implementation-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UST Alumni Portal" class="md-header__button md-logo" aria-label="UST Alumni Portal" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UST Alumni Portal
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Portal Widget Authoring Experience — Implementation Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    UST-Alumni-Digital-Experience-Site
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../MAIN_GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Project Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  2026 Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../WIDGET-CATALOG/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Widget Catalog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../DATA-MODEL/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Model
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../BRAND-COLORS/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Brand Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../user-discover/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Discovery
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UST Alumni Portal" class="md-nav__button md-logo" aria-label="UST Alumni Portal" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UST Alumni Portal
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    UST-Alumni-Digital-Experience-Site
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MAIN_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WIDGET-CATALOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Widget Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATA-MODEL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BRAND-COLORS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-discover/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-a-done-editor-layout-headings-widget-style-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase A — DONE: Editor layout, headings, widget style class
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase A — DONE: Editor layout, headings, widget style class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gotchas-learned-do-not-re-discover" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gotchas learned (do not re-discover)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base-editor-caveat-to-resolve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base-editor caveat to resolve
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decisions-confirmed-2026-10-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decisions (confirmed 2026-10-14)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-0-fix-the-page_context__c-page-name-mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 0 — Fix the Page_Context__c / page-name mismatch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-1-spikes-half-a-day-before-building" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Spikes (≈ half a day, before building)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-2-data-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Data tags
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 2 — Data tags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tag-registry-single-source-of-truth-apex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag registry (single source of truth, Apex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#editor-ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editor UX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-3-call-to-action-buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Call-to-action buttons
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 3 — Call-to-action buttons">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-shape-versioned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JSON shape (versioned)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#link-rules-enforced-at-save-and-at-render-apex-re-validates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Link rules (enforced at save AND at render; Apex re-validates)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-4-later-hero-image-widget-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 — Later: hero image widget + S3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-verification-checklist-every-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment &amp; verification checklist (every phase)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#progress" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Progress
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="portal-widget-authoring-experience-implementation-plan">Portal Widget Authoring Experience — Implementation Plan<a class="headerlink" href="#portal-widget-authoring-experience-implementation-plan" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Status: <strong>Phase A done (deployed to the dev scratch org, not yet committed to git). Phases 0–3 approved, not started.</strong>
+Recorded so context survives a session reset.
+Created: 2026-10-14. Dev org: <code>UST-Alumni-Digital-Experience-Site__dev</code> (CCI alias <code>dev</code>), expires 2026-10-27.</p>
+</blockquote>
+<h2 id="goal">Goal<a class="headerlink" href="#goal" title="Permanent link">&para;</a></h2>
+<p>Give portal admins a purpose-built authoring layout for <code>UST_Portal_Widget__c</code> (replacing the classic
+page layout) with a rich text editor that behaves like the Experience Builder one, plus the things
+clients actually need in widget content: <strong>call-to-action buttons</strong>, <strong>personalization data tags</strong>,
+and later a <strong>hero image widget</strong> backed by the S3 upload tool.</p>
+<p>Guiding decision: <strong>structured data beats markup in the rich text.</strong> Buttons are JSON on the record and
+rendered by our component (not HTML/classes inside Quill). That removed the need for a custom Quill
+build and for a per-paragraph class list.</p>
+<hr />
+<h2 id="phase-a-done-editor-layout-headings-widget-style-class">Phase A — DONE: Editor layout, headings, widget style class<a class="headerlink" href="#phase-a-done-editor-layout-headings-widget-style-class" title="Permanent link">&para;</a></h2>
+<p>Built, browser-verified in the dev org, 67 Jest tests passing, Apex tests passing.</p>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>File(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Record-page layout (Widget Setup / Content / Audience Filters, live preview)</td>
+<td><code>lwc/ustWidgetRecordEditor/</code></td>
+</tr>
+<tr>
+<td>Rich text editor with Paragraph + Heading 2–5 dropdown, char counter, H1/H6 warning</td>
+<td><code>lwc/ustRichTextEditor/</code></td>
+</tr>
+<tr>
+<td>Renders content; applies allowlisted widget style class</td>
+<td><code>lwc/ustStaticContent/</code></td>
+</tr>
+<tr>
+<td>Widget style picklist (Callout Panel, Purple Banner, Centered, Muted)</td>
+<td><code>fields/Content_CSS_Class__c</code></td>
+</tr>
+<tr>
+<td>Record page, set as the View override</td>
+<td><code>flexipages/UST_Portal_Widget_Record_Page</code>, <code>UST_Portal_Widget__c.object-meta.xml</code></td>
+</tr>
+<tr>
+<td>Admin permission set (new fields are invisible without FLS)</td>
+<td><code>permissionsets/UST_Portal_Widget_Admin</code></td>
+</tr>
+<tr>
+<td>DTO carries <code>contentCssClass</code></td>
+<td><code>PortalWidgetController</code>, <code>ustWidgetZone</code></td>
+</tr>
+<tr>
+<td>Apex tests</td>
+<td><code>force-app/tests/default/classes/PortalWidgetController_TEST.cls</code></td>
+</tr>
+</tbody>
+</table>
+<p>Also done in the same session: API version bumped to <strong>68.0</strong> everywhere (<code>sfdx-project.json</code>,
+<code>cumulusci.yml</code>, all <code>*-meta.xml</code>); <code>WITH SECURITY_ENFORCED</code> (removed in API 68) replaced with
+<code>WITH USER_MODE</code> in four controllers; Code Analyzer High findings fixed.</p>
+<h3 id="gotchas-learned-do-not-re-discover">Gotchas learned (do not re-discover)<a class="headerlink" href="#gotchas-learned-do-not-re-discover" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>lightning-input-rich-text</code> limits.</strong> Allowed formats include header/link/image/code/blockquote/
+  script/direction/table, but toolbar buttons exist only for bold/italic/underline/strike, lists,
+  indent, left/center/right align, link, image, clear. <code>setFormat()</code> only accepts align, background,
+  bold, code, code-block, color, font, header (1–6), italic, link, size, strike, underline. No access to
+  the Quill instance, modules, registries, or selection events. <code>class</code> attributes cannot round-trip.</li>
+<li><strong><code>getFormat()</code> steals focus.</strong> It refocuses the editor, closing the heading dropdown and the Link
+  dialog. Cursor-sync handlers are on a wrapper around only the rich text, and toolbar clicks
+  (clientY &lt; <code>TOOLBAR_HEIGHT_PX</code>) pause tracking for 8 s (<code>TOOLBAR_PAUSE_MS</code>). <code>composedPath()</code> does not
+  expose <code>.ql-editor</code>, so geometry is the only way to tell toolbar from text.</li>
+<li><strong>Combobox <code>change</code> bubbles out of the child component</strong> and was mistaken for a content change
+  ("h3" replaced the body). Both handlers call <code>event.stopPropagation()</code>.</li>
+<li><strong>The editor textbox only exists after a real mouse click in the editor area</strong> (lazy init) — matters
+  for Playwright tests.</li>
+<li><strong>Stale Lightning bundles after a JS-only deploy.</strong> Clear localStorage/sessionStorage, IndexedDB and
+  Cache Storage, reload, wait ~20 s, reload again (repeat once if needed).</li>
+<li><strong><code>cci task run deploy</code> can say "Succeeded" and deploy nothing</strong> (new field was missing). Use
+  <code>sf project deploy start --source-dir ...</code> and verify with a query.</li>
+<li><strong>New fields need FLS.</strong> Admin sees nothing until <code>UST_Portal_Widget_Admin</code> is assigned.</li>
+<li><strong>Apex tests in the scratch org:</strong> ~80 pre-existing failures are environmental (Network is
+  <code>UnderConstruction</code>; <code>Alumni Community User</code> profile and <code>ETL User</code> missing → "List index out of
+  bounds"; Alumni_Business record type unavailable to admin). Not caused by code changes. Finish the
+  <code>config_dev</code> flow to make them meaningful.</li>
+<li><strong>Jest + base component stubs:</strong> <code>field-name</code>/<code>label</code> are properties, not attributes — query all
+  elements and filter on the property.</li>
+</ul>
+<h3 id="base-editor-caveat-to-resolve">Base-editor caveat to resolve<a class="headerlink" href="#base-editor-caveat-to-resolve" title="Permanent link">&para;</a></h3>
+<p>The toolbar <strong>Image</strong> button stores pictures in Salesforce (<code>rtaImage</code>) rather than S3. Untested whether
+those render for <strong>guests</strong> on the portal, and they are not fast/public like S3. Decide in Phase 4:
+hide it, or confirm it works.</p>
+<hr />
+<h2 id="decisions-confirmed-2026-10-14">Decisions (confirmed 2026-10-14)<a class="headerlink" href="#decisions-confirmed-2026-10-14" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Editor</td>
+<td>Stay on the <strong>base <code>lightning-input-rich-text</code></strong>. Full Quill (static resource) only if per-paragraph classes or inline images become a real requirement.</td>
+</tr>
+<tr>
+<td>Buttons</td>
+<td>JSON on the widget record, rendered by our component. Placement <strong>Above or Below</strong> the text (default Below). <strong>No limit</strong> on count.</td>
+</tr>
+<tr>
+<td>Button types</td>
+<td><strong>External URL</strong> and <strong>Portal link</strong> (site menu item or typed relative path). Relative paths required so content migrates sandbox → prod.</td>
+</tr>
+<tr>
+<td>Button sizing</td>
+<td><strong>Handled by the widget content CSS class</strong>, so buttons stay consistent. No per-button size field.</td>
+</tr>
+<tr>
+<td>Data tags</td>
+<td><code>{{Tag}}</code> syntax, <strong>sourced from <code>Alumni_Directory__c</code> only</strong>, usable in header, body, button labels and button URLs.</td>
+</tr>
+<tr>
+<td>Tag fallback</td>
+<td><code>{{First_Name\|Alum}}</code> — text after <code>\|</code> is used when the value is blank (and for guests).</td>
+</tr>
+<tr>
+<td>Sensitive tags</td>
+<td>Excluded (email, phone, birthdate, address) <strong>except Banner ID</strong>, which is allowed — including in URLs.</td>
+</tr>
+<tr>
+<td>Page-name mismatch</td>
+<td>We fix it (Phase 0).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phase-0-fix-the-page_context__c-page-name-mismatch">Phase 0 — Fix the <code>Page_Context__c</code> / page-name mismatch<a class="headerlink" href="#phase-0-fix-the-page_context__c-page-name-mismatch" title="Permanent link">&para;</a></h2>
+<p><strong>Problem.</strong> <code>ustWidgetZone</code> derives the page context from <code>CurrentPageReference</code> (<code>attributes.name</code>,
+lowercased). <code>Page_Context__c</code> values are <code>all, home, giving, events, profile, directory, news</code>.
+Actual LWR page API names (from <code>sfdc_cms__route</code>): <code>Home</code>, <code>alumni_directory__c</code>,
+<code>Alumni_Event_Creation__c</code>, <code>alumni_notes__c</code>, <code>business_directory__c</code>, <code>lawyer_search__c</code>,
+<code>my_account__c</code>, <code>My_Business__c</code>, <code>News_Detail__c</code>, plus system pages (Login, Register, Error…).
+Only <code>home</code> matches; targeting a widget at "Directory" likely never matches.</p>
+<p><strong>Plan.</strong>
+1. Confirm the mismatch in the dev org with a widget on a non-home page (expect no render).
+2. Make <code>Page_Context__c</code> values the <strong>lowercased real page API names</strong> (keep <code>all</code>), with friendly
+   labels (e.g. <code>alumni_directory__c</code> → "Alumni Directory"). Keep old values active during migration.
+3. Migrate existing records (dev + EDA-Staging): <code>directory</code> → <code>alumni_directory__c</code>, etc.; document the
+   mapping. Decide what to do with <code>giving</code>, <code>events</code>, <code>profile</code>, <code>news</code> (no matching route today —
+   either map to the right page or retire).
+4. Update <code>PortalWidgetController_TEST</code>, <code>WIDGET-CATALOG.md</code>, <code>MAIN_GUIDE.md</code>.
+5. Single source of truth for page names: reuse this list for the <strong>Portal link</strong> picker in Phase 3.</p>
+<hr />
+<h2 id="phase-1-spikes-half-a-day-before-building">Phase 1 — Spikes (≈ half a day, before building)<a class="headerlink" href="#phase-1-spikes-half-a-day-before-building" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Insert at cursor.</strong> Does <code>lightning-input-rich-text.insertTextAtCursor()</code> (documented as "reserved
+   for internal use") reliably insert plain text <code>{{First_Name}}</code> at the cursor in the dev org? If not,
+   fallback = append at end, or copy-to-clipboard.</li>
+<li><strong>Portal link resolution in the LWR site.</strong> Relative path + <code>@salesforce/community/basePath</code>
+   (already used by header/footer) vs <code>NavigationMixin.GenerateUrl</code> with <code>comm__namedPage</code>. Confirm base
+   path handling and that links work in Experience Builder preview and live.</li>
+<li><strong>Page picker source.</strong> Site pages are <strong>not</strong> queryable at runtime (<code>DigitalExperience</code> is not
+   supported in SOQL; routes exist only in metadata). <code>NavigationMenuItem</code> <strong>is</strong> queryable
+   (7 InternalLink items in dev: <code>/my-account</code>, <code>/alumni-directory</code>, <code>/alumni-notes</code>, <code>/lawyer-search</code>,
+   <code>/business-directory</code>, <code>/my-business</code>, <code>/alumni-event-creation</code>). Confirm the menu-item query works
+   for the navigation set bound to the site (note <code>sync_navigation_menu</code> handles per-org set names).</li>
+</ol>
+<hr />
+<h2 id="phase-2-data-tags">Phase 2 — Data tags<a class="headerlink" href="#phase-2-data-tags" title="Permanent link">&para;</a></h2>
+<h3 id="tag-registry-single-source-of-truth-apex">Tag registry (single source of truth, Apex)<a class="headerlink" href="#tag-registry-single-source-of-truth-apex" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Source</th>
+<th>Allowed in URLs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>First_Name</code></td>
+<td><code>Nickname__c</code>, else <code>First_Name_Text__c</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>Last_Name</code></td>
+<td><code>Last_Name_Text__c</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>Class_Year</code></td>
+<td><code>Class_Year_Text__c</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>Employer</code></td>
+<td><code>Employer_Text__c</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>Job_Title</code></td>
+<td><code>Occupation_Text__c</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>St_Thomas_Degree</code></td>
+<td><code>St_Thomas_Degree_text__c</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>City_State</code></td>
+<td><code>City_State__c</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>Contact_Id</code></td>
+<td><code>Contact_ID__c</code> (formula)</td>
+<td><strong>yes</strong></td>
+</tr>
+<tr>
+<td><code>Banner_ID</code></td>
+<td><code>Contact_Banner_ID__c</code> (formula)</td>
+<td><strong>yes</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Excluded on purpose: email, phone, mobile, birthdate, mailing street/postal code/country, middle name.
+Registry is exposed via an <code>@AuraEnabled</code> method (label, token, sample value) so the editor dropdown and
+the Apex resolver cannot drift.</p>
+<h3 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Syntax <code>{{ Name }}</code> or <code>{{ Name|fallback }}</code>. Case-insensitive; spaces ≡ underscores (matches the
+  existing EASY/VF behavior in <code>ApplicationUtilities.replaceDataTags</code>).</li>
+<li>Strict pattern that tolerates editor formatting inside a tag (<code>{{First_&lt;b&gt;Name&lt;/b&gt;}}</code>): match
+  <code>\{\{((?:[^{}&lt;]|&lt;[^&gt;]*&gt;)+?)\}\}</code>, strip tags from the capture, then parse name/fallback.</li>
+<li>Blank value → fallback if given, else empty string. <strong>Guests and users with no directory record get
+  blanks/fallbacks.</strong> Unknown tags are left literally in the text (and flagged to admins in the editor).</li>
+<li><strong>HTML-escape every substituted value.</strong> (The VF implementation inserts values unescaped; alumni can
+  edit these fields themselves.) Header and button labels are plain text. Fallback text is escaped too.</li>
+<li>In <strong>URLs</strong>: only tags marked "allowed in URLs" resolve, values are URL-encoded; other tags in a URL
+  resolve to empty.</li>
+<li>Resolve <strong>server-side</strong> in <code>PortalWidgetController</code> for the current user's <code>Alumni_Directory__c</code>
+  (<code>Contact__c = running user's ContactId</code>), using a <strong>separate system-mode query of only the whitelisted
+  fields</strong>. Do <em>not</em> add fields to the existing <code>WITH USER_MODE</code> directory query — a missing FLS on any new
+  field would break the whole widget zone for portal users.</li>
+<li>Applies to: <code>Static_Content_Header__c</code>, <code>Static_Content__c</code>, button labels and button URLs (and hero
+  text later).</li>
+</ul>
+<h3 id="editor-ux">Editor UX<a class="headerlink" href="#editor-ux" title="Permanent link">&para;</a></h3>
+<ul>
+<li>"Insert data tag" dropdown beside Paragraph style (rich text) and beside the header input (plain
+  input → <code>setRangeText</code>, which is straightforward).</li>
+<li>Live warnings for unknown tag names.</li>
+<li>Preview resolves tags with <strong>sample values</strong> from the registry.</li>
+<li>Stretch: "Preview as" a chosen Alumni Directory record.</li>
+</ul>
+<h3 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h3>
+<p>Apex: parsing (formatted/split tags, case, spaces), fallback, blank, guest, escaping (<code>&lt;script&gt;</code> in a
+value), URL encoding, URL-disallowed tags, unknown tags. Jest: insert dropdown, unknown-tag warning.</p>
+<hr />
+<h2 id="phase-3-call-to-action-buttons">Phase 3 — Call-to-action buttons<a class="headerlink" href="#phase-3-call-to-action-buttons" title="Permanent link">&para;</a></h2>
+<h3 id="data-model">Data model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Buttons_JSON__c</code> — Long Text Area (32,768) on <code>UST_Portal_Widget__c</code>.</li>
+<li><code>Button_Placement__c</code> — picklist: <code>Below</code> (default), <code>Above</code>.</li>
+<li>Add both to <code>UST_Portal_Widget_Admin</code> and <code>Alumni_Portal_Guest_User</code> permission sets.</li>
+</ul>
+<h3 id="json-shape-versioned">JSON shape (versioned)<a class="headerlink" href="#json-shape-versioned" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">"buttons"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b1"</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Give today, {{First_Name|friend}}"</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"external"</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">      </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://example.edu/give?id={{Contact_Id}}"</span><span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">"newTab"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"brand"</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"left"</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="nt">"icon"</span><span class="p">:</span><span class="w"> </span><span class="s2">"utility:heart"</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b2"</span><span class="p">,</span><span class="w"> </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alumni Directory"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"portal"</span><span class="p">,</span><span class="w"> </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/alumni-directory"</span><span class="p">,</span><span class="w"> </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"outline-brand"</span><span class="p">,</span><span class="w"> </span><span class="nt">"align"</span><span class="p">:</span><span class="w"> </span><span class="s2">"left"</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">}</span>
+</code></pre></div>
+<p>Styles carried over from EASY Widget Button: <code>text_link, brand, outline-brand, destructive,
+text-destructive, neutral, success</code>. Alignment: <code>left, center, end</code>. Icon is optional and validated.
+<strong>No per-button size</strong> — sizing comes from the widget content CSS class.</p>
+<h3 id="link-rules-enforced-at-save-and-at-render-apex-re-validates">Link rules (enforced at save AND at render; Apex re-validates)<a class="headerlink" href="#link-rules-enforced-at-save-and-at-render-apex-re-validates" title="Permanent link">&para;</a></h3>
+<ul>
+<li>External: <code>https:</code> only (plus <code>mailto:</code> / <code>tel:</code>). Reject <code>javascript:</code>, <code>data:</code>, etc. New tab →
+  <code>rel="noopener noreferrer"</code>.</li>
+<li>Portal: must start with a single <code>/</code> (reject <code>//</code>); site base path is added at render time, so the same
+  JSON works in sandbox and prod. Picker suggestions come from the site navigation menu; free typing of
+  any relative path is allowed (covers <code>/news/&lt;id&gt;</code>).</li>
+<li>Render real <code>&lt;a&gt;</code> elements (not <code>&lt;button&gt;</code>), visible focus, decorative icons, unique labels.</li>
+</ul>
+<h3 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>ustWidgetButtonEditor</code> (child of <code>ustWidgetRecordEditor</code>): add / <strong>edit</strong> / reorder / delete, saves
+  with the record's Save (EASY writes immediately and cannot edit). Uses stable ids, not array index.
+  Section shown for widget types that support buttons (extend <code>COMPONENT_SECTIONS</code>).</li>
+<li><code>ustWidgetButtons</code> (shared renderer): used by <code>ustStaticContent</code> now and the hero widget later.</li>
+<li>Apex: parse/validate/sanitize JSON, drop invalid entries, resolve tags in label/url, return a clean list
+  on <code>PortalWidgetDto</code>.</li>
+<li>Widget content CSS classes get button-size rules so buttons stay consistent. <strong>Open item:</strong>
+  <code>Content_CSS_Class__c</code> is single-select; if a widget needs e.g. "Callout panel" <em>and</em> "wide buttons",
+  add a second picklist (e.g. <code>Button_Size_Class__c</code>) rather than multi-selecting.</li>
+</ul>
+<h3 id="tests_1">Tests<a class="headerlink" href="#tests_1" title="Permanent link">&para;</a></h3>
+<p>Apex: JSON sanitization, scheme allowlist, relative path rules, tag resolution in labels/URLs. Jest:
+editor add/edit/reorder/delete, renderer placement above/below, unsafe URL rejection.</p>
+<hr />
+<h2 id="phase-4-later-hero-image-widget-s3">Phase 4 — Later: hero image widget + S3<a class="headerlink" href="#phase-4-later-hero-image-widget-s3" title="Permanent link">&para;</a></h2>
+<p>Not started; design notes only.</p>
+<ul>
+<li>New widget type <code>ust_hero_banner</code> (add to <code>Component_Name__c</code> picklist, <code>WIDGET_REGISTRY</code>, and a
+  <code>lwc:elseif</code> block in <code>ustWidgetZone.html</code> — see AGENTS.md "adding a widget").</li>
+<li>Fields: image URL, <strong>alt text (required)</strong>, overlay text (reuse <code>ustRichTextEditor</code>), buttons (reuse
+  <code>ustWidgetButtons</code>), overlay scrim for contrast.</li>
+<li>Image upload: embed the existing <strong><code>awsS3DirectoryImage</code></strong> LWC (dependency repo
+  <code>UniversityOfSaintThomas/Salesforce-LWC-S3-Integration</code>, already in <code>cumulusci.yml</code>) in a new
+  "Hero" section of <code>ustWidgetRecordEditor</code>, using the widget's own record Id and image field;
+  <code>fileNameSuffix</code> allows desktop/mobile variants.</li>
+<li>Suggested changes to the S3 tool: canvas output is always PNG (<code>toDataURL()</code> with no type) → use JPEG
+  ~0.85 for photos; stored URL has no cache-buster so replaced images can look stale; consider
+  CloudFront and a second smaller size. Base64-through-Apex is fine at hero sizes but not large files.</li>
+<li>Setup needed per org: real bucket URL on the Named Credential <strong>and</strong> the CSP Trusted Site
+  (<code>img-src</code>), AWS keys on the External Credential principal, republish the site, and assign
+  <code>AWS_S3_Directory_Image</code> to widget admins.</li>
+<li>Open questions: full-width vs fixed banner height / aspect ratios, text position (left/center/
+  configurable), mobile image.</li>
+<li>Inline images in Static Content are <strong>not</strong> a fit for the S3 tool as-is (one image per record+suffix,
+  writes a field, base editor cannot insert an image programmatically). Revisit with full Quill only if
+  needed.</li>
+</ul>
+<hr />
+<h2 id="deployment-verification-checklist-every-phase">Deployment &amp; verification checklist (every phase)<a class="headerlink" href="#deployment-verification-checklist-every-phase" title="Permanent link">&para;</a></h2>
+<ol>
+<li><code>sf project deploy start --source-dir &lt;paths&gt; --target-org UST-Alumni-Digital-Experience-Site__dev</code>
+   (verify with a query — do not trust <code>cci</code> "Succeeded").</li>
+<li><code>npx jest</code> (all green) and <code>sf apex run test --class-names ...</code> for touched classes.</li>
+<li>Code Analyzer (Java is installed): <code>sf code-analyzer run --workspace force-app --target &lt;paths&gt;</code>;
+   High = zero. IntelliJ MCP <code>lint_files</code> also works (refresh Illuminated Cloud metadata first or it
+   reports false "Cannot resolve symbol" for new fields).</li>
+<li>Browser-verify in the dev org (Playwright). Clear Lightning caches after JS-only deploys.</li>
+<li>Republish the Experience site after changing guest-visible access or CSP.</li>
+<li>Update <code>WIDGET-CATALOG.md</code> / <code>MAIN_GUIDE.md</code>; keep this plan's phase checklist current.</li>
+<li>Nothing is committed yet — the working tree also contains unrelated in-progress changes (staged
+   renames of test classes into <code>force-app/tests/default/classes/</code>, <code>.agentbridge</code> deletions, etc.).</li>
+</ol>
+<h2 id="progress">Progress<a class="headerlink" href="#progress" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[x] Phase A — editor layout, headings, widget style class, API 68.0, lint fixes, link-dialog fix</li>
+<li>[ ] Phase 0 — page-name mismatch</li>
+<li>[ ] Phase 1 — spikes (insert-at-cursor, portal link resolution, page picker source)</li>
+<li>[ ] Phase 2 — data tags</li>
+<li>[ ] Phase 3 — buttons</li>
+<li>[ ] Phase 4 — hero widget + S3 (design only)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" target="_blank" rel="noopener" title="Source Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
