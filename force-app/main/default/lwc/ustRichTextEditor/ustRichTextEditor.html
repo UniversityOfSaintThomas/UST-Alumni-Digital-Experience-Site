@@ -13,9 +13,10 @@
             </lightning-combobox>
         </div>
 
-        <!-- Cursor-tracking handlers live here, not on the outer wrapper:
-             getFormat() focuses the editor, which would close the dropdown above. -->
-        <div class="ust-editor-body" onclick={syncStyleToCursor} onkeyup={syncStyleToCursor}>
+        <!-- Cursor-tracking handlers live here, not on the outer wrapper (getFormat() focuses
+             the editor, which would close the dropdown above). Toolbar clicks pause tracking
+             so the Link and Image dialogs are not interrupted. -->
+        <div class="ust-editor-body" onclick={handleEditorClick} onkeyup={handleEditorKeyup}>
             <lightning-input-rich-text
                 label={label}
                 value={value}

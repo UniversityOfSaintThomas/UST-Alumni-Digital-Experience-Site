@@ -8,6 +8,7 @@ Personalized alumni portal built on **Salesforce Experience Cloud** using LWC wi
 |-----|---------|
 | [MAIN_GUIDE.md](docs/MAIN_GUIDE.md) | Project overview, architecture, development workflow |
 | [WIDGET-CATALOG.md](docs/WIDGET-CATALOG.md) | Portal widget inventory, requirements, and status |
+| [WIDGET-AUTHORING-PLAN.md](docs/WIDGET-AUTHORING-PLAN.md) | Widget editor, data tags, buttons, and hero image plan (in progress) |
 | [DATA-MODEL.md](docs/DATA-MODEL.md) | Custom objects, key fields, EDA object map |
 | [BRAND-COLORS.md](docs/BRAND-COLORS.md) | Official UST color palette (HEX/RGB/PMS) |
 | [AI-TOOLS-CONFIG.md](docs/AI-TOOLS-CONFIG.md) | Org aliases, CI/CD config, AI tool context |

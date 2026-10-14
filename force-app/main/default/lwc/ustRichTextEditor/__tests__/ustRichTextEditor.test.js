@@ -110,6 +110,38 @@ describe('c-ust-rich-text-editor', () => {
         expect(getStyleCombobox(element).value).toBe('p');
     });
 
+    it('pauses cursor tracking after a toolbar click so Link and Image dialogs stay open', async () => {
+        const element = createEditor();
+        const richText = getRichText(element);
+        richText.getFormat = jest.fn().mockReturnValue({ header: 2 });
+        const body = element.shadowRoot.querySelector('.ust-editor-body');
+
+        // Toolbar click (near the top of the editor): must not read the cursor format.
+        body.dispatchEvent(new MouseEvent('click', { clientY: 10 }));
+        await flushPromises();
+        expect(richText.getFormat).not.toHaveBeenCalled();
+
+        // Typing in the dialog while paused is also left alone.
+        body.dispatchEvent(new CustomEvent('keyup'));
+        await flushPromises();
+        expect(richText.getFormat).not.toHaveBeenCalled();
+    });
+
+    it('resumes cursor tracking once the content changes', async () => {
+        const element = createEditor();
+        const richText = getRichText(element);
+        richText.getFormat = jest.fn().mockReturnValue({ header: 3 });
+        const body = element.shadowRoot.querySelector('.ust-editor-body');
+
+        body.dispatchEvent(new MouseEvent('click', { clientY: 10 }));
+        richText.dispatchEvent(new CustomEvent('change', { detail: { value: '<p>x</p>' } }));
+        body.dispatchEvent(new MouseEvent('click', { clientY: 200 }));
+        await flushPromises();
+
+        expect(richText.getFormat).toHaveBeenCalledTimes(1);
+        expect(getStyleCombobox(element).value).toBe('h3');
+    });
+
     it('warns about Heading 1 and Heading 6', async () => {
         const element = createEditor({ value: '<h1>Too big</h1>' });
         await flushPromises();

@@ -35,6 +35,20 @@ const ALLOWED_FORMATS = [
 /** Toolbar categories hidden so editors cannot override fonts or colours. */
 const DISABLED_CATEGORIES = 'FORMAT_FONT,FORMAT_BACKGROUND';
 
+/**
+ * Approximate height of the base toolbar. Clicks above this line are toolbar clicks.
+ * The platform hides the editor's inner elements from event paths, so geometry is the
+ * only way to tell a toolbar click from a click in the text.
+ */
+const TOOLBAR_HEIGHT_PX = 56;
+
+/**
+ * After a toolbar click, cursor tracking pauses this long. The Link and Image buttons open
+ * a dialog, and reading the cursor format refocuses the editor, which would close it.
+ * Typing in the dialog keeps extending the pause; a content change ends it immediately.
+ */
+const TOOLBAR_PAUSE_MS = 8000;
+
 /** Matches headings the portal does not want: h1 and h6. */
 const DISALLOWED_HEADING_PATTERN = /<h[16][\s>]/i;
 
@@ -50,6 +64,7 @@ export default class UstRichTextEditor extends LightningElement {
 
     _value = '';
     selectedStyle = PARAGRAPH_VALUE;
+    _syncPausedUntil = 0;
 
     /** HTML string held by the editor. */
     @api
@@ -156,12 +171,53 @@ export default class UstRichTextEditor extends LightningElement {
         editor.focus();
     }
 
+    get isSyncPaused() {
+        return Date.now() < this._syncPausedUntil;
+    }
+
+    pauseSync() {
+        this._syncPausedUntil = Date.now() + TOOLBAR_PAUSE_MS;
+    }
+
+    /**
+     * Handles clicks anywhere in the editor. A click on the toolbar pauses cursor
+     * tracking (see TOOLBAR_PAUSE_MS); a click in the text syncs the dropdown.
+     *
+     * @param {MouseEvent} event click event
+     */
+    handleEditorClick(event) {
+        const editor = this.editor;
+        if (editor) {
+            const top = editor.getBoundingClientRect().top;
+            if (event.clientY - top < TOOLBAR_HEIGHT_PX) {
+                this.pauseSync();
+                return;
+            }
+        }
+        this.syncStyleToCursor();
+    }
+
+    /**
+     * Handles key releases. While paused (a toolbar dialog may be open) keys are
+     * treated as dialog typing: keep the pause alive and leave the editor alone.
+     */
+    handleEditorKeyup() {
+        if (this.isSyncPaused) {
+            this.pauseSync();
+            return;
+        }
+        this.syncStyleToCursor();
+    }
+
     /**
      * Keeps the dropdown in sync with the block under the cursor.
-     * Called on click, key release, and focus because the base component
-     * does not emit a selection-change event.
+     * The base component has no selection-change event, so this is called on
+     * clicks and key releases in the text.
      */
     syncStyleToCursor() {
+        if (this.isSyncPaused) {
+            return;
+        }
         const editor = this.editor;
         if (!editor || typeof editor.getFormat !== 'function') {
             return;
@@ -179,6 +235,7 @@ export default class UstRichTextEditor extends LightningElement {
     handleEditorChange(event) {
         // Same reason as handleStyleChange: only our own re-dispatched event should reach the parent.
         event.stopPropagation();
+        this._syncPausedUntil = 0;
         this._value = event.detail.value || '';
         this.dispatchEvent(new CustomEvent('change', { detail: { value: this._value } }));
     }
