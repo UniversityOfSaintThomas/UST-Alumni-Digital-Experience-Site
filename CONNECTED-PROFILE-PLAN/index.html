@@ -1,0 +1,1302 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design, planning, and roadmap documentation for the UST Alumni Digital Experience Portal">
+      
+      
+      
+        <link rel="canonical" href="https://universityofsaintthomas.github.io/UST-Alumni-Digital-Experience-Site/CONNECTED-PROFILE-PLAN/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../fav-icons/favicon-32x32.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Connected Alumni Profile & Favorites — Implementation Plan - UST Alumni Portal</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ust-theme.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#connected-alumni-profile-favorites-implementation-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UST Alumni Portal" class="md-header__button md-logo" aria-label="UST Alumni Portal" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UST Alumni Portal
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Connected Alumni Profile &amp; Favorites — Implementation Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    UST-Alumni-Digital-Experience-Site
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../MAIN_GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Project Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  2026 Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../WIDGET-CATALOG/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Widget Catalog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../DATA-MODEL/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Model
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../BRAND-COLORS/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Brand Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../user-discover/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Discovery
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UST Alumni Portal" class="md-nav__button md-logo" aria-label="UST Alumni Portal" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UST Alumni Portal
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    UST-Alumni-Digital-Experience-Site
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MAIN_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WIDGET-CATALOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Widget Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATA-MODEL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BRAND-COLORS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-discover/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#problem-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problem Statement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements-confirmed-via-discussion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements (confirmed via discussion)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#research-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Research Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task Breakdown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Task Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-1-create-the-alumni_favorite__c-object-and-deploy-it-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1: Create the Alumni_Favorite__c object and deploy it — ✅ Done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-2-build-alumnifavoritecontroller-apex-with-addremovelist-methods-test-driven-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2: Build AlumniFavoriteController Apex with add/remove/list methods, test-driven — ✅ Done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-3-build-reusable-ustfavoritetoggle-lwc-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3: Build reusable ustFavoriteToggle LWC — ✅ Done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-4-embed-ustfavoritetoggle-into-alumnidirectorylist-alumninewslist-and-alumnibusinessdirectory-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 4: Embed ustFavoriteToggle into alumniDirectoryList, alumniNewsList, and alumniBusinessDirectory — ✅ Done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-5-build-getmyfavorites-display-dto-ustmyfavorites-lwc-on-my-profile-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5: Build getMyFavorites() display DTO + ustMyFavorites LWC on My Profile — ✅ Done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-6-build-alumniconnectionscontroller-apex-read-only-connected-profile-query-test-driven-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 6: Build AlumniConnectionsController Apex — read-only connected profile query, test-driven — ✅ Done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-7-build-the-alumniselection-lightning-message-channel-ustalumniconnectionprofile-detail-lwc-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 7: Build the AlumniSelection Lightning Message Channel + ustAlumniConnectionProfile detail LWC — ✅ Done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-8-wire-list-components-as-lmc-publishers-on-the-view-profile-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 8: Wire list components as LMC publishers on the View Profile page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-9-assemble-the-two-experience-builder-pages-and-do-an-end-to-end-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 9: Assemble the two Experience Builder pages and do an end-to-end walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explicitly-out-of-scope-v1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explicitly Out of Scope (v1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="connected-alumni-profile-favorites-implementation-plan">Connected Alumni Profile &amp; Favorites — Implementation Plan<a class="headerlink" href="#connected-alumni-profile-favorites-implementation-plan" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Status: <strong>Approved, in progress.</strong> Recorded so context survives a session reset.
+Created: 2026-09-15</p>
+</blockquote>
+<h2 id="problem-statement">Problem Statement<a class="headerlink" href="#problem-statement" title="Permanent link">&para;</a></h2>
+<p>Alumni Directory, Business (Professional) Directory, and Alumni News are currently three
+siloed browsing experiences. An alumnus's business listing, news mentions, and directory
+profile are functionally related (all keyed off the same Contact) but nothing on screen shows
+that relationship — you can't land on one alum and see everything connected to them.
+Additionally, there's no way for an alum to curate attention toward specific people or
+businesses they care about (no connection/favoriting feature exists at all).</p>
+<h2 id="requirements-confirmed-via-discussion">Requirements (confirmed via discussion)<a class="headerlink" href="#requirements-confirmed-via-discussion" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>Alumni_Directory__c</code> remains the protected, field-scoped gateway in front of <code>Contact</code> — no
+  new code should read Contact fields directly for another user's profile; all cross-object
+  joins happen in Apex, keyed off Contact Id but exposed only through <code>Alumni_Directory__c</code>-
+  scoped DTOs, matching the existing <code>AlumniProfileController</code> pattern.</li>
+<li>No visibility gating beyond "logged in." Any authenticated alum can view any other alum's
+  connected profile — this is existing behavior (<code>getProfileByRecordId</code> has no opt-in check)
+  and stays as-is.</li>
+<li>Data model relationships between <code>Alumni_Directory__c</code>, <code>Alumni_News__c</code>, and
+  <code>Professional_Directory__c</code> are <strong>not</strong> being restructured. Apex is the integration layer
+  that bridges them via <code>Contact</code> Id. No schema re-pointing (e.g.
+  <code>Professional_Directory__c.Alumni__c</code> stays pointed at Contact, not Alumni_Directory__c).</li>
+<li>Two separate Experience Builder page experiences (deliberately not one branching route, so
+  each can be curated independently):</li>
+<li><strong>My Profile</strong> (owned) — self-service editing (existing <code>alumniProfile</code> capability), plus
+    "my favorites" list.</li>
+<li><strong>Alumni Connections / View Profile</strong> (others) — read-only discovery view: profile info,
+    their business listings, their news mentions — each as independent, LMC-coordinated LWCs
+    rather than one monolithic component.</li>
+<li>New feature: <strong>Favorites</strong> — a one-directional, private curation list. An alum can favorite
+  another alum's profile <em>or</em> a business listing.</li>
+<li>No mutual visibility ("I would probably not show an alumni who has favorited them — that
+    might seem creepy").</li>
+<li>No notifications, no aggregate/social-proof counts in v1 ("keep it functional for the
+    moment with an eye for iteration later").</li>
+<li>Feeds a "your favorites" list on My Profile. A fast-follow goal (explicitly <strong>not</strong> v1
+    scope) is surfacing news/updates from favorited people/businesses on that list.</li>
+<li>Favorite data model: <strong>one generic junction object</strong> (<code>Alumni_Favorite__c</code>), not multiple
+  type-specific junctions ("I don't want to make a lot of objects for this junction and this
+  could possibly help with other junctions for alumni in the future"). Shape:</li>
+<li><code>Owner_Contact__c</code> — Lookup(Contact), the person who favorited something.</li>
+<li><code>Target_Type__c</code> — Picklist (<code>Alumni_Directory</code>, <code>Professional_Directory</code>; extensible).</li>
+<li><code>Target_Record_Id__c</code> — Text(18).</li>
+<li>Resolved entirely in Apex; no declarative lookup/relationship integrity to the target.</li>
+<li><strong>Correction found during build:</strong> Salesforce rejects a <code>unique</code> constraint on a formula
+    field, so a formula-based <code>Dedupe_Key__c</code> (Owner+Type+TargetId) is not possible
+    declaratively. Duplicate-favorite prevention is instead enforced in
+    <code>AlumniFavoriteController</code> via an existence check before insert (see Task 2).</li>
+<li>Favorite toggle UI: <strong>one small, reusable, embeddable LWC</strong> (<code>ustFavoriteToggle</code>) taking
+  <code>@api targetType</code> and <code>@api targetRecordId</code>, dropped into <code>alumniDirectoryList</code>,
+  <code>alumniNewsList</code>, and <code>alumniBusinessDirectory</code>.</li>
+<li>Cross-widget coordination on the "View Profile" page uses a <strong>Lightning Message Channel</strong>,
+  not URL state, not record Ids in the address bar ("I'd rather not have ids in the clear and
+  don't think of these as shareable links"). Selecting an alum from a list publishes a message;
+  the profile detail, business list, and news list widgets subscribe and refresh. Accepted
+  tradeoff: no deep-linking/shareable URLs, no refresh-persistence of the selected profile.</li>
+</ul>
+<h2 id="research-notes">Research Notes<a class="headerlink" href="#research-notes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Lightning Message Service is confirmed as the correct mechanism for same-page, cross-
+  component pub/sub on LWR sites. It does <strong>not</strong> persist across navigation/refresh — this
+  matches the "no URL state" decision, so there's no gap to design around.</li>
+<li><code>AlumniProfileController.getProfileByRecordId()</code> already resolves Contact → business
+  directory records safely (<code>WITH USER_MODE</code>, <code>without sharing</code> with explicit ownership
+  checks gating writes only). This is the pattern to extend for news, and to replicate for the
+  new "view others" controller path.</li>
+<li><code>Alumni_News__c</code> carries both <code>Contact__c</code> and <code>Alumni_Directory__c</code> lookups (redundant). New
+  query logic standardizes on <code>Contact__c</code> (matching <code>Professional_Directory__c.Alumni__c</code>) so
+  one Contact Id resolves all three related objects consistently. The existing
+  <code>Alumni_Directory__c</code> lookup on news stays untouched/unused by new logic — no data model
+  changes.</li>
+<li>Existing privacy/approval gates to preserve exactly as-is when re-querying for the unified
+  view:</li>
+<li>Alumni News: <code>Reviewed_for_Community_Display__c = true AND Public_Display__c = true</code>
+    (see <code>AlumniNewsListController.generateWhere</code>).</li>
+<li>Business Directory: <code>RecordTypeId = Alumni_Business</code> AND <code>Company_Status__c = 'Approved'</code>
+    AND <code>UST_Test_Contact__c = false</code> (see <code>AlumniBusinessDirectoryController.buildWhereClause</code>).</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart TB
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    subgraph MyProfilePage["My Profile Page (owned)"]
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        MP[alumniProfile LWC&lt;br/&gt;existing, extended]
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        FAV[ustMyFavorites LWC&lt;br/&gt;new]
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    end
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    subgraph ViewProfilePage["Alumni Connections Page (viewing others)"]
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        SEARCH[alumniDirectoryList LWC&lt;br/&gt;existing + favorite toggle]
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        DETAIL[ustAlumniConnectionProfile LWC&lt;br/&gt;new, read-only detail]
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        BIZ[alumniBusinessDirectory LWC&lt;br/&gt;existing + favorite toggle]
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        NEWS[alumniNewsList LWC&lt;br/&gt;existing + favorite toggle]
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    end
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    LMC{{Lightning Message Channel&lt;br/&gt;AlumniSelection}}
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    SEARCH -- publish selected Contact Id --&gt; LMC
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    NEWS -- publish selected Contact Id --&gt; LMC
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    BIZ -- publish selected Contact Id --&gt; LMC
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    LMC -- subscribe --&gt; DETAIL
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    LMC -- subscribe --&gt; BIZ
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    LMC -- subscribe --&gt; NEWS
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    TOGGLE[ustFavoriteToggle LWC&lt;br/&gt;new, reusable]
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    SEARCH -.embeds.-&gt; TOGGLE
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    NEWS -.embeds.-&gt; TOGGLE
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    BIZ -.embeds.-&gt; TOGGLE
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    DETAIL -.embeds.-&gt; TOGGLE
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    TOGGLE --&gt; FavCtrl[AlumniFavoriteController&lt;br/&gt;new Apex]
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    FavCtrl --&gt; FavObj[(Alumni_Favorite__c&lt;br/&gt;new object)]
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    DETAIL --&gt; ProfileCtrl[AlumniConnectionsController&lt;br/&gt;new Apex]
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    ProfileCtrl --&gt; AD[(Alumni_Directory__c)]
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    ProfileCtrl --&gt; NewsQ[(Alumni_News__c&lt;br/&gt;by Contact__c)]
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    ProfileCtrl --&gt; BizQ[(Professional_Directory__c&lt;br/&gt;by Alumni__c)]
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>    FAV --&gt; FavCtrl
+</code></pre></div>
+<h2 id="task-breakdown">Task Breakdown<a class="headerlink" href="#task-breakdown" title="Permanent link">&para;</a></h2>
+<h3 id="task-1-create-the-alumni_favorite__c-object-and-deploy-it-done">Task 1: Create the <code>Alumni_Favorite__c</code> object and deploy it — ✅ Done<a class="headerlink" href="#task-1-create-the-alumni_favorite__c-object-and-deploy-it-done" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Stand up the generic junction object so later tasks have a real target to
+  write Apex against.</li>
+<li><strong>Implementation guidance:</strong> Fields — <code>Owner_Contact__c</code> (Lookup to Contact, required),
+  <code>Target_Type__c</code> (Picklist: <code>Alumni_Directory</code>, <code>Professional_Directory</code>; restricted,
+  extensible later), <code>Target_Record_Id__c</code> (Text(18), required). Sharing model: Private —
+  personal curation data, visible only to the owner (and admins).
+  Originally planned a formula-based <code>Dedupe_Key__c</code> field marked unique for declarative
+  duplicate prevention; <strong>Salesforce deploy rejected this</strong> ("Can not specify unique for
+  CustomFields that have a formula"). Removed that field — duplicate-favorite prevention is
+  now an Apex-level existence check in <code>AlumniFavoriteController</code> (Task 2), not a schema
+  constraint.</li>
+<li><strong>Test requirements:</strong> N/A (metadata only) — deployed to dev scratch org
+  (<code>UST-Alumni-Digital-Experience-Site__dev</code> / CCI alias <code>dev</code>) via
+  <code>cci task run deploy --path force-app/main/default/objects/Alumni_Favorite__c --org dev</code>.</li>
+<li><strong>Demo:</strong> Deploy succeeded (<code>[Success]: Succeeded</code>). Verified queryable via
+  <code>sf data query --query "SELECT Id FROM Alumni_Favorite__c LIMIT 1"</code> against the dev org
+  (0 rows, as expected for a fresh object). Not yet deployed to <code>eda-staging</code> — will push there
+  after the full feature is validated end-to-end in the scratch org, per user direction.</li>
+</ul>
+<h3 id="task-2-build-alumnifavoritecontroller-apex-with-addremovelist-methods-test-driven-done">Task 2: Build <code>AlumniFavoriteController</code> Apex with add/remove/list methods, test-driven — ✅ Done<a class="headerlink" href="#task-2-build-alumnifavoritecontroller-apex-with-addremovelist-methods-test-driven-done" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Apex service layer for favoriting — add, remove, "is this favorited by me,"
+  and "list my favorites."</li>
+<li><strong>Implementation guidance:</strong> <code>without sharing</code> (mirroring <code>AlumniProfileController</code>'s
+  rationale) since <code>Alumni_Favorite__c</code> is Private and community users need to manage only
+  their own records — but explicitly filter every query/DML by the running user's resolved
+  Contact Id, never trusting a passed-in owner Id from the client. Methods:
+  <code>isFavorited(String targetType, Id targetRecordId)</code>, <code>addFavorite(...)</code>, <code>removeFavorite(...)</code>,
+  <code>getMyFavorites()</code> returning a DTO list resolved to display-friendly info (name/label) by
+  branching on <code>Target_Type__c</code>. Wrote tests first (happy path, duplicate-add is idempotent/
+  no-op, removing a non-existent favorite is a no-op, cross-user isolation, orphaned-target
+  handling, unsupported-type rejection).</li>
+<li><strong>Test requirements:</strong> <code>AlumniFavoriteController_TEST.cls</code> — 10 tests, all passing, 85%
+  coverage on <code>AlumniFavoriteController</code> (org-wide bar is 75%; remaining gap is defensive
+  early-return guards, not core logic).</li>
+<li><strong>Demo:</strong> <code>sf apex run test --class-names AlumniFavoriteController_TEST --target-org
+  UST-Alumni-Digital-Experience-Site__dev --result-format human --code-coverage --wait 20</code>
+  → 10/10 pass, 85% coverage.</li>
+</ul>
+<p><strong>Real-world corrections hit while building this task (all resolved, recorded for context
+recovery):</strong>
+1. <strong><code>TestAlumniCommunityDataFactory</code> could not be reused.</strong> It requires a <code>System
+   Administrator</code> user literally named <code>ETL User</code> and a profile named <code>Alumni Community
+   User</code> — neither exists in this scratch org yet (confirmed live), matching the known
+   gotcha in <code>AGENTS.md</code>. The new test class builds its own lightweight, self-contained data
+   instead of depending on that factory or org-provisioning state.
+2. <strong>A plain internal/Standard User cannot have <code>ContactId</code> set</strong> — <code>FIELD_INTEGRITY_EXCEPTION,
+   only portal users can be associated to a contact</code>. Only users on a portal-licensed profile
+   can be linked to a Contact. Test users now use the <code>Customer Community Login User</code> profile
+   (a standard, always-available portal profile) with an <code>Account</code> on each test <code>Contact</code>
+   (portal users require one).
+3. <strong>A fresh custom object grants zero access to non-admin profiles by default.</strong> A new
+   <code>Alumni_Favorites_User</code> permission set was added, granting object CRUD on
+   <code>Alumni_Favorite__c</code> and Read on the small field set <code>getMyFavorites()</code> resolves from
+   <code>Alumni_Directory__c</code>/<code>Professional_Directory__c</code> (<code>Name</code>/<code>First_Name_Text__c</code>/
+   <code>Last_Name_Text__c</code>/<code>Class_Year_Text__c</code> and <code>Company_Name__c</code>/<code>Company_City__c</code>/
+   <code>Company_State__c</code> respectively). This is deployed alongside the Apex classes.
+   - All three <code>Alumni_Favorite__c</code> fields are required, so <strong>no field-level permission
+     entries are possible on it</strong> — Salesforce rejects granting field permissions on
+     required fields (deploy error: "You cannot deploy to a required field"). Object-level
+     CRUD alone is sufficient since required fields are implicitly editable whenever
+     Create/Edit is granted at the object level.
+4. <strong>Dead end, recorded so it isn't re-investigated:</strong> the only profile in this scratch org
+   with "Alumni" in its name (<code>Alumni Profile</code>) turned out to be a <strong>Guest User License</strong>
+   profile, not a logged-in community profile — it cannot be assigned to a real <code>User</code> at
+   all. Also confirmed live: none of the standard <code>Customer Community*</code> profiles have any
+   pre-existing <code>FieldPermissions</code>/<code>ObjectPermissions</code> grant on <code>Alumni_Directory__c</code> or
+   <code>Professional_Directory__c</code> in this org. Whatever grants let <code>AlumniProfileController</code>/
+   <code>AlumniBusinessDirectoryController</code> work for real alumni today must live on a
+   site-specific profile this scratch org hasn't been provisioned with yet (likely set up
+   directly in Setup UI, not tracked in this repo's source) — not something to chase further
+   for test purposes; the new permission set sidesteps it entirely.
+5. <strong><code>PermissionSetAssignment</code> DML in <code>@TestSetup</code> must be isolated in its own
+   <code>System.runAs</code> block</strong> — inserting it in the same transaction as regular sObject DML
+   (Account/Contact/Alumni_Directory__c/etc.) throws <code>MIXED_DML_OPERATION</code> (setup vs.
+   non-setup object). Wrapped in <code>System.runAs(new User(Id = UserInfo.getUserId()))</code> to
+   isolate it, which is the standard pattern for this restriction inside test methods.</p>
+<p>Deployed to <code>dev</code> scratch org only (<code>Alumni_Favorite__c</code>, <code>AlumniFavoriteController</code>,
+<code>AlumniFavoriteController_TEST</code>, <code>Alumni_Favorites_User</code> permission set). Not yet pushed to
+<code>eda-staging</code>.</p>
+<h3 id="task-3-build-reusable-ustfavoritetoggle-lwc-done">Task 3: Build reusable <code>ustFavoriteToggle</code> LWC — ✅ Done<a class="headerlink" href="#task-3-build-reusable-ustfavoritetoggle-lwc-done" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> One small, embeddable favorite/unfavorite button component.</li>
+<li><strong>Implementation guidance:</strong> <code>@api targetType</code>, <code>@api targetRecordId</code>. On connect, calls
+  <code>isFavorited</code> (imperative, not <code>@wire</code>, since the initial load also needs error handling
+  and a loading flag) to set initial icon state (<code>utility:add</code> outline vs. <code>utility:favorite</code>
+  filled, via <code>lightning-button-icon</code>). Click calls <code>addFavorite</code>/<code>removeFavorite</code>
+  imperatively, optimistic UI update with rollback to the prior state on error. Emits a
+  <code>favoritechange</code> custom event (<code>{ targetType, targetRecordId, isFavorited }</code>) for optional
+  parent reaction (not consumed yet, but free to add now for Task 4/8).</li>
+<li><strong>Test requirements:</strong> <code>ustFavoriteToggle.test.js</code> — 8 tests: unfavorited render,
+  favorited render, add-on-click, remove-on-click, event dispatch, rollback+error on
+  add failure, rollback+error on remove failure, error+safe-default on initial load failure,
+  disabled/no-op when required props are missing. All passing (<code>npm test -- 
+  --testPathPattern=ustFavoriteToggle</code> → 4 suites incl. this one, 24/24 tests pass, no
+  regressions in the 3 existing suites it shares a test run with).</li>
+<li><strong>Demo:</strong> Deployed to <code>dev</code> scratch org
+  (<code>cci task run deploy --path force-app/main/default/lwc/ustFavoriteToggle --org dev</code> →
+  <code>[Success]: Succeeded</code>). Functional verification done via the Jest suite against the real
+  compiled component (mocking only the three Apex methods) rather than a manual
+  Experience-Builder placement, since Jest already exercises every state transition
+  end-to-end; a standalone page placement is deferred to Task 4, where the component gets
+  embedded into real list rows and can be checked in context.</li>
+</ul>
+<h3 id="task-4-embed-ustfavoritetoggle-into-alumnidirectorylist-alumninewslist-and-alumnibusinessdirectory-done">Task 4: Embed <code>ustFavoriteToggle</code> into <code>alumniDirectoryList</code>, <code>alumniNewsList</code>, and <code>alumniBusinessDirectory</code> — ✅ Done<a class="headerlink" href="#task-4-embed-ustfavoritetoggle-into-alumnidirectorylist-alumninewslist-and-alumnibusinessdirectory-done" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Make favoriting available everywhere per requirement — "favoriting could
+  happen a lot of places."</li>
+<li><strong>Implementation guidance:</strong> Each list item row gets one <code>&lt;c-ust-favorite-toggle&gt;</code> with the
+  right <code>target-type</code>/<code>target-record-id</code> (Alumni_Directory Id for directory/news rows,
+  Professional_Directory Id for business rows). Purely additive markup + minor CSS — no changes
+  to existing Apex controllers for these lists.</li>
+<li><code>alumniDirectoryList</code>: new "Favorite" column in the table, <code>target-type="Alumni_Directory"</code>
+    keyed on <code>al.key</code> (already the <code>Alumni_Directory__c</code> Id).</li>
+<li><code>alumniNewsList</code>: toggle placed in the card header, <code>target-type="Alumni_Directory"</code> keyed
+    on <code>news.adId</code>. Guarded with <code>lwc:if={news.adId}</code> — some news rows have no linked
+    <code>Alumni_Directory__c</code> record, and the toggle is simply omitted for those rather than
+    rendered disabled.</li>
+<li><code>alumniBusinessDirectory</code>: toggle placed at the top of each card, <code>target-type=
+    "Professional_Directory"</code> keyed on <code>record.Id</code>. Since the whole card has
+    <code>onclick={openRecordModal}</code> to open the detail modal, the toggle's wrapper div stops click
+    propagation (<code>stopFavoriteToggleClickPropagation</code>, same pattern already used elsewhere in
+    this component for the modal's inner-click guard) so favoriting a card doesn't also pop
+    open its modal.</li>
+<li><strong>Test requirements:</strong> Extended <code>alumniDirectoryList.test.js</code> and <code>alumniNewsList.test.js</code>
+  (previously only tested the exported <code>resolveProfileNavigation</code> pure function, with no
+  component-render tests at all) with new <code>describe</code> blocks that mock the Apex list call,
+  render the component with sample data, and assert <code>c-ust-favorite-toggle</code> elements exist
+  with the correct <code>targetType</code>/<code>targetRecordId</code> per row - including a case in the news list
+  where a row has no <code>adId</code> and correctly renders no toggle. <code>alumniBusinessDirectory</code> had no
+  existing test file at all; added a new minimal one
+  (<code>alumniBusinessDirectory.test.js</code>) scoped specifically to the toggle wiring and the
+  click-propagation guard, not a full component rewrite (out of scope for this task).
+  All passing: <code>npm test</code> → 5 suites, 29/29 tests, no regressions.</li>
+<li><strong>Demo:</strong> Deployed to <code>dev</code> scratch org (<code>cci task run deploy --path
+  force-app/main/default/lwc --org dev</code> → <code>[Success]: Succeeded</code>). Verified via the full Jest
+  suite against the real compiled components rather than a manual browser walkthrough, since
+  every row/card-level rendering path and the click-guard are already covered end-to-end.</li>
+</ul>
+<h3 id="task-5-build-getmyfavorites-display-dto-ustmyfavorites-lwc-on-my-profile-done">Task 5: Build <code>getMyFavorites()</code> display DTO + <code>ustMyFavorites</code> LWC on My Profile — ✅ Done<a class="headerlink" href="#task-5-build-getmyfavorites-display-dto-ustmyfavorites-lwc-on-my-profile-done" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Let an alum see their curated list on their own profile page.</li>
+<li><strong>Implementation guidance:</strong> DTO resolves each favorite's <code>Target_Type__c</code> to a human label,
+  name/title, and short subtitle (class year for alumni, city/industry for businesses).
+  Group by type in the UI ("Alumni I'm Following," "Businesses I'm Following"). Deep-linking a
+  favorited alum into the Connections page is optional polish, not blocking (would need to
+  route through LMC since there's no URL/Id state by design) — deferred, not built in this
+  task.</li>
+<li>The DTO-building logic itself (<code>toDtos()</code>) already existed from Task 2's
+    <code>AlumniFavoriteController.getMyFavorites()</code> — this task's remaining work was the LWC:
+    <code>ustMyFavorites</code> calls <code>getMyFavorites()</code> on connect, splits the flat DTO list into
+    <code>alumniFavorites</code>/<code>businessFavorites</code> by <code>targetType</code>, and renders each as its own
+    section, only when that section has at least one entry (no empty "Businesses I'm
+    Following" heading with nothing under it).</li>
+<li>Orphaned favorites (target record deleted/archived) render a de-emphasized placeholder
+    ("This alumni profile is no longer available" / "This business listing is no longer
+    available") instead of blank text or silently disappearing, so the alumnus's favorite
+    count always matches what's visibly listed.</li>
+<li><strong>Test requirements:</strong> Apex-side DTO-building coverage already existed from Task 2
+  (<code>getMyFavorites_resolvesDisplayFields_forBothTargetTypes</code>,
+  <code>getMyFavorites_marksOrphanedFavorite_whenTargetDeleted</code>). New <code>ustMyFavorites.test.js</code> —
+  5 tests: empty state, grouped-by-type rendering with both sections, single-section
+  rendering when only one type has favorites, orphaned-favorite placeholder, and
+  error-message display on Apex failure. All passing (<code>npm test</code> → 6 suites, 34/34 tests,
+  no regressions).</li>
+<li><strong>Demo:</strong> Deployed to <code>dev</code> scratch org (<code>cci task run deploy --path
+  force-app/main/default/lwc/ustMyFavorites --org dev</code> → <code>[Success]: Succeeded</code>, after fixing
+  a first-attempt deploy failure — see correction below). Verified via the Jest suite against
+  the real compiled component; not yet placed on an actual Experience Builder page (that
+  happens in Task 9, once both My Profile and Alumni Connections pages are assembled
+  together).</li>
+</ul>
+<p><strong>Real-world correction hit while building this task:</strong> the LWC bundle's <code>&lt;description&gt;</code> in
+<code>*.js-meta.xml</code> has a hard 255-character limit (<code>LightningComponentBundle</code> metadata field) —
+the first deploy attempt failed with <code>Value too long for field: Description maximum length
+is:255</code>. Shortened the description to fit; no functional impact.</p>
+<h3 id="task-6-build-alumniconnectionscontroller-apex-read-only-connected-profile-query-test-driven-done">Task 6: Build <code>AlumniConnectionsController</code> Apex — read-only connected profile query, test-driven — ✅ Done<a class="headerlink" href="#task-6-build-alumniconnectionscontroller-apex-read-only-connected-profile-query-test-driven-done" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Server-side logic for the View Profile page: given a target Contact Id,
+  return <code>Alumni_Directory__c</code>-scoped profile fields, news mentions, and business listings in
+  one call.</li>
+<li><strong>Implementation guidance:</strong> New class (separate from <code>AlumniProfileController</code>, which is
+  scoped to "my own" + <code>canEdit</code> semantics). Reuses existing field-scoping discipline — same
+  limited <code>Alumni_Directory__c</code> field set already exposed today. Queries <code>Alumni_News__c</code> by
+  <code>Contact__c</code> with the same <code>Reviewed_for_Community_Display__c</code>/<code>Public_Display__c</code> gate.
+  Queries <code>Professional_Directory__c</code> by <code>Alumni__c</code> with the <strong>full</strong> gate confirmed by
+  re-reading <code>AlumniBusinessDirectoryController.buildWhereClause</code> directly (not from memory) -
+  <code>RecordTypeId = Alumni_Business</code>, <code>Alumni__c != null</code>, <code>Company_Status__c = 'Approved'</code>,
+  <strong>and</strong> <code>UST_Test_Contact__c = false</code> (the plan draft had only listed <code>Company_Status__c</code>;
+  re-checking the source before writing code caught the missing <code>RecordTypeId</code>/
+  <code>UST_Test_Contact__c</code> conditions before they became a real gap). Wrote tests first: all-
+  three-present, none-present, news-only, unpublished news excluded (both failure
+  combinations - reviewed-but-not-public, and public-but-not-reviewed), unapproved business
+  excluded, test-contact-flagged business excluded, no-directory-record and null-Contact-Id
+  edge cases.</li>
+<li><strong>Test requirements:</strong> <code>AlumniConnectionsController_TEST.cls</code> — 9 tests, all passing, <strong>93%
+  coverage</strong> on <code>AlumniConnectionsController</code> (target was ≥90%). Explicit assertions that
+  every existing privacy/approval gate is respected.</li>
+<li><strong>Demo:</strong> <code>sf apex run test --class-names AlumniConnectionsController_TEST --target-org
+  UST-Alumni-Digital-Experience-Site__dev --result-format human --code-coverage --wait 20</code>
+  → 9/9 pass, 93% coverage.</li>
+</ul>
+<p><strong>Real-world corrections hit while building this task:</strong>
+1. <strong><code>Professional_Directory__c.UST_Test_Contact__c</code> is a formula field</strong> rolling up
+   <code>Alumni__r.UST_Test_Contact__c</code> (a <code>Contact</code> field that exists live in this org but is not
+   tracked in this repo's Contact metadata source) — it cannot be set directly on insert
+   (<code>Field is not writeable</code>). Test data instead sets <code>UST_Test_Contact__c = true</code> on the
+   linked <code>Contact</code>, letting the formula roll up naturally, exactly mirroring how a real test
+   contact would be flagged.
+2. <strong><code>Professional_Directory__c.Company_Status__c</code> restricted picklist</strong> does not include a
+   <code>'Pending'</code> value in this org — active values, queried live rather than assumed
+   (<code>getPicklistValues()</code>), are <code>Submitted</code>, <code>Under Review</code>, <code>Approved</code>, <code>Inactive</code>. Test data
+   uses <code>'Submitted'</code> for the not-yet-approved case.</p>
+<h3 id="task-7-build-the-alumniselection-lightning-message-channel-ustalumniconnectionprofile-detail-lwc-done">Task 7: Build the <code>AlumniSelection</code> Lightning Message Channel + <code>ustAlumniConnectionProfile</code> detail LWC — ✅ Done<a class="headerlink" href="#task-7-build-the-alumniselection-lightning-message-channel-ustalumniconnectionprofile-detail-lwc-done" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Cross-widget sync mechanism, plus the read-only detail view widget.</li>
+<li><strong>Implementation guidance:</strong> Defined <code>AlumniSelection.messageChannel-meta.xml</code> with payload
+  <code>{ contactId }</code> (in-memory only — never written to a URL). <code>ustAlumniConnectionProfile</code>
+  subscribes via <code>@wire(MessageContext)</code> + <code>subscribe</code>, shows a distinct empty/prompt state
+  until a message arrives (<code>showPromptState</code>), a separate empty state if the selected contact
+  has no public profile (<code>showEmptyState</code>), then calls <code>AlumniConnectionsController</code> and
+  renders profile fields, news mentions, and business listings, plus an embedded favorite
+  toggle for the viewed alum (<code>Alumni_Directory</code> toggle in the header, one
+  <code>Professional_Directory</code> toggle per business listing).</li>
+<li><strong>Test requirements:</strong> <code>ustAlumniConnectionProfile.test.js</code> — 5 tests: prompt state before
+  any selection, full render after a selection message (profile fields, news, business
+  listings, and both favorite toggles with correct <code>targetType</code>/<code>targetRecordId</code>), empty state
+  when no profile is found, error message on Apex failure, and re-query when a second
+  selection message arrives for a different contact. All passing (<code>npm test</code> → 7 suites,
+  39/39 tests, no regressions).</li>
+<li><strong>Demo:</strong> Deployed to <code>dev</code> scratch org — message channel first
+  (<code>cci task run deploy --path force-app/main/default/messageChannels --org dev</code>), then the
+  LWC that depends on it (<code>cci task run deploy --path
+  force-app/main/default/lwc/ustAlumniConnectionProfile --org dev</code>), both
+  <code>[Success]: Succeeded</code> after fixing a first-attempt failure (see correction below).
+  Verified via the Jest suite, which directly captures the <code>subscribe()</code> listener callback
+  and invokes it to simulate a publish from another widget — a real end-to-end two-widget
+  page wiring happens in Task 8/9.</li>
+</ul>
+<p><strong>Real-world corrections hit while building this task:</strong>
+1. <strong><code>LightningMessageChannel.description</code> has the same 255-character limit</strong> already hit on
+   <code>LightningComponentBundle</code> in Task 5 — first deploy attempt failed with the same
+   <code>Value too long for field: Description maximum length is:255</code> error. Shortened it.
+2. <strong>Deploying the LWC before the message channel deploy succeeded failed with a confusing
+   downstream error</strong> (<code>Unable to retrieve metadata for descriptor:
+   markup://c:__LightningMessageChannel__AlumniSelection__c</code>) — the component imports
+   <code>@salesforce/messageChannel/AlumniSelection__c</code>, which requires the channel to already
+   exist server-side. Deploy order matters here: message channel first, then any LWC that
+   references it.
+3. <strong><code>lightning-formatted-rich-text</code>'s stubbed Jest behavior</strong> — like the <code>lightning-button</code>
+   label gotcha already documented in <code>AGENTS.md</code>, this base component's <code>value</code> prop is not
+   reflected into <code>textContent</code> in the Jest stub environment. Asserted on <code>.value</code> directly
+   instead of searching rendered text for the news body.</p>
+<h3 id="task-8-wire-list-components-as-lmc-publishers-on-the-view-profile-page">Task 8: Wire list components as LMC publishers on the View Profile page<a class="headerlink" href="#task-8-wire-list-components-as-lmc-publishers-on-the-view-profile-page" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Clicking an alum anywhere on the page updates the shared detail widget
+  instead of navigating away.</li>
+<li><strong>Implementation guidance:</strong> Add a new <code>@api</code> flag (mirroring the existing
+  <code>useNewProfileLink</code> pattern already in <code>alumniDirectoryList</code>/<code>alumniNewsList</code>) — e.g.
+  <code>useMessageChannel</code> — so clicking a row publishes to the LMC instead of navigating via
+  <code>NavigationMixin</code>. Keeps existing navigate-to-record-page behavior intact for any other
+  placement of these components (backward compatible).</li>
+<li><strong>Test requirements:</strong> Extend existing Jest tests to cover the new publish-on-click branch
+  without breaking existing navigation-branch tests.</li>
+<li><strong>Demo:</strong> On the View Profile page, clicking an alum in directory/business/news lists updates
+  the shared detail widget in place, no page reload.</li>
+</ul>
+<h3 id="task-9-assemble-the-two-experience-builder-pages-and-do-an-end-to-end-walkthrough">Task 9: Assemble the two Experience Builder pages and do an end-to-end walkthrough<a class="headerlink" href="#task-9-assemble-the-two-experience-builder-pages-and-do-an-end-to-end-walkthrough" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Objective:</strong> Ship the actual page experiences.</li>
+<li><strong>Implementation guidance:</strong> <strong>My Profile page</strong> — existing <code>alumniProfile</code> (owned mode) +
+  new <code>ustMyFavorites</code>. <strong>Alumni Connections page</strong> — <code>alumniDirectoryList</code>/<code>alumniNewsList</code>/
+  <code>alumniBusinessDirectory</code> (search/browse side) + <code>ustAlumniConnectionProfile</code> (detail side),
+  all wired to the shared LMC, favorite toggles throughout. Confirm placement approach (direct
+  Experience Builder placement vs. forcing through the <code>UST_Portal_Widget__c</code> zone registry)
+  fits naturally before committing to one — these are more bespoke than the generic zone
+  pattern and may not need to go through it.</li>
+<li><strong>Test requirements:</strong> Manual QA — favorite an alum from the directory list, confirm it shows
+  on My Profile; click through directory → business → news on the Connections page and confirm
+  the detail widget follows each selection; confirm a logged-in alum cannot see another's edit
+  controls.</li>
+<li><strong>Demo:</strong> Full user journey — log in, browse Alumni Connections, click into a few different
+  alumni (seeing their business + news alongside their profile), favorite a couple, navigate to
+  My Profile, see the favorites list populated.</li>
+</ul>
+<h2 id="explicitly-out-of-scope-v1">Explicitly Out of Scope (v1)<a class="headerlink" href="#explicitly-out-of-scope-v1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Mutual/reciprocal favorite visibility (who favorited me) — rejected as "creepy."</li>
+<li>Notifications on favorite.</li>
+<li>Aggregate/social-proof counts (e.g. "12 people favorited this profile").</li>
+<li>A personalized activity feed of news/updates from favorited people/businesses on My Profile
+  (fast-follow candidate, not blocking this plan).</li>
+<li>Any restructuring of <code>Alumni_Directory__c</code> / <code>Alumni_News__c</code> / <code>Professional_Directory__c</code>
+  relationships or the Contact-as-gateway pattern.</li>
+<li>Shareable/deep-linkable URLs to a specific alumni profile.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/UniversityOfSaintThomas/UST-Alumni-Digital-Experience-Site" target="_blank" rel="noopener" title="Source Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.instant", "navigation.tracking", "search.suggest", "search.highlight", "search.share", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1209,10 +1209,10 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Admin creates/edits UST_Portal_Widget__c record
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  Zone = body | Page = home | Component = ust_profile_card | Sort = 10 | Audience = All
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>         |
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Experience Builder page loads ustWidgetZone (zoneName=&quot;body&quot;, pageContext=&quot;home&quot;)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Experience Builder page loads ustWidgetZone (zoneName="body", pageContext="home")
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>         |
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>PortalWidgetController.getWidgetsForZone() queries active matching records
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  - filters by zone, page context, and current user&#39;s audience segments
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  - filters by zone, page context, and current user's audience segments
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  - returns ordered list of widget DTOs
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>         |
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>ustWidgetZone renders each widget in sort order
@@ -1357,8 +1357,8 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 <p><strong>1 — Add the boolean flag to <code>WIDGET_REGISTRY</code> in <code>ustWidgetZone.js</code>:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// In the WIDGET_REGISTRY constant at the top of the file:</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">WIDGET_REGISTRY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nx">ust_static_content</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;isStaticContent&#39;</span><span class="p">,</span><span class="w">   </span><span class="c1">// ← already active</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nx">ust_profile_card</span><span class="o">:</span><span class="w">   </span><span class="s1">&#39;isProfileCard&#39;</span><span class="p">,</span><span class="w">     </span><span class="c1">// ← uncomment when built</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nx">ust_static_content</span><span class="o">:</span><span class="w"> </span><span class="s1">'isStaticContent'</span><span class="p">,</span><span class="w">   </span><span class="c1">// ← already active</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nx">ust_profile_card</span><span class="o">:</span><span class="w">   </span><span class="s1">'isProfileCard'</span><span class="p">,</span><span class="w">     </span><span class="c1">// ← uncomment when built</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">};</span>
 </code></pre></div></p>
 <p><strong>2 — Add a <code>lwc:if</code> (or <code>lwc:elseif</code>) block in <code>ustWidgetZone.html</code>, above the <code>lwc:else</code> stub:</strong>
@@ -1474,29 +1474,31 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    ustAlumniFooter/    # Site footer
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    ustWidgetZone/      # Widget zone host — drag onto Experience Builder pages
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    ustStaticContent/   # Renders rich-text static content from a widget record
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>  classes/              # Apex controllers
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    NavMenuController   # Experience Cloud navigation menu fetcher
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    PortalWidgetController # Widget zone registry query + audience filtering
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>  objects/              # Custom object and field metadata
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  permissionsets/       # Permission sets for community users and admins
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>  experiences/          # Experience Cloud site metadata
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>  staticresources/      # Images, fonts, global CSS
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>unpackaged/config/experiences/digitalExperiences/site/Alumni1/
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>  sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json  # Global theme layout (header, footer, nav only)
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>  sfdc_cms__view/home/content.json                          # Home page view (banner, body, sidebar, above_footer zones)
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>docs/
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
-<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
-<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
-<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
-<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
-<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    ustWidgetRecordEditor/ # Custom edit layout for UST_Portal_Widget__c (record page)
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    ustRichTextEditor/  # Rich text editor with Paragraph / Heading 2-5 dropdown
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>  classes/              # Apex controllers
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    NavMenuController   # Experience Cloud navigation menu fetcher
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    PortalWidgetController # Widget zone registry query + audience filtering
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  objects/              # Custom object and field metadata
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>  permissionsets/       # Permission sets for community users and admins
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>  experiences/          # Experience Cloud site metadata
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>  staticresources/      # Images, fonts, global CSS
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>unpackaged/config/experiences/digitalExperiences/site/Alumni1/
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>  sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json  # Global theme layout (header, footer, nav only)
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>  sfdc_cms__view/home/content.json                          # Home page view (banner, body, sidebar, above_footer zones)
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>docs/
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
+<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
+<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
+<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
 </code></pre></div>
 <hr />
 <h2 id="key-dependencies">Key Dependencies<a class="headerlink" href="#key-dependencies" title="Permanent link">&para;</a></h2>
