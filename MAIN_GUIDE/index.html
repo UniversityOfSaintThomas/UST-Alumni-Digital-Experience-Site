@@ -1476,29 +1476,31 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    ustStaticContent/   # Renders rich-text static content from a widget record
 <a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    ustWidgetRecordEditor/ # Custom edit layout for UST_Portal_Widget__c (record page)
 <a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    ustRichTextEditor/  # Rich text editor with Paragraph / Heading 2-5 dropdown
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>  classes/              # Apex controllers
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    NavMenuController   # Experience Cloud navigation menu fetcher
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    PortalWidgetController # Widget zone registry query + audience filtering
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  objects/              # Custom object and field metadata
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>  permissionsets/       # Permission sets for community users and admins
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>  experiences/          # Experience Cloud site metadata
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>  staticresources/      # Images, fonts, global CSS
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>unpackaged/config/experiences/digitalExperiences/site/Alumni1/
-<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>  sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json  # Global theme layout (header, footer, nav only)
-<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>  sfdc_cms__view/home/content.json                          # Home page view (banner, body, sidebar, above_footer zones)
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>
-<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>docs/
-<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
-<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
-<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
-<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
-<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
-<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
-<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
-<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    ustPageContextPicker/ # Page/zone-aware Page Context chooser (reads the zone registry)
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>  classes/              # Apex controllers
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    NavMenuController   # Experience Cloud navigation menu fetcher
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>    PortalWidgetController # Widget zone registry query + audience filtering
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    PortalPageRegistry  # Records which zones exist on which pages (written from Experience Builder only)
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>  objects/              # Custom object and field metadata
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>    UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>  permissionsets/       # Permission sets for community users and admins
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>  experiences/          # Experience Cloud site metadata
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>  staticresources/      # Images, fonts, global CSS
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>unpackaged/config/experiences/digitalExperiences/site/Alumni1/
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>  sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json  # Global theme layout (header, footer, nav only)
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>  sfdc_cms__view/home/content.json                          # Home page view (banner, body, sidebar, above_footer zones)
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>docs/
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>  MAIN_GUIDE.md         # This file — project overview and workflow
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>  BRAND-COLORS.md       # Official UST color palette with HEX/RGB/PMS values
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>  WIDGET-CATALOG.md     # Portal widget inventory, requirements, and status
+<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>  ROADMAP.md            # Phase 1 / Phase 2 breakdown, open questions from 2026 stakeholder requests
+<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>  DATA-MODEL.md         # Custom objects, key fields, and EDA object map
+<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>  AI-TOOLS-CONFIG.md    # Org aliases and AI tool configuration
+<a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a>  SVG-ASSETS.md         # SVG logo and icon inventory (docs/svgs/)
+<a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a>  user-discover.md      # Raw discovery session notes (Jan &amp; Mar 2026)
 </code></pre></div>
 <hr />
 <h2 id="key-dependencies">Key Dependencies<a class="headerlink" href="#key-dependencies" title="Permanent link">&para;</a></h2>

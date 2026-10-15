@@ -679,10 +679,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-0-fix-the-page_context__c-page-name-mismatch" class="md-nav__link">
+  <a href="#phase-0-page-context-fix-the-mismatch-and-keep-it-current-design-agreed-2026-10-15" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 0 — Fix the Page_Context__c / page-name mismatch
+        Phase 0 — Page context: fix the mismatch and keep it current (design agreed 2026-10-15)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 0 — Page context: fix the mismatch and keep it current (design agreed 2026-10-15)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#design-self-registering-zone-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design: self-registering zone placements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limits-to-remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limits to remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-0-as-built-2026-10-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 0 — as built (2026-10-15)
       
     </span>
   </a>
@@ -885,7 +935,7 @@
 
 <h1 id="portal-widget-authoring-experience-implementation-plan">Portal Widget Authoring Experience — Implementation Plan<a class="headerlink" href="#portal-widget-authoring-experience-implementation-plan" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>Status: <strong>Phase A done (deployed to the dev scratch org, not yet committed to git). Phases 0–3 approved, not started.</strong>
+<p>Status: <strong>Phases A and 0 done (deployed to the dev scratch org, not yet committed to git). Phases 1–3 approved, not started.</strong>
 Recorded so context survives a session reset.
 Created: 2026-10-14. Dev org: <code>UST-Alumni-Digital-Experience-Site__dev</code> (CCI alias <code>dev</code>), expires 2026-10-27.</p>
 </blockquote>
@@ -1021,22 +1071,129 @@ hide it, or confirm it works.</p>
 </tbody>
 </table>
 <hr />
-<h2 id="phase-0-fix-the-page_context__c-page-name-mismatch">Phase 0 — Fix the <code>Page_Context__c</code> / page-name mismatch<a class="headerlink" href="#phase-0-fix-the-page_context__c-page-name-mismatch" title="Permanent link">&para;</a></h2>
+<h2 id="phase-0-page-context-fix-the-mismatch-and-keep-it-current-design-agreed-2026-10-15">Phase 0 — Page context: fix the mismatch and keep it current (design agreed 2026-10-15)<a class="headerlink" href="#phase-0-page-context-fix-the-mismatch-and-keep-it-current-design-agreed-2026-10-15" title="Permanent link">&para;</a></h2>
 <p><strong>Problem.</strong> <code>ustWidgetZone</code> derives the page context from <code>CurrentPageReference</code> (<code>attributes.name</code>,
 lowercased). <code>Page_Context__c</code> values are <code>all, home, giving, events, profile, directory, news</code>.
 Actual LWR page API names (from <code>sfdc_cms__route</code>): <code>Home</code>, <code>alumni_directory__c</code>,
 <code>Alumni_Event_Creation__c</code>, <code>alumni_notes__c</code>, <code>business_directory__c</code>, <code>lawyer_search__c</code>,
 <code>my_account__c</code>, <code>My_Business__c</code>, <code>News_Detail__c</code>, plus system pages (Login, Register, Error…).
 Only <code>home</code> matches; targeting a widget at "Directory" likely never matches.</p>
-<p><strong>Plan.</strong>
-1. Confirm the mismatch in the dev org with a widget on a non-home page (expect no render).
-2. Make <code>Page_Context__c</code> values the <strong>lowercased real page API names</strong> (keep <code>all</code>), with friendly
-   labels (e.g. <code>alumni_directory__c</code> → "Alumni Directory"). Keep old values active during migration.
-3. Migrate existing records (dev + EDA-Staging): <code>directory</code> → <code>alumni_directory__c</code>, etc.; document the
-   mapping. Decide what to do with <code>giving</code>, <code>events</code>, <code>profile</code>, <code>news</code> (no matching route today —
-   either map to the right page or retire).
-4. Update <code>PortalWidgetController_TEST</code>, <code>WIDGET-CATALOG.md</code>, <code>MAIN_GUIDE.md</code>.
-5. Single source of truth for page names: reuse this list for the <strong>Portal link</strong> picker in Phase 3.</p>
+<p><strong>Platform facts (verified in dev org).</strong> Site pages cannot be listed at runtime: <code>DigitalExperience</code> is
+not queryable, no Tooling object exposes routes, <code>NetworkPageOverride</code> covers standard pages only. Only
+<code>NavigationMenuItem</code> is queryable (menu pages only). So the list must be built by the site itself.</p>
+<p><strong>Where zones live today (from the repo bundle).</strong> <code>body</code> and <code>sidebar</code> are in individual page views
+(<code>Home</code>: body + sidebar; <code>Alumni_Directory</code>: sidebar). <code>banner</code> and <code>above_footer</code> are in the <strong>theme
+layout</strong> <code>scopedHeaderAndFooter</code>, i.e. on every page using that layout.</p>
+<h3 id="design-self-registering-zone-placements">Design: self-registering zone placements<a class="headerlink" href="#design-self-registering-zone-placements" title="Permanent link">&para;</a></h3>
+<ol>
+<li>New object <strong><code>UST_Portal_Zone_Placement__c</code></strong>: <code>Page_Name__c</code> (lowercased page API name, or <code>*</code> for
+   "all pages"), <code>Zone__c</code>, <code>Scope__c</code> (<code>Page</code> / <code>Layout</code>), <code>Page_Label__c</code> (admin-editable friendly
+   label), <code>Last_Seen__c</code>, <code>Hidden__c</code>; unique external-id key <code>Page|Zone</code>.</li>
+<li><strong>Layout-level zones (decided 2026-10-15): no bundle change.</strong> <code>banner</code> and <code>above_footer</code> live in the
+   <code>scopedHeaderAndFooter</code> theme layout (layout type <code>Inner</code>, used by 14 views; only the two error pages
+   use <code>snaThemeLayout</code>). That layout also holds the built-in LWR navigation components and
+   <code>ustAlumniTheme</code>, so content placed there already appears on every page — keep using those zones for
+   "every page" content. A zone cannot detect by itself whether it is in a shared layout, so the registry
+   has an admin-editable <code>Scope__c</code> (<code>Page</code> / <code>Layout</code>). <strong>Seed <code>banner</code> and <code>above_footer</code> as <code>Layout</code>
+   (<code>Page_Name__c = *</code>)</strong> from this verified fact; admins can flip the flag for any future layout zone.
+   (Optional later: a <code>zoneScope</code> builder property on <code>ustWidgetZone</code> so the builder sets it
+   automatically — would require editing/redeploying the theme layout file; not needed now.)</li>
+<li><strong>Registration happens only in Experience Builder</strong> (<code>state.app === 'commeditor'</code>, already detected in
+   <code>ustWidgetZone</code>). The zone calls a non-cacheable Apex method that upserts the placement. Live visitors
+   and guests never write; Apex also refuses unless the user can create the object. Zero overhead for the
+   public site. A zone whose existing placement is <code>Layout</code>-scoped keeps <code>*</code> and is not duplicated per
+   page when an admin visits different pages.</li>
+<li><strong>Editor behavior</strong> (<code>ustWidgetRecordEditor</code>):</li>
+<li>Zone is chosen first; the page picker lists only pages that have that zone, plus <code>All pages</code>.</li>
+<li>Changing the zone <strong>auto-removes known pages that lack the new zone</strong>, with a notice and Undo
+     ("Removed Directory — no Sidebar zone on that page").</li>
+<li>Pages not yet registered are kept with a warning (lets admins pre-configure before a page exists).</li>
+<li>"Appears on: Home, Alumni Directory" coverage line; warning when a widget would appear nowhere.</li>
+<li>Free-text escape hatch for unregistered page names.</li>
+<li><code>Page_Context__c</code> becomes an <strong>unrestricted</strong> multi-select picklist so <code>INCLUDES</code> keeps working while
+   the custom editor can save any page name. (Verify in the spike that the API/LWC accepts values not in
+   the list.)</li>
+<li><strong>Seed</strong> the registry once from the 16 routes/views in the current bundle (script or CCI task), and
+   add a one-time data migration for existing widget records: <code>directory</code> → <code>alumni_directory__c</code>, etc.
+   <strong><code>giving</code>, <code>events</code>, <code>profile</code>, <code>news</code> are left as-is for now</strong> (no matching route in the dev bundle;
+   owner to check whether those pages exist in EDA-Staging before mapping or retiring them).</li>
+<li>The same registry feeds the <strong>Portal link</strong> picker for buttons (Phase 3).</li>
+</ol>
+<h3 id="limits-to-remember">Limits to remember<a class="headerlink" href="#limits-to-remember" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A zone removed in the builder is not detected (nothing runs). Show <code>Last_Seen__c</code>, flag stale entries,
+  allow <code>Hidden__c</code>; do not delete automatically.</li>
+<li>The registry reflects the <em>builder</em> state, which can be ahead of the <em>published</em> site.</li>
+<li>Editor checks are advisory; records changed by data loader are not validated, and a mismatch simply
+  means the widget does not render.</li>
+<li>Unverified until built: that Apex DML works from the builder session, and unrestricted multi-select
+  behavior.</li>
+</ul>
+<h3 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Confirm the mismatch in the dev org (widget on a non-home page → expect no render).</li>
+<li>Build the object, permission sets (admin: create/edit; no guest access), registration Apex, seed of the
+   layout zones, and tests (Apex: guest/non-admin cannot register, upsert idempotent, <code>*</code> handling; Jest:
+   builder-only registration).</li>
+<li>Editor page/zone picker, auto-remove with Undo, coverage line.</li>
+<li>Picklist change, migration, seed, docs (<code>WIDGET-CATALOG.md</code>, <code>MAIN_GUIDE.md</code>, <code>PortalWidgetController_TEST</code>).</li>
+</ol>
+<hr />
+<h2 id="phase-0-as-built-2026-10-15">Phase 0 — as built (2026-10-15)<a class="headerlink" href="#phase-0-as-built-2026-10-15" title="Permanent link">&para;</a></h2>
+<p>Verified in the dev org, including Experience Builder: deleting the seeded Home rows and opening
+Builder re-created <code>home|body</code> and <code>home|sidebar</code>; switching to the Alumni Directory page created
+<code>alumni_directory__c|sidebar</code> (server response <code>created</code>).</p>
+<p><strong>Live evidence for the original bug.</strong> Network capture in Builder shows the widget query is sent with
+<code>pageContext = home</code> and <code>pageContext = alumni_directory__c</code> — so the old picklist value <code>directory</code> never
+matched the Alumni Directory page. Real page-name strings are the lowercased route API names. The site's
+URL path prefix is <code>/alumni/</code> (e.g. <code>/alumni/alumni-directory</code>), useful for the Phase 3 portal-link work.</p>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registry object, fields, tab, list view</td>
+<td><code>objects/UST_Portal_Zone_Placement__c/</code>, <code>tabs/UST_Portal_Zone_Placement__c</code></td>
+</tr>
+<tr>
+<td>Registration + read + seed Apex (98% coverage, 8 tests)</td>
+<td><code>classes/PortalPageRegistry.cls</code>, <code>tests/default/classes/PortalPageRegistry_TEST.cls</code></td>
+</tr>
+<tr>
+<td>Zone registers itself in Builder only; new <code>zoneScope</code> property</td>
+<td><code>lwc/ustWidgetZone/</code> (7 Jest tests)</td>
+</tr>
+<tr>
+<td>Theme-layout zones marked <code>zoneScope: Layout</code> (deployed and verified by retrieving the bundle)</td>
+<td><code>unpackaged/.../sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json</code></td>
+</tr>
+<tr>
+<td>Page/zone-aware picker: filter by zone, auto-remove with Undo, coverage line, warnings, typed pages</td>
+<td><code>lwc/ustPageContextPicker/</code> (15 Jest tests), wired into <code>ustWidgetRecordEditor</code></td>
+</tr>
+<tr>
+<td><code>Page_Context__c</code> now unrestricted (verified: unlisted values save and <code>INCLUDES</code> still matches)</td>
+<td><code>fields/Page_Context__c</code></td>
+</tr>
+<tr>
+<td>CCI tasks: <code>assign_ust_portal_widget_admin_permset</code> (config_dev 1.5), <code>seed_zone_placements</code> (config_dev 1.6), <code>migrate_widget_page_context</code> (manual, idempotent)</td>
+<td><code>cumulusci.yml</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>To do in other orgs (for example eda-staging):</strong> deploy, assign <code>UST_Portal_Widget_Admin</code>, run
+<code>cci task run seed_zone_placements --org &lt;org&gt;</code> and <code>cci task run migrate_widget_page_context --org &lt;org&gt;</code>,
+then open each page in Experience Builder once so the registry fills in; republish the site.</p>
+<p><strong>Needs the permission set.</strong> Registration is silently skipped for anyone without create/edit on
+<code>UST_Portal_Zone_Placement__c</code>, so admins must have <code>UST_Portal_Widget_Admin</code> for pages to register.</p>
+<p><strong>Not changed (by decision):</strong> <code>giving</code>, <code>events</code>, <code>profile</code>, <code>news</code> page values are left as-is until the
+EDA-Staging site is checked. Existing <code>directory</code> values are migrated to <code>alumni_directory__c</code> by the task.</p>
+<p><strong>Known follow-ups:</strong> <code>registerPlacement</code> has cyclomatic complexity 15 (Code Analyzer, Moderate) — could be
+split; Builder-state vs published-state caveat and stale-entry handling are as described above.</p>
 <hr />
 <h2 id="phase-1-spikes-half-a-day-before-building">Phase 1 — Spikes (≈ half a day, before building)<a class="headerlink" href="#phase-1-spikes-half-a-day-before-building" title="Permanent link">&para;</a></h2>
 <ol>
@@ -1239,7 +1396,7 @@ editor add/edit/reorder/delete, renderer placement above/below, unsafe URL rejec
 <h2 id="progress">Progress<a class="headerlink" href="#progress" title="Permanent link">&para;</a></h2>
 <ul>
 <li>[x] Phase A — editor layout, headings, widget style class, API 68.0, lint fixes, link-dialog fix</li>
-<li>[ ] Phase 0 — page-name mismatch</li>
+<li>[x] Phase 0 — page context: fix mismatch + self-registering zone placements (done 2026-10-15; see "Phase 0 — as built")</li>
 <li>[ ] Phase 1 — spikes (insert-at-cursor, portal link resolution, page picker source)</li>
 <li>[ ] Phase 2 — data tags</li>
 <li>[ ] Phase 3 — buttons</li>
