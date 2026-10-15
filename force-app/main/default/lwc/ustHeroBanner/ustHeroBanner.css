@@ -1,0 +1,98 @@
+:host {
+    display: block;
+}
+
+/* Brand purple shows when there is no picture, or while it loads or fails. */
+.ust-hero {
+    align-items: center;
+    background-color: #510c76;
+    box-sizing: border-box;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.ust-hero_short {
+    min-height: 12rem;
+}
+
+.ust-hero_medium {
+    min-height: 20rem;
+}
+
+.ust-hero_tall {
+    min-height: 30rem;
+}
+
+@media (max-width: 767px) {
+    .ust-hero_short {
+        min-height: 9rem;
+    }
+
+    .ust-hero_medium {
+        min-height: 14rem;
+    }
+
+    .ust-hero_tall {
+        min-height: 20rem;
+    }
+}
+
+.ust-hero-picture,
+.ust-hero-image {
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.ust-hero-image {
+    object-fit: cover;
+}
+
+/* The dark layer between the picture and the white text. There is deliberately no "none". */
+.ust-hero-scrim {
+    inset: 0;
+    position: absolute;
+}
+
+.ust-hero-scrim_light {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.ust-hero-scrim_medium {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.ust-hero-scrim_strong {
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.ust-hero-content {
+    box-sizing: border-box;
+    padding: 2rem 1.5rem;
+    position: relative;
+    width: 100%;
+}
+
+.ust-hero_left .ust-hero-content {
+    margin-right: auto;
+    max-width: 44rem;
+    text-align: left;
+}
+
+.ust-hero_center .ust-hero-content {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 44rem;
+    text-align: center;
+}
+
+.ust-hero_right .ust-hero-content {
+    margin-left: auto;
+    max-width: 44rem;
+    text-align: right;
+}

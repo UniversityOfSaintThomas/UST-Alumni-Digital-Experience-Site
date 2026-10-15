@@ -40,3 +40,21 @@
     border-top: 1px dashed #c9c9c9;
     padding-top: 0.75rem;
 }
+
+.ust-preview-hero {
+    border: 1px solid #e5e5e5;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.ust-hero-note {
+    background: #fef9e3;
+    border: 1px solid #e5d28f;
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.ust-hero-warning {
+    color: #8a5300;
+    margin-top: 0.25rem;
+}

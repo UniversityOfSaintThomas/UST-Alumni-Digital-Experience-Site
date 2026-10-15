@@ -86,6 +86,17 @@ describe('c-ust-static-content', () => {
             expect(renderer.buttons).toEqual(BUTTONS);
         });
 
+        it('adds the over-picture class and passes it to the button renderer when shown over an image', () => {
+            const element = createContent({ richTextContent: '<p>Hi</p>', buttons: BUTTONS, overImage: true });
+            expect(element.shadowRoot.querySelector('.ust-static-content').className).toContain('ust-on-image');
+            expect(element.shadowRoot.querySelector('c-ust-widget-buttons').overImage).toBe(true);
+        });
+
+        it('does not add the over-picture class by default', () => {
+            const element = createContent({ richTextContent: '<p>Hi</p>', buttons: BUTTONS });
+            expect(element.shadowRoot.querySelector('.ust-static-content').className).not.toContain('ust-on-image');
+        });
+
         it('shows no button area without buttons', () => {
             const element = createContent({ richTextContent: '<p>Hi</p>', buttons: [] });
             expect(element.shadowRoot.querySelector('c-ust-widget-buttons')).toBeNull();

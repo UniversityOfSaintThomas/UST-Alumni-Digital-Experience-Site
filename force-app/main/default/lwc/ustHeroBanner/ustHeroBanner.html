@@ -1,0 +1,32 @@
+<template>
+    <template lwc:if={isEmpty}></template>
+    <template lwc:else>
+        <div class={bannerClass}>
+            <template lwc:if={showImage}>
+                <picture class="ust-hero-picture">
+                    <template lwc:if={hasMobileImage}>
+                        <source media={mobileMedia} srcset={settings.mobileImageUrl}>
+                    </template>
+                    <img
+                        class="ust-hero-image"
+                        src={settings.imageUrl}
+                        alt={altText}
+                        decoding="async"
+                        onerror={handleImageError}>
+                </picture>
+            </template>
+            <div class={scrimClass}></div>
+            <div class="ust-hero-content">
+                <c-ust-static-content
+                    rich-text-content={richTextContent}
+                    text-header={textHeader}
+                    buttons={alignedButtons}
+                    button-placement={buttonPlacement}
+                    button-size={buttonSize}
+                    preview-mode={previewMode}
+                    over-image>
+                </c-ust-static-content>
+            </div>
+        </div>
+    </template>
+</template>

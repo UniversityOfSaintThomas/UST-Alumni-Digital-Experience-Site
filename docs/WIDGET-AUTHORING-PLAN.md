@@ -1,6 +1,6 @@
 # Portal Widget Authoring Experience — Implementation Plan
 
-> Status: **Phases A, 0, 1, 2 and 3 done. Phase 4 (hero widget + S3) is design only.** (Phases 0–2 committed by the owner; Phase 3 not yet committed.)
+> Status: **Phases A, 0–3 done. Phase 4 (hero widget + S3) is built; real uploads await the S3 credential.** (Phases 0–2 committed by the owner; Phases 3–4 not yet committed.)
 > Recorded so context survives a session reset.
 > Created: 2026-10-14. Dev org: `UST-Alumni-Digital-Experience-Site__dev` (CCI alias `dev`), expires 2026-10-27.
 
@@ -487,29 +487,118 @@ The editor and the server enforce the same rules, but the server never trusts th
 
 ---
 
-## Phase 4 — Later: hero image widget + S3
+## Phase 4 — Hero image widget + S3 (built 2026-10-15; open questions answered with defaults, not yet reviewed by the owner; **uploads not yet tested end to end**)
 
-Not started; design notes only.
+### Org state found at the start (dev scratch org)
 
-- New widget type `ust_hero_banner` (add to `Component_Name__c` picklist, `WIDGET_REGISTRY`, and a
-  `lwc:elseif` block in `ustWidgetZone.html` — see AGENTS.md "adding a widget").
-- Fields: image URL, **alt text (required)**, overlay text (reuse `ustRichTextEditor`), buttons (reuse
-  `ustWidgetButtons`), overlay scrim for contrast.
-- Image upload: embed the existing **`awsS3DirectoryImage`** LWC (dependency repo
-  `UniversityOfSaintThomas/Salesforce-LWC-S3-Integration`, already in `cumulusci.yml`) in a new
-  "Hero" section of `ustWidgetRecordEditor`, using the widget's own record Id and image field;
-  `fileNameSuffix` allows desktop/mobile variants.
-- Suggested changes to the S3 tool: canvas output is always PNG (`toDataURL()` with no type) → use JPEG
-  ~0.85 for photos; stored URL has no cache-buster so replaced images can look stale; consider
-  CloudFront and a second smaller size. Base64-through-Apex is fine at hero sizes but not large files.
-- Setup needed per org: real bucket URL on the Named Credential **and** the CSP Trusted Site
-  (`img-src`), AWS keys on the External Credential principal, republish the site, and assign
-  `AWS_S3_Directory_Image` to widget admins.
-- Open questions: full-width vs fixed banner height / aspect ratios, text position (left/center/
-  configurable), mobile image.
-- Inline images in Static Content are **not** a fit for the S3 tool as-is (one image per record+suffix,
-  writes a field, base editor cannot insert an image programmatically). Revisit with full Quill only if
-  needed.
+- `AWS_S3_Directory_Image` **Named Credential still has the placeholder URL**
+  (`https://REPLACE_WITH_YOUR_BUCKET.s3.REPLACE_WITH_REGION.amazonaws.com`). Apex reports the same value. Until
+  it is set to the real bucket, uploads cannot work and the tool would store placeholder addresses.
+  The External Credential (`AwsSv4`, named principal) exists; keys were not inspected.
+- CSP trusted sites: `AWS_S3_Directory_Image` = the prod bucket `stthomas-salesforce-directory-images-prod.s3.us-east-1.amazonaws.com`
+  (img-src only) and `UST_AWS_S3` = `https://static.aws.stthomas.edu` (img/connect/font/style).
+- The bucket name says **prod**: no test objects are uploaded from scratch orgs without an explicit go-ahead.
+
+### How the S3 tool really behaves (read from the deployed source; do not rediscover)
+
+- File key = `md5(orgId + recordId) + fileNameSuffix + extension`. **A null suffix becomes the literal text
+  `null`** (verified in Apex), and the later lookup searches `hash.` and never finds it, so the editor
+  **always passes a suffix**: `-hero` (desktop) and `-hero-mobile` (mobile).
+- It writes the image URL to the record field **itself** (its own Apex update, in user mode, needs Read/Edit
+  FLS on that field) and then fires a `RefreshEvent` (`lightning__refresh`). It never reports the URL to the
+  parent. So the hero URL fields are **not inputs on the record form** (a later Save would overwrite the fresh
+  URL with the form's stale copy); the editor reads them with `getRecord` and refreshes with
+  `notifyRecordUpdateAvailable` when the refresh event arrives.
+- Resizing happens in the browser (canvas) with `image-max-width` / `image-max-height` and `image-mode`
+  `crop` or `resize`; output is always PNG. It needs an existing record (a new, unsaved widget has no Id).
+- Only users with the dependency's `AWS_S3_Directory_Image` permission set can upload. Our permission set
+  cannot include it (it lives in the dependency), so widget admins need both. `config_dev` already assigns it
+  to System Administrators.
+- The dependency component is **not in this repo**; it must be installed in an org before our templates that
+  reference `c-aws-s3-directory-image` will deploy (CumulusCI does this through `cumulusci.yml` dependencies).
+
+### Decisions (defaults chosen to keep moving; all are single-line changes)
+
+| Topic | Decision |
+|---|---|
+| Content | Reuses the Static Content fields: **headline** = `Static_Content_Header__c`, **overlay text** = `Static_Content__c` (tags, headings, links), buttons + placement + size from Phase 3. |
+| Width | Fills its zone (the zone decides width). Image is `object-fit: cover`. |
+| Height | `Hero_Height__c`: Short (12rem), **Medium (20rem, default)**, Tall (30rem). `min-height`, so long text never clips. Smaller on phones. |
+| Text position | `Hero_Text_Position__c`: **Left (default)**, Center, Right; vertically centered. |
+| Overlay | `Hero_Overlay__c`: Light, **Medium (default)**, Strong. **No "none"**, so white text keeps usable contrast. Help text: use Strong for light or busy photos. |
+| Mobile image | Optional second upload (`-hero-mobile`); shown with `<picture>` below 48em. |
+| No image yet | Solid brand purple, so text is still legible and the widget works before S3 is configured. |
+| Alt text | Required in the editor once an image exists; an image without alt text is rendered as decorative (`alt=""`). |
+| Image sizes | Desktop crop **1600x600**; mobile crop **800x640**. |
+| Cache | The server appends `?v=<widget SystemModstamp ms>` so a replaced image is not served stale (S3 key never changes). |
+| Image URL safety | Server accepts `https:` only, no whitespace/quotes/angle brackets/commas/backslash; the browser CSP (`img-src`) is the second wall. |
+| Class access | `UST_Portal_Widget_Admin` was missing `PortalButtons` (called directly by the Phase 3 editor): added in this phase. |
+
+### Known limitation
+
+Links inside the rich text on a hero keep the browser's default link color because `lightning-formatted-rich-text`
+cannot be styled from outside; use a button for calls to action on a hero.
+
+### Phase 4 — as built
+
+| Piece | Where |
+|---|---|
+| Fields `Hero_Image_URL__c`, `Hero_Mobile_Image_URL__c` (Url), `Hero_Alt_Text__c`, `Hero_Height__c` (short/**medium**/tall), `Hero_Text_Position__c` (**left**/center/right), `Hero_Overlay__c` (light/**medium**/strong); `Component_Name__c` value `ust_hero_banner`; admin (edit) and guest (read) permission sets | `objects/UST_Portal_Widget__c/fields/` |
+| Image-address allowlist, cache-busting `?v=`, defaults, alt text; `getHeroImages` for the editor (100% coverage, 10 tests) | `classes/PortalHero.cls`, `tests/default/classes/PortalHero_TEST.cls` |
+| Controller adds `hero` to the DTO for hero widgets only; headline, text, and buttons use the existing tag and button handling | `classes/PortalWidgetController.cls` |
+| Banner renderer: picture + optional mobile `<picture>` source, dark layer, text position, brand-colour fallback, load-error fallback (16 tests) | `lwc/ustHeroBanner/` |
+| "Over a picture" styling (white text, readable outline buttons) added to the shared renderers | `lwc/ustStaticContent/`, `lwc/ustWidgetButtons/` (`overImage`) |
+| Zone registry entry and template branch | `lwc/ustWidgetZone/` (3 render tests) |
+| Editor: Hero section with the two S3 uploaders, alt text, height, position, overlay, hero preview, alt-text gate; Reset now also restores the header | `lwc/ustWidgetRecordEditor/` (15 new tests) |
+| Jest stand-in for the uploader dependency (outside `force-app`, never deployed) and its `moduleNameMapper` | `jest-stubs/awsS3DirectoryImage/`, `jest.config.js` |
+| `UST_Portal_Widget_Admin` also grants `PortalButtons` (missed in Phase 3) and `PortalHero` | `permissionsets/` |
+
+**Verified in the dev org.** Real Experience Builder render of the Home page with a sample picture (served from a
+temporary scratch-only CSP entry that was removed again): picture loaded, `object-fit: cover`, mobile `<source>` for
+`max-width: 767px`, alt text, white 40px headline with the tag resolved, both buttons legible (solid + outline),
+portal link `/alumni/alumni-directory`. Editor on the record page: both uploaders are the real dependency component
+with the right suffix and crop size, no image-URL field is on the form, labels read Headline and Overlay text, the
+panel style is hidden, and **Save leaves the two image addresses untouched** (changed the overlay, saved, queried).
+Jest 272/272; Apex hero/buttons/tags/registry/controller tests green; org-wide Apex failures unchanged at 80
+(environmental); Code Analyzer: no High findings. The test widget was restored to its exact original values.
+
+**NOT verified: an actual upload.** The dev org's `AWS_S3_Directory_Image` Named Credential still has the
+placeholder URL, and the uploader returns `AWS S3 request failed: received status 503`. The bucket is named "prod",
+so no test objects were uploaded. Remaining checks once the credential points at a bucket you are happy to test in:
+upload a desktop and a mobile picture, confirm both addresses appear in the preview and on the record, replace one
+and confirm the new picture shows (cache-busting), delete one, and confirm the `?v=` address works against the real
+bucket policy.
+
+**Findings that shaped the build (do not rediscover).**
+- **LWC reserves property names starting with `on`** (LWC1108), like `data`; the "shown over a picture" property is
+  `overImage`.
+- **The uploader needs a saved widget** (it uses the record Id). A new, unsaved widget shows "Save the widget first".
+- **The uploader's `lightning__refresh` event bubbles and would reload the record page** (losing unsaved edits); the
+  editor stops it at its own boundary and re-reads only the two addresses (`PortalHero.getHeroImages`, not
+  cacheable).
+- **Mock call history leaks between Jest tests** unless cleared; the new tests clear `getHeroImages` in `beforeEach`.
+- **The Salesforce CLI mangles JSON in `--values`** for `sf data update record`; use anonymous Apex for such updates.
+- The hero reuses the Static Content fields for headline, text, and buttons, so the existing "Preview as a guest"
+  switch, tags, and button rules all work on a hero without extra code.
+
+**Setup per org before pictures can be uploaded** (cannot be automated: secrets and environment-specific):
+1. Set the Named Credential `AWS S3 Directory Image` **Url** to the bucket (`https://<bucket>.s3.<region>.amazonaws.com`).
+2. Set the CSP trusted site `AWS_S3_Directory_Image` to the same bucket URL with **img-src** checked (and any other
+   host that will serve the pictures, such as a CloudFront domain).
+3. Enter the AWS Access Key and Secret on the External Credential principal (Named Principal).
+4. Assign `AWS_S3_Directory_Image` (from the dependency) **and** `UST_Portal_Widget_Admin` to widget admins. `config_dev`
+   already assigns both to System Administrators.
+5. Republish the site after changing CSP or permission sets, and give each hero widget a Hero Image Field FLS (done in
+   `UST_Portal_Widget_Admin` and the guest set).
+
+**Known limits / follow-ups.**
+- Links typed inside the overlay text keep the browser link colour (use a button for calls to action).
+- The S3 tool always saves PNG (large files for photos), keeps the same file name when replacing (handled here with
+  `?v=`, but not for other uses of the tool), and has no responsive sizes or CDN. Candidate changes in the tool repo:
+  JPEG ~0.85 for photos, a versioned file name, and a second size.
+- Inline images in Static Content are still not supported (see the decision above).
+- A hero is as wide as its zone; full-bleed width depends on where the zone sits in the page template.
+- The alt-text rule blocks Save when a picture exists; a "decorative image" option could be added if needed.
 
 ---
 
@@ -534,4 +623,4 @@ Not started; design notes only.
 - [x] Phase 1 — spikes (insert-at-cursor works; portal links = relative paths via GenerateUrl; picker = site menu + typed path)
 - [x] Phase 2 — data tags (done 2026-10-15; see "Phase 2 — as built")
 - [x] Phase 3 — buttons (done 2026-10-15; see "Phase 3 — as built")
-- [ ] Phase 4 — hero widget + S3 (design only)
+- [x] Phase 4 — hero widget + S3 built and verified except real uploads (blocked on the S3 credential; see "Phase 4 — as built")

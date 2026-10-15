@@ -3,6 +3,13 @@ import UstWidgetRecordEditor from 'c/ustWidgetRecordEditor';
 
 import getPlacements from '@salesforce/apex/PortalPageRegistry.getPlacements';
 import getTagDefinitions from '@salesforce/apex/PortalDataTags.getTagDefinitions';
+import getHeroImages from '@salesforce/apex/PortalHero.getHeroImages';
+
+jest.mock(
+    '@salesforce/apex/PortalHero.getHeroImages',
+    () => ({ default: jest.fn() }),
+    { virtual: true }
+);
 
 jest.mock(
     '@salesforce/apex/PortalButtons.getPortalLinkSuggestions',
@@ -67,6 +74,8 @@ function flushPromises() {
 describe('c-ust-widget-record-editor', () => {
     beforeEach(() => {
         getPlacements.mockResolvedValue([]);
+        getHeroImages.mockClear();
+        getHeroImages.mockResolvedValue({ imageUrl: 'https://x.edu/desktop.png', mobileImageUrl: 'https://x.edu/mobile.png' });
     });
 
     afterEach(() => {
@@ -408,6 +417,230 @@ describe('c-ust-widget-record-editor', () => {
         loadRecord(element, { Component_Name__c: 'ust_static_content', Static_Content__c: '<p>Plain</p>', Buttons_JSON__c: STORED_BUTTONS });
         await flushPromises();
         expect(guestCheckbox(element)).not.toBeNull();
+    });
+
+    describe('hero banner', () => {
+        const HERO_RECORD = {
+            Component_Name__c: 'ust_hero_banner',
+            Page_Context__c: 'home',
+            Static_Content_Header__c: 'Welcome',
+            Static_Content__c: '<p>Hi</p>',
+            Hero_Alt_Text__c: 'The quad',
+            Hero_Height__c: 'tall',
+            Hero_Text_Position__c: 'center',
+            Hero_Overlay__c: 'strong'
+        };
+
+        function uploaders(element) {
+            return Array.from(element.shadowRoot.querySelectorAll('c-aws-s3-directory-image'));
+        }
+
+        function submit(element, fields = { Name: 'Widget' }) {
+            const form = getForm(element);
+            form.submit = jest.fn();
+            form.dispatchEvent(new CustomEvent('submit', { detail: { fields }, cancelable: true }));
+            return form;
+        }
+
+        it('shows the hero section and no panel style for hero widgets, and neither for static content', async () => {
+            const hero = createEditor();
+            loadRecord(hero, HERO_RECORD);
+            await flushPromises();
+            expect(hero.shadowRoot.textContent).toContain('Hero Banner');
+            expect(getInputField(hero, 'Hero_Alt_Text__c')).toBeDefined();
+            expect(getInputField(hero, 'Content_CSS_Class__c')).toBeUndefined();
+
+            const plain = createEditor();
+            loadRecord(plain, { Component_Name__c: 'ust_static_content' });
+            await flushPromises();
+            expect(getInputField(plain, 'Hero_Alt_Text__c')).toBeUndefined();
+            expect(uploaders(plain)).toHaveLength(0);
+            expect(getInputField(plain, 'Content_CSS_Class__c')).toBeDefined();
+        });
+
+        it('labels the text fields for a hero and for static content', async () => {
+            const hero = createEditor();
+            loadRecord(hero, HERO_RECORD);
+            await flushPromises();
+            expect(hero.shadowRoot.querySelector('c-ust-data-tag-input').label).toBe('Headline');
+            expect(hero.shadowRoot.querySelector('c-ust-rich-text-editor').label).toBe('Overlay text');
+
+            const plain = createEditor();
+            loadRecord(plain, { Component_Name__c: 'ust_static_content' });
+            await flushPromises();
+            expect(plain.shadowRoot.querySelector('c-ust-data-tag-input').label).toBe('Static Content Header');
+        });
+
+        it('configures both uploaders with the record, a file-name suffix, and a crop size', async () => {
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+
+            const [desktop, mobile] = uploaders(element);
+            expect(desktop).toMatchObject({ recordId: RECORD_ID, imageField: 'Hero_Image_URL__c', fileNameSuffix: '-hero', imageMaxWidth: 1600, imageMaxHeight: 600, imageMode: 'crop' });
+            expect(mobile).toMatchObject({ recordId: RECORD_ID, imageField: 'Hero_Mobile_Image_URL__c', fileNameSuffix: '-hero-mobile', imageMaxWidth: 800, imageMaxHeight: 640, imageMode: 'crop' });
+            // The S3 tool writes the literal text "null" into the file name when no suffix is given.
+            expect(desktop.fileNameSuffix).toBeTruthy();
+            expect(mobile.fileNameSuffix).toBeTruthy();
+            expect(desktop.fileNameSuffix).not.toBe(mobile.fileNameSuffix);
+        });
+
+        it('asks the user to save first when the widget does not exist yet', async () => {
+            const element = createEditor('');
+            getForm(element).dispatchEvent(new CustomEvent('load', { detail: { records: {} } }));
+            getInputField(element, 'Component_Name__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'ust_hero_banner' } }));
+            await flushPromises();
+
+            expect(uploaders(element)).toHaveLength(0);
+            expect(element.shadowRoot.textContent).toContain('Save the widget first');
+            expect(getHeroImages).not.toHaveBeenCalled();
+        });
+
+        it('reads the saved picture addresses when the widget loads, and shows them in a hero preview', async () => {
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+            await flushPromises();
+
+            expect(getHeroImages).toHaveBeenCalledWith({ widgetId: RECORD_ID });
+            const preview = element.shadowRoot.querySelector('c-ust-hero-banner');
+            expect(preview).not.toBeNull();
+            expect(preview.previewMode).toBe(true);
+            expect(preview.hero.imageUrl).toMatch(/^https:\/\/x\.edu\/desktop\.png\?t=\d+$/);
+            expect(preview.hero.mobileImageUrl).toMatch(/^https:\/\/x\.edu\/mobile\.png\?t=\d+$/);
+            expect(preview.hero).toMatchObject({ altText: 'The quad', height: 'tall', textPosition: 'center', overlay: 'strong' });
+            expect(preview.textHeader).toBe('Welcome');
+            expect(preview.richTextContent).toBe('<p>Hi</p>');
+            expect(element.shadowRoot.querySelector('c-ust-static-content')).toBeNull();
+        });
+
+        it('does not ask for pictures more than once on repeated loads', async () => {
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+            expect(getHeroImages).toHaveBeenCalledTimes(1);
+        });
+
+        it('updates the preview as the look settings change', async () => {
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+
+            getInputField(element, 'Hero_Height__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'short' } }));
+            getInputField(element, 'Hero_Text_Position__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'right' } }));
+            getInputField(element, 'Hero_Overlay__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'light' } }));
+            getInputField(element, 'Hero_Alt_Text__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'New alt' } }));
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero).toMatchObject({
+                height: 'short', textPosition: 'right', overlay: 'light', altText: 'New alt'
+            });
+        });
+
+        it('re-reads the addresses after an upload and keeps the refresh event from reaching the page', async () => {
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+            await flushPromises();
+            getHeroImages.mockClear();
+            getHeroImages.mockResolvedValue({ imageUrl: 'https://x.edu/new.png', mobileImageUrl: null });
+            const pageListener = jest.fn();
+            element.addEventListener('lightning__refresh', pageListener);
+
+            uploaders(element)[0].dispatchEvent(new CustomEvent('lightning__refresh', { bubbles: true, composed: true }));
+            await flushPromises();
+            await flushPromises();
+
+            expect(getHeroImages).toHaveBeenCalledWith({ widgetId: RECORD_ID });
+            expect(pageListener).not.toHaveBeenCalled();
+            const hero = element.shadowRoot.querySelector('c-ust-hero-banner').hero;
+            expect(hero.imageUrl).toMatch(/^https:\/\/x\.edu\/new\.png\?t=\d+$/);
+            expect(hero.mobileImageUrl).toBe('');
+        });
+
+        it('keeps the picture addresses out of the Save payload so a save cannot overwrite an upload', async () => {
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+            await flushPromises();
+
+            const form = submit(element, { Name: 'Widget', Hero_Alt_Text__c: 'The quad' });
+
+            const saved = form.submit.mock.calls[0][0];
+            expect(saved).not.toHaveProperty('Hero_Image_URL__c');
+            expect(saved).not.toHaveProperty('Hero_Mobile_Image_URL__c');
+            expect(getInputField(element, 'Hero_Image_URL__c')).toBeUndefined();
+            expect(getInputField(element, 'Hero_Mobile_Image_URL__c')).toBeUndefined();
+            expect(saved.Static_Content_Header__c).toBe('Welcome');
+        });
+
+        it('blocks Save and explains why when a picture has no alt text', async () => {
+            const element = createEditor();
+            loadRecord(element, { ...HERO_RECORD, Hero_Alt_Text__c: '' });
+            await flushPromises();
+            await flushPromises();
+            const toastHandler = jest.fn();
+            element.addEventListener('lightning__showtoast', toastHandler);
+
+            expect(element.shadowRoot.textContent).toContain('Alt text is required before you can save');
+            const form = submit(element);
+
+            expect(form.submit).not.toHaveBeenCalled();
+            expect(toastHandler.mock.calls[0][0].detail.title).toBe('Describe the picture');
+        });
+
+        it('allows Save without alt text when there is no picture yet', async () => {
+            getHeroImages.mockResolvedValue({ imageUrl: null, mobileImageUrl: null });
+            const element = createEditor();
+            loadRecord(element, { ...HERO_RECORD, Hero_Alt_Text__c: '' });
+            await flushPromises();
+            await flushPromises();
+
+            const form = submit(element);
+
+            expect(form.submit).toHaveBeenCalledTimes(1);
+            expect(element.shadowRoot.textContent).not.toContain('Alt text is required');
+        });
+
+        it('shows a preview without a picture when none has been uploaded', async () => {
+            getHeroImages.mockResolvedValue({ imageUrl: null, mobileImageUrl: null });
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.imageUrl).toBe('');
+        });
+
+        it('loads pictures when an existing widget is changed to a Hero Banner', async () => {
+            const element = createEditor();
+            loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
+            await flushPromises();
+            expect(getHeroImages).not.toHaveBeenCalled();
+
+            getInputField(element, 'Component_Name__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'ust_hero_banner' } }));
+            await flushPromises();
+
+            expect(getHeroImages).toHaveBeenCalledTimes(1);
+            expect(uploaders(element)).toHaveLength(2);
+        });
+
+        it('Reset puts the headline and the hero settings back', async () => {
+            const element = createEditor();
+            loadRecord(element, HERO_RECORD);
+            await flushPromises();
+            element.shadowRoot.querySelector('c-ust-data-tag-input').dispatchEvent(new CustomEvent('change', { detail: { value: 'Changed headline' } }));
+            getInputField(element, 'Hero_Height__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'short' } }));
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').textHeader).toBe('Changed headline');
+
+            Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find((button) => button.label === 'Reset').click();
+            await flushPromises();
+
+            const preview = element.shadowRoot.querySelector('c-ust-hero-banner');
+            expect(preview.textHeader).toBe('Welcome');
+            expect(preview.hero.height).toBe('tall');
+        });
     });
 
     it('shows a success toast after saving', async () => {

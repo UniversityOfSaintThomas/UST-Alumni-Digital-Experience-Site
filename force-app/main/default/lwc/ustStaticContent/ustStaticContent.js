@@ -48,6 +48,9 @@ export default class UstStaticContent extends LightningElement {
     /** True in the admin editor preview: buttons are drawn but never navigate. */
     @api previewMode = false;
 
+    /** True when shown over a picture (the Hero Banner): light text, light-outline buttons. */
+    @api overImage = false;
+
     /** Returns true only when there is content or at least one button to render. */
     get hasContent() {
         return !!this.richTextContent || this.hasButtons;
@@ -74,7 +77,7 @@ export default class UstStaticContent extends LightningElement {
 
     /** Wrapper classes: the base class plus the chosen style when it is on the allowlist. */
     get wrapperClass() {
-        const base = 'ust-static-content';
+        const base = this.overImage ? 'ust-static-content ust-on-image' : 'ust-static-content';
         return ALLOWED_CONTENT_CLASSES.includes(this.contentClass)
             ? base + ' ' + this.contentClass
             : base;

@@ -43,6 +43,9 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
     /** When true (the admin editor preview) clicks never navigate. */
     @api previewMode = false;
 
+    /** True over a picture (Hero Banner): outline and text-link buttons turn white to stay readable. */
+    @api overImage = false;
+
     _buttons = [];
     _connected = false;
     portalHrefs = {};
@@ -78,7 +81,11 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
     }
 
     get containerClass() {
-        return SIZE_CLASSES.includes(this.buttonSize) ? 'ust-widget-buttons ' + this.buttonSize : 'ust-widget-buttons';
+        let classes = SIZE_CLASSES.includes(this.buttonSize) ? 'ust-widget-buttons ' + this.buttonSize : 'ust-widget-buttons';
+        if (this.overImage) {
+            classes += ' ust-buttons-on-image';
+        }
+        return classes;
     }
 
     /** Consecutive buttons with the same alignment share a row. */

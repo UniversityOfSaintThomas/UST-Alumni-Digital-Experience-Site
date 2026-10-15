@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Full-width banner: a picture (optional mobile picture) with a dark layer, plus the widget's headline, text, and buttons on top. Used by ustWidgetZone for the Hero Banner widget type.</description>
+</LightningComponentBundle>

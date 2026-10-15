@@ -83,6 +83,7 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 
 **Components:**
 - `ustPageContextPicker` - the page/zone-aware Page Context chooser used by the editor.
+- `ustHeroBanner` (the banner renderer for the Hero Banner type).
 - `ustWidgetButtonEditor` (add/edit/reorder/delete buttons), `ustWidgetButtons` (shared button renderer), `ustButtonRules` (shared link/validation rules).
 - `ustDataTagInput` - plain text input with the Insert data tag list (used for the header); `ustDataTags` - shared tag parsing/preview helpers.
 - `ustRichTextEditor` is listed below.
@@ -104,6 +105,35 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 - Known limitation: the Heading dropdown and class picker are not available through the standard (non-custom) page layout; use the record page
 
 ---
+
+---
+
+## Hero Banner
+
+**Purpose:** A large picture banner with a headline, text, and buttons on top, for the top of a page or a major announcement.
+
+**Widget Type value:** `ust_hero_banner`  
+**LWC:** `c-ust-hero-banner` (built)  
+**Zone-Ready:** Yes
+
+**How to use:**
+1. Create a `UST_Portal_Widget__c` record, set **Component Name** = `Hero Banner`, choose the Zone and Page Context, and **Save**. (Pictures need a saved widget.)
+2. In the **Hero Banner** section, upload a **desktop picture** (cropped to 1600 x 600). Optionally upload a **mobile picture** (cropped to 800 x 640) for phones. Pictures upload immediately and are not part of Save or Reset.
+3. Write **alt text** that describes the picture (required once a picture exists).
+4. Choose the **height** (Short, Medium, Tall), where the **text sits** (Left, Center, Right), and the **overlay** (Light, Medium, Strong). Use Strong for light or busy photos: the text is white, so there is no "no overlay" option.
+5. Write the **Headline**, the **Overlay text**, and add **buttons** in the Content section. Data tags, headings, buttons, placement, and size all work exactly as they do for Static Content. Buttons line up with the text position.
+6. The preview shows the banner as visitors will see it (buttons do not navigate in the preview).
+
+**Behavior:**
+- With no picture, or if the picture cannot be loaded, the banner shows a solid brand-purple background so the text stays readable.
+- A replaced picture shows right away: the address carries a version that changes whenever the widget is saved.
+- The picture fills the banner without stretching (it is cropped to fit).
+
+**Setup (once per org):** the S3 uploader needs the bucket configured. See "Phase 4 — as built" in `docs/WIDGET-AUTHORING-PLAN.md` for the five steps (Named Credential URL, CSP trusted site, AWS keys, permission sets, republish).
+
+**Data flow:**
+- `PortalWidgetController` adds a `hero` block (`PortalHero`) for hero widgets only: validated https picture addresses with a cache-busting version, alt text, and the look settings.
+- `ustWidgetZone` renders `<c-ust-hero-banner>`, which draws the picture and layers `ustStaticContent` on top for the headline, text, and buttons.
 
 ## 1. Profile Card
 

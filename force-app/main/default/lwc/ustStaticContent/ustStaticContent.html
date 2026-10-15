@@ -5,13 +5,13 @@
                 <h2 class="ust-static-content-header slds-text-heading_medium slds-p-bottom_small">{textHeader}</h2>
             </template>
             <template lwc:if={showButtonsAbove}>
-                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} preview-mode={previewMode}></c-ust-widget-buttons>
+                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} preview-mode={previewMode} over-image={overImage}></c-ust-widget-buttons>
             </template>
             <template lwc:if={hasRichText}>
                 <lightning-formatted-rich-text value={richTextContent}></lightning-formatted-rich-text>
             </template>
             <template lwc:if={showButtonsBelow}>
-                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} preview-mode={previewMode}></c-ust-widget-buttons>
+                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} preview-mode={previewMode} over-image={overImage}></c-ust-widget-buttons>
             </template>
         </div>
     </template>

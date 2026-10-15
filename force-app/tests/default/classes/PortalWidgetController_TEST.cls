@@ -177,6 +177,50 @@ private class PortalWidgetController_TEST {
     }
 
     @IsTest
+    static void heroBannerWidgetsCarryPictureSettingsAndTheSameTextAndButtons() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c widget = buildWidget('Hero', zone, pageContext);
+        widget.Component_Name__c = 'ust_hero_banner';
+        widget.Static_Content_Header__c = 'Welcome, {{First_Name|friend}}';
+        widget.Hero_Image_URL__c = 'https://x.edu/hero.png';
+        widget.Hero_Alt_Text__c = 'The quad in autumn';
+        widget.Hero_Height__c = 'tall';
+        widget.Hero_Text_Position__c = 'center';
+        widget.Hero_Overlay__c = 'strong';
+        widget.Buttons_JSON__c = '{"buttons":[{"label":"Visit","type":"portal","url":"/alumni-directory"}]}';
+        insert widget;
+        PortalDataTags.testValues = new Map<String, String>{ 'first_name' => 'Jordan' };
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(1, results.size(), 'The hero is returned');
+        System.assertNotEquals(null, results[0].hero, 'Hero settings are present');
+        System.assert(results[0].hero.imageUrl.startsWith('https://x.edu/hero.png?v='), 'Image is versioned: ' + results[0].hero.imageUrl);
+        System.assertEquals('The quad in autumn', results[0].hero.altText, 'Alt text');
+        System.assertEquals('tall', results[0].hero.height, 'Height');
+        System.assertEquals('center', results[0].hero.textPosition, 'Text position');
+        System.assertEquals('strong', results[0].hero.overlay, 'Overlay');
+        System.assertEquals('Welcome, Jordan', results[0].staticContentHeader, 'Headline resolves tags like Static Content');
+        System.assertEquals(1, results[0].buttons.size(), 'Buttons come through');
+    }
+
+    @IsTest
+    static void otherWidgetTypesDoNotCarryHeroSettings() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c widget = buildWidget('Static', zone, pageContext);
+        widget.Hero_Image_URL__c = 'https://x.edu/hero.png';
+        insert widget;
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(null, results[0].hero, 'Only hero widgets receive a hero block');
+    }
+
+    @IsTest
     static void inactiveWidgetsAreExcluded() {
         String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
         String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);

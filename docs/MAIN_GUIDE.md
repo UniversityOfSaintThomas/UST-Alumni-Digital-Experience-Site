@@ -223,6 +223,7 @@ force-app/main/default/
     ustDataTags/        # Shared {{data tag}} helpers (parse, unknown-tag check, preview)
     ustWidgetButtonEditor/ # Add/edit/reorder/delete call-to-action buttons (widget editor)
     ustWidgetButtons/   # Shared button renderer (real links, portal paths, safe new-tab)
+    ustHeroBanner/      # Hero Banner widget: picture + dark layer + headline/text/buttons
     ustButtonRules/     # Shared button rules: options, link validation, JSON format
     ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
   classes/              # Apex controllers
@@ -231,6 +232,7 @@ force-app/main/default/
     PortalPageRegistry  # Records which zones exist on which pages (written from Experience Builder only)
     PortalDataTags      # {{Tag|fallback}} personalization resolver (Alumni Directory values)
     PortalButtons       # Cleans/validates stored button JSON; site page suggestions for the editor
+    PortalHero          # Hero Banner picture settings: https-only addresses, cache-busting, defaults
   objects/              # Custom object and field metadata
     UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
   permissionsets/       # Permission sets for community users and admins

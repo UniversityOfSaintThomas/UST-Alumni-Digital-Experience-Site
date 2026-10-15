@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hero_Text_Position__c</fullName>
+    <description>Where the headline, text, and buttons sit on the hero image (horizontal). Always vertically centered.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Where the text sits on the picture.</inlineHelpText>
+    <label>Hero Text Position</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>left</fullName><default>true</default><label>Left</label></value>
+            <value><fullName>center</fullName><default>false</default><label>Center</label></value>
+            <value><fullName>right</fullName><default>false</default><label>Right</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

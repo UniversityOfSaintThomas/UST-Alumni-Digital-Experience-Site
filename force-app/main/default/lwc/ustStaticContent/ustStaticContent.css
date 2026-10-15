@@ -43,3 +43,16 @@
 .ust-content-muted .ust-static-content-header {
     color: inherit;
 }
+
+/* ---- Over a picture (Hero Banner): white text with a soft shadow, larger headline ---- */
+.ust-on-image,
+.ust-on-image lightning-formatted-rich-text {
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+.ust-on-image .ust-static-content-header {
+    color: #ffffff;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.2;
+}

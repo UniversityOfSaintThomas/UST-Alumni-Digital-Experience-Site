@@ -25,6 +25,10 @@
  */
 public without sharing class PortalWidgetController {
 
+    /** Component_Name__c value of the Hero Banner widget. */
+    @TestVisible
+    private static final String HERO_COMPONENT_NAME = 'ust_hero_banner';
+
     /**
      * Returns widget configurations for the specified zone and page, filtered
      * to those matching the current user's contact data profile across all
@@ -64,6 +68,13 @@ public without sharing class PortalWidgetController {
                             Buttons_JSON__c,
                             Button_Placement__c,
                             Button_Size__c,
+                            SystemModstamp,
+                            Hero_Image_URL__c,
+                            Hero_Mobile_Image_URL__c,
+                            Hero_Alt_Text__c,
+                            Hero_Height__c,
+                            Hero_Text_Position__c,
+                            Hero_Overlay__c,
                             Filter_College__c,
                             Filter_Degree_Level__c,
                             Filter_St_Thomas_Connection__c,
@@ -112,6 +123,9 @@ public without sharing class PortalWidgetController {
                     dto.buttons = PortalButtons.prepare(widget.Buttons_JSON__c, tagValues);
                     dto.buttonPlacement = PortalButtons.normalizePlacement(widget.Button_Placement__c);
                     dto.buttonSize = PortalButtons.normalizeSize(widget.Button_Size__c);
+                    if (widget.Component_Name__c == HERO_COMPONENT_NAME) {
+                        dto.hero = PortalHero.prepare(widget);
+                    }
                     dto.isStaticContent = String.isNotBlank(widget.Static_Content__c)
                             || String.isNotBlank(widget.Static_Content_Header__c)
                             || !dto.buttons.isEmpty();
@@ -369,6 +383,8 @@ public without sharing class PortalWidgetController {
         @AuraEnabled public String buttonPlacement;
         /** Allowlisted size class, or empty */
         @AuraEnabled public String buttonSize;
+        /** Picture settings; only set when componentName is the Hero Banner */
+        @AuraEnabled public PortalHero.HeroDto hero;
         @AuraEnabled public Boolean isStaticContent;
 
     }

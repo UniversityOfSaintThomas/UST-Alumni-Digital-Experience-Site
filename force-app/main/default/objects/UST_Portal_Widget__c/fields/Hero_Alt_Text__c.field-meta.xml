@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hero_Alt_Text__c</fullName>
+    <description>Text description of the hero image for screen readers. Required by the editor when an image is present. When blank, the image is treated as decorative (empty alt text).</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Describe the picture for people who cannot see it. Leave blank only if the image is purely decorative.</inlineHelpText>
+    <label>Hero Alt Text</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -64,6 +64,17 @@
                         </c-ust-static-content>
                     </template>
 
+                    <template lwc:elseif={widget.isHeroBanner}>
+                        <c-ust-hero-banner
+                            hero={widget.hero}
+                            rich-text-content={widget.staticContent}
+                            text-header={widget.staticContentHeader}
+                            buttons={widget.buttons}
+                            button-placement={widget.buttonPlacement}
+                            button-size={widget.buttonSize}>
+                        </c-ust-hero-banner>
+                    </template>
+
                     <!--
                     <template lwc:elseif={widget.isProfileCard}>
                         <c-ust-profile-card

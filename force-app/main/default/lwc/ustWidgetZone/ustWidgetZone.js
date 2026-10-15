@@ -33,6 +33,7 @@ import registerPlacement from '@salesforce/apex/PortalPageRegistry.registerPlace
  */
 const WIDGET_REGISTRY = {
     ust_static_content: 'isStaticContent',
+    ust_hero_banner: 'isHeroBanner',
     // ust_profile_card:           'isProfileCard',
     // ust_events_widget:          'isEventsWidget',
     // ust_give_widget:            'isGiveWidget',
@@ -166,6 +167,7 @@ export default class UstWidgetZone extends LightningElement {
                 buttons: item.buttons,
                 buttonPlacement: item.buttonPlacement,
                 buttonSize: item.buttonSize,
+                hero: item.hero,
                 ...flags
             };
         });

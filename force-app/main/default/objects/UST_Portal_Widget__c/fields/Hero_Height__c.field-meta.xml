@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hero_Height__c</fullName>
+    <description>Minimum height of the hero banner. Values are allowlisted in ustHeroBanner.js and sized in ustHeroBanner.css. To add one: add a picklist value, list it in HEIGHTS in the JS, add its rule in the CSS.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>How tall the banner is. The banner grows if the text needs more room.</inlineHelpText>
+    <label>Hero Height</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>short</fullName><default>false</default><label>Short</label></value>
+            <value><fullName>medium</fullName><default>true</default><label>Medium</label></value>
+            <value><fullName>tall</fullName><default>false</default><label>Tall</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

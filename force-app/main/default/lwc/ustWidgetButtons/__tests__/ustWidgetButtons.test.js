@@ -180,6 +180,13 @@ describe('c-ust-widget-buttons', () => {
         expect(bogus.shadowRoot.querySelector('.ust-widget-buttons').className).toBe('ust-widget-buttons');
     });
 
+    it('adds the over-picture class only when asked', async () => {
+        const plain = await createRenderer({ buttons: [button()] });
+        expect(plain.shadowRoot.querySelector('.ust-widget-buttons').className).not.toContain('ust-buttons-on-image');
+        const overImage = await createRenderer({ buttons: [button()], overImage: true });
+        expect(overImage.shadowRoot.querySelector('.ust-widget-buttons').className).toContain('ust-buttons-on-image');
+    });
+
     it('draws buttons in preview mode without links that go anywhere', async () => {
         const element = await createRenderer({
             previewMode: true,
