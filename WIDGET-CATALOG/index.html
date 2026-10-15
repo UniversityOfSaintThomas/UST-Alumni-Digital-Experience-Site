@@ -589,6 +589,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#hero-banner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hero Banner
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#1-profile-card" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -895,6 +906,17 @@
     <span class="md-ellipsis">
       
         Static Content
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hero-banner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hero Banner
       
     </span>
   </a>
@@ -1361,6 +1383,7 @@
 <p><strong>Zone and page targeting:</strong> The editor's <strong>Page Context</strong> picker only offers pages that have the selected zone. It reads the <code>UST_Portal_Zone_Placement__c</code> registry, which <code>ustWidgetZone</code> keeps current by registering itself whenever an admin opens a page in Experience Builder (never for site visitors). Changing the zone removes known pages that lack it, with an Undo. Pages not yet registered can be typed in by page API name (lowercase, for example <code>my_account__c</code>). Admins need the <code>UST_Portal_Widget_Admin</code> permission set for registration to work. The <code>banner</code> and <code>above_footer</code> zones live in the shared theme layout (set <code>Zone Scope</code> = Layout on any zone placed there) and count as present on every page. See <code>docs/WIDGET-AUTHORING-PLAN.md</code>.</p>
 <p><strong>Components:</strong>
 - <code>ustPageContextPicker</code> - the page/zone-aware Page Context chooser used by the editor.
+- <code>ustHeroBanner</code> (the banner renderer for the Hero Banner type).
 - <code>ustWidgetButtonEditor</code> (add/edit/reorder/delete buttons), <code>ustWidgetButtons</code> (shared button renderer), <code>ustButtonRules</code> (shared link/validation rules).
 - <code>ustDataTagInput</code> - plain text input with the Insert data tag list (used for the header); <code>ustDataTags</code> - shared tag parsing/preview helpers.
 - <code>ustRichTextEditor</code> is listed below.
@@ -1379,6 +1402,27 @@
 - After a JS-only deploy, Lightning may serve a stale bundle: clear IndexedDB / Cache Storage and reload twice (about 20 seconds apart)
 - Known limitation: the Heading dropdown and class picker are not available through the standard (non-custom) page layout; use the record page</p>
 <hr />
+<hr />
+<h2 id="hero-banner">Hero Banner<a class="headerlink" href="#hero-banner" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose:</strong> A large picture banner with a headline, text, and buttons on top, for the top of a page or a major announcement.</p>
+<p><strong>Widget Type value:</strong> <code>ust_hero_banner</code><br />
+<strong>LWC:</strong> <code>c-ust-hero-banner</code> (built)<br />
+<strong>Zone-Ready:</strong> Yes</p>
+<p><strong>How to use:</strong>
+1. Create a <code>UST_Portal_Widget__c</code> record, set <strong>Component Name</strong> = <code>Hero Banner</code>, choose the Zone and Page Context, and <strong>Save</strong>. (Pictures need a saved widget.)
+2. In the <strong>Hero Banner</strong> section, upload a <strong>desktop picture</strong> (cropped to 1600 x 600). Optionally upload a <strong>mobile picture</strong> (cropped to 800 x 640) for phones. Pictures upload immediately and are not part of Save or Reset.
+3. Write <strong>alt text</strong> that describes the picture (required once a picture exists).
+4. Choose the <strong>height</strong> (Short, Medium, Tall), where the <strong>text sits</strong> (Left, Center, Right), and the <strong>overlay</strong> (Light, Medium, Strong). Use Strong for light or busy photos: the text is white, so there is no "no overlay" option.
+5. Write the <strong>Headline</strong>, the <strong>Overlay text</strong>, and add <strong>buttons</strong> in the Content section. Data tags, headings, buttons, placement, and size all work exactly as they do for Static Content. Buttons line up with the text position.
+6. The preview shows the banner as visitors will see it (buttons do not navigate in the preview).</p>
+<p><strong>Behavior:</strong>
+- With no picture, or if the picture cannot be loaded, the banner shows a solid brand-purple background so the text stays readable.
+- A replaced picture shows right away: the address carries a version that changes whenever the widget is saved.
+- The picture fills the banner without stretching (it is cropped to fit).</p>
+<p><strong>Setup (once per org):</strong> the S3 uploader needs the bucket configured. See "Phase 4 — as built" in <code>docs/WIDGET-AUTHORING-PLAN.md</code> for the five steps (Named Credential URL, CSP trusted site, AWS keys, permission sets, republish).</p>
+<p><strong>Data flow:</strong>
+- <code>PortalWidgetController</code> adds a <code>hero</code> block (<code>PortalHero</code>) for hero widgets only: validated https picture addresses with a cache-busting version, alt text, and the look settings.
+- <code>ustWidgetZone</code> renders <code>&lt;c-ust-hero-banner&gt;</code>, which draws the picture and layers <code>ustStaticContent</code> on top for the headline, text, and buttons.</p>
 <h2 id="1-profile-card">1. Profile Card<a class="headerlink" href="#1-profile-card" title="Permanent link">&para;</a></h2>
 <p><strong>Purpose:</strong> Surface the alumni's own information on the portal. Give them confidence the portal "knows" them and let them keep their record current.</p>
 <p><strong>Features:</strong>
