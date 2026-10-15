@@ -3,7 +3,6 @@
     <fullName>Hidden__c</fullName>
     <defaultValue>false</defaultValue>
     <description>Hide this placement from the Page Context picker (for example a page or zone that was removed from the site).</description>
-    <externalId>false</externalId>
     <inlineHelpText>Check to stop offering this page/zone in the Page Context picker.</inlineHelpText>
     <label>Hidden</label>
     <trackTrending>false</trackTrending>

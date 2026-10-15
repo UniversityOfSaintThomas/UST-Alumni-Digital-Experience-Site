@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Hero_Overlay__c</fullName>
-    <description>Strength of the dark layer between the picture and the white text, so the text stays readable. There is deliberately no "none" option. Use Strong for light or busy photos.</description>
-    <externalId>false</externalId>
+    <description>Strength of the dark layer between the picture and the white text, so the text stays readable. There is deliberately no &quot;none&quot; option. Use Strong for light or busy photos.</description>
     <inlineHelpText>Darkens the picture behind the text. Use Strong for light or busy photos.</inlineHelpText>
     <label>Hero Overlay</label>
     <required>false</required>
@@ -12,9 +11,21 @@
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
-            <value><fullName>light</fullName><default>false</default><label>Light</label></value>
-            <value><fullName>medium</fullName><default>true</default><label>Medium</label></value>
-            <value><fullName>strong</fullName><default>false</default><label>Strong</label></value>
+            <value>
+                <fullName>light</fullName>
+                <default>false</default>
+                <label>Light</label>
+            </value>
+            <value>
+                <fullName>medium</fullName>
+                <default>true</default>
+                <label>Medium</label>
+            </value>
+            <value>
+                <fullName>strong</fullName>
+                <default>false</default>
+                <label>Strong</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

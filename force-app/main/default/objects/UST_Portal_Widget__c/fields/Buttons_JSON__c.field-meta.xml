@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Buttons_JSON__c</fullName>
-    <description>Call-to-action buttons for this widget as versioned JSON: {"version":1,"buttons":[{id,label,type,url,newTab,style,align,icon}]}. Edited in the Portal Widget editor; validated and cleaned again in PortalButtons before it reaches the portal. Labels and URLs may contain {{data tags}}.</description>
-    <externalId>false</externalId>
+    <description>Call-to-action buttons for this widget as versioned JSON: {&quot;version&quot;:1,&quot;buttons&quot;:[{id,label,type,url,newTab,style,align,icon}]}. Edited in the Portal Widget editor; validated and cleaned again in PortalButtons before it reaches the portal. Labels and URLs may contain {{data tags}}.</description>
     <inlineHelpText>Managed by the Portal Widget editor. Edit buttons there, not here.</inlineHelpText>
     <label>Buttons JSON</label>
     <length>32768</length>

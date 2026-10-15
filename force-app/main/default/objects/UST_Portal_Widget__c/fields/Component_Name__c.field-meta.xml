@@ -41,14 +41,14 @@
                 <label>Events Widget</label>
             </value>
             <value>
-                <fullName>ust_hero_banner</fullName>
-                <default>false</default>
-                <label>Hero Banner</label>
-            </value>
-            <value>
                 <fullName>ust_give_widget</fullName>
                 <default>false</default>
                 <label>Give / Donor Widget</label>
+            </value>
+            <value>
+                <fullName>ust_hero_banner</fullName>
+                <default>false</default>
+                <label>Hero Banner</label>
             </value>
             <value>
                 <fullName>ust_links_hub</fullName>

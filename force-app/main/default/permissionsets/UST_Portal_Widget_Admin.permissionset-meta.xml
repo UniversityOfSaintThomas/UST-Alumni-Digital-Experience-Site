@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Lets admins create, edit, and delete Portal Widget records and Zone Placement registry records, with every editable field and both tabs. Required fields are always accessible and omitted.</description>
     <classAccesses>
         <apexClass>PortalButtons</apexClass>
         <enabled>true</enabled>
@@ -17,6 +16,7 @@
         <apexClass>PortalPageRegistry</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <description>Lets admins create, edit, and delete Portal Widget records and Zone Placement registry records, with every editable field and both tabs. Required fields are always accessible and omitted.</description>
     <fieldPermissions>
         <editable>true</editable>
         <field>UST_Portal_Widget__c.Button_Placement__c</field>
@@ -30,36 +30,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>UST_Portal_Widget__c.Buttons_JSON__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>UST_Portal_Widget__c.Hero_Alt_Text__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>UST_Portal_Widget__c.Hero_Height__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>UST_Portal_Widget__c.Hero_Image_URL__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>UST_Portal_Widget__c.Hero_Mobile_Image_URL__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>UST_Portal_Widget__c.Hero_Overlay__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>UST_Portal_Widget__c.Hero_Text_Position__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -129,6 +99,36 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>UST_Portal_Widget__c.Hero_Alt_Text__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Hero_Height__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Hero_Image_URL__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Hero_Mobile_Image_URL__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Hero_Overlay__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Hero_Text_Position__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>UST_Portal_Widget__c.Is_Active__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -139,12 +139,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>UST_Portal_Widget__c.Static_Content__c</field>
+        <field>UST_Portal_Widget__c.Static_Content_Header__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>UST_Portal_Widget__c.Static_Content_Header__c</field>
+        <field>UST_Portal_Widget__c.Static_Content__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

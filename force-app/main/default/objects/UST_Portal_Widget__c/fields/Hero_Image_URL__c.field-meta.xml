@@ -2,7 +2,6 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Hero_Image_URL__c</fullName>
     <description>Address of the hero banner image (desktop). Written by the S3 uploader (awsS3DirectoryImage) when an admin uploads an image in the Portal Widget editor. Not edited through the record form, so a later Save cannot overwrite a fresh upload. Only https addresses are shown on the portal.</description>
-    <externalId>false</externalId>
     <inlineHelpText>Set by the image upload in the Portal Widget editor.</inlineHelpText>
     <label>Hero Image URL</label>
     <required>false</required>

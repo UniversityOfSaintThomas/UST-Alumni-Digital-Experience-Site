@@ -2,7 +2,6 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Content_CSS_Class__c</fullName>
     <description>CSS class applied to the wrapper around the Static Content widget. Each value must have a matching rule in ustStaticContent.css. Leave blank for the default look. To add a style: add a picklist value here (API name = CSS class) AND a rule in ustStaticContent.css.</description>
-    <externalId>false</externalId>
     <inlineHelpText>Optional style applied to this whole widget. Leave blank for the default look.</inlineHelpText>
     <label>Content CSS Class</label>
     <required>false</required>

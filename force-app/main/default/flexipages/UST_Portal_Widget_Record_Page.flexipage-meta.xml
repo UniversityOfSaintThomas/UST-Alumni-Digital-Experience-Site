@@ -13,7 +13,7 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>c:ustWidgetRecordEditor</componentName>
+                <componentName>ustWidgetRecordEditor</componentName>
                 <identifier>c_ustWidgetRecordEditor</identifier>
             </componentInstance>
         </itemInstances>
