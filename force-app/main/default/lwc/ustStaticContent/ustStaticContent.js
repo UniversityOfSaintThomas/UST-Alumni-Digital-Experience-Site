@@ -36,9 +36,37 @@ export default class UstStaticContent extends LightningElement {
     /** Style class from Content_CSS_Class__c; must be one of ALLOWED_CONTENT_CLASSES. */
     @api contentClass;
 
-    /** Returns true only when there is content to render. */
+    /** Call-to-action buttons prepared by the server (see PortalButtons). */
+    @api buttons = [];
+
+    /** Above or Below the text; anything else means Below. */
+    @api buttonPlacement = 'Below';
+
+    /** Widget-wide button size class from Button_Size__c. */
+    @api buttonSize = '';
+
+    /** True in the admin editor preview: buttons are drawn but never navigate. */
+    @api previewMode = false;
+
+    /** Returns true only when there is content or at least one button to render. */
     get hasContent() {
+        return !!this.richTextContent || this.hasButtons;
+    }
+
+    get hasRichText() {
         return !!this.richTextContent;
+    }
+
+    get hasButtons() {
+        return Array.isArray(this.buttons) && this.buttons.length > 0;
+    }
+
+    get showButtonsAbove() {
+        return this.hasButtons && this.buttonPlacement === 'Above';
+    }
+
+    get showButtonsBelow() {
+        return this.hasButtons && this.buttonPlacement !== 'Above';
     }
     get hasHeader() {
         return !!this.textHeader;

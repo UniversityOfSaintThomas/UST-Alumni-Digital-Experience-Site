@@ -119,6 +119,64 @@ private class PortalWidgetController_TEST {
     }
 
     @IsTest
+    static void buttonsAreCleanedResolvedAndCarryPlacementAndSize() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c widget = buildWidget('Button widget', zone, pageContext);
+        widget.Button_Placement__c = 'Above';
+        widget.Button_Size__c = 'ust-buttons-wide';
+        widget.Buttons_JSON__c = '{"version":1,"buttons":['
+                + '{"id":"a","label":"Hi {{First_Name|friend}}","type":"external","url":"https://example.edu/f?id={{Banner_ID}}","style":"brand"},'
+                + '{"id":"b","label":"Bad","type":"external","url":"javascript:alert(1)"},'
+                + '{"id":"c","label":"Directory","type":"portal","url":"/alumni-directory"}]}';
+        insert widget;
+        PortalDataTags.testValues = new Map<String, String>{ 'first_name' => 'Jordan', 'banner_id' => 'A001' };
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(1, results.size(), 'The widget is returned');
+        System.assertEquals('Above', results[0].buttonPlacement, 'Placement');
+        System.assertEquals('ust-buttons-wide', results[0].buttonSize, 'Size');
+        System.assertEquals(2, results[0].buttons.size(), 'The unsafe button is dropped');
+        System.assertEquals('Hi Jordan', results[0].buttons[0].label, 'Label resolved');
+        System.assertEquals('https://example.edu/f?id=A001', results[0].buttons[0].url, 'URL resolved');
+        System.assertEquals('/alumni-directory', results[0].buttons[1].url, 'Portal path kept');
+    }
+
+    @IsTest
+    static void buttonDefaultsApplyAndAButtonOnlyWidgetStillRenders() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c widget = buildWidget('Buttons only', zone, pageContext);
+        widget.Static_Content__c = null;
+        widget.Static_Content_Header__c = null;
+        widget.Button_Placement__c = null;
+        widget.Button_Size__c = null;
+        widget.Buttons_JSON__c = '{"buttons":[{"label":"Go","type":"portal","url":"/go"}]}';
+        insert widget;
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals('Below', results[0].buttonPlacement, 'Blank placement means Below');
+        System.assertEquals('', results[0].buttonSize, 'Blank size');
+        System.assertEquals(true, results[0].isStaticContent, 'A widget with only buttons still renders');
+    }
+
+    @IsTest
+    static void widgetsWithoutButtonsReturnAnEmptyList() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        insert buildWidget('No buttons', zone, pageContext);
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assert(results[0].buttons.isEmpty(), 'No buttons stored, none returned');
+    }
+
+    @IsTest
     static void inactiveWidgetsAreExcluded() {
         String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
         String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);

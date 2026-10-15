@@ -61,6 +61,9 @@ public without sharing class PortalWidgetController {
                             Static_Content__c,
                             Static_Content_Header__c,
                             Content_CSS_Class__c,
+                            Buttons_JSON__c,
+                            Button_Placement__c,
+                            Button_Size__c,
                             Filter_College__c,
                             Filter_Degree_Level__c,
                             Filter_St_Thomas_Connection__c,
@@ -82,7 +85,8 @@ public without sharing class PortalWidgetController {
             Map<String, String> tagValues = new Map<String, String>();
             for (UST_Portal_Widget__c widget : candidateWidgets) {
                 if (PortalDataTags.containsTag(widget.Static_Content__c)
-                        || PortalDataTags.containsTag(widget.Static_Content_Header__c)) {
+                        || PortalDataTags.containsTag(widget.Static_Content_Header__c)
+                        || PortalButtons.containsTag(widget.Buttons_JSON__c)) {
                     tagValues = PortalDataTags.valuesForCurrentUser();
                     break;
                 }
@@ -105,7 +109,12 @@ public without sharing class PortalWidgetController {
                             ? PortalDataTags.resolve(widget.Static_Content_Header__c, tagValues, PortalDataTags.Mode.PLAIN_TEXT)
                             : '';
                     dto.contentCssClass = widget.Content_CSS_Class__c;
-                    dto.isStaticContent = String.isNotBlank(widget.Static_Content__c) || String.isNotBlank(widget.Static_Content_Header__c);
+                    dto.buttons = PortalButtons.prepare(widget.Buttons_JSON__c, tagValues);
+                    dto.buttonPlacement = PortalButtons.normalizePlacement(widget.Button_Placement__c);
+                    dto.buttonSize = PortalButtons.normalizeSize(widget.Button_Size__c);
+                    dto.isStaticContent = String.isNotBlank(widget.Static_Content__c)
+                            || String.isNotBlank(widget.Static_Content_Header__c)
+                            || !dto.buttons.isEmpty();
                     results.add(dto);
                 }
             }
@@ -354,6 +363,12 @@ public without sharing class PortalWidgetController {
         @AuraEnabled public String staticContentHeader;
         /** CSS class API name from Content_CSS_Class__c; styles the whole static content widget */
         @AuraEnabled public String contentCssClass;
+        /** Call-to-action buttons, cleaned and with data tags resolved for the current user */
+        @AuraEnabled public List<PortalButtons.ButtonDto> buttons;
+        /** Above or Below the text */
+        @AuraEnabled public String buttonPlacement;
+        /** Allowlisted size class, or empty */
+        @AuraEnabled public String buttonSize;
         @AuraEnabled public Boolean isStaticContent;
 
     }

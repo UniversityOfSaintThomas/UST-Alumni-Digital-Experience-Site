@@ -9,6 +9,11 @@
 
         <lightning-messages></lightning-messages>
 
+        <!-- Buttons_JSON__c is edited by the button editor, not by this form. This hidden input exists only
+             so the form requests the field when it loads the record (it is not on the page layout, and
+             lightning-record-edit-form returns only fields it is asked for). -->
+        <lightning-input-field class="slds-hide" field-name="Buttons_JSON__c" variant="label-hidden" aria-hidden="true" tabindex="-1"></lightning-input-field>
+
         <!-- Widget Setup -->
         <section class="ust-section" aria-labelledby="ust-setup-heading">
             <h2 id="ust-setup-heading" class="ust-section-title slds-text-heading_small">Widget Setup</h2>
@@ -56,6 +61,23 @@
                     onchange={handleEditorChange}>
                 </c-ust-rich-text-editor>
 
+                <div class="ust-buttons-block slds-m-top_medium">
+                    <c-ust-widget-button-editor
+                        value={buttonsJson}
+                        tag-definitions={dataTags}
+                        disabled={isSaving}
+                        onchange={handleButtonsChange}>
+                    </c-ust-widget-button-editor>
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-top_small">
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                            <lightning-input-field field-name="Button_Placement__c" onchange={handlePlacementChange}></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                            <lightning-input-field field-name="Button_Size__c" onchange={handleSizeChange}></lightning-input-field>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="ust-preview slds-m-top_medium">
                     <h3 class="ust-preview-title slds-text-title_caps">Preview (as shown on the portal)</h3>
                     <template lwc:if={hasTagsInContent}>
@@ -73,7 +95,11 @@
                         <c-ust-static-content
                             rich-text-content={previewContent}
                             text-header={previewHeader}
-                            content-class={contentClass}>
+                            content-class={contentClass}
+                            buttons={previewButtons}
+                            button-placement={buttonPlacement}
+                            button-size={buttonSize}
+                            preview-mode>
                         </c-ust-static-content>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 # Portal Widget Authoring Experience — Implementation Plan
 
-> Status: **Phases A, 0, 1 and 2 done. Phase 3 (buttons) approved, not started.** (Phase 0 committed by the owner; Phases 1–2 not yet committed.)
+> Status: **Phases A, 0, 1, 2 and 3 done. Phase 4 (hero widget + S3) is design only.** (Phases 0–2 committed by the owner; Phase 3 not yet committed.)
 > Recorded so context survives a session reset.
 > Created: 2026-10-14. Dev org: `UST-Alumni-Digital-Experience-Site__dev` (CCI alias `dev`), expires 2026-10-27.
 
@@ -424,14 +424,66 @@ text-destructive, neutral, success`. Alignment: `left, center, end`. Icon is opt
 - `ustWidgetButtons` (shared renderer): used by `ustStaticContent` now and the hero widget later.
 - Apex: parse/validate/sanitize JSON, drop invalid entries, resolve tags in label/url, return a clean list
   on `PortalWidgetDto`.
-- Widget content CSS classes get button-size rules so buttons stay consistent. **Open item:**
-  `Content_CSS_Class__c` is single-select; if a widget needs e.g. "Callout panel" *and* "wide buttons",
-  add a second picklist (e.g. `Button_Size_Class__c`) rather than multi-selecting.
+- Button size is its own picklist, `Button_Size__c`, **separate from `Content_CSS_Class__c`**, so a panel
+  style and a button size can be combined (resolved during the build; see "as built").
 
 ### Tests
 
 Apex: JSON sanitization, scheme allowlist, relative path rules, tag resolution in labels/URLs. Jest:
 editor add/edit/reorder/delete, renderer placement above/below, unsafe URL rejection.
+
+---
+
+## Phase 3 — as built (2026-10-15)
+
+Verified in the dev org: editor (browser), real Experience Builder render of the Home page (links, base path,
+click behaviour), server cleaning for signed-in vs guest (anonymous Apex), Jest 228/228, Apex registry/tags/
+buttons/controller all green, org-wide Apex failures unchanged at 80 (environmental), Code Analyzer: no High
+findings in shipped code.
+
+| Piece | Where |
+|---|---|
+| Fields `Buttons_JSON__c` (32k long text), `Button_Placement__c` (Below default / Above), `Button_Size__c` (`ust-buttons-wide` / `ust-buttons-full`), in the admin and guest permission sets | `objects/UST_Portal_Widget__c/fields/` |
+| Server cleaning + link allowlist + tag resolution + portal-link suggestions (98% coverage, 18 tests incl. `javascript:`, `//host`, backslash, tag-smuggling) | `classes/PortalButtons.cls`, `tests/default/classes/PortalButtons_TEST.cls` |
+| Controller returns `buttons`, `buttonPlacement`, `buttonSize`; a widget with only buttons still renders; tag lookup also triggers on button tags | `classes/PortalWidgetController.cls` |
+| Shared rules (options, validation, JSON format, preview resolution), mirrors Apex | `lwc/ustButtonRules/` |
+| Renderer: real `<a>` links, base path via `GenerateUrl`, safe new-tab, rows by alignment, size classes | `lwc/ustWidgetButtons/` |
+| Placement above/below the text | `lwc/ustStaticContent/`, `lwc/ustWidgetZone/` |
+| Editor: add / edit / reorder / delete, validation, site-page picker, open-draft guard | `lwc/ustWidgetButtonEditor/`, wired into `lwc/ustWidgetRecordEditor/` (preview uses `preview-mode`) |
+| `ustDataTags` gained `MODE_URL` + `urlEncode` (matches Apex `EncodingUtil.urlEncode`) | `lwc/ustDataTags/` |
+
+**How it behaves.** Buttons are stored as versioned JSON and rewritten by Apex on every read: tags resolved
+(links: identifier tags only, URL-encoded), invalid buttons silently dropped, unknown style/alignment/icon fall
+back to defaults, label capped at 80 characters, portal links never open a new tab, only `https:` links do.
+The editor and the server enforce the same rules, but the server never trusts the editor.
+
+**Findings that shaped the build (do not rediscover).**
+- **`lightning-record-edit-form` only returns fields it is asked for** (an input field on the form) or that are
+  on the page layout. `Buttons_JSON__c` has no input, so after a reload the editor showed no buttons even
+  though they were saved. Fix: an always-present hidden `lightning-input-field` for it in
+  `ustWidgetRecordEditor.html`. Any future field edited by a custom component needs the same.
+- **`NavigationMixin.GenerateUrl` must not run before the component is connected.** The parent assigns `buttons`
+  before attaching the child, so resolving in the setter silently failed and the portal link had no `href` in
+  the real site (the editor preview could not show this because preview mode skips resolution). The renderer now
+  resolves from `connectedCallback` and when buttons change afterwards. Two Jest tests fail against the old code.
+- **Jest: mocking `lightning/navigation` with `{ virtual: true }` makes the mock unreliable when the whole suite
+  runs** (passes alone, fails in the full run). Omit `virtual: true` for that module.
+- **Jest:** base-component stubs expose `name` / `type` as properties, not attributes (filter on the property).
+- **Link regexes with control characters** are built from strings (`new RegExp`) so no inline ESLint disable is
+  needed; the generated pattern was checked against tab, DEL, U+0001, and backslash cases.
+- The page-picker list shows 8 entries in the dev org (Home + the 7 menu pages) with a "login required" note;
+  suggestions are only returned to users who can edit widgets, so portal users never see site structure.
+
+**Known limits / follow-ups.**
+- Buttons sit above or below the text only, not inside a paragraph.
+- Only external https/mailto/tel and portal paths exist as types (no event-registration or giving types yet).
+- The portal link menu comes from `NavigationMenuItem` for the network named `Alumni`
+  (`PortalButtons.SITE_NETWORK_NAME`); change it there if the site is renamed. Pages not in the menu can be
+  typed in by path.
+- Not tested: a published site with real guest traffic (caching of personalized buttons), and keyboard/screen
+  reader behaviour beyond the semantics built in (real links, assistive "opens in a new tab" text, focus ring).
+- `PortalWidgetController.getWidgetsForZone` and a few helpers exceed Code Analyzer complexity thresholds
+  (Moderate); not changed.
 
 ---
 
@@ -481,5 +533,5 @@ Not started; design notes only.
 - [x] Phase 0 — page context: fix mismatch + self-registering zone placements (done 2026-10-15; see "Phase 0 — as built")
 - [x] Phase 1 — spikes (insert-at-cursor works; portal links = relative paths via GenerateUrl; picker = site menu + typed path)
 - [x] Phase 2 — data tags (done 2026-10-15; see "Phase 2 — as built")
-- [ ] Phase 3 — buttons
+- [x] Phase 3 — buttons (done 2026-10-15; see "Phase 3 — as built")
 - [ ] Phase 4 — hero widget + S3 (design only)

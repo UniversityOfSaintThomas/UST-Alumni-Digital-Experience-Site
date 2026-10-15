@@ -1,0 +1,33 @@
+<template>
+    <template lwc:if={hasButtons}>
+        <div class={containerClass}>
+            <template for:each={rows} for:item="row">
+                <div key={row.key} class={row.className}>
+                    <template for:each={row.buttons} for:item="button">
+                        <a
+                            key={button.id}
+                            class={button.className}
+                            href={button.href}
+                            target={button.target}
+                            rel={button.rel}
+                            data-id={button.id}
+                            onclick={handleClick}>
+                            <template lwc:if={button.icon}>
+                                <lightning-icon
+                                    class="slds-button__icon slds-button__icon_left ust-button-icon"
+                                    icon-name={button.icon}
+                                    size="x-small"
+                                    aria-hidden="true">
+                                </lightning-icon>
+                            </template>
+                            <span>{button.label}</span>
+                            <template lwc:if={button.opensNewTab}>
+                                <span class="slds-assistive-text">(opens in a new tab)</span>
+                            </template>
+                        </a>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+</template>

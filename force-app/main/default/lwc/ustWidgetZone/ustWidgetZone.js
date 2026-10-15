@@ -163,6 +163,9 @@ export default class UstWidgetZone extends LightningElement {
                 staticContent: item.staticContent,
                 staticContentHeader: item.staticContentHeader,
                 contentCssClass: item.contentCssClass,
+                buttons: item.buttons,
+                buttonPlacement: item.buttonPlacement,
+                buttonSize: item.buttonSize,
                 ...flags
             };
         });

@@ -15,6 +15,8 @@ const MARKUP_PATTERN = /<[^>]*>/g;
 /** Rendering modes, matching PortalDataTags.Mode. */
 export const MODE_HTML = 'html';
 export const MODE_TEXT = 'text';
+/** Link mode: only tags flagged allowInUrl resolve, values are URL-encoded (like Apex Mode.LINK_URL). */
+export const MODE_URL = 'url';
 
 /**
  * Splits the inside of a tag into its normalized key and fallback.
@@ -28,6 +30,19 @@ export function parseTagBody(tagBody) {
     const name = (pipeIndex >= 0 ? cleaned.substring(0, pipeIndex) : cleaned).trim();
     const fallback = pipeIndex >= 0 ? cleaned.substring(pipeIndex + 1).trim() : '';
     return { key: name.replace(/ /g, '_').toLowerCase(), name, fallback };
+}
+
+/**
+ * URL-encodes a value the way Apex EncodingUtil.urlEncode does (space becomes +, and the characters
+ * encodeURIComponent leaves alone that Java encodes are encoded too).
+ *
+ * @param {string} value raw value
+ * @return {string} encoded value
+ */
+export function urlEncode(value) {
+    return encodeURIComponent(String(value))
+        .replace(/[!'()~]/g, (character) => '%' + character.charCodeAt(0).toString(16).toUpperCase())
+        .replace(/%20/g, '+');
 }
 
 /**
@@ -74,25 +89,30 @@ export function findUnknownTags(text, definitions) {
  * @param {string} text content that may contain tags
  * @param {Object} values tag values keyed by lowercase tag name; empty or null means "no data" (guest)
  * @param {Array<{name: string}>} definitions the available tags (unknown tags are left as typed)
- * @param {string} mode MODE_HTML (escapes values) or MODE_TEXT
+ * @param {string} mode MODE_HTML (escapes values), MODE_TEXT, or MODE_URL (identifier tags only, encoded)
  * @return {string} the resolved text
  */
 export function resolveTags(text, values, definitions, mode) {
     if (!text || !text.includes('{{')) {
         return text;
     }
-    const known = new Set((definitions || []).map((definition) => definition.name.toLowerCase()));
+    const byKey = new Map((definitions || []).map((definition) => [definition.name.toLowerCase(), definition]));
     return text.replace(TAG_PATTERN, (original, tagBody) => {
         const { key, fallback } = parseTagBody(tagBody);
-        if (!known.has(key)) {
+        const definition = byKey.get(key);
+        if (!definition) {
             return original;
+        }
+        if (mode === MODE_URL && !definition.allowInUrl) {
+            return '';
         }
         const value = values ? values[key] : undefined;
         const hasValue = value !== undefined && value !== null && String(value).trim() !== '';
         if (mode === MODE_HTML) {
             return hasValue ? escapeHtml(value) : fallback;
         }
-        return hasValue ? String(value) : fallback;
+        const chosen = hasValue ? String(value) : fallback;
+        return mode === MODE_URL ? urlEncode(chosen) : chosen;
     });
 }
 

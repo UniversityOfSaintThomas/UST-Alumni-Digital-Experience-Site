@@ -1,0 +1,139 @@
+<template>
+    <section class="ust-button-editor" aria-labelledby="ust-buttons-heading">
+        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_x-small">
+            <h3 id="ust-buttons-heading" class="slds-col slds-text-heading_small">Call-to-action buttons</h3>
+            <span class="slds-col slds-no-flex slds-text-body_small slds-text-color_weak slds-m-right_small">{countText}</span>
+            <lightning-button
+                class="slds-col slds-no-flex"
+                label="Add button"
+                icon-name="utility:add"
+                onclick={handleAdd}
+                disabled={addDisabled}>
+            </lightning-button>
+        </div>
+
+        <template lwc:if={hasButtons}>
+            <ul class="ust-button-list" aria-label="Buttons for this widget">
+                <template for:each={rows} for:item="row">
+                    <li key={row.id} class="ust-button-row slds-grid slds-grid_vertical-align-center">
+                        <div class="slds-col slds-has-flexi-truncate">
+                            <p class="slds-text-body_regular ust-button-row-label">{row.label}</p>
+                            <p class="slds-text-body_small slds-text-color_weak slds-truncate">{row.summary}</p>
+                        </div>
+                        <div class="slds-col slds-no-flex">
+                            <lightning-button-icon icon-name="utility:arrowup" variant="bare" size="medium" data-id={row.id}
+                                alternative-text={row.upLabel} title="Move up" disabled={row.upDisabled} onclick={handleMoveUp}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:arrowdown" variant="bare" size="medium" data-id={row.id}
+                                alternative-text={row.downLabel} title="Move down" disabled={row.downDisabled} onclick={handleMoveDown}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:edit" variant="bare" size="medium" data-id={row.id}
+                                alternative-text={row.editLabel} title="Edit" disabled={addDisabled} onclick={handleEdit}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:delete" variant="bare" size="medium" data-id={row.id}
+                                alternative-text={row.deleteLabel} title="Delete" disabled={disabled} onclick={handleDelete}></lightning-button-icon>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </template>
+        <template lwc:else>
+            <p class="slds-text-body_small slds-text-color_weak">No buttons yet. Use Add button to create one.</p>
+        </template>
+
+        <template lwc:if={isEditing}>
+            <div class="ust-button-form slds-m-top_small" role="group" aria-label={formTitle}>
+                <h4 class="slds-text-title_caps slds-m-bottom_x-small">{formTitle}</h4>
+
+                <lightning-combobox
+                    name="buttonType"
+                    label="Links to"
+                    value={draft.type}
+                    options={typeOptions}
+                    required
+                    onchange={handleTypeChange}>
+                </lightning-combobox>
+                <template lwc:if={typeError}>
+                    <p class="slds-text-body_small slds-text-color_error" role="alert">{typeError}</p>
+                </template>
+
+                <div class="slds-m-top_x-small">
+                    <c-ust-data-tag-input
+                        label="Button text"
+                        value={draftLabel}
+                        tag-definitions={tagDefinitions}
+                        onchange={handleLabelChange}>
+                    </c-ust-data-tag-input>
+                    <template lwc:if={labelError}>
+                        <p class="slds-text-body_small slds-text-color_error" role="alert">{labelError}</p>
+                    </template>
+                </div>
+
+                <template lwc:if={isPortal}>
+                    <template lwc:if={hasPageOptions}>
+                        <lightning-combobox
+                            class="slds-m-top_x-small"
+                            name="portalPage"
+                            label="Choose a site page"
+                            placeholder="Pick a page, or type a path below"
+                            value={selectedPage}
+                            options={pageOptions}
+                            onchange={handlePageChoice}>
+                        </lightning-combobox>
+                    </template>
+                </template>
+
+                <div class="slds-m-top_x-small">
+                    <c-ust-data-tag-input
+                        label={linkLabel}
+                        value={draftUrl}
+                        tag-definitions={urlTagDefinitions}
+                        max-length="2048"
+                        onchange={handleUrlChange}>
+                    </c-ust-data-tag-input>
+                    <template lwc:if={loginRequiredNote}>
+                        <p class="slds-text-body_small slds-text-color_weak">{loginRequiredNote}</p>
+                    </template>
+                    <template lwc:if={urlError}>
+                        <p class="slds-text-body_small slds-text-color_error" role="alert">{urlError}</p>
+                    </template>
+                </div>
+
+                <template lwc:if={isExternal}>
+                    <lightning-input
+                        class="slds-m-top_x-small"
+                        type="checkbox"
+                        name="newTab"
+                        label="Open in a new tab (web links only)"
+                        checked={draftNewTab}
+                        onchange={handleNewTabChange}>
+                    </lightning-input>
+                </template>
+
+                <div class="slds-grid slds-wrap slds-gutters slds-m-top_x-small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="buttonStyle" label="Style" value={draft.style} options={styleOptions}
+                            onchange={handleStyleChange}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox name="buttonAlign" label="Position" value={draft.align} options={alignOptions}
+                            onchange={handleAlignChange}></lightning-combobox>
+                    </div>
+                </div>
+
+                <lightning-input
+                    class="slds-m-top_x-small"
+                    name="buttonIcon"
+                    label="Icon (optional utility icon name, for example heart)"
+                    value={draftIcon}
+                    onchange={handleIconChange}>
+                </lightning-input>
+                <template lwc:if={iconError}>
+                    <p class="slds-text-body_small slds-text-color_error" role="alert">{iconError}</p>
+                </template>
+
+                <div class="slds-m-top_small">
+                    <lightning-button class="slds-m-right_x-small" label="Cancel" onclick={handleCancelDraft}></lightning-button>
+                    <lightning-button variant="brand" label={submitLabel} onclick={handleSubmitDraft}></lightning-button>
+                </div>
+            </div>
+        </template>
+    </section>
+</template>

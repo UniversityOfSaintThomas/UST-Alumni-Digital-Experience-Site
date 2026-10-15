@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getTagDefinitions from '@salesforce/apex/PortalDataTags.getTagDefinitions';
 import { resolveTags, sampleValues, MODE_HTML, MODE_TEXT } from 'c/ustDataTags';
+import { parseButtonsJson, resolveButtonsForPreview } from 'c/ustButtonRules';
 
 /**
  * ustWidgetRecordEditor
@@ -36,10 +37,16 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     pageContext = '';
     contentHeader = '';
     contentClass = '';
+    buttonsJson = '';
+    buttonPlacement = 'Below';
+    buttonSize = '';
     staticContent = '';
 
     /** Values as last loaded or saved, used by Reset. */
     _savedStaticContent = '';
+    _savedButtonsJson = '';
+    _savedButtonPlacement = 'Below';
+    _savedButtonSize = '';
     _savedZone = '';
     _savedPageContext = '';
 
@@ -91,7 +98,13 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         this.contentHeader = this.readFieldValue(fields, 'Static_Content_Header__c');
         this.contentClass = this.readFieldValue(fields, 'Content_CSS_Class__c');
         this.staticContent = this.readFieldValue(fields, 'Static_Content__c');
+        this.buttonsJson = this.readFieldValue(fields, 'Buttons_JSON__c');
+        this.buttonPlacement = this.readFieldValue(fields, 'Button_Placement__c') || 'Below';
+        this.buttonSize = this.readFieldValue(fields, 'Button_Size__c');
         this._savedStaticContent = this.staticContent;
+        this._savedButtonsJson = this.buttonsJson;
+        this._savedButtonPlacement = this.buttonPlacement;
+        this._savedButtonSize = this.buttonSize;
     }
 
     /**
@@ -137,7 +150,11 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     }
 
     get hasTagsInContent() {
-        return (this.staticContent || '').includes('{{') || (this.contentHeader || '').includes('{{');
+        return (
+            (this.staticContent || '').includes('{{') ||
+            (this.contentHeader || '').includes('{{') ||
+            (this.buttonsJson || '').includes('{{')
+        );
     }
 
     handleHeaderChange(event) {
@@ -147,6 +164,24 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
 
     handleClassChange(event) {
         this.contentClass = event.detail.value || '';
+    }
+
+    handleButtonsChange(event) {
+        event.stopPropagation();
+        this.buttonsJson = event.detail.value || '';
+    }
+
+    handlePlacementChange(event) {
+        this.buttonPlacement = event.detail.value || 'Below';
+    }
+
+    handleSizeChange(event) {
+        this.buttonSize = event.detail.value || '';
+    }
+
+    /** Buttons as the portal will show them: tags filled in with sample values, unsafe ones dropped. */
+    get previewButtons() {
+        return resolveButtonsForPreview(parseButtonsJson(this.buttonsJson), this.previewValues, this.dataTags);
     }
 
     handleEditorChange(event) {
@@ -172,6 +207,15 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         fields.Page_Context__c = this.pageContext;
 
         if (this.showContentSection) {
+            const buttonEditor = this.template.querySelector('c-ust-widget-button-editor');
+            if (buttonEditor && buttonEditor.hasOpenDraft()) {
+                this.showToast(
+                    'Finish the button first',
+                    'Add or cancel the button you are editing, then save the widget.',
+                    'error'
+                );
+                return;
+            }
             const editor = this.template.querySelector('c-ust-rich-text-editor');
             if (editor && !editor.checkValidity()) {
                 this.showToast('Content is too long', 'Shorten the content before saving.', 'error');
@@ -179,6 +223,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
             }
             fields.Static_Content__c = this.staticContent;
             fields.Static_Content_Header__c = this.contentHeader;
+            fields.Buttons_JSON__c = this.buttonsJson;
         }
 
         this.isSaving = true;
@@ -188,6 +233,9 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     handleSuccess(event) {
         this.isSaving = false;
         this._savedStaticContent = this.staticContent;
+        this._savedButtonsJson = this.buttonsJson;
+        this._savedButtonPlacement = this.buttonPlacement;
+        this._savedButtonSize = this.buttonSize;
         this._savedZone = this.zone;
         this._savedPageContext = this.pageContext;
         this.showToast('Saved', 'Portal widget saved.', 'success');
@@ -206,6 +254,9 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
             field.reset();
         });
         this.staticContent = this._savedStaticContent;
+        this.buttonsJson = this._savedButtonsJson;
+        this.buttonPlacement = this._savedButtonPlacement;
+        this.buttonSize = this._savedButtonSize;
         this.zone = this._savedZone;
         this.pageContext = this._savedPageContext;
     }

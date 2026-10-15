@@ -1,0 +1,64 @@
+.ust-widget-buttons {
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.ust-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.ust-button-row_left {
+    justify-content: flex-start;
+}
+
+.ust-button-row_center {
+    justify-content: center;
+}
+
+.ust-button-row_end {
+    justify-content: flex-end;
+}
+
+/* Buttons are links, so make them look like SLDS buttons and keep a visible focus ring. */
+.slds-button {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1.875rem;
+    min-height: 2rem;
+    padding: 0 1rem;
+    text-decoration: none;
+}
+
+.slds-button:focus-visible,
+.ust-text-link:focus-visible {
+    outline: 2px solid #8348ad;
+    outline-offset: 2px;
+}
+
+.ust-text-link {
+    color: var(--dxp-g-brand, #510c76);
+    text-decoration: underline;
+}
+
+.ust-button-icon {
+    margin-right: 0.5rem;
+}
+
+/* Widget-wide sizes (Button_Size__c). To add one: picklist value + SIZE_CLASSES in the JS + a rule here. */
+.ust-buttons-wide .slds-button {
+    min-width: 12rem;
+}
+
+.ust-buttons-full .ust-button-row {
+    flex-direction: column;
+}
+
+.ust-buttons-full .slds-button,
+.ust-buttons-full .ust-text-link {
+    justify-content: center;
+    width: 100%;
+}

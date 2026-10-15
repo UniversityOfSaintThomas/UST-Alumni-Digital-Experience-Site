@@ -221,12 +221,16 @@ force-app/main/default/
     ustPageContextPicker/ # Page/zone-aware Page Context chooser (reads the zone registry)
     ustDataTagInput/    # Text input with Insert data tag list (widget header)
     ustDataTags/        # Shared {{data tag}} helpers (parse, unknown-tag check, preview)
+    ustWidgetButtonEditor/ # Add/edit/reorder/delete call-to-action buttons (widget editor)
+    ustWidgetButtons/   # Shared button renderer (real links, portal paths, safe new-tab)
+    ustButtonRules/     # Shared button rules: options, link validation, JSON format
     ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
   classes/              # Apex controllers
     NavMenuController   # Experience Cloud navigation menu fetcher
     PortalWidgetController # Widget zone registry query + audience filtering
     PortalPageRegistry  # Records which zones exist on which pages (written from Experience Builder only)
     PortalDataTags      # {{Tag|fallback}} personalization resolver (Alumni Directory values)
+    PortalButtons       # Cleans/validates stored button JSON; site page suggestions for the editor
   objects/              # Custom object and field metadata
     UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
   permissionsets/       # Permission sets for community users and admins

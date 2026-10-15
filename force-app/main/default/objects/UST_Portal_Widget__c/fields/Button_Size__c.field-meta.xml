@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Button_Size__c</fullName>
+    <description>Widget-wide button sizing so buttons stay consistent. Blank = size to fit the label. Each value is a CSS class defined in ustWidgetButtons.css and allowlisted in ustWidgetButtons.js; to add a size, add a picklist value (API name = class), list it in the JS allowlist, and add its rule. Separate from Content_CSS_Class__c so a panel style and a button size can be combined.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Optional. Leave blank to size buttons to their label.</inlineHelpText>
+    <label>Button Size</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>ust-buttons-wide</fullName><default>false</default><label>Wide (equal minimum width)</label></value>
+            <value><fullName>ust-buttons-full</fullName><default>false</default><label>Full width</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,9 +1,9 @@
-import { appendToHtml, escapeHtml, findUnknownTags, parseTagBody, resolveTags, sampleValues, tagToken, MODE_HTML, MODE_TEXT } from 'c/ustDataTags';
+import { appendToHtml, escapeHtml, urlEncode, MODE_URL, findUnknownTags, parseTagBody, resolveTags, sampleValues, tagToken, MODE_HTML, MODE_TEXT } from 'c/ustDataTags';
 
 const DEFINITIONS = [
     { name: 'First_Name', sample: 'Jordan' },
     { name: 'Employer', sample: 'Summit & Co' },
-    { name: 'Banner_ID', sample: 'A00123456' }
+    { name: 'Banner_ID', sample: 'A00123456', allowInUrl: true }
 ];
 
 describe('ustDataTags.parseTagBody', () => {
@@ -98,5 +98,24 @@ describe('ustDataTags.appendToHtml', () => {
         expect(appendToHtml('plain', '{{A}}')).toBe('plain{{A}}');
         expect(appendToHtml('', '{{A}}')).toBe('{{A}}');
         expect(appendToHtml(null, '{{A}}')).toBe('{{A}}');
+    });
+});
+
+describe('ustDataTags URL mode', () => {
+    it('encodes the way Apex EncodingUtil.urlEncode does', () => {
+        expect(urlEncode('A 00/1')).toBe('A+00%2F1');
+        expect(urlEncode('javascript:alert(1)')).toBe('javascript%3Aalert%281%29');
+        expect(urlEncode("it's ~ok!")).toBe('it%27s+%7Eok%21');
+    });
+
+    it('resolves only tags allowed in URLs and encodes them', () => {
+        const values = { banner_id: 'A 00/1', first_name: 'Jordan' };
+        expect(resolveTags('https://x.edu/f?id={{Banner_ID}}&n={{First_Name}}', values, DEFINITIONS, MODE_URL)).toBe(
+            'https://x.edu/f?id=A+00%2F1&n='
+        );
+    });
+
+    it('uses an encoded fallback and leaves unknown tags alone', () => {
+        expect(resolveTags('/p/{{Banner_ID|none yet}}/{{Nope}}', {}, DEFINITIONS, MODE_URL)).toBe('/p/none+yet/{{Nope}}');
     });
 });

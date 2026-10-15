@@ -5,6 +5,12 @@ import getPlacements from '@salesforce/apex/PortalPageRegistry.getPlacements';
 import getTagDefinitions from '@salesforce/apex/PortalDataTags.getTagDefinitions';
 
 jest.mock(
+    '@salesforce/apex/PortalButtons.getPortalLinkSuggestions',
+    () => ({ default: jest.fn(() => Promise.resolve([])) }),
+    { virtual: true }
+);
+
+jest.mock(
     '@salesforce/apex/PortalDataTags.getTagDefinitions',
     () => {
         const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
@@ -145,7 +151,8 @@ describe('c-ust-widget-record-editor', () => {
             Name: 'Widget',
             Page_Context__c: 'home',
             Static_Content__c: '<h3>Saved</h3>',
-            Static_Content_Header__c: ''
+            Static_Content_Header__c: '',
+            Buttons_JSON__c: ''
         });
     });
 
@@ -284,6 +291,123 @@ describe('c-ust-widget-record-editor', () => {
 
         const saved = form.submit.mock.calls[0][0];
         expect(saved.Static_Content_Header__c).toBe('Hello {{First_Name}}');
+    });
+
+    const STORED_BUTTONS = JSON.stringify({
+        version: 1,
+        buttons: [
+            { id: 'a', label: 'Hi {{First_Name|friend}}', type: 'external', url: 'https://x.edu/f?id={{Banner_ID}}', newTab: true, style: 'brand', align: 'left', icon: '' },
+            { id: 'b', label: 'Directory', type: 'portal', url: '/alumni-directory', newTab: false, style: 'neutral', align: 'center', icon: '' },
+            { id: 'c', label: 'Unsafe', type: 'external', url: 'javascript:alert(1)', newTab: true, style: 'brand', align: 'left', icon: '' }
+        ]
+    });
+    const BUTTON_TAGS = [
+        { name: 'First_Name', label: 'First name', sample: 'Jordan', allowInUrl: false },
+        { name: 'Banner_ID', label: 'Banner ID', sample: 'A001', allowInUrl: true }
+    ];
+
+    it('asks the form to load Buttons_JSON__c even though it is not on the page layout', async () => {
+        const element = createEditor();
+        const hidden = getInputField(element, 'Buttons_JSON__c');
+        expect(hidden).toBeDefined();
+        expect(hidden.className).toContain('slds-hide');
+    });
+
+    it('loads the stored buttons into the button editor', async () => {
+        const element = createEditor();
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Buttons_JSON__c: STORED_BUTTONS });
+        await flushPromises();
+        expect(element.shadowRoot.querySelector('c-ust-widget-button-editor').value).toBe(STORED_BUTTONS);
+    });
+
+    it('previews buttons the way the portal shows them, with placement and size', async () => {
+        const element = createEditor();
+        getTagDefinitions.emit(BUTTON_TAGS);
+        loadRecord(element, {
+            Component_Name__c: 'ust_static_content',
+            Static_Content__c: '<p>Hi</p>',
+            Buttons_JSON__c: STORED_BUTTONS,
+            Button_Placement__c: 'Above',
+            Button_Size__c: 'ust-buttons-wide'
+        });
+        await flushPromises();
+
+        const preview = element.shadowRoot.querySelector('c-ust-static-content');
+        expect(preview.previewMode).toBe(true);
+        expect(preview.buttonPlacement).toBe('Above');
+        expect(preview.buttonSize).toBe('ust-buttons-wide');
+        expect(preview.buttons.map((button) => button.label)).toEqual(['Hi Jordan', 'Directory']);
+        expect(preview.buttons[0].url).toBe('https://x.edu/f?id=A001');
+    });
+
+    it('updates the preview when placement, size, or the buttons change', async () => {
+        const element = createEditor();
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Static_Content__c: '<p>Hi</p>' });
+        await flushPromises();
+
+        getInputField(element, 'Button_Placement__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'Above' } }));
+        getInputField(element, 'Button_Size__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'ust-buttons-full' } }));
+        element.shadowRoot.querySelector('c-ust-widget-button-editor').dispatchEvent(
+            new CustomEvent('change', {
+                detail: { value: JSON.stringify({ version: 1, buttons: [{ id: 'n', label: 'New', type: 'portal', url: '/x', newTab: false, style: 'brand', align: 'left', icon: '' }] }) }
+            })
+        );
+        await flushPromises();
+
+        const preview = element.shadowRoot.querySelector('c-ust-static-content');
+        expect(preview.buttonPlacement).toBe('Above');
+        expect(preview.buttonSize).toBe('ust-buttons-full');
+        expect(preview.buttons).toHaveLength(1);
+    });
+
+    it('saves the buttons JSON with the widget', async () => {
+        const element = createEditor();
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
+        await flushPromises();
+        const json = JSON.stringify({ version: 1, buttons: [{ id: 'n', label: 'New', type: 'portal', url: '/x', newTab: false, style: 'brand', align: 'left', icon: '' }] });
+        element.shadowRoot.querySelector('c-ust-widget-button-editor').dispatchEvent(new CustomEvent('change', { detail: { value: json } }));
+        await flushPromises();
+
+        const form = getForm(element);
+        form.submit = jest.fn();
+        form.dispatchEvent(new CustomEvent('submit', { detail: { fields: { Name: 'Widget' } }, cancelable: true }));
+
+        expect(form.submit.mock.calls[0][0].Buttons_JSON__c).toBe(json);
+    });
+
+    it('blocks saving while a button is half finished', async () => {
+        const element = createEditor();
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
+        await flushPromises();
+        const buttonEditor = element.shadowRoot.querySelector('c-ust-widget-button-editor');
+        buttonEditor.hasOpenDraft = jest.fn().mockReturnValue(true);
+        const toastHandler = jest.fn();
+        element.addEventListener('lightning__showtoast', toastHandler);
+
+        const form = getForm(element);
+        form.submit = jest.fn();
+        form.dispatchEvent(new CustomEvent('submit', { detail: { fields: {} }, cancelable: true }));
+
+        expect(form.submit).not.toHaveBeenCalled();
+        expect(toastHandler.mock.calls[0][0].detail.title).toBe('Finish the button first');
+    });
+
+    it('does not send buttons for other widget types', async () => {
+        const element = createEditor();
+        loadRecord(element, { Component_Name__c: 'ust_links_hub', Page_Context__c: 'home' });
+        await flushPromises();
+        const form = getForm(element);
+        form.submit = jest.fn();
+        form.dispatchEvent(new CustomEvent('submit', { detail: { fields: { Name: 'Widget' } }, cancelable: true }));
+        expect(form.submit.mock.calls[0][0]).not.toHaveProperty('Buttons_JSON__c');
+    });
+
+    it('offers the guest preview switch when only the buttons use tags', async () => {
+        const element = createEditor();
+        getTagDefinitions.emit(BUTTON_TAGS);
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Static_Content__c: '<p>Plain</p>', Buttons_JSON__c: STORED_BUTTONS });
+        await flushPromises();
+        expect(guestCheckbox(element)).not.toBeNull();
     });
 
     it('shows a success toast after saving', async () => {

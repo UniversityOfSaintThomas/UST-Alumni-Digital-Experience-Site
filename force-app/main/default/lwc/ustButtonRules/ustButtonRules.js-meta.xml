@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Shared rules for call-to-action buttons: options, link validation, JSON storage format, and preview resolution. Mirrors the Apex class PortalButtons.</description>
+</LightningComponentBundle>

@@ -11,6 +11,21 @@
     </classAccesses>
     <fieldPermissions>
         <editable>true</editable>
+        <field>UST_Portal_Widget__c.Button_Placement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Button_Size__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Buttons_JSON__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>UST_Portal_Widget__c.Component_Name__c</field>
         <readable>true</readable>
     </fieldPermissions>
