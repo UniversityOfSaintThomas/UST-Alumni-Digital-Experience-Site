@@ -108,6 +108,64 @@ tasks:
                     upsert assignments;
                 }
 
+    assign_ust_portal_widget_admin_permset:
+        description: >-
+            Assigns the UST_Portal_Widget_Admin permission set to System Administrators so they can
+            edit Portal Widgets and register zone placements from Experience Builder.
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            apex: >
+                Id permSetId = [SELECT Id FROM PermissionSet WHERE Name = 'UST_Portal_Widget_Admin' LIMIT 1].Id;
+                Set<Id> alreadyAssigned = new Set<Id>();
+                for (PermissionSetAssignment existing : [SELECT AssigneeId FROM PermissionSetAssignment WHERE PermissionSetId = :permSetId]) {
+                    alreadyAssigned.add(existing.AssigneeId);
+                }
+                List<PermissionSetAssignment> assignments = new List<PermissionSetAssignment>();
+                for (User admin : [SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive = true]) {
+                    if (!alreadyAssigned.contains(admin.Id)) {
+                        assignments.add(new PermissionSetAssignment(PermissionSetId = permSetId, AssigneeId = admin.Id));
+                    }
+                }
+                if (!assignments.isEmpty()) {
+                    insert assignments;
+                }
+
+    seed_zone_placements:
+        description: >-
+            Seeds UST_Portal_Zone_Placement__c with the zones known from the site bundle (layout zones
+            banner and above_footer, plus Home and Alumni Directory zones). Idempotent. Experience Builder
+            registration corrects or extends it afterwards.
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            apex: >
+                PortalPageRegistry.seedKnownPlacements();
+
+    migrate_widget_page_context:
+        description: >-
+            One-time, idempotent data migration for existing Portal Widgets: replaces the legacy
+            Page Context value directory with the real page API name alumni_directory__c. Run in
+            every org that has widget records (for example eda-staging). The values giving, events,
+            profile and news are intentionally left unchanged.
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            apex: >
+                List<UST_Portal_Widget__c> widgets = [SELECT Id, Page_Context__c FROM UST_Portal_Widget__c WHERE Page_Context__c INCLUDES ('directory')];
+                for (UST_Portal_Widget__c widget : widgets) {
+                    List<String> migrated = new List<String>();
+                    for (String pageValue : widget.Page_Context__c.split(';')) {
+                        String mapped = pageValue == 'directory' ? 'alumni_directory__c' : pageValue;
+                        if (!migrated.contains(mapped)) {
+                            migrated.add(mapped);
+                        }
+                    }
+                    widget.Page_Context__c = String.join(migrated, ';');
+                }
+                update widgets;
+                System.debug('Migrated ' + widgets.size() + ' widget(s).');
+
 flows:
     config_dev:
         steps:
@@ -115,6 +173,10 @@ flows:
                 task: role_to_userUser
             1.4:
                 task: assign_aws_s3_directory_image_permset
+            1.5:
+                task: assign_ust_portal_widget_admin_permset
+            1.6:
+                task: seed_zone_placements
             3:
                 task: create_community
             4:

@@ -1,6 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import getWidgetsForZone from '@salesforce/apex/PortalWidgetController.getWidgetsForZone';
+import registerPlacement from '@salesforce/apex/PortalPageRegistry.registerPlacement';
 
 /**
  * ustWidgetZone
@@ -53,11 +54,17 @@ export default class UstWidgetZone extends LightningElement {
      *  Must match Zone__c picklist value: body, sidebar, banner, above_footer */
     @api zoneName;
 
+    /** Where this zone is placed. "Page" = this page only; "Layout" = a shared theme layout, so
+     *  it appears on every page that uses the layout. Set in the Experience Builder property
+     *  panel; used only to keep the zone registry (UST_Portal_Zone_Placement__c) accurate. */
+    @api zoneScope = 'Page';
+
     // pageContext is no longer an @api prop - it is derived automatically
     // from CurrentPageReference so admins do not need to configure it.
     // Widget records use Page_Context__c (multi-select picklist) to opt in
-    // to pages by their API name. Add a new picklist value when a new page
-    // is created in Experience Builder.
+    // to pages by their API name. No picklist deployment is needed for new pages:
+    // in Experience Builder this zone registers itself in UST_Portal_Zone_Placement__c
+    // and the Portal Widget editor reads that registry.
 
     @track activeWidgets = [];
     @track isLoading = true;
@@ -65,6 +72,9 @@ export default class UstWidgetZone extends LightningElement {
     @track errorMessage = '';
 
     _isBuilderMode = false;
+
+    /** Last placement sent to the registry, so each page/zone/scope is only registered once per load. */
+    _registeredKey = null;
 
     /** Derived page context - resolved from CurrentPageReference and used
      *  as the reactive param for the getWidgetsForZone wire adapter.
@@ -93,6 +103,8 @@ export default class UstWidgetZone extends LightningElement {
                         )) || null;
 
         this._derivedPageContext = rawName ? rawName.toLowerCase() : null;
+
+        this.registerPlacementIfBuilder();
 
         // If no page name is available (e.g. an unrecognised page type), clear
         // the loading spinner so the zone does not hang indefinitely.
@@ -154,6 +166,31 @@ export default class UstWidgetZone extends LightningElement {
                 ...flags
             };
         });
+    }
+
+    /**
+     * Tells the zone registry that this zone exists on this page. Runs only while an admin is
+     * working in Experience Builder, so site visitors never trigger a write. Failures are ignored:
+     * the registry only powers the admin editor's page picker and must never affect rendering.
+     */
+    registerPlacementIfBuilder() {
+        if (!this._isBuilderMode || !this.zoneName) {
+            return;
+        }
+        const scope = this.zoneScope === 'Layout' ? 'Layout' : 'Page';
+        const pageName = this._derivedPageContext;
+        if (scope === 'Page' && !pageName) {
+            return;
+        }
+        const key = scope + '|' + (pageName || '*') + '|' + this.zoneName;
+        if (key === this._registeredKey) {
+            return;
+        }
+        this._registeredKey = key;
+        registerPlacement({ pageName: pageName || '*', zoneName: this.zoneName, scope })
+            .catch(() => {
+                // Intentionally ignored; see method comment.
+            });
     }
 
     get isBuilderMode() {

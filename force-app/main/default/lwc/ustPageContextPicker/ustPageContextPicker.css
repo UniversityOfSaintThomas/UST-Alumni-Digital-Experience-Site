@@ -1,0 +1,14 @@
+.ust-page-picker {
+    display: block;
+}
+
+.ust-picker-notice {
+    background-color: #fef9e3;
+    border: 1px solid #e5d28f;
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.ust-picker-warning {
+    color: #8a5300;
+}

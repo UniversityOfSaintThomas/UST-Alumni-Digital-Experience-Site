@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Registry of which portal widget zones exist on which Experience Cloud pages. Populated automatically when an admin works in Experience Builder (ustWidgetZone registers itself). Read by the Portal Widget editor so the Page Context picker only offers pages that actually have the selected zone. Never written by site visitors.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>false</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <label>UST Portal Zone Placement</label>
+    <nameField>
+        <displayFormat>ZP-{0000}</displayFormat>
+        <label>Placement Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>UST Portal Zone Placements</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

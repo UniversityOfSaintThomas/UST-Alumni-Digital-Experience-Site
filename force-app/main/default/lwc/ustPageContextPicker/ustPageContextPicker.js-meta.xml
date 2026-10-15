@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Page Context picker for Portal Widgets. Offers only pages that have the selected zone, using the UST_Portal_Zone_Placement__c registry; auto-removes pages that lack a newly chosen zone, with Undo.</description>
+</LightningComponentBundle>

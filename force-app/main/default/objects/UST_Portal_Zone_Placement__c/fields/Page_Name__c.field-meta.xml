@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Page_Name__c</fullName>
+    <description>Lowercased Experience Cloud page API name exactly as ustWidgetZone reads it from CurrentPageReference (for example home or alumni_directory__c). An asterisk means the zone is in a shared theme layout and appears on every page.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Page API name (lowercase). * = every page that uses the layout.</inlineHelpText>
+    <label>Page Name</label>
+    <length>80</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

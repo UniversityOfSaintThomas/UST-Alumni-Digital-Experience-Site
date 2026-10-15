@@ -16,8 +16,13 @@
                 <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
                     <lightning-input-field field-name="Name"></lightning-input-field>
                     <lightning-input-field field-name="Component_Name__c" onchange={handleComponentChange}></lightning-input-field>
-                    <lightning-input-field field-name="Zone__c"></lightning-input-field>
-                    <lightning-input-field field-name="Page_Context__c"></lightning-input-field>
+                    <lightning-input-field field-name="Zone__c" onchange={handleZoneChange}></lightning-input-field>
+                    <!-- value before zone: the picker applies props in order, and a zone change prunes the selection -->
+                    <c-ust-page-context-picker
+                        value={pageContext}
+                        zone={zone}
+                        onchange={handlePageContextChange}>
+                    </c-ust-page-context-picker>
                 </div>
                 <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
                     <lightning-input-field field-name="Is_Active__c"></lightning-input-field>

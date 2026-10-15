@@ -1,0 +1,62 @@
+<template>
+    <div class="ust-page-picker">
+        <template lwc:if={needsZone}>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                Choose a zone first to see the pages that have it.
+            </p>
+        </template>
+
+        <lightning-dual-listbox
+            name="pageContext"
+            label={label}
+            source-label="Available pages"
+            selected-label="Chosen pages"
+            options={options}
+            value={selectedValues}
+            required
+            onchange={handleSelectionChange}>
+        </lightning-dual-listbox>
+
+        <template lwc:if={hasRemovalNotice}>
+            <div class="ust-picker-notice slds-m-top_x-small slds-grid slds-grid_vertical-align-center" role="status">
+                <span class="slds-col slds-text-body_small">{removalNotice}</span>
+                <lightning-button class="slds-col slds-no-flex slds-m-left_small" variant="base" label="Undo"
+                                  onclick={handleUndoRemoval}></lightning-button>
+            </div>
+        </template>
+
+        <template lwc:if={hasCoverage}>
+            <p class="slds-m-top_x-small slds-text-body_small">
+                <span class="slds-text-title_caps">Appears on:</span> {coverageText}
+            </p>
+        </template>
+        <template lwc:if={showsNowhere}>
+            <p class="slds-m-top_x-small slds-text-body_small slds-text-color_error" role="alert">
+                With this zone and page selection the widget will not appear anywhere yet.
+            </p>
+        </template>
+
+        <template for:each={warnings} for:item="warning">
+            <p key={warning.key} class="slds-m-top_x-small slds-text-body_small ust-picker-warning" role="alert">
+                {warning.text}
+            </p>
+        </template>
+
+        <template lwc:if={loadFailed}>
+            <p class="slds-m-top_x-small slds-text-body_small slds-text-color_error" role="alert">
+                The page registry could not be loaded. You can still type page names below.
+            </p>
+        </template>
+
+        <div class="slds-m-top_small slds-grid slds-grid_vertical-align-end">
+            <lightning-input class="slds-col" label="Add a page that is not listed (page API name)"
+                             value={typedPageName} placeholder="for example my_account__c"
+                             onchange={handleTypedPageInput}></lightning-input>
+            <lightning-button class="slds-col slds-no-flex slds-m-left_x-small" label="Add"
+                              onclick={handleAddTypedPage}></lightning-button>
+        </div>
+        <template lwc:if={typedPageError}>
+            <p class="slds-text-body_small slds-text-color_error" role="alert">{typedPageError}</p>
+        </template>
+    </div>
+</template>

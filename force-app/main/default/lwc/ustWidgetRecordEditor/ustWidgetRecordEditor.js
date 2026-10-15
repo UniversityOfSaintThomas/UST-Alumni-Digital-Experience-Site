@@ -30,12 +30,16 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     @api objectApiName = 'UST_Portal_Widget__c';
 
     componentName = '';
+    zone = '';
+    pageContext = '';
     contentHeader = '';
     contentClass = '';
     staticContent = '';
 
     /** Values as last loaded or saved, used by Reset. */
     _savedStaticContent = '';
+    _savedZone = '';
+    _savedPageContext = '';
 
     isSaving = false;
 
@@ -65,6 +69,10 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         }
         const fields = record.fields;
         this.componentName = this.readFieldValue(fields, 'Component_Name__c');
+        this.zone = this.readFieldValue(fields, 'Zone__c');
+        this.pageContext = this.readFieldValue(fields, 'Page_Context__c');
+        this._savedZone = this.zone;
+        this._savedPageContext = this.pageContext;
         this.contentHeader = this.readFieldValue(fields, 'Static_Content_Header__c');
         this.contentClass = this.readFieldValue(fields, 'Content_CSS_Class__c');
         this.staticContent = this.readFieldValue(fields, 'Static_Content__c');
@@ -84,6 +92,15 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
 
     handleComponentChange(event) {
         this.componentName = event.detail.value || '';
+    }
+
+    handleZoneChange(event) {
+        this.zone = event.detail.value || '';
+    }
+
+    handlePageContextChange(event) {
+        event.stopPropagation();
+        this.pageContext = event.detail.value;
     }
 
     handleHeaderChange(event) {
@@ -108,6 +125,14 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         event.preventDefault();
         const fields = { ...event.detail.fields };
 
+        const picker = this.template.querySelector('c-ust-page-context-picker');
+        if (picker && !picker.checkValidity()) {
+            this.showToast('Page Context is required', 'Choose at least one page for this widget.', 'error');
+            return;
+        }
+        // Page Context is edited by the custom picker, so it is not a lightning-input-field.
+        fields.Page_Context__c = this.pageContext;
+
         if (this.showContentSection) {
             const editor = this.template.querySelector('c-ust-rich-text-editor');
             if (editor && !editor.checkValidity()) {
@@ -124,6 +149,8 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     handleSuccess(event) {
         this.isSaving = false;
         this._savedStaticContent = this.staticContent;
+        this._savedZone = this.zone;
+        this._savedPageContext = this.pageContext;
         this.showToast('Saved', 'Portal widget saved.', 'success');
         if (!this.recordId) {
             this.navigateToRecord(event.detail.id);
@@ -140,6 +167,8 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
             field.reset();
         });
         this.staticContent = this._savedStaticContent;
+        this.zone = this._savedZone;
+        this.pageContext = this._savedPageContext;
     }
 
     // ---- Helpers ----

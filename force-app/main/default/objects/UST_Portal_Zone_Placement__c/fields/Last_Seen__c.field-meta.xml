@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Seen__c</fullName>
+    <description>When Experience Builder last confirmed this zone on this page. Old values may mean the zone was removed from the page.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Last time this zone was confirmed in Experience Builder.</inlineHelpText>
+    <label>Last Seen</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

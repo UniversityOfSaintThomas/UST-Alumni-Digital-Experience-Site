@@ -1,6 +1,14 @@
 import { createElement } from 'lwc';
 import UstWidgetRecordEditor from 'c/ustWidgetRecordEditor';
 
+import getPlacements from '@salesforce/apex/PortalPageRegistry.getPlacements';
+
+jest.mock(
+    '@salesforce/apex/PortalPageRegistry.getPlacements',
+    () => ({ default: jest.fn() }),
+    { virtual: true }
+);
+
 const RECORD_ID = 'a1Nhs0000004lZpEAI';
 
 function createEditor(recordId = RECORD_ID) {
@@ -36,6 +44,10 @@ function flushPromises() {
 }
 
 describe('c-ust-widget-record-editor', () => {
+    beforeEach(() => {
+        getPlacements.mockResolvedValue([]);
+    });
+
     afterEach(() => {
         while (document.body.firstChild) {
             document.body.removeChild(document.body.firstChild);
@@ -103,7 +115,7 @@ describe('c-ust-widget-record-editor', () => {
 
     it('adds the editor HTML to the save payload for Static Content', async () => {
         const element = createEditor();
-        loadRecord(element, { Component_Name__c: 'ust_static_content' });
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
         await flushPromises();
         element.shadowRoot
             .querySelector('c-ust-rich-text-editor')
@@ -114,24 +126,28 @@ describe('c-ust-widget-record-editor', () => {
         form.submit = jest.fn();
         form.dispatchEvent(new CustomEvent('submit', { detail: { fields: { Name: 'Widget' } }, cancelable: true }));
 
-        expect(form.submit).toHaveBeenCalledWith({ Name: 'Widget', Static_Content__c: '<h3>Saved</h3>' });
+        expect(form.submit).toHaveBeenCalledWith({
+            Name: 'Widget',
+            Page_Context__c: 'home',
+            Static_Content__c: '<h3>Saved</h3>'
+        });
     });
 
     it('does not touch Static_Content__c for other widget types', async () => {
         const element = createEditor();
-        loadRecord(element, { Component_Name__c: 'ust_links_hub' });
+        loadRecord(element, { Component_Name__c: 'ust_links_hub', Page_Context__c: 'home' });
         await flushPromises();
 
         const form = getForm(element);
         form.submit = jest.fn();
         form.dispatchEvent(new CustomEvent('submit', { detail: { fields: { Name: 'Widget' } }, cancelable: true }));
 
-        expect(form.submit).toHaveBeenCalledWith({ Name: 'Widget' });
+        expect(form.submit).toHaveBeenCalledWith({ Name: 'Widget', Page_Context__c: 'home' });
     });
 
     it('blocks saving and shows an error toast when the content is too long', async () => {
         const element = createEditor();
-        loadRecord(element, { Component_Name__c: 'ust_static_content' });
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
         await flushPromises();
         const editor = element.shadowRoot.querySelector('c-ust-rich-text-editor');
         editor.checkValidity = jest.fn().mockReturnValue(false);
@@ -145,6 +161,50 @@ describe('c-ust-widget-record-editor', () => {
         expect(form.submit).not.toHaveBeenCalled();
         expect(toastHandler).toHaveBeenCalledTimes(1);
         expect(toastHandler.mock.calls[0][0].detail.variant).toBe('error');
+    });
+
+    it('gives the page picker the loaded zone and page context', async () => {
+        const element = createEditor();
+        loadRecord(element, { Zone__c: 'sidebar', Page_Context__c: 'home;alumni_directory__c' });
+        await flushPromises();
+
+        const picker = element.shadowRoot.querySelector('c-ust-page-context-picker');
+        expect(picker.zone).toBe('sidebar');
+        expect(picker.value).toBe('home;alumni_directory__c');
+    });
+
+    it('passes a changed zone and picker selection through to the picker and the save', async () => {
+        const element = createEditor();
+        loadRecord(element, { Zone__c: 'sidebar', Page_Context__c: 'home' });
+        await flushPromises();
+
+        getInputField(element, 'Zone__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'body' } }));
+        element.shadowRoot
+            .querySelector('c-ust-page-context-picker')
+            .dispatchEvent(new CustomEvent('change', { detail: { value: 'home;my_account__c' } }));
+        await flushPromises();
+
+        expect(element.shadowRoot.querySelector('c-ust-page-context-picker').zone).toBe('body');
+
+        const form = getForm(element);
+        form.submit = jest.fn();
+        form.dispatchEvent(new CustomEvent('submit', { detail: { fields: { Name: 'Widget' } }, cancelable: true }));
+        expect(form.submit).toHaveBeenCalledWith({ Name: 'Widget', Page_Context__c: 'home;my_account__c' });
+    });
+
+    it('blocks saving without at least one page', async () => {
+        const element = createEditor();
+        loadRecord(element, { Zone__c: 'sidebar', Page_Context__c: '' });
+        await flushPromises();
+        const toastHandler = jest.fn();
+        element.addEventListener('lightning__showtoast', toastHandler);
+
+        const form = getForm(element);
+        form.submit = jest.fn();
+        form.dispatchEvent(new CustomEvent('submit', { detail: { fields: {} }, cancelable: true }));
+
+        expect(form.submit).not.toHaveBeenCalled();
+        expect(toastHandler.mock.calls[0][0].detail.title).toBe('Page Context is required');
     });
 
     it('shows a success toast after saving', async () => {

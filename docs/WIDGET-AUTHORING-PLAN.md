@@ -1,6 +1,6 @@
 # Portal Widget Authoring Experience — Implementation Plan
 
-> Status: **Phase A done (deployed to the dev scratch org, not yet committed to git). Phases 0–3 approved, not started.**
+> Status: **Phases A and 0 done (deployed to the dev scratch org, not yet committed to git). Phases 1–3 approved, not started.**
 > Recorded so context survives a session reset.
 > Created: 2026-10-14. Dev org: `UST-Alumni-Digital-Experience-Site__dev` (CCI alias `dev`), expires 2026-10-27.
 
@@ -86,7 +86,7 @@ hide it, or confirm it works.
 
 ---
 
-## Phase 0 — Fix the `Page_Context__c` / page-name mismatch
+## Phase 0 — Page context: fix the mismatch and keep it current (design agreed 2026-10-15)
 
 **Problem.** `ustWidgetZone` derives the page context from `CurrentPageReference` (`attributes.name`,
 lowercased). `Page_Context__c` values are `all, home, giving, events, profile, directory, news`.
@@ -95,15 +95,101 @@ Actual LWR page API names (from `sfdc_cms__route`): `Home`, `alumni_directory__c
 `my_account__c`, `My_Business__c`, `News_Detail__c`, plus system pages (Login, Register, Error…).
 Only `home` matches; targeting a widget at "Directory" likely never matches.
 
-**Plan.**
-1. Confirm the mismatch in the dev org with a widget on a non-home page (expect no render).
-2. Make `Page_Context__c` values the **lowercased real page API names** (keep `all`), with friendly
-   labels (e.g. `alumni_directory__c` → "Alumni Directory"). Keep old values active during migration.
-3. Migrate existing records (dev + EDA-Staging): `directory` → `alumni_directory__c`, etc.; document the
-   mapping. Decide what to do with `giving`, `events`, `profile`, `news` (no matching route today —
-   either map to the right page or retire).
-4. Update `PortalWidgetController_TEST`, `WIDGET-CATALOG.md`, `MAIN_GUIDE.md`.
-5. Single source of truth for page names: reuse this list for the **Portal link** picker in Phase 3.
+**Platform facts (verified in dev org).** Site pages cannot be listed at runtime: `DigitalExperience` is
+not queryable, no Tooling object exposes routes, `NetworkPageOverride` covers standard pages only. Only
+`NavigationMenuItem` is queryable (menu pages only). So the list must be built by the site itself.
+
+**Where zones live today (from the repo bundle).** `body` and `sidebar` are in individual page views
+(`Home`: body + sidebar; `Alumni_Directory`: sidebar). `banner` and `above_footer` are in the **theme
+layout** `scopedHeaderAndFooter`, i.e. on every page using that layout.
+
+### Design: self-registering zone placements
+
+1. New object **`UST_Portal_Zone_Placement__c`**: `Page_Name__c` (lowercased page API name, or `*` for
+   "all pages"), `Zone__c`, `Scope__c` (`Page` / `Layout`), `Page_Label__c` (admin-editable friendly
+   label), `Last_Seen__c`, `Hidden__c`; unique external-id key `Page|Zone`.
+2. **Layout-level zones (decided 2026-10-15): no bundle change.** `banner` and `above_footer` live in the
+   `scopedHeaderAndFooter` theme layout (layout type `Inner`, used by 14 views; only the two error pages
+   use `snaThemeLayout`). That layout also holds the built-in LWR navigation components and
+   `ustAlumniTheme`, so content placed there already appears on every page — keep using those zones for
+   "every page" content. A zone cannot detect by itself whether it is in a shared layout, so the registry
+   has an admin-editable `Scope__c` (`Page` / `Layout`). **Seed `banner` and `above_footer` as `Layout`
+   (`Page_Name__c = *`)** from this verified fact; admins can flip the flag for any future layout zone.
+   (Optional later: a `zoneScope` builder property on `ustWidgetZone` so the builder sets it
+   automatically — would require editing/redeploying the theme layout file; not needed now.)
+3. **Registration happens only in Experience Builder** (`state.app === 'commeditor'`, already detected in
+   `ustWidgetZone`). The zone calls a non-cacheable Apex method that upserts the placement. Live visitors
+   and guests never write; Apex also refuses unless the user can create the object. Zero overhead for the
+   public site. A zone whose existing placement is `Layout`-scoped keeps `*` and is not duplicated per
+   page when an admin visits different pages.
+4. **Editor behavior** (`ustWidgetRecordEditor`):
+   - Zone is chosen first; the page picker lists only pages that have that zone, plus `All pages`.
+   - Changing the zone **auto-removes known pages that lack the new zone**, with a notice and Undo
+     ("Removed Directory — no Sidebar zone on that page").
+   - Pages not yet registered are kept with a warning (lets admins pre-configure before a page exists).
+   - "Appears on: Home, Alumni Directory" coverage line; warning when a widget would appear nowhere.
+   - Free-text escape hatch for unregistered page names.
+5. `Page_Context__c` becomes an **unrestricted** multi-select picklist so `INCLUDES` keeps working while
+   the custom editor can save any page name. (Verify in the spike that the API/LWC accepts values not in
+   the list.)
+6. **Seed** the registry once from the 16 routes/views in the current bundle (script or CCI task), and
+   add a one-time data migration for existing widget records: `directory` → `alumni_directory__c`, etc.
+   **`giving`, `events`, `profile`, `news` are left as-is for now** (no matching route in the dev bundle;
+   owner to check whether those pages exist in EDA-Staging before mapping or retiring them).
+7. The same registry feeds the **Portal link** picker for buttons (Phase 3).
+
+### Limits to remember
+- A zone removed in the builder is not detected (nothing runs). Show `Last_Seen__c`, flag stale entries,
+  allow `Hidden__c`; do not delete automatically.
+- The registry reflects the *builder* state, which can be ahead of the *published* site.
+- Editor checks are advisory; records changed by data loader are not validated, and a mismatch simply
+  means the widget does not render.
+- Unverified until built: that Apex DML works from the builder session, and unrestricted multi-select
+  behavior.
+
+### Steps
+1. Confirm the mismatch in the dev org (widget on a non-home page → expect no render).
+2. Build the object, permission sets (admin: create/edit; no guest access), registration Apex, seed of the
+   layout zones, and tests (Apex: guest/non-admin cannot register, upsert idempotent, `*` handling; Jest:
+   builder-only registration).
+3. Editor page/zone picker, auto-remove with Undo, coverage line.
+4. Picklist change, migration, seed, docs (`WIDGET-CATALOG.md`, `MAIN_GUIDE.md`, `PortalWidgetController_TEST`).
+
+---
+
+## Phase 0 — as built (2026-10-15)
+
+Verified in the dev org, including Experience Builder: deleting the seeded Home rows and opening
+Builder re-created `home|body` and `home|sidebar`; switching to the Alumni Directory page created
+`alumni_directory__c|sidebar` (server response `created`).
+
+**Live evidence for the original bug.** Network capture in Builder shows the widget query is sent with
+`pageContext = home` and `pageContext = alumni_directory__c` — so the old picklist value `directory` never
+matched the Alumni Directory page. Real page-name strings are the lowercased route API names. The site's
+URL path prefix is `/alumni/` (e.g. `/alumni/alumni-directory`), useful for the Phase 3 portal-link work.
+
+| Piece | Where |
+|---|---|
+| Registry object, fields, tab, list view | `objects/UST_Portal_Zone_Placement__c/`, `tabs/UST_Portal_Zone_Placement__c` |
+| Registration + read + seed Apex (98% coverage, 8 tests) | `classes/PortalPageRegistry.cls`, `tests/default/classes/PortalPageRegistry_TEST.cls` |
+| Zone registers itself in Builder only; new `zoneScope` property | `lwc/ustWidgetZone/` (7 Jest tests) |
+| Theme-layout zones marked `zoneScope: Layout` (deployed and verified by retrieving the bundle) | `unpackaged/.../sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json` |
+| Page/zone-aware picker: filter by zone, auto-remove with Undo, coverage line, warnings, typed pages | `lwc/ustPageContextPicker/` (15 Jest tests), wired into `ustWidgetRecordEditor` |
+| `Page_Context__c` now unrestricted (verified: unlisted values save and `INCLUDES` still matches) | `fields/Page_Context__c` |
+| CCI tasks: `assign_ust_portal_widget_admin_permset` (config_dev 1.5), `seed_zone_placements` (config_dev 1.6), `migrate_widget_page_context` (manual, idempotent) | `cumulusci.yml` |
+
+**To do in other orgs (for example eda-staging):** deploy, assign `UST_Portal_Widget_Admin`, run
+`cci task run seed_zone_placements --org <org>` and `cci task run migrate_widget_page_context --org <org>`,
+then open each page in Experience Builder once so the registry fills in; republish the site.
+
+**Needs the permission set.** Registration is silently skipped for anyone without create/edit on
+`UST_Portal_Zone_Placement__c`, so admins must have `UST_Portal_Widget_Admin` for pages to register.
+
+**Not changed (by decision):** `giving`, `events`, `profile`, `news` page values are left as-is until the
+EDA-Staging site is checked. Existing `directory` values are migrated to `alumni_directory__c` by the task.
+
+**Known follow-ups:** `registerPlacement` has cyclomatic complexity 15 (Code Analyzer, Moderate) — could be
+split; Builder-state vs published-state caveat and stale-entry handling are as described above.
 
 ---
 
@@ -281,7 +367,7 @@ Not started; design notes only.
 ## Progress
 
 - [x] Phase A — editor layout, headings, widget style class, API 68.0, lint fixes, link-dialog fix
-- [ ] Phase 0 — page-name mismatch
+- [x] Phase 0 — page context: fix mismatch + self-registering zone placements (done 2026-10-15; see "Phase 0 — as built")
 - [ ] Phase 1 — spikes (insert-at-cursor, portal link resolution, page picker source)
 - [ ] Phase 2 — data tags
 - [ ] Phase 3 — buttons

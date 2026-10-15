@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Page_Context__c</fullName>
-    <description>One or more pages where this widget should appear. Select &quot;All Pages&quot; to show on every page that hosts a zone with the matching Zone value. Multi-select: a single record can appear on several pages without duplication.</description>
+    <description>One or more pages where this widget should appear. Select &quot;All Pages&quot; to show on every page that hosts a zone with the matching Zone value. Multi-select: a single record can appear on several pages without duplication. Unrestricted on purpose: values are the lowercased page API names registered in UST_Portal_Zone_Placement__c, so new pages need no picklist deployment. Edited through the Portal Widget editor, which only offers pages that have the selected zone.</description>
     <label>Page Context</label>
     <required>true</required>
     <trackTrending>false</trackTrending>
     <type>MultiselectPicklist</type>
     <valueSet>
-        <restricted>true</restricted>
+        <restricted>false</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>

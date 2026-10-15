@@ -218,10 +218,12 @@ force-app/main/default/
     ustStaticContent/   # Renders rich-text static content from a widget record
     ustWidgetRecordEditor/ # Custom edit layout for UST_Portal_Widget__c (record page)
     ustRichTextEditor/  # Rich text editor with Paragraph / Heading 2-5 dropdown
+    ustPageContextPicker/ # Page/zone-aware Page Context chooser (reads the zone registry)
     ustPortalWidgetStub/# Dev placeholder for unbuilt widgets (Builder-only visible)
   classes/              # Apex controllers
     NavMenuController   # Experience Cloud navigation menu fetcher
     PortalWidgetController # Widget zone registry query + audience filtering
+    PortalPageRegistry  # Records which zones exist on which pages (written from Experience Builder only)
   objects/              # Custom object and field metadata
     UST_Portal_Widget__c/  # Widget zone control object (zone, page, widget type, audience, static content)
   permissionsets/       # Permission sets for community users and admins

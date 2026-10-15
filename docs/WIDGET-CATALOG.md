@@ -75,7 +75,11 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 
 **Adding a conditional section to the editor later:** add the `Component_Name__c` value and a section key to `COMPONENT_SECTIONS` in `ustWidgetRecordEditor.js`, then add a getter and template block (see the header comment in that file).
 
+**Zone and page targeting:** The editor's **Page Context** picker only offers pages that have the selected zone. It reads the `UST_Portal_Zone_Placement__c` registry, which `ustWidgetZone` keeps current by registering itself whenever an admin opens a page in Experience Builder (never for site visitors). Changing the zone removes known pages that lack it, with an Undo. Pages not yet registered can be typed in by page API name (lowercase, for example `my_account__c`). Admins need the `UST_Portal_Widget_Admin` permission set for registration to work. The `banner` and `above_footer` zones live in the shared theme layout (set `Zone Scope` = Layout on any zone placed there) and count as present on every page. See `docs/WIDGET-AUTHORING-PLAN.md`.
+
 **Components:**
+- `ustPageContextPicker` - the page/zone-aware Page Context chooser used by the editor.
+- `ustRichTextEditor` is listed below.
 - `ustWidgetRecordEditor` - the record-page layout (Widget Setup, Content, Audience Filters) built on `lightning-record-edit-form`.
 - `ustRichTextEditor` - wraps `lightning-input-rich-text` and adds the Paragraph / Heading 2-5 dropdown (Heading 1 and 6 are deliberately excluded; the page already supplies the h1 and the widget header renders as an h2). It also shows a character counter against the 32,768 field limit.
 - Access: assign the `UST_Portal_Widget_Admin` permission set to admins who manage widgets.

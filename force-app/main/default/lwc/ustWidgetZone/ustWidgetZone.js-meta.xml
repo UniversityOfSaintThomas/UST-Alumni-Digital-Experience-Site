@@ -19,6 +19,14 @@
                 description="Zone this portal widget will appear in."
                 required="true"
             />
+            <property
+                name="zoneScope"
+                type="String"
+                label="Zone Scope"
+                datasource="Page,Layout"
+                default="Page"
+                description="Page: this zone is on one page. Layout: this zone is in a shared theme layout, so it appears on every page that uses the layout. Used to keep the admin page picker accurate."
+            />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

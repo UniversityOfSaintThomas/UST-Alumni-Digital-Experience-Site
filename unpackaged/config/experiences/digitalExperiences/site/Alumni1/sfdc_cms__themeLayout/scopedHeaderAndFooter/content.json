@@ -464,7 +464,8 @@
           "type" : "component"
         }, {
           "attributes" : {
-            "zoneName" : "banner"
+            "zoneName" : "banner",
+            "zoneScope" : "Layout"
           },
           "definition" : "c:ustWidgetZone",
           "id" : "e6e45ada-a6f3-4140-a05c-7f752d01bc12",
@@ -476,7 +477,8 @@
       }, {
         "children" : [ {
           "attributes" : {
-            "zoneName" : "above_footer"
+            "zoneName" : "above_footer",
+            "zoneScope" : "Layout"
           },
           "definition" : "c:ustWidgetZone",
           "id" : "088d1a6a-c045-4b15-a267-2fbef56c09c2",
