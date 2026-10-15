@@ -2,15 +2,29 @@
     <div class="ust-editor">
         <div class="ust-editor-label slds-form-element__label">{label}</div>
 
-        <div class="ust-editor-style slds-m-bottom_x-small">
-            <lightning-combobox
-                name="paragraphStyle"
-                label="Paragraph style"
-                value={selectedStyle}
-                options={styleOptions}
-                disabled={disabled}
-                onchange={handleStyleChange}>
-            </lightning-combobox>
+        <div class="ust-editor-controls slds-m-bottom_x-small">
+            <div class="ust-editor-style">
+                <lightning-combobox
+                    name="paragraphStyle"
+                    label="Paragraph style"
+                    value={selectedStyle}
+                    options={styleOptions}
+                    disabled={disabled}
+                    onchange={handleStyleChange}>
+                </lightning-combobox>
+            </div>
+            <template lwc:if={hasDataTags}>
+                <div class="ust-editor-tag">
+                    <lightning-combobox
+                        name="insertTag"
+                        label="Insert data tag"
+                        placeholder="Choose a tag..."
+                        options={tagOptions}
+                        disabled={disabled}
+                        onchange={handleInsertTag}>
+                    </lightning-combobox>
+                </div>
+            </template>
         </div>
 
         <!-- Cursor-tracking handlers live here, not on the outer wrapper (getFormat() focuses
@@ -30,6 +44,11 @@
 
         <div class="slds-m-top_xx-small slds-grid slds-grid_align-spread">
             <div class="slds-col">
+                <template lwc:if={hasUnknownTags}>
+                    <p class="slds-text-body_small ust-editor-warning" role="alert">
+                        Unknown data tag: {unknownTagsText}. Pick tags from the Insert data tag list.
+                    </p>
+                </template>
                 <template lwc:if={hasDisallowedHeadings}>
                     <p class="slds-text-body_small slds-text-color_error" role="alert">
                         Heading 1 and Heading 6 are not used on the portal. Change them to Heading 2-5.

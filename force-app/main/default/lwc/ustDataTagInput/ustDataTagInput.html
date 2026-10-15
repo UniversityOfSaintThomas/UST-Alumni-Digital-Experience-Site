@@ -1,0 +1,30 @@
+<template>
+    <div class="ust-tag-input">
+        <lightning-input
+            label={label}
+            value={_value}
+            maxlength={maxLength}
+            disabled={disabled}
+            onchange={handleInput}>
+        </lightning-input>
+
+        <template lwc:if={hasDataTags}>
+            <div class="ust-tag-input-insert">
+                <lightning-combobox
+                    name="insertTag"
+                    label="Insert data tag"
+                    placeholder="Choose a tag..."
+                    options={tagOptions}
+                    disabled={disabled}
+                    onchange={handleInsertTag}>
+                </lightning-combobox>
+            </div>
+        </template>
+
+        <template lwc:if={hasUnknownTags}>
+            <p class="slds-text-body_small ust-tag-input-warning" role="alert">
+                Unknown data tag: {unknownTagsText}. Pick tags from the Insert data tag list.
+            </p>
+        </template>
+    </div>
+</template>

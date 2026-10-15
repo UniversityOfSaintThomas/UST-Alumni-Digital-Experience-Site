@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+import { appendToHtml, findUnknownTags, tagToken } from 'c/ustDataTags';
 
 /**
  * ustRichTextEditor
@@ -62,6 +63,9 @@ export default class UstRichTextEditor extends LightningElement {
     /** Disables both the dropdown and the editor. */
     @api disabled = false;
 
+    /** Available data tags ({ name, label, sample, allowInUrl }) for the Insert data tag list. */
+    @api tagDefinitions = [];
+
     _value = '';
     selectedStyle = PARAGRAPH_VALUE;
     _syncPausedUntil = 0;
@@ -122,6 +126,29 @@ export default class UstRichTextEditor extends LightningElement {
             options.push({ label: 'Heading ' + level, value: 'h' + level });
         });
         return options;
+    }
+
+    get hasDataTags() {
+        return Array.isArray(this.tagDefinitions) && this.tagDefinitions.length > 0;
+    }
+
+    get tagOptions() {
+        return (this.tagDefinitions || []).map((tag) => ({
+            label: tag.label + '  ' + tagToken(tag.name),
+            value: tag.name
+        }));
+    }
+
+    get unknownTags() {
+        return findUnknownTags(this._value, this.tagDefinitions);
+    }
+
+    get hasUnknownTags() {
+        return this.unknownTags.length > 0;
+    }
+
+    get unknownTagsText() {
+        return this.unknownTags.join(', ');
     }
 
     get currentLength() {
@@ -207,6 +234,38 @@ export default class UstRichTextEditor extends LightningElement {
             return;
         }
         this.syncStyleToCursor();
+    }
+
+    /**
+     * Inserts the chosen data tag at the cursor (or over the selection). Uses the editor's
+     * insertTextAtCursor method, which Salesforce documents as internal-use, so it is feature-detected
+     * and falls back to appending the tag to the end of the content.
+     *
+     * @param {CustomEvent} event combobox change event
+     */
+    handleInsertTag(event) {
+        event.stopPropagation();
+        const token = tagToken(event.detail.value);
+        event.target.value = '';
+        const editor = this.editor;
+        if (!editor) {
+            return;
+        }
+        let inserted = false;
+        if (typeof editor.insertTextAtCursor === 'function') {
+            try {
+                editor.insertTextAtCursor(token);
+                inserted = true;
+            } catch {
+                inserted = false;
+            }
+        }
+        if (inserted) {
+            editor.focus();
+        } else {
+            this._value = appendToHtml(this._value, token);
+            this.dispatchEvent(new CustomEvent('change', { detail: { value: this._value } }));
+        }
     }
 
     /**

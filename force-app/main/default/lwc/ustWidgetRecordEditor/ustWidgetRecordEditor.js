@@ -1,6 +1,8 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import getTagDefinitions from '@salesforce/apex/PortalDataTags.getTagDefinitions';
+import { resolveTags, sampleValues, MODE_HTML, MODE_TEXT } from 'c/ustDataTags';
 
 /**
  * ustWidgetRecordEditor
@@ -42,6 +44,19 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     _savedPageContext = '';
 
     isSaving = false;
+
+    /** Available {{data tags}} from Apex; feeds the Insert data tag lists and the preview. */
+    dataTags = [];
+
+    /** When checked, the preview shows what a guest sees (fallbacks only) instead of sample values. */
+    previewAsGuest = false;
+
+    @wire(getTagDefinitions)
+    wiredTagDefinitions({ data }) {
+        if (data) {
+            this.dataTags = data;
+        }
+    }
 
     // ---- Section visibility ----
 
@@ -103,7 +118,30 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         this.pageContext = event.detail.value;
     }
 
+    handlePreviewAsGuestChange(event) {
+        this.previewAsGuest = event.target.checked;
+    }
+
+    /** Body shown in the preview, with data tags resolved from sample values (or as a guest). */
+    get previewContent() {
+        return resolveTags(this.staticContent, this.previewValues, this.dataTags, MODE_HTML);
+    }
+
+    /** Header shown in the preview, with data tags resolved. */
+    get previewHeader() {
+        return resolveTags(this.contentHeader, this.previewValues, this.dataTags, MODE_TEXT);
+    }
+
+    get previewValues() {
+        return this.previewAsGuest ? {} : sampleValues(this.dataTags);
+    }
+
+    get hasTagsInContent() {
+        return (this.staticContent || '').includes('{{') || (this.contentHeader || '').includes('{{');
+    }
+
     handleHeaderChange(event) {
+        event.stopPropagation();
         this.contentHeader = event.detail.value || '';
     }
 
@@ -140,6 +178,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
                 return;
             }
             fields.Static_Content__c = this.staticContent;
+            fields.Static_Content_Header__c = this.contentHeader;
         }
 
         this.isSaving = true;

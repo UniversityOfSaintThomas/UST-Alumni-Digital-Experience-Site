@@ -20,6 +20,18 @@ function flushPromises() {
     return Promise.resolve();
 }
 
+const TAGS = [
+    { name: 'First_Name', label: 'First name', sample: 'Jordan', allowInUrl: false },
+    { name: 'Employer', label: 'Employer', sample: 'Summit', allowInUrl: false }
+];
+
+/** Base component stubs expose name as a property, not an attribute. */
+function tagCombobox(element) {
+    return (
+        Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find((combobox) => combobox.name === 'insertTag') || null
+    );
+}
+
 describe('c-ust-rich-text-editor', () => {
     afterEach(() => {
         while (document.body.firstChild) {
@@ -140,6 +152,70 @@ describe('c-ust-rich-text-editor', () => {
 
         expect(richText.getFormat).toHaveBeenCalledTimes(1);
         expect(getStyleCombobox(element).value).toBe('h3');
+    });
+
+    it('only shows the Insert data tag list when tags are available', () => {
+        expect(tagCombobox(createEditor())).toBeNull();
+        const element = createEditor({ tagDefinitions: TAGS });
+        expect(tagCombobox(element).options.map((option) => option.value)).toEqual(['First_Name', 'Employer']);
+    });
+
+    it('inserts the chosen tag at the cursor and returns focus to the editor', () => {
+        const element = createEditor({ tagDefinitions: TAGS });
+        const richText = getRichText(element);
+        richText.insertTextAtCursor = jest.fn();
+        richText.focus = jest.fn();
+
+        tagCombobox(element).dispatchEvent(new CustomEvent('change', { detail: { value: 'Employer' } }));
+
+        expect(richText.insertTextAtCursor).toHaveBeenCalledWith('{{Employer}}');
+        expect(richText.focus).toHaveBeenCalled();
+    });
+
+    it('does not let the tag list change event escape as a content change', () => {
+        const element = createEditor({ tagDefinitions: TAGS });
+        const richText = getRichText(element);
+        richText.insertTextAtCursor = jest.fn();
+        richText.focus = jest.fn();
+        const handler = jest.fn();
+        element.addEventListener('change', handler);
+
+        tagCombobox(element).dispatchEvent(
+            new CustomEvent('change', { detail: { value: 'Employer' }, bubbles: true, composed: true })
+        );
+
+        expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('appends the tag inside the last paragraph when the editor has no insert method', async () => {
+        const element = createEditor({ tagDefinitions: TAGS, value: '<p>Hi </p>' });
+        getRichText(element).insertTextAtCursor = undefined; // the stub defines one; real Salesforce could drop it
+        const handler = jest.fn();
+        element.addEventListener('change', handler);
+
+        tagCombobox(element).dispatchEvent(new CustomEvent('change', { detail: { value: 'First_Name' } }));
+        await flushPromises();
+
+        expect(handler.mock.calls[0][0].detail.value).toBe('<p>Hi {{First_Name}}</p>');
+        expect(element.value).toBe('<p>Hi {{First_Name}}</p>');
+    });
+
+    it('falls back to appending when inserting at the cursor throws', async () => {
+        const element = createEditor({ tagDefinitions: TAGS, value: '<p>Hi </p>' });
+        getRichText(element).insertTextAtCursor = jest.fn(() => {
+            throw new Error('not supported');
+        });
+
+        tagCombobox(element).dispatchEvent(new CustomEvent('change', { detail: { value: 'First_Name' } }));
+        await flushPromises();
+
+        expect(element.value).toBe('<p>Hi {{First_Name}}</p>');
+    });
+
+    it('warns about unknown data tags', async () => {
+        const element = createEditor({ tagDefinitions: TAGS, value: '<p>{{First_Name}} {{Fist_Name}}</p>' });
+        await flushPromises();
+        expect(element.shadowRoot.textContent).toContain('Unknown data tag: {{Fist_Name}}');
     });
 
     it('warns about Heading 1 and Heading 6', async () => {

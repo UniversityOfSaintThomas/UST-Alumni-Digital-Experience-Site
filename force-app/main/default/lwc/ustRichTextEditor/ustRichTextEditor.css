@@ -2,8 +2,22 @@
     display: block;
 }
 
+.ust-editor-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+}
+
 .ust-editor-style {
-    max-width: 14rem;
+    flex: 0 1 14rem;
+}
+
+.ust-editor-tag {
+    flex: 0 1 18rem;
+}
+
+.ust-editor-warning {
+    color: #8a5300;
 }
 
 /* The visible label is a plain caption; the inner editor label stays hidden. */

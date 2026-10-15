@@ -78,6 +78,15 @@ public without sharing class PortalWidgetController {
                     WITH SYSTEM_MODE
                     ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
             ];
+            // Look up personalization values only when a widget on this page actually uses data tags.
+            Map<String, String> tagValues = new Map<String, String>();
+            for (UST_Portal_Widget__c widget : candidateWidgets) {
+                if (PortalDataTags.containsTag(widget.Static_Content__c)
+                        || PortalDataTags.containsTag(widget.Static_Content_Header__c)) {
+                    tagValues = PortalDataTags.valuesForCurrentUser();
+                    break;
+                }
+            }
             List<PortalWidgetDto> results = new List<PortalWidgetDto>();
             for (UST_Portal_Widget__c widget : candidateWidgets) {
                 if (widgetMatchesPage(widget.Page_Context__c, pageContext)
@@ -90,8 +99,11 @@ public without sharing class PortalWidgetController {
                             ? Integer.valueOf(widget.Sort_Order__c)
                             : 999;
                     dto.description = widget.Description__c;
-                    dto.staticContent = widget.Static_Content__c;
-                    dto.staticContentHeader = String.isNotBlank(widget.Static_Content_Header__c) ? widget.Static_Content_Header__c : '';
+                    dto.staticContent = PortalDataTags.resolve(
+                            widget.Static_Content__c, tagValues, PortalDataTags.Mode.HTML_CONTENT);
+                    dto.staticContentHeader = String.isNotBlank(widget.Static_Content_Header__c)
+                            ? PortalDataTags.resolve(widget.Static_Content_Header__c, tagValues, PortalDataTags.Mode.PLAIN_TEXT)
+                            : '';
                     dto.contentCssClass = widget.Content_CSS_Class__c;
                     dto.isStaticContent = String.isNotBlank(widget.Static_Content__c) || String.isNotBlank(widget.Static_Content_Header__c);
                     results.add(dto);
@@ -336,7 +348,8 @@ public without sharing class PortalWidgetController {
         @AuraEnabled public Integer sortOrder;
         /** Admin notes (Description__c); surfaced by stub placeholder in development */
         @AuraEnabled public String description;
-        /** Rich-text content (Static_Content__c); rendered when componentName === 'ust_static_content' */
+        /** Rich-text content (Static_Content__c) with {{data tags}} already resolved for the current user;
+         *  rendered when componentName === 'ust_static_content' */
         @AuraEnabled public String staticContent;
         @AuraEnabled public String staticContentHeader;
         /** CSS class API name from Content_CSS_Class__c; styles the whole static content widget */

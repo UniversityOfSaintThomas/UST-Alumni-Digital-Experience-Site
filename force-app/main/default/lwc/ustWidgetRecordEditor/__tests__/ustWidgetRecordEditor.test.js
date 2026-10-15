@@ -2,6 +2,16 @@ import { createElement } from 'lwc';
 import UstWidgetRecordEditor from 'c/ustWidgetRecordEditor';
 
 import getPlacements from '@salesforce/apex/PortalPageRegistry.getPlacements';
+import getTagDefinitions from '@salesforce/apex/PortalDataTags.getTagDefinitions';
+
+jest.mock(
+    '@salesforce/apex/PortalDataTags.getTagDefinitions',
+    () => {
+        const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
+        return { default: createApexTestWireAdapter(jest.fn()) };
+    },
+    { virtual: true }
+);
 
 jest.mock(
     '@salesforce/apex/PortalPageRegistry.getPlacements',
@@ -37,6 +47,11 @@ function getInputField(element, apiName) {
     return Array.from(element.shadowRoot.querySelectorAll('lightning-input-field')).find(
         (field) => field.fieldName === apiName
     );
+}
+
+/** Base component stubs expose type as a property, not an attribute. */
+function guestCheckbox(element) {
+    return Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find((input) => input.type === 'checkbox') || null;
 }
 
 function flushPromises() {
@@ -129,7 +144,8 @@ describe('c-ust-widget-record-editor', () => {
         expect(form.submit).toHaveBeenCalledWith({
             Name: 'Widget',
             Page_Context__c: 'home',
-            Static_Content__c: '<h3>Saved</h3>'
+            Static_Content__c: '<h3>Saved</h3>',
+            Static_Content_Header__c: ''
         });
     });
 
@@ -205,6 +221,69 @@ describe('c-ust-widget-record-editor', () => {
 
         expect(form.submit).not.toHaveBeenCalled();
         expect(toastHandler.mock.calls[0][0].detail.title).toBe('Page Context is required');
+    });
+
+    const TAG_DEFINITIONS = [
+        { name: 'First_Name', label: 'First name', sample: 'Jordan', allowInUrl: false },
+        { name: 'Employer', label: 'Employer', sample: 'Summit & Co', allowInUrl: false }
+    ];
+
+    it('shows data tags resolved with sample values in the preview, and as a guest on request', async () => {
+        const element = createEditor();
+        getTagDefinitions.emit(TAG_DEFINITIONS);
+        loadRecord(element, {
+            Component_Name__c: 'ust_static_content',
+            Static_Content_Header__c: 'Welcome, {{First_Name|friend}}',
+            Static_Content__c: '<p>Hi {{First_Name|Alum}} from {{Employer}}</p>'
+        });
+        await flushPromises();
+
+        const preview = () => element.shadowRoot.querySelector('c-ust-static-content');
+        expect(preview().textHeader).toBe('Welcome, Jordan');
+        expect(preview().richTextContent).toBe('<p>Hi Jordan from Summit &amp; Co</p>');
+
+        const checkbox = guestCheckbox(element);
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new CustomEvent('change'));
+        await flushPromises();
+
+        expect(preview().textHeader).toBe('Welcome, friend');
+        expect(preview().richTextContent).toBe('<p>Hi Alum from </p>');
+    });
+
+    it('hides the guest preview switch when the content has no tags', async () => {
+        const element = createEditor();
+        getTagDefinitions.emit(TAG_DEFINITIONS);
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Static_Content__c: '<p>Plain</p>' });
+        await flushPromises();
+        expect(guestCheckbox(element)).toBeNull();
+    });
+
+    it('gives the tag lists to the header and body editors', async () => {
+        const element = createEditor();
+        getTagDefinitions.emit(TAG_DEFINITIONS);
+        loadRecord(element, { Component_Name__c: 'ust_static_content' });
+        await flushPromises();
+
+        expect(element.shadowRoot.querySelector('c-ust-data-tag-input').tagDefinitions).toEqual(TAG_DEFINITIONS);
+        expect(element.shadowRoot.querySelector('c-ust-rich-text-editor').tagDefinitions).toEqual(TAG_DEFINITIONS);
+    });
+
+    it('saves the header typed in the tag input along with the body', async () => {
+        const element = createEditor();
+        loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
+        await flushPromises();
+        element.shadowRoot
+            .querySelector('c-ust-data-tag-input')
+            .dispatchEvent(new CustomEvent('change', { detail: { value: 'Hello {{First_Name}}' } }));
+        await flushPromises();
+
+        const form = getForm(element);
+        form.submit = jest.fn();
+        form.dispatchEvent(new CustomEvent('submit', { detail: { fields: { Name: 'Widget' } }, cancelable: true }));
+
+        const saved = form.submit.mock.calls[0][0];
+        expect(saved.Static_Content_Header__c).toBe('Hello {{First_Name}}');
     });
 
     it('shows a success toast after saving', async () => {

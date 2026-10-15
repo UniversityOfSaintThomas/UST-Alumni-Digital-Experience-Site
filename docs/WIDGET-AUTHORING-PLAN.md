@@ -1,6 +1,6 @@
 # Portal Widget Authoring Experience — Implementation Plan
 
-> Status: **Phases A and 0 done (deployed to the dev scratch org, not yet committed to git). Phases 1–3 approved, not started.**
+> Status: **Phases A, 0, 1 and 2 done. Phase 3 (buttons) approved, not started.** (Phase 0 committed by the owner; Phases 1–2 not yet committed.)
 > Recorded so context survives a session reset.
 > Created: 2026-10-14. Dev org: `UST-Alumni-Digital-Experience-Site__dev` (CCI alias `dev`), expires 2026-10-27.
 
@@ -193,19 +193,74 @@ split; Builder-state vs published-state caveat and stale-entry handling are as d
 
 ---
 
-## Phase 1 — Spikes (≈ half a day, before building)
+## Phase 1 — Spikes — DONE 2026-10-15
 
-1. **Insert at cursor.** Does `lightning-input-rich-text.insertTextAtCursor()` (documented as "reserved
-   for internal use") reliably insert plain text `{{First_Name}}` at the cursor in the dev org? If not,
-   fallback = append at end, or copy-to-clipboard.
-2. **Portal link resolution in the LWR site.** Relative path + `@salesforce/community/basePath`
-   (already used by header/footer) vs `NavigationMixin.GenerateUrl` with `comm__namedPage`. Confirm base
-   path handling and that links work in Experience Builder preview and live.
-3. **Page picker source.** Site pages are **not** queryable at runtime (`DigitalExperience` is not
-   supported in SOQL; routes exist only in metadata). `NavigationMenuItem` **is** queryable
-   (7 InternalLink items in dev: `/my-account`, `/alumni-directory`, `/alumni-notes`, `/lawyer-search`,
-   `/business-directory`, `/my-business`, `/alumni-event-creation`). Confirm the menu-item query works
-   for the navigation set bound to the site (note `sync_navigation_menu` handles per-org set names).
+All three answered against the dev org (spike component was temporary and has been removed).
+
+### 1. Insert text at the cursor — works (with one caveat)
+
+`lightning-input-rich-text.insertTextAtCursor(text)` (documented as "reserved for internal use"):
+
+| Scenario | Result |
+|---|---|
+| Caret in the middle of text | Inserted at the caret |
+| Focus moved to another control first (the real "Insert data tag" dropdown case) | Still inserted at the last caret position |
+| Text selected | Selection is **replaced** |
+| After insertion | Editor fires `change` with the new HTML, so our wrapper, preview and save all see it; works inside a heading too |
+
+Decision: use it for the rich-text "Insert data tag" dropdown, **feature-detected**
+(`typeof editor.insertTextAtCursor === 'function'`). Caveat: it is an internal-use API Salesforce could
+change. Fallback if it ever disappears: append the tag at the end of the content and tell the admin.
+The plain header field uses the supported `lightning-input.setRangeText()`.
+
+### 2. Portal link resolution in the LWR site
+
+Observed in Experience Builder's live preview of the Alumni site (`basePath` = `/alumni`):
+
+| Input | `NavigationMixin.GenerateUrl` result |
+|---|---|
+| `standard__webPage` `/alumni-directory` | `/alumni/alumni-directory` (base path added) |
+| `standard__webPage` `/alumni/alumni-directory` | `/alumni/alumni-directory` (not double-prefixed) |
+| `standard__webPage` `/news/abc?x=1#top` | `/alumni/news/abc?x=1#top` (query and hash kept) |
+| `standard__webPage` `/` | `/alumni/` |
+| `standard__webPage` `https://www.stthomas.edu` | unchanged |
+| `standard__webPage` `//evil.example.com/x` | **unchanged — protocol-relative, an open-redirect risk** |
+| `standard__webPage` `javascript:`, `mailto:`, `tel:` | **mangled** to `/alumnijavascript:...`, `/alumnimailto:...` |
+| `comm__namedPage` `My_Business__c`, `Home`, `alumni_directory__c` | resolves to the page |
+| `comm__namedPage` `my_business__c`, `home` (lowercase) | **fails silently**: redirects to `/alumni/?redirectPageContext=...` (home) |
+| `comm__namedPage` unknown page | same silent redirect — no error |
+| Raw `<a href="/alumni-directory">` | points at the domain root, **would 404** — not usable |
+
+Page names for `comm__namedPage` are case-sensitive and our registry stores them **lowercased**, so they
+cannot be used to build links. (Not tested: clicking, because the Builder overlay intercepts clicks, and a
+published site; `Navigate` uses the same resolution as `GenerateUrl`.)
+
+Decisions for Phase 3:
+- **Portal links are stored as relative paths** (`/alumni-directory`, `/news/abc`), resolved with
+  `GenerateUrl({ type: 'standard__webPage', attributes: { url } })`. The base path is added at render time,
+  so the same JSON works in sandbox and prod even if the prefix differs. Do not use `comm__namedPage`.
+- Render a real `<a href={generatedUrl}>` and call `Navigate` on click for single-page navigation.
+- **Validation (save-time in the editor, re-checked in Apex, and again at render):** portal path must match
+  `^/(?!/)[^\s]*$` — starts with exactly one `/`, no scheme, no whitespace. Reject `//`.
+- **`mailto:` and `tel:` must not go through `GenerateUrl`** — render them as plain `href` after allowlisting.
+  External links: `https:` only.
+
+### 3. Page picker source
+
+- Site pages cannot be listed at runtime (confirmed earlier). `NavigationMenuItem` **can** be queried via
+  SOQL and is scoped by `NavigationLinkSet.NetworkId`.
+- Columns of interest: `Label`, `Type` (`InternalLink` = page with a path, `MenuLabel` = group heading,
+  `NavigationalTopic` = skip), `Target` (relative path such as `/alumni-directory`), `Status`
+  (`Draft` or `Live` — this dev site is unpublished, so rows are `Draft`; a published site has both), and
+  `AccessRestriction` (`LoginRequired` or `None`, a useful hint for guest-visible buttons).
+- Link set names differ per org (`Default_Navigation2` here; `sync_navigation_menu` handles that), so scope
+  by the site's network, not by developer name.
+- The zone registry cannot supply link paths (it stores page API names, not URL paths).
+
+Decision: the Portal-link picker offers **site menu pages** (deduplicated by `Target`, preferring Live,
+labelled with a "login required" note) plus **free typing of any relative path**. Implement as a small
+Apex method (`getPortalLinkSuggestions`) that finds the network by name (`Alumni`, the same name
+`sync_navigation_menu` uses; make it configurable) and returns `[{label, path, loginRequired}]`.
 
 ---
 
@@ -237,8 +292,11 @@ the Apex resolver cannot drift.
   `\{\{((?:[^{}<]|<[^>]*>)+?)\}\}`, strip tags from the capture, then parse name/fallback.
 - Blank value → fallback if given, else empty string. **Guests and users with no directory record get
   blanks/fallbacks.** Unknown tags are left literally in the text (and flagged to admins in the editor).
-- **HTML-escape every substituted value.** (The VF implementation inserts values unescaped; alumni can
-  edit these fields themselves.) Header and button labels are plain text. Fallback text is escaped too.
+- **Escape every substituted *value*.** (The VF implementation inserts values unescaped; alumni can edit
+  these fields themselves.) Body = HTML-escaped; header and button labels = plain text (no escaping, the LWC
+  template escapes on render); URLs = URL-encoded. **Fallback text is inserted as-is** (URL-encoded in
+  URLs): the admin wrote it in the same format as the surrounding text and the editor has already
+  HTML-encoded it, so escaping it again would double-encode characters such as `&`.
 - In **URLs**: only tags marked "allowed in URLs" resolve, values are URL-encoded; other tags in a URL
   resolve to empty.
 - Resolve **server-side** in `PortalWidgetController` for the current user's `Alumni_Directory__c`
@@ -250,8 +308,8 @@ the Apex resolver cannot drift.
 
 ### Editor UX
 
-- "Insert data tag" dropdown beside Paragraph style (rich text) and beside the header input (plain
-  input → `setRangeText`, which is straightforward).
+- "Insert data tag" dropdown beside Paragraph style (rich text; uses `insertTextAtCursor`, feature-detected —
+  Phase 1 spike 1) and beside the header input (plain input; see "as built" for why it splices the value).
 - Live warnings for unknown tag names.
 - Preview resolves tags with **sample values** from the registry.
 - Stretch: "Preview as" a chosen Alumni Directory record.
@@ -260,6 +318,53 @@ the Apex resolver cannot drift.
 
 Apex: parsing (formatted/split tags, case, spaces), fallback, blank, guest, escaping (`<script>` in a
 value), URL encoding, URL-disallowed tags, unknown tags. Jest: insert dropdown, unknown-tag warning.
+
+---
+
+## Phase 2 — as built (2026-10-15)
+
+Server and editor verified in the dev org (browser + anonymous Apex), Jest 126/126, Apex org-wide failures
+unchanged at 80 (environmental), Code Analyzer: no High findings.
+
+| Piece | Where |
+|---|---|
+| Resolver, tag allowlist (9 tags), directory lookup, `@AuraEnabled getTagDefinitions()` (94% coverage, 15 tests) | `classes/PortalDataTags.cls`, `tests/default/classes/PortalDataTags_TEST.cls` |
+| `getWidgetsForZone` now returns body/header with tags already resolved for the signed-in user; the lookup is skipped when no widget on the page uses a tag (3 new controller tests) | `classes/PortalWidgetController.cls` |
+| Shared JS: parsing, unknown-tag detection, sample preview, append fallback (mirrors the Apex rules; 16 tests) | `lwc/ustDataTags/` |
+| Insert data tag list + unknown-tag warning in the rich text editor | `lwc/ustRichTextEditor/` |
+| New header field with the same list and warning | `lwc/ustDataTagInput/` (replaces the `lightning-input-field` for `Static_Content_Header__c`) |
+| Preview with sample values, plus a "Preview as a guest" switch (fallbacks only) | `lwc/ustWidgetRecordEditor/` |
+| `UST_Portal_Widget_Admin` now also grants Apex class access to `PortalDataTags` and `PortalPageRegistry` (needed by non-sysadmin widget admins) | `permissionsets/UST_Portal_Widget_Admin` |
+
+**Resolution modes** (`PortalDataTags.Mode`): `HTML_CONTENT` (escape values), `PLAIN_TEXT`, `LINK_URL`
+(identifier tags only, URL-encoded). `LINK_URL` is built and unit-tested but not wired to anything until
+Phase 3 buttons. The enum constants are not named `HTML`/`URL` because those clash with Apex system types.
+
+**Verified.**
+- Header insert at the caret, replacing a selection, and focus returns; body insert via
+  `insertTextAtCursor` keeps focus in the editor; unknown tag (`{{Fist_Name}}`) shows a warning;
+  preview shows `Jordan` / `Summit Health` as samples and `friend` / empty as a guest.
+- Saving stores the **raw** tags, not sample values.
+- Anonymous Apex: guest-like user gets fallbacks; a user with a directory record gets their data; a
+  nickname containing `<b>x</b>` is escaped in the body.
+- Live site response headers for the widget call (signed in): `cache-control: no-cache,must-revalidate,
+  max-age=0,no-store,private` and `x-sfdc-edge-cache: none` — personalized content is not cached by shared
+  caches. (Worth re-checking on a published site and for guests, who can be cached.)
+
+**Findings that shaped the build (do not rediscover).**
+- **LWC reserves property names starting with `data`.** The tag list property is `tagDefinitions`
+  (attribute `tag-definitions`), not `dataTags`.
+- **`lightning-input` has no `setRangeText` method** in this API version (the Phase 2 plan assumed it), but it
+  does report `selectionStart` / `selectionEnd`, which survive the field losing focus to the list. The
+  component splices the tag into the value itself, replacing any selection.
+- **Apex is case-insensitive**: a parameter named `mode` shadowed the `Mode` enum (`Mode.LINK_URL` became a
+  field access) — hence `renderMode`. Also `inner` is a reserved word.
+- Combobox options only render in the DOM when the list is opened (matters for browser tests).
+- Jest base-component stubs expose `name` / `type` as properties, not attributes: filter on the property.
+
+**Known follow-ups.** Banner ID and Contact Id are the only tags allowed in URLs (Phase 3). The existing
+`Content_CSS_Class__c` list and tag list are both small enough to stay in code. `replacementFor` and
+`getWidgetsForZone` are over the Code Analyzer complexity thresholds (Moderate); not changed.
 
 ---
 
@@ -296,14 +401,20 @@ Styles carried over from EASY Widget Button: `text_link, brand, outline-brand, d
 text-destructive, neutral, success`. Alignment: `left, center, end`. Icon is optional and validated.
 **No per-button size** — sizing comes from the widget content CSS class.
 
-### Link rules (enforced at save AND at render; Apex re-validates)
+### Link rules (enforced at save AND at render; Apex re-validates) — updated by Phase 1 spike 2
 
-- External: `https:` only (plus `mailto:` / `tel:`). Reject `javascript:`, `data:`, etc. New tab →
-  `rel="noopener noreferrer"`.
-- Portal: must start with a single `/` (reject `//`); site base path is added at render time, so the same
-  JSON works in sandbox and prod. Picker suggestions come from the site navigation menu; free typing of
-  any relative path is allowed (covers `/news/<id>`).
-- Render real `<a>` elements (not `<button>`), visible focus, decorative icons, unique labels.
+- **External:** `https:` only. New tab → `rel="noopener noreferrer"`.
+- **Email / phone:** `mailto:` and `tel:` are allowed but rendered as plain `href`s (never through
+  `GenerateUrl`, which mangles them).
+- **Portal:** stored as a **relative path** (`/alumni-directory`, `/news/abc?x=1`), validated with
+  `^/(?!/)[^\s]*$` (exactly one leading `/`, no scheme; `//host` is rejected as an open redirect).
+  Resolved at render with `NavigationMixin.GenerateUrl` using `standard__webPage`, which adds the site base
+  path (`/alumni` here) — so the JSON is portable between sandbox and prod. **Never** use `comm__namedPage`
+  (case-sensitive, fails silently) or a raw `href="/path"` (would 404 at the domain root).
+- Picker suggestions come from the site menu (`NavigationMenuItem`, see Phase 1 spike 3); any relative path
+  can also be typed.
+- Render real `<a>` elements (not `<button>`), call `Navigate` on click for single-page navigation, visible
+  focus, decorative icons, unique labels.
 
 ### Components
 
@@ -368,7 +479,7 @@ Not started; design notes only.
 
 - [x] Phase A — editor layout, headings, widget style class, API 68.0, lint fixes, link-dialog fix
 - [x] Phase 0 — page context: fix mismatch + self-registering zone placements (done 2026-10-15; see "Phase 0 — as built")
-- [ ] Phase 1 — spikes (insert-at-cursor, portal link resolution, page picker source)
-- [ ] Phase 2 — data tags
+- [x] Phase 1 — spikes (insert-at-cursor works; portal links = relative paths via GenerateUrl; picker = site menu + typed path)
+- [x] Phase 2 — data tags (done 2026-10-15; see "Phase 2 — as built")
 - [ ] Phase 3 — buttons
 - [ ] Phase 4 — hero widget + S3 (design only)

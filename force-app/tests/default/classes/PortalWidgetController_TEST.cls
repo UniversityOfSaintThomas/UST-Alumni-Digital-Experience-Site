@@ -69,6 +69,56 @@ private class PortalWidgetController_TEST {
     }
 
     @IsTest
+    static void dataTagsAreResolvedForTheCurrentUserInBodyAndHeader() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c widget = buildWidget('Tagged widget', zone, pageContext);
+        widget.Static_Content_Header__c = 'Welcome back, {{First_Name|friend}}';
+        widget.Static_Content__c = '<p>Hi {{First_Name}} from {{Employer}} &amp; {{Not_A_Tag}}</p>';
+        insert widget;
+        PortalDataTags.testValues = new Map<String, String>{ 'first_name' => 'Jordan', 'employer' => 'Summit & Co' };
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(1, results.size(), 'The widget should be returned');
+        System.assertEquals('Welcome back, Jordan', results[0].staticContentHeader, 'Header resolved as plain text');
+        System.assertEquals('<p>Hi Jordan from Summit &amp; Co &amp; {{Not_A_Tag}}</p>', results[0].staticContent,
+                'Body resolved with the value escaped; unknown tags untouched');
+    }
+
+    @IsTest
+    static void guestsGetFallbacksAndEmptyValues() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c widget = buildWidget('Tagged widget', zone, pageContext);
+        widget.Static_Content_Header__c = 'Hello {{First_Name|Alum}}';
+        widget.Static_Content__c = '<p>Class of {{Class_Year}}.</p>';
+        insert widget;
+        PortalDataTags.testValues = new Map<String, String>();
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals('Hello Alum', results[0].staticContentHeader, 'Fallback used when there is no data');
+        System.assertEquals('<p>Class of .</p>', results[0].staticContent, 'No value and no fallback is empty');
+    }
+
+    @IsTest
+    static void contentWithoutTagsIsUntouchedAndSkipsTheLookup() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        insert buildWidget('Plain widget', zone, pageContext);
+        PortalDataTags.testValues = new Map<String, String>{ 'first_name' => 'ShouldNotAppear' };
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals('<h2>Title</h2><p>Body</p>', results[0].staticContent, 'Content is unchanged');
+        System.assertEquals('Header text', results[0].staticContentHeader, 'Header is unchanged');
+    }
+
+    @IsTest
     static void inactiveWidgetsAreExcluded() {
         String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
         String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);

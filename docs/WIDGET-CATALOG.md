@@ -75,10 +75,13 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 
 **Adding a conditional section to the editor later:** add the `Component_Name__c` value and a section key to `COMPONENT_SECTIONS` in `ustWidgetRecordEditor.js`, then add a getter and template block (see the header comment in that file).
 
+**Data tags (personalization):** Write `{{First_Name}}` or `{{First_Name|Alum}}` (text after the pipe is the fallback) in the header or body. Use the **Insert data tag** list beside the editor and header field so tags are typed correctly. Available tags: `First_Name` (nickname if there is one), `Last_Name`, `Class_Year`, `Employer`, `Job_Title`, `St_Thomas_Degree`, `City_State`, `Contact_Id`, `Banner_ID`. Values come from the signed-in alumnus's Alumni Directory record; guests and alumni without a record see the fallback (or nothing). Tags are case-insensitive, unknown tags stay visible as typed (the editor warns), and values are escaped so a profile entry can never inject markup. The preview shows sample values; tick **Preview as a guest** to see the fallbacks. Email, phone, birthdate, and address are deliberately not available. To add a tag, add it to `PortalDataTags` (definition and value mapping) and its test.
+
 **Zone and page targeting:** The editor's **Page Context** picker only offers pages that have the selected zone. It reads the `UST_Portal_Zone_Placement__c` registry, which `ustWidgetZone` keeps current by registering itself whenever an admin opens a page in Experience Builder (never for site visitors). Changing the zone removes known pages that lack it, with an Undo. Pages not yet registered can be typed in by page API name (lowercase, for example `my_account__c`). Admins need the `UST_Portal_Widget_Admin` permission set for registration to work. The `banner` and `above_footer` zones live in the shared theme layout (set `Zone Scope` = Layout on any zone placed there) and count as present on every page. See `docs/WIDGET-AUTHORING-PLAN.md`.
 
 **Components:**
 - `ustPageContextPicker` - the page/zone-aware Page Context chooser used by the editor.
+- `ustDataTagInput` - plain text input with the Insert data tag list (used for the header); `ustDataTags` - shared tag parsing/preview helpers.
 - `ustRichTextEditor` is listed below.
 - `ustWidgetRecordEditor` - the record-page layout (Widget Setup, Content, Audience Filters) built on `lightning-record-edit-form`.
 - `ustRichTextEditor` - wraps `lightning-input-rich-text` and adds the Paragraph / Heading 2-5 dropdown (Heading 1 and 6 are deliberately excluded; the page already supplies the h1 and the widget header renders as an h2). It also shows a character counter against the 32,768 field limit.

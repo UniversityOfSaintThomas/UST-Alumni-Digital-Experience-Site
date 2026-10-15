@@ -38,7 +38,12 @@
                 <h2 id="ust-content-heading" class="ust-section-title slds-text-heading_small">Content</h2>
                 <div class="slds-grid slds-wrap slds-gutters">
                     <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                        <lightning-input-field field-name="Static_Content_Header__c" onchange={handleHeaderChange}></lightning-input-field>
+                        <c-ust-data-tag-input
+                            label="Static Content Header"
+                            value={contentHeader}
+                            tag-definitions={dataTags}
+                            onchange={handleHeaderChange}>
+                        </c-ust-data-tag-input>
                     </div>
                     <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
                         <lightning-input-field field-name="Content_CSS_Class__c" onchange={handleClassChange}></lightning-input-field>
@@ -47,15 +52,27 @@
                 <c-ust-rich-text-editor
                     label="Static Content"
                     value={staticContent}
+                    tag-definitions={dataTags}
                     onchange={handleEditorChange}>
                 </c-ust-rich-text-editor>
 
                 <div class="ust-preview slds-m-top_medium">
                     <h3 class="ust-preview-title slds-text-title_caps">Preview (as shown on the portal)</h3>
+                    <template lwc:if={hasTagsInContent}>
+                        <lightning-input
+                            type="checkbox"
+                            label="Preview as a guest (no personal data, fallbacks only)"
+                            checked={previewAsGuest}
+                            onchange={handlePreviewAsGuestChange}>
+                        </lightning-input>
+                        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                            Data tags show sample values here. Signed-in alumni see their own information.
+                        </p>
+                    </template>
                     <div class="ust-preview-body">
                         <c-ust-static-content
-                            rich-text-content={staticContent}
-                            text-header={contentHeader}
+                            rich-text-content={previewContent}
+                            text-header={previewHeader}
                             content-class={contentClass}>
                         </c-ust-static-content>
                     </div>
