@@ -740,13 +740,52 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-1-spikes-half-a-day-before-building" class="md-nav__link">
+  <a href="#phase-1-spikes-done-2026-10-15" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 1 — Spikes (≈ half a day, before building)
+        Phase 1 — Spikes — DONE 2026-10-15
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Phase 1 — Spikes — DONE 2026-10-15">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-insert-text-at-the-cursor-works-with-one-caveat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Insert text at the cursor — works (with one caveat)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-portal-link-resolution-in-the-lwr-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Portal link resolution in the LWR site
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-page-picker-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Page picker source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -812,6 +851,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#phase-2-as-built-2026-10-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — as built (2026-10-15)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#phase-3-call-to-action-buttons" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -846,10 +896,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#link-rules-enforced-at-save-and-at-render-apex-re-validates" class="md-nav__link">
+  <a href="#link-rules-enforced-at-save-and-at-render-apex-re-validates-updated-by-phase-1-spike-2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Link rules (enforced at save AND at render; Apex re-validates)
+        Link rules (enforced at save AND at render; Apex re-validates) — updated by Phase 1 spike 2
       
     </span>
   </a>
@@ -935,7 +985,7 @@
 
 <h1 id="portal-widget-authoring-experience-implementation-plan">Portal Widget Authoring Experience — Implementation Plan<a class="headerlink" href="#portal-widget-authoring-experience-implementation-plan" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>Status: <strong>Phases A and 0 done (deployed to the dev scratch org, not yet committed to git). Phases 1–3 approved, not started.</strong>
+<p>Status: <strong>Phases A, 0, 1 and 2 done. Phase 3 (buttons) approved, not started.</strong> (Phase 0 committed by the owner; Phases 1–2 not yet committed.)
 Recorded so context survives a session reset.
 Created: 2026-10-14. Dev org: <code>UST-Alumni-Digital-Experience-Site__dev</code> (CCI alias <code>dev</code>), expires 2026-10-27.</p>
 </blockquote>
@@ -1195,20 +1245,124 @@ EDA-Staging site is checked. Existing <code>directory</code> values are migrated
 <p><strong>Known follow-ups:</strong> <code>registerPlacement</code> has cyclomatic complexity 15 (Code Analyzer, Moderate) — could be
 split; Builder-state vs published-state caveat and stale-entry handling are as described above.</p>
 <hr />
-<h2 id="phase-1-spikes-half-a-day-before-building">Phase 1 — Spikes (≈ half a day, before building)<a class="headerlink" href="#phase-1-spikes-half-a-day-before-building" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Insert at cursor.</strong> Does <code>lightning-input-rich-text.insertTextAtCursor()</code> (documented as "reserved
-   for internal use") reliably insert plain text <code>{{First_Name}}</code> at the cursor in the dev org? If not,
-   fallback = append at end, or copy-to-clipboard.</li>
-<li><strong>Portal link resolution in the LWR site.</strong> Relative path + <code>@salesforce/community/basePath</code>
-   (already used by header/footer) vs <code>NavigationMixin.GenerateUrl</code> with <code>comm__namedPage</code>. Confirm base
-   path handling and that links work in Experience Builder preview and live.</li>
-<li><strong>Page picker source.</strong> Site pages are <strong>not</strong> queryable at runtime (<code>DigitalExperience</code> is not
-   supported in SOQL; routes exist only in metadata). <code>NavigationMenuItem</code> <strong>is</strong> queryable
-   (7 InternalLink items in dev: <code>/my-account</code>, <code>/alumni-directory</code>, <code>/alumni-notes</code>, <code>/lawyer-search</code>,
-   <code>/business-directory</code>, <code>/my-business</code>, <code>/alumni-event-creation</code>). Confirm the menu-item query works
-   for the navigation set bound to the site (note <code>sync_navigation_menu</code> handles per-org set names).</li>
-</ol>
+<h2 id="phase-1-spikes-done-2026-10-15">Phase 1 — Spikes — DONE 2026-10-15<a class="headerlink" href="#phase-1-spikes-done-2026-10-15" title="Permanent link">&para;</a></h2>
+<p>All three answered against the dev org (spike component was temporary and has been removed).</p>
+<h3 id="1-insert-text-at-the-cursor-works-with-one-caveat">1. Insert text at the cursor — works (with one caveat)<a class="headerlink" href="#1-insert-text-at-the-cursor-works-with-one-caveat" title="Permanent link">&para;</a></h3>
+<p><code>lightning-input-rich-text.insertTextAtCursor(text)</code> (documented as "reserved for internal use"):</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caret in the middle of text</td>
+<td>Inserted at the caret</td>
+</tr>
+<tr>
+<td>Focus moved to another control first (the real "Insert data tag" dropdown case)</td>
+<td>Still inserted at the last caret position</td>
+</tr>
+<tr>
+<td>Text selected</td>
+<td>Selection is <strong>replaced</strong></td>
+</tr>
+<tr>
+<td>After insertion</td>
+<td>Editor fires <code>change</code> with the new HTML, so our wrapper, preview and save all see it; works inside a heading too</td>
+</tr>
+</tbody>
+</table>
+<p>Decision: use it for the rich-text "Insert data tag" dropdown, <strong>feature-detected</strong>
+(<code>typeof editor.insertTextAtCursor === 'function'</code>). Caveat: it is an internal-use API Salesforce could
+change. Fallback if it ever disappears: append the tag at the end of the content and tell the admin.
+The plain header field uses the supported <code>lightning-input.setRangeText()</code>.</p>
+<h3 id="2-portal-link-resolution-in-the-lwr-site">2. Portal link resolution in the LWR site<a class="headerlink" href="#2-portal-link-resolution-in-the-lwr-site" title="Permanent link">&para;</a></h3>
+<p>Observed in Experience Builder's live preview of the Alumni site (<code>basePath</code> = <code>/alumni</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th><code>NavigationMixin.GenerateUrl</code> result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>standard__webPage</code> <code>/alumni-directory</code></td>
+<td><code>/alumni/alumni-directory</code> (base path added)</td>
+</tr>
+<tr>
+<td><code>standard__webPage</code> <code>/alumni/alumni-directory</code></td>
+<td><code>/alumni/alumni-directory</code> (not double-prefixed)</td>
+</tr>
+<tr>
+<td><code>standard__webPage</code> <code>/news/abc?x=1#top</code></td>
+<td><code>/alumni/news/abc?x=1#top</code> (query and hash kept)</td>
+</tr>
+<tr>
+<td><code>standard__webPage</code> <code>/</code></td>
+<td><code>/alumni/</code></td>
+</tr>
+<tr>
+<td><code>standard__webPage</code> <code>https://www.stthomas.edu</code></td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td><code>standard__webPage</code> <code>//evil.example.com/x</code></td>
+<td><strong>unchanged — protocol-relative, an open-redirect risk</strong></td>
+</tr>
+<tr>
+<td><code>standard__webPage</code> <code>javascript:</code>, <code>mailto:</code>, <code>tel:</code></td>
+<td><strong>mangled</strong> to <code>/alumnijavascript:...</code>, <code>/alumnimailto:...</code></td>
+</tr>
+<tr>
+<td><code>comm__namedPage</code> <code>My_Business__c</code>, <code>Home</code>, <code>alumni_directory__c</code></td>
+<td>resolves to the page</td>
+</tr>
+<tr>
+<td><code>comm__namedPage</code> <code>my_business__c</code>, <code>home</code> (lowercase)</td>
+<td><strong>fails silently</strong>: redirects to <code>/alumni/?redirectPageContext=...</code> (home)</td>
+</tr>
+<tr>
+<td><code>comm__namedPage</code> unknown page</td>
+<td>same silent redirect — no error</td>
+</tr>
+<tr>
+<td>Raw <code>&lt;a href="/alumni-directory"&gt;</code></td>
+<td>points at the domain root, <strong>would 404</strong> — not usable</td>
+</tr>
+</tbody>
+</table>
+<p>Page names for <code>comm__namedPage</code> are case-sensitive and our registry stores them <strong>lowercased</strong>, so they
+cannot be used to build links. (Not tested: clicking, because the Builder overlay intercepts clicks, and a
+published site; <code>Navigate</code> uses the same resolution as <code>GenerateUrl</code>.)</p>
+<p>Decisions for Phase 3:
+- <strong>Portal links are stored as relative paths</strong> (<code>/alumni-directory</code>, <code>/news/abc</code>), resolved with
+  <code>GenerateUrl({ type: 'standard__webPage', attributes: { url } })</code>. The base path is added at render time,
+  so the same JSON works in sandbox and prod even if the prefix differs. Do not use <code>comm__namedPage</code>.
+- Render a real <code>&lt;a href={generatedUrl}&gt;</code> and call <code>Navigate</code> on click for single-page navigation.
+- <strong>Validation (save-time in the editor, re-checked in Apex, and again at render):</strong> portal path must match
+  <code>^/(?!/)[^\s]*$</code> — starts with exactly one <code>/</code>, no scheme, no whitespace. Reject <code>//</code>.
+- <strong><code>mailto:</code> and <code>tel:</code> must not go through <code>GenerateUrl</code></strong> — render them as plain <code>href</code> after allowlisting.
+  External links: <code>https:</code> only.</p>
+<h3 id="3-page-picker-source">3. Page picker source<a class="headerlink" href="#3-page-picker-source" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Site pages cannot be listed at runtime (confirmed earlier). <code>NavigationMenuItem</code> <strong>can</strong> be queried via
+  SOQL and is scoped by <code>NavigationLinkSet.NetworkId</code>.</li>
+<li>Columns of interest: <code>Label</code>, <code>Type</code> (<code>InternalLink</code> = page with a path, <code>MenuLabel</code> = group heading,
+  <code>NavigationalTopic</code> = skip), <code>Target</code> (relative path such as <code>/alumni-directory</code>), <code>Status</code>
+  (<code>Draft</code> or <code>Live</code> — this dev site is unpublished, so rows are <code>Draft</code>; a published site has both), and
+  <code>AccessRestriction</code> (<code>LoginRequired</code> or <code>None</code>, a useful hint for guest-visible buttons).</li>
+<li>Link set names differ per org (<code>Default_Navigation2</code> here; <code>sync_navigation_menu</code> handles that), so scope
+  by the site's network, not by developer name.</li>
+<li>The zone registry cannot supply link paths (it stores page API names, not URL paths).</li>
+</ul>
+<p>Decision: the Portal-link picker offers <strong>site menu pages</strong> (deduplicated by <code>Target</code>, preferring Live,
+labelled with a "login required" note) plus <strong>free typing of any relative path</strong>. Implement as a small
+Apex method (<code>getPortalLinkSuggestions</code>) that finds the network by name (<code>Alumni</code>, the same name
+<code>sync_navigation_menu</code> uses; make it configurable) and returns <code>[{label, path, loginRequired}]</code>.</p>
 <hr />
 <h2 id="phase-2-data-tags">Phase 2 — Data tags<a class="headerlink" href="#phase-2-data-tags" title="Permanent link">&para;</a></h2>
 <h3 id="tag-registry-single-source-of-truth-apex">Tag registry (single source of truth, Apex)<a class="headerlink" href="#tag-registry-single-source-of-truth-apex" title="Permanent link">&para;</a></h3>
@@ -1279,8 +1433,11 @@ the Apex resolver cannot drift.</p>
   <code>\{\{((?:[^{}&lt;]|&lt;[^&gt;]*&gt;)+?)\}\}</code>, strip tags from the capture, then parse name/fallback.</li>
 <li>Blank value → fallback if given, else empty string. <strong>Guests and users with no directory record get
   blanks/fallbacks.</strong> Unknown tags are left literally in the text (and flagged to admins in the editor).</li>
-<li><strong>HTML-escape every substituted value.</strong> (The VF implementation inserts values unescaped; alumni can
-  edit these fields themselves.) Header and button labels are plain text. Fallback text is escaped too.</li>
+<li><strong>Escape every substituted <em>value</em>.</strong> (The VF implementation inserts values unescaped; alumni can edit
+  these fields themselves.) Body = HTML-escaped; header and button labels = plain text (no escaping, the LWC
+  template escapes on render); URLs = URL-encoded. <strong>Fallback text is inserted as-is</strong> (URL-encoded in
+  URLs): the admin wrote it in the same format as the surrounding text and the editor has already
+  HTML-encoded it, so escaping it again would double-encode characters such as <code>&amp;</code>.</li>
 <li>In <strong>URLs</strong>: only tags marked "allowed in URLs" resolve, values are URL-encoded; other tags in a URL
   resolve to empty.</li>
 <li>Resolve <strong>server-side</strong> in <code>PortalWidgetController</code> for the current user's <code>Alumni_Directory__c</code>
@@ -1292,8 +1449,8 @@ the Apex resolver cannot drift.</p>
 </ul>
 <h3 id="editor-ux">Editor UX<a class="headerlink" href="#editor-ux" title="Permanent link">&para;</a></h3>
 <ul>
-<li>"Insert data tag" dropdown beside Paragraph style (rich text) and beside the header input (plain
-  input → <code>setRangeText</code>, which is straightforward).</li>
+<li>"Insert data tag" dropdown beside Paragraph style (rich text; uses <code>insertTextAtCursor</code>, feature-detected —
+  Phase 1 spike 1) and beside the header input (plain input; see "as built" for why it splices the value).</li>
 <li>Live warnings for unknown tag names.</li>
 <li>Preview resolves tags with <strong>sample values</strong> from the registry.</li>
 <li>Stretch: "Preview as" a chosen Alumni Directory record.</li>
@@ -1301,6 +1458,74 @@ the Apex resolver cannot drift.</p>
 <h3 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h3>
 <p>Apex: parsing (formatted/split tags, case, spaces), fallback, blank, guest, escaping (<code>&lt;script&gt;</code> in a
 value), URL encoding, URL-disallowed tags, unknown tags. Jest: insert dropdown, unknown-tag warning.</p>
+<hr />
+<h2 id="phase-2-as-built-2026-10-15">Phase 2 — as built (2026-10-15)<a class="headerlink" href="#phase-2-as-built-2026-10-15" title="Permanent link">&para;</a></h2>
+<p>Server and editor verified in the dev org (browser + anonymous Apex), Jest 126/126, Apex org-wide failures
+unchanged at 80 (environmental), Code Analyzer: no High findings.</p>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resolver, tag allowlist (9 tags), directory lookup, <code>@AuraEnabled getTagDefinitions()</code> (94% coverage, 15 tests)</td>
+<td><code>classes/PortalDataTags.cls</code>, <code>tests/default/classes/PortalDataTags_TEST.cls</code></td>
+</tr>
+<tr>
+<td><code>getWidgetsForZone</code> now returns body/header with tags already resolved for the signed-in user; the lookup is skipped when no widget on the page uses a tag (3 new controller tests)</td>
+<td><code>classes/PortalWidgetController.cls</code></td>
+</tr>
+<tr>
+<td>Shared JS: parsing, unknown-tag detection, sample preview, append fallback (mirrors the Apex rules; 16 tests)</td>
+<td><code>lwc/ustDataTags/</code></td>
+</tr>
+<tr>
+<td>Insert data tag list + unknown-tag warning in the rich text editor</td>
+<td><code>lwc/ustRichTextEditor/</code></td>
+</tr>
+<tr>
+<td>New header field with the same list and warning</td>
+<td><code>lwc/ustDataTagInput/</code> (replaces the <code>lightning-input-field</code> for <code>Static_Content_Header__c</code>)</td>
+</tr>
+<tr>
+<td>Preview with sample values, plus a "Preview as a guest" switch (fallbacks only)</td>
+<td><code>lwc/ustWidgetRecordEditor/</code></td>
+</tr>
+<tr>
+<td><code>UST_Portal_Widget_Admin</code> now also grants Apex class access to <code>PortalDataTags</code> and <code>PortalPageRegistry</code> (needed by non-sysadmin widget admins)</td>
+<td><code>permissionsets/UST_Portal_Widget_Admin</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Resolution modes</strong> (<code>PortalDataTags.Mode</code>): <code>HTML_CONTENT</code> (escape values), <code>PLAIN_TEXT</code>, <code>LINK_URL</code>
+(identifier tags only, URL-encoded). <code>LINK_URL</code> is built and unit-tested but not wired to anything until
+Phase 3 buttons. The enum constants are not named <code>HTML</code>/<code>URL</code> because those clash with Apex system types.</p>
+<p><strong>Verified.</strong>
+- Header insert at the caret, replacing a selection, and focus returns; body insert via
+  <code>insertTextAtCursor</code> keeps focus in the editor; unknown tag (<code>{{Fist_Name}}</code>) shows a warning;
+  preview shows <code>Jordan</code> / <code>Summit Health</code> as samples and <code>friend</code> / empty as a guest.
+- Saving stores the <strong>raw</strong> tags, not sample values.
+- Anonymous Apex: guest-like user gets fallbacks; a user with a directory record gets their data; a
+  nickname containing <code>&lt;b&gt;x&lt;/b&gt;</code> is escaped in the body.
+- Live site response headers for the widget call (signed in): <code>cache-control: no-cache,must-revalidate,
+  max-age=0,no-store,private</code> and <code>x-sfdc-edge-cache: none</code> — personalized content is not cached by shared
+  caches. (Worth re-checking on a published site and for guests, who can be cached.)</p>
+<p><strong>Findings that shaped the build (do not rediscover).</strong>
+- <strong>LWC reserves property names starting with <code>data</code>.</strong> The tag list property is <code>tagDefinitions</code>
+  (attribute <code>tag-definitions</code>), not <code>dataTags</code>.
+- <strong><code>lightning-input</code> has no <code>setRangeText</code> method</strong> in this API version (the Phase 2 plan assumed it), but it
+  does report <code>selectionStart</code> / <code>selectionEnd</code>, which survive the field losing focus to the list. The
+  component splices the tag into the value itself, replacing any selection.
+- <strong>Apex is case-insensitive</strong>: a parameter named <code>mode</code> shadowed the <code>Mode</code> enum (<code>Mode.LINK_URL</code> became a
+  field access) — hence <code>renderMode</code>. Also <code>inner</code> is a reserved word.
+- Combobox options only render in the DOM when the list is opened (matters for browser tests).
+- Jest base-component stubs expose <code>name</code> / <code>type</code> as properties, not attributes: filter on the property.</p>
+<p><strong>Known follow-ups.</strong> Banner ID and Contact Id are the only tags allowed in URLs (Phase 3). The existing
+<code>Content_CSS_Class__c</code> list and tag list are both small enough to stay in code. <code>replacementFor</code> and
+<code>getWidgetsForZone</code> are over the Code Analyzer complexity thresholds (Moderate); not changed.</p>
 <hr />
 <h2 id="phase-3-call-to-action-buttons">Phase 3 — Call-to-action buttons<a class="headerlink" href="#phase-3-call-to-action-buttons" title="Permanent link">&para;</a></h2>
 <h3 id="data-model">Data model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h3>
@@ -1330,14 +1555,20 @@ value), URL encoding, URL-disallowed tags, unknown tags. Jest: insert dropdown, 
 <p>Styles carried over from EASY Widget Button: <code>text_link, brand, outline-brand, destructive,
 text-destructive, neutral, success</code>. Alignment: <code>left, center, end</code>. Icon is optional and validated.
 <strong>No per-button size</strong> — sizing comes from the widget content CSS class.</p>
-<h3 id="link-rules-enforced-at-save-and-at-render-apex-re-validates">Link rules (enforced at save AND at render; Apex re-validates)<a class="headerlink" href="#link-rules-enforced-at-save-and-at-render-apex-re-validates" title="Permanent link">&para;</a></h3>
+<h3 id="link-rules-enforced-at-save-and-at-render-apex-re-validates-updated-by-phase-1-spike-2">Link rules (enforced at save AND at render; Apex re-validates) — updated by Phase 1 spike 2<a class="headerlink" href="#link-rules-enforced-at-save-and-at-render-apex-re-validates-updated-by-phase-1-spike-2" title="Permanent link">&para;</a></h3>
 <ul>
-<li>External: <code>https:</code> only (plus <code>mailto:</code> / <code>tel:</code>). Reject <code>javascript:</code>, <code>data:</code>, etc. New tab →
-  <code>rel="noopener noreferrer"</code>.</li>
-<li>Portal: must start with a single <code>/</code> (reject <code>//</code>); site base path is added at render time, so the same
-  JSON works in sandbox and prod. Picker suggestions come from the site navigation menu; free typing of
-  any relative path is allowed (covers <code>/news/&lt;id&gt;</code>).</li>
-<li>Render real <code>&lt;a&gt;</code> elements (not <code>&lt;button&gt;</code>), visible focus, decorative icons, unique labels.</li>
+<li><strong>External:</strong> <code>https:</code> only. New tab → <code>rel="noopener noreferrer"</code>.</li>
+<li><strong>Email / phone:</strong> <code>mailto:</code> and <code>tel:</code> are allowed but rendered as plain <code>href</code>s (never through
+  <code>GenerateUrl</code>, which mangles them).</li>
+<li><strong>Portal:</strong> stored as a <strong>relative path</strong> (<code>/alumni-directory</code>, <code>/news/abc?x=1</code>), validated with
+  <code>^/(?!/)[^\s]*$</code> (exactly one leading <code>/</code>, no scheme; <code>//host</code> is rejected as an open redirect).
+  Resolved at render with <code>NavigationMixin.GenerateUrl</code> using <code>standard__webPage</code>, which adds the site base
+  path (<code>/alumni</code> here) — so the JSON is portable between sandbox and prod. <strong>Never</strong> use <code>comm__namedPage</code>
+  (case-sensitive, fails silently) or a raw <code>href="/path"</code> (would 404 at the domain root).</li>
+<li>Picker suggestions come from the site menu (<code>NavigationMenuItem</code>, see Phase 1 spike 3); any relative path
+  can also be typed.</li>
+<li>Render real <code>&lt;a&gt;</code> elements (not <code>&lt;button&gt;</code>), call <code>Navigate</code> on click for single-page navigation, visible
+  focus, decorative icons, unique labels.</li>
 </ul>
 <h3 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1397,8 +1628,8 @@ editor add/edit/reorder/delete, renderer placement above/below, unsafe URL rejec
 <ul>
 <li>[x] Phase A — editor layout, headings, widget style class, API 68.0, lint fixes, link-dialog fix</li>
 <li>[x] Phase 0 — page context: fix mismatch + self-registering zone placements (done 2026-10-15; see "Phase 0 — as built")</li>
-<li>[ ] Phase 1 — spikes (insert-at-cursor, portal link resolution, page picker source)</li>
-<li>[ ] Phase 2 — data tags</li>
+<li>[x] Phase 1 — spikes (insert-at-cursor works; portal links = relative paths via GenerateUrl; picker = site menu + typed path)</li>
+<li>[x] Phase 2 — data tags (done 2026-10-15; see "Phase 2 — as built")</li>
 <li>[ ] Phase 3 — buttons</li>
 <li>[ ] Phase 4 — hero widget + S3 (design only)</li>
 </ul>
