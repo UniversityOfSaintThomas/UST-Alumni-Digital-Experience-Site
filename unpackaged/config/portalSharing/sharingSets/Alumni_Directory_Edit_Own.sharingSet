@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessMappings>
+        <accessLevel>Edit</accessLevel>
+        <object>Alumni_Directory__c</object>
+        <objectField>Contact__c</objectField>
+        <userField>Contact</userField>
+    </accessMappings>
+    <description>Lets a signed-in alumnus edit the Alumni Directory record that belongs to their own Contact (the My Profile page).</description>
+    <name>Alumni Directory Edit Own</name>
+    <profiles>Customer Community Login User</profiles>
+</SharingSet>

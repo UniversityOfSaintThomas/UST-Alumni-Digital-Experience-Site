@@ -78,6 +78,39 @@ tasks:
             path: unpackaged/config/guestSharing
             unmanaged: True
 
+    create_community_portal_sharing_set:
+        description: >-
+            Deploys the Sharing Set that lets a signed-in alumnus edit the Alumni Directory record tied to their own
+            Contact (the My Profile page). Without it a portal user can read but not edit their own profile. Kept
+            outside force-app, like the guest sharing rule, so it deploys after the site exists. Raw metadata
+            folder: package.xml + sharingSets/ (no -meta.xml).
+        class_path: cumulusci.tasks.salesforce.Deploy
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            path: unpackaged/config/portalSharing
+            unmanaged: True
+
+    create_sample_portal_users:
+        description: >-
+            Creates the four sample portal users (aliases smp1 to smp4) for the Contacts the alumni dataset loads, and
+            assigns them the Alumni_Portal_User and Alumni_Favorites_User permission sets. Idempotent. Needs the
+            "alumni" dataset (load_sample_data) first. Apex rather than Snowfakery because the data loader cannot
+            load User.
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            path: datasets/alumni/create_portal_users.apex
+
+    link_sample_portal_users:
+        description: >-
+            Links each sample portal user back to its Contact (Portal_User__c) and Alumni Directory record
+            (Community_Profile__c). Runs after create_sample_portal_users, in its own transaction because a User and
+            a Contact cannot be changed together. Idempotent.
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            path: datasets/alumni/link_portal_users.apex
+
     sync_navigation_menu:
         description: >-
             Rewrites the theme layout's Default Navigation menu binding to match
@@ -211,8 +244,14 @@ flows:
                 task: create_community_navigation
             5.7:
                 task: create_community_guest_sharing
+            5.8:
+                task: create_community_portal_sharing_set
             6:
                 task: create_community_publish
+            91:
+                task: create_sample_portal_users
+            92:
+                task: link_sample_portal_users
 
 orgs:
     scratch:

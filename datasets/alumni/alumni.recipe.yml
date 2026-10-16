@@ -1,47 +1,36 @@
 # Sample alumni for scratch orgs ("alumni" dataset; also included by the "dev" dataset).
 #
 #   cci task run load_sample_data --dataset alumni --org dev
+#   cci task run create_sample_portal_users --org dev      # then the four portal users (config_dev step 91)
+#   cci task run link_sample_portal_users --org dev        # then link them back to Contact and Directory (step 92)
 #
-# Creates four portal users (alias smp1..smp4), each with a Contact and (except smp4) an Alumni Directory record,
-# plus twelve more alumni with no user so the directory has people to search.
+# This recipe creates the PEOPLE: 16 Contacts and 15 Alumni Directory records (EDA adds an Administrative Account for
+# each Contact). It cannot create the portal USERS: CumulusCI's data loader insists on all 119 platform-defaulted User
+# checkboxes. datasets/alumni/create_portal_users.apex does that instead, and also assigns the Alumni_Portal_User and
+# Alumni_Favorites_User permission sets. The users are tied to these Contacts by Banner ID:
 #
-# LOAD THIS ONCE PER ORG. A Contact that has a portal user cannot be deleted, and usernames are permanent, so
-# there is no reset. To start over, delete the scratch org (cci org scratch_delete dev) and build a new one.
-# Widgets are different: see datasets/widgets/widgets.recipe.yml, which can be reset and reloaded.
+#    smp1  Jordan Newgrad      90000001  class 2021, alumni, young-alumni sender key        -> "recent grad" widgets
+#    smp2  Morgan Lawalum      90000002  class 1985, alumni + donor, volunteer, Location 1  -> donor/volunteer/geo widgets
+#    smp3  Casey Parent        90000003  parent only, almost nothing filled in              -> "parent" widgets
+#    smp4  Riley Nodirectory   90000004  portal user whose Contact has NO Alumni Directory  -> empty-filter path
+#    90000100-90000111         twelve more alumni with no user, so the directory has people to search
 #
-#    smp1  Jordan Newgrad      class 2021, alumni, young-alumni sender key                -> "recent grad" widgets
-#    smp2  Morgan Lawalum      class 1985, alumni + donor, volunteer, Location 1          -> donor/volunteer/geo widgets
-#    smp3  Casey Parent        parent only, almost nothing filled in                      -> "parent" widgets
-#    smp4  Riley Nodirectory   portal user whose Contact has NO Alumni Directory record   -> empty-filter path
+# LOAD THE PEOPLE AND USERS ONCE PER ORG. A Contact that has a portal user cannot be deleted and usernames are
+# permanent, so there is no reset: delete the scratch org (cci org scratch_delete dev) and build a new one. Widgets
+# are different: see datasets/widgets/widgets.recipe.yml, which can be reset and reloaded.
 #
-# Sign in as one of them from the admin user: Setup > Users > (user) > "Log in to Experience as User", or in
-# Experience Builder use the Preview as option. No passwords are stored anywhere.
+# Sign in as a sample user from the admin user: Setup > Users > (user) > Login, or "Log in to Experience as User".
+# No passwords are stored anywhere and no emails are sent.
 #
 # Why no real colleges, degrees, or sports? In this repo the School_College, Degree_Types, Varsity_Sports and
 # Academic_Majors value sets keep every real value INACTIVE (only "Placeholder" is valid), and the fields are
-# restricted, so a real value cannot be loaded. These personas use the live value sets (Class Year, St Thomas
-# Connection, Volunteer Status, Geo Locations, Sender Key, Event Location) and use "Placeholder" for the rest.
+# restricted, so a real value cannot be loaded. These people use the live value sets (Class Year, St Thomas
+# Connection, Volunteer Status, Geo Locations, Sender Key, Event Location) and "Placeholder" for the rest.
 # If those value sets are ever activated, add real values here.
 #
-# EDA creates the Administrative Account for each Contact; the admin (role: Alumni Community Owner) owns it,
-# which Experience Cloud requires for portal users.
-
-- plugin: snowfakery.standard_plugins.Salesforce
-- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
-
-# Portal usernames must be unique across ALL Salesforce orgs, so they end in a key taken from this org's admin
-# username (for example test-1rgz51gdfap9 -> test1rgz51gdfap9). A one-field query returns the bare value, so there
-# is no ".Username" on the end. The __ prefix means the object is never output.
-
-- object: __Org
-  nickname: org
-  fields:
-    key: ${{ SalesforceQuery.random_record(from='User', fields='Username', where="Alias = 'UUser'").split('@')[0] | lower | replace('-', '') }}
-
 # =========================================================================================================
-# 1. PORTAL USERS (personas). Each has a Contact, an Alumni Directory record, and a Customer Community Login
-#    user. EDA creates the Administrative Account for each Contact; the admin (role: Alumni Community Owner)
-#    owns it, which Experience Cloud requires.
+# 1. THE FOUR PERSONAS (the Contacts that get portal users). EDA creates each Administrative Account; the admin
+#    (role: Alumni Community Owner) owns it, which Experience Cloud requires for portal users.
 #
 #    smp1  Jordan Newgrad      class 2021, alumni, young-alumni sender key                -> "recent grad" widgets
 #    smp2  Morgan Lawalum      class 1985, alumni + donor, volunteer, Location 1          -> donor/volunteer/geo widgets
@@ -82,25 +71,6 @@
     Content_Sender_Keys__c: UDAR_YoungAlumni
     Event_Location_Type_s__c: Online;Minneapolis
 
-- object: User
-  nickname: user_newgrad
-  fields:
-    Alias: smp1
-    Username: jordan.newgrad@${{ org.key }}.example.com
-    Email: jordan.newgrad@example.com
-    FirstName: Jordan
-    LastName: Newgrad
-    CommunityNickname: smp1-${{ org.key }}
-    ContactId:
-      reference: contact_newgrad
-    ProfileId:
-      Salesforce.ProfileId: Customer Community Login User
-    TimeZoneSidKey: America/Chicago
-    LocaleSidKey: en_US
-    LanguageLocaleKey: en_US
-    EmailEncodingKey: UTF-8
-    Title: Data Analyst
-    CompanyName: North Star Analytics
 
 # ---- smp2: law alumna, donor, volunteer, varsity athlete ------------------------------------------------
 - object: Contact
@@ -141,25 +111,6 @@
     Degree_Level_s__c: Placeholder
     Athletic_Affiliation_s__c: Placeholder
 
-- object: User
-  nickname: user_lawalum
-  fields:
-    Alias: smp2
-    Username: morgan.lawalum@${{ org.key }}.example.com
-    Email: morgan.lawalum@example.com
-    FirstName: Morgan
-    LastName: Lawalum
-    CommunityNickname: smp2-${{ org.key }}
-    ContactId:
-      reference: contact_lawalum
-    ProfileId:
-      Salesforce.ProfileId: Customer Community Login User
-    TimeZoneSidKey: America/Chicago
-    LocaleSidKey: en_US
-    LanguageLocaleKey: en_US
-    EmailEncodingKey: UTF-8
-    Title: Partner
-    CompanyName: Lakeside Legal Group
 
 # ---- smp3: parent only (sparse directory record) --------------------------------------------------------
 - object: Contact
@@ -184,23 +135,6 @@
       reference: contact_parent
     St_Thomas_Connection__c: Parent
 
-- object: User
-  nickname: user_parent
-  fields:
-    Alias: smp3
-    Username: casey.parent@${{ org.key }}.example.com
-    Email: casey.parent@example.com
-    FirstName: Casey
-    LastName: Parent
-    CommunityNickname: smp3-${{ org.key }}
-    ContactId:
-      reference: contact_parent
-    ProfileId:
-      Salesforce.ProfileId: Customer Community Login User
-    TimeZoneSidKey: America/Chicago
-    LocaleSidKey: en_US
-    LanguageLocaleKey: en_US
-    EmailEncodingKey: UTF-8
 
 # ---- smp4: portal user with NO Alumni Directory record (data tags must fall back, no filters resolve) ----
 - object: Contact
@@ -212,23 +146,6 @@
     University_Banner_ID__c: "90000004"
     Primary_University_Relationship__c: Alumna/us
 
-- object: User
-  nickname: user_nodirectory
-  fields:
-    Alias: smp4
-    Username: riley.nodirectory@${{ org.key }}.example.com
-    Email: riley.nodirectory@example.com
-    FirstName: Riley
-    LastName: Nodirectory
-    CommunityNickname: smp4-${{ org.key }}
-    ContactId:
-      reference: contact_nodirectory
-    ProfileId:
-      Salesforce.ProfileId: Customer Community Login User
-    TimeZoneSidKey: America/Chicago
-    LocaleSidKey: en_US
-    LanguageLocaleKey: en_US
-    EmailEncodingKey: UTF-8
 
 # =========================================================================================================
 # 2. MORE ALUMNI (no portal user) so the Alumni Directory has people to search and filter. Fixed lists keep
@@ -247,18 +164,17 @@
     St_Thomas_Connection__c: Alumni
     Employer__c: ${{ ['Retired','Cedar Health','Summit Realty','Northfield Schools','Bluestem Bank','Granite Engineering','Harbor Nonprofit','Prairie Media','Oak Street Law','Maple Software','Riverbend Dental','Evergreen Labs'][child_index] }}
     Job_Title__c: ${{ ['Retired','Nurse Practitioner','Broker','Principal','Loan Officer','Civil Engineer','Program Director','Producer','Attorney','Developer','Dentist','Researcher'][child_index] }}
-
-- object: Alumni_Directory__c
-  count: 12
-  fields:
-    Name: ${{ contact_directory_only.FirstName }} ${{ contact_directory_only.LastName }}
-    First_Name_Text__c: ${{ contact_directory_only.FirstName }}
-    Last_Name_Text__c: ${{ contact_directory_only.LastName }}
-    Contact__c:
-      reference: contact_directory_only
-    Class_Year_Text__c: ${{ contact_directory_only.Preferred_Class_Year__c }}
-    Employer_Text__c: ${{ contact_directory_only.Employer__c }}
-    Occupation_Text__c: ${{ contact_directory_only.Job_Title__c }}
-    City_State__c: ${{ ['Saint Paul, MN','Minneapolis, MN','Edina, MN','Duluth, MN','Madison, WI','Chicago, IL','Denver, CO','Seattle, WA','Phoenix, AZ','Austin, TX','Boston, MA','Atlanta, GA'][child_index] }}
-    Class_Year__c: ${{ contact_directory_only.Preferred_Class_Year__c }}
-    St_Thomas_Connection__c: Alumni
+  friends:
+    - object: Alumni_Directory__c
+      fields:
+        Name: ${{ contact_directory_only.FirstName }} ${{ contact_directory_only.LastName }}
+        First_Name_Text__c: ${{ contact_directory_only.FirstName }}
+        Last_Name_Text__c: ${{ contact_directory_only.LastName }}
+        Contact__c:
+          reference: contact_directory_only
+        Class_Year_Text__c: ${{ contact_directory_only.Preferred_Class_Year__c }}
+        Employer_Text__c: ${{ contact_directory_only.Employer__c }}
+        Occupation_Text__c: ${{ contact_directory_only.Job_Title__c }}
+        City_State__c: ${{ ['Saint Paul, MN','Minneapolis, MN','Edina, MN','Duluth, MN','Madison, WI','Chicago, IL','Denver, CO','Seattle, WA','Phoenix, AZ','Austin, TX','Boston, MA','Atlanta, GA'][contact_directory_only.University_Banner_ID__c | int - 90000100] }}
+        Class_Year__c: ${{ contact_directory_only.Preferred_Class_Year__c }}
+        St_Thomas_Connection__c: Alumni

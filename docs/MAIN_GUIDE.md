@@ -206,6 +206,38 @@ sf code-analyzer run --target force-app/main/default --output-file ai-logs/code-
 
 ---
 
+## Sample Data for Scratch Orgs
+
+A new dev scratch org (`cci flow run dev_org --org dev`) loads sample data in its last steps, so there is something to look
+at and test with straight away. It is built with CumulusCI's data tasks: Snowfakery recipes under `datasets/`, plus two small
+Apex scripts for the part the data loader cannot do.
+
+| What | Where | How to run it on its own |
+|------|-------|--------------------------|
+| 18 sample portal widgets, all named `[Sample] ...`: every zone, page context (`all`, `home`, `alumni_directory__c`, several pages), the filter dimensions, a hero with buttons, and edge cases (inactive, zone mismatch, unregistered page, unbuilt component) | `datasets/widgets/widgets.recipe.yml` | `cci task run load_sample_data --dataset widgets --org dev` |
+| 16 Contacts and 15 Alumni Directory records (four personas plus twelve more people to search) | `datasets/alumni/alumni.recipe.yml` | `cci task run load_sample_data --dataset alumni --org dev` |
+| Four portal users, smp1 to smp4, with `Alumni_Portal_User` and `Alumni_Favorites_User` | `datasets/alumni/create_portal_users.apex` | `cci task run create_sample_portal_users --org dev` |
+| Links each user back to its Contact and Directory record | `datasets/alumni/link_portal_users.apex` | `cci task run link_sample_portal_users --org dev` |
+
+`datasets/dev/dev.recipe.yml` includes the widgets and the people; it is what `config_dev` step 90 (`load_sample_data`) runs.
+Steps 91 and 92 then create and link the users.
+
+- **Personas.** smp1 Jordan Newgrad (class of 2021), smp2 Morgan Lawalum (1985, donor, volunteer), smp3 Casey Parent (parent
+  only), smp4 Riley Nodirectory (a portal user with no Alumni Directory record). Each sees a different set of widgets because
+  of the widget filters. The recipe header explains who sees what.
+- **Signing in as one.** From the admin user: Setup > Users > the user > Login, or Log in to Experience as User. No passwords
+  are stored and no emails are sent. Usernames end in a key taken from the org's admin username, so they are unique across all
+  Salesforce orgs; `SELECT Username FROM User WHERE Alias LIKE 'smp%'` lists them.
+- **Resetting.** Widgets can be reset and reloaded: `cci task run delete_sample_widgets --org dev`, edit the recipe, load
+  again. The people and users cannot (a Contact with a portal user cannot be deleted); build a new scratch org. A scratch org
+  has only 5 Customer Community Login licenses and the sample uses 4.
+- **Why Apex for users.** The data loader insists on all 119 platform-defaulted `User` checkboxes, so `User` cannot go
+  through a recipe. A User and a Contact also cannot be changed in the same transaction, hence two scripts.
+- **Placeholder picklists.** In this repo the College, Degree, Varsity Sports, and Academic Majors value sets keep every real
+  value inactive, so the sample uses `Placeholder` for those filters and live values for the rest.
+
+---
+
 ## Project Structure
 
 ```

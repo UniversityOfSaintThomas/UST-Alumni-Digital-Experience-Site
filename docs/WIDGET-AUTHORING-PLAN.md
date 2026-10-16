@@ -602,6 +602,38 @@ now also restore/track the widget type. Five Jest tests added (three fail withou
 switching the Static Content `TEST` widget to Hero Banner. Lesson for later phases: test the *change* path in a real
 browser, not only the load path; Jest's single synthetic `load` could not show this.
 
+**Editor layout (2026-10-16).** Each part of the form is its own card, in a fixed order: Widget Setup, Content,
+Call-to-action buttons, Hero Banner (hero widgets only), Preview, Audience Filters. Content is always directly below
+Widget Setup and Preview is always directly above Audience Filters (pinned by tests for Static Content, Hero Banner,
+types with no content, and after switching type). Card titles are 20px bold with a UST-purple underline. The button
+editor no longer draws its own heading (the card title names it). To move the Hero Banner card, move its one
+`<template lwc:if={showHeroSection}>` block in `ustWidgetRecordEditor.html`.
+
+**Signed-in portal users: permission set, sharing set, and sample users (2026-10-16).** Signed-in alumni on the LWR
+site had no access to any portal Apex or to the directory fields. The old `Alumni Community User` profile belonged to
+the earlier Aura site and is not used here, so access is granted by two things, both proven by a test that runs as a real
+Customer Community user (`Alumni_Portal_User_TEST`, 4 tests):
+- **`Alumni_Portal_User` permission set** (`force-app`): the 6 controllers a portal page calls, read on the directory,
+  business directory, news and widget objects with only the fields those controllers read (no email, phone, birthdate, or
+  street address; found by running the controllers as the user and adding what each missing field broke), the
+  `Alumni_Business` record type, and edit on the person's own profile fields. Favorites stay in `Alumni_Favorites_User`.
+  Assign both to portal users; this is the grant for production too, not just scratch orgs.
+- **Sharing Set `Alumni Directory Edit Own`** (`unpackaged/config/portalSharing`, task
+  `create_community_portal_sharing_set`, `config_dev` step 5.8): maps `Alumni_Directory__c.Contact__c` to the user's own
+  Contact with Edit. Without it a portal user can read but **cannot edit their own profile** (`UserRecordAccess
+  edit=false`, every update fails with INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY, even from a `without sharing`
+  class). A permission set cannot fix that. It applies to the `Customer Community Login User` profile. For EDA-Staging or
+  production, check whether an equivalent sharing set exists by hand and deploy this one if not.
+- **Sample users** (`config_dev` steps 90 to 92): the alumni dataset loads the people, `create_sample_portal_users`
+  makes users smp1 to smp4 and assigns both permission sets, `link_sample_portal_users` sets `Contact.Portal_User__c`
+  and `Alumni_Directory__c.Community_Profile__c`. Idempotent. The Alumni network stays `UnderConstruction` in a dev org
+  until published, so the proof is the Apex test, not a browser login.
+
+**Existing gaps found on the way (not caused by this work).** The news feed queries `Contact.Community_Address_Range__c`
+and `Academic_Majors__c`, and the business directory reads `Alumni__r.Degree_s_Formatted__c`; none exist in the dev org,
+so those controllers cannot run there (the portal-user test avoids them). `Contact.Job_Title__c` exists in the org but
+not in the repo source. The `Alumni_Directory__c` record type and field sets behind EDA-Staging may differ.
+
 **Record sharing (added after Phase 4).** `UST_Portal_Widget__c` has an external default of Private, so signed-in portal
 users and the site guest could not read widget records directly (only through the `without sharing` controller).
 There are now two rules, both Read-only and both limited to `Is_Active__c = true`:

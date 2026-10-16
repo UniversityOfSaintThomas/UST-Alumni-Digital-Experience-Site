@@ -758,6 +758,78 @@ describe('c-ust-widget-record-editor', () => {
         });
     });
 
+    describe('card order', () => {
+        /** The visible card titles, top to bottom. */
+        function cardTitles(element) {
+            return Array.from(element.shadowRoot.querySelectorAll('section.ust-section h2')).map((heading) =>
+                heading.textContent.trim()
+            );
+        }
+
+        it('puts Content directly below Widget Setup and Preview directly above Audience Filters for Static Content', async () => {
+            const element = createEditor();
+            loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
+            await flushPromises();
+
+            expect(cardTitles(element)).toEqual([
+                'Widget Setup', 'Content', 'Call-to-action buttons', 'Preview', 'Audience Filters'
+            ]);
+        });
+
+        it('keeps the same two anchors for a Hero Banner, which adds its own card in between', async () => {
+            const element = createEditor();
+            loadRecord(element, { Component_Name__c: 'ust_hero_banner', Page_Context__c: 'home' });
+            await flushPromises();
+
+            const titles = cardTitles(element);
+            expect(titles).toEqual([
+                'Widget Setup', 'Content', 'Call-to-action buttons', 'Hero Banner', 'Preview', 'Audience Filters'
+            ]);
+            expect(titles[1]).toBe('Content');
+            expect(titles[titles.length - 2]).toBe('Preview');
+        });
+
+        it('shows only the setup and filter cards for a widget type with no content', async () => {
+            const element = createEditor();
+            loadRecord(element, { Component_Name__c: 'ust_links_hub', Page_Context__c: 'home' });
+            await flushPromises();
+
+            expect(cardTitles(element)).toEqual(['Widget Setup', 'Audience Filters']);
+        });
+
+        it('keeps the order after switching the widget type in the editor', async () => {
+            const element = createEditor();
+            loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
+            await flushPromises();
+            getInputField(element, 'Component_Name__c').dispatchEvent(
+                new CustomEvent('change', { detail: { value: 'ust_hero_banner' } })
+            );
+            await flushPromises();
+
+            const titles = cardTitles(element);
+            expect(titles[0]).toBe('Widget Setup');
+            expect(titles[1]).toBe('Content');
+            expect(titles[titles.length - 2]).toBe('Preview');
+            expect(titles[titles.length - 1]).toBe('Audience Filters');
+        });
+
+        it('gives the buttons and the preview their own cards, with the button editor inside the buttons card', async () => {
+            const element = createEditor();
+            loadRecord(element, { Component_Name__c: 'ust_static_content', Page_Context__c: 'home' });
+            await flushPromises();
+
+            const sections = Array.from(element.shadowRoot.querySelectorAll('section.ust-section'));
+            const buttonsCard = sections.find((section) => section.querySelector('h2').textContent.trim() === 'Call-to-action buttons');
+            const previewCard = sections.find((section) => section.querySelector('h2').textContent.trim() === 'Preview');
+            const contentCard = sections.find((section) => section.querySelector('h2').textContent.trim() === 'Content');
+
+            expect(buttonsCard.querySelector('c-ust-widget-button-editor')).not.toBeNull();
+            expect(previewCard.querySelector('c-ust-static-content')).not.toBeNull();
+            expect(contentCard.querySelector('c-ust-widget-button-editor')).toBeNull();
+            expect(contentCard.querySelector('c-ust-static-content')).toBeNull();
+        });
+    });
+
     it('shows a success toast after saving', async () => {
         const element = createEditor();
         const toastHandler = jest.fn();

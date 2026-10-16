@@ -16,7 +16,7 @@
 
         <!-- Widget Setup -->
         <section class="ust-section" aria-labelledby="ust-setup-heading">
-            <h2 id="ust-setup-heading" class="ust-section-title slds-text-heading_small">Widget Setup</h2>
+            <h2 id="ust-setup-heading" class="ust-section-title">Widget Setup</h2>
             <div class="slds-grid slds-wrap slds-gutters">
                 <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
                     <lightning-input-field field-name="Name"></lightning-input-field>
@@ -37,10 +37,57 @@
             </div>
         </section>
 
+        <!-- Content: headline, panel style, and body text. Always the card right below Widget Setup. -->
+        <template lwc:if={showContentSection}>
+            <section class="ust-section" aria-labelledby="ust-content-heading">
+                <h2 id="ust-content-heading" class="ust-section-title">Content</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <c-ust-data-tag-input
+                            label={headerLabel}
+                            value={contentHeader}
+                            tag-definitions={dataTags}
+                            onchange={handleHeaderChange}>
+                        </c-ust-data-tag-input>
+                    </div>
+                    <template lwc:if={showPanelStyle}>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                            <lightning-input-field field-name="Content_CSS_Class__c" onchange={handleClassChange}></lightning-input-field>
+                        </div>
+                    </template>
+                </div>
+                <c-ust-rich-text-editor
+                    label={bodyLabel}
+                    value={staticContent}
+                    tag-definitions={dataTags}
+                    onchange={handleEditorChange}>
+                </c-ust-rich-text-editor>
+            </section>
+
+            <!-- Call-to-action buttons -->
+            <section class="ust-section" aria-labelledby="ust-buttons-card-heading">
+                <h2 id="ust-buttons-card-heading" class="ust-section-title">Call-to-action buttons</h2>
+                <c-ust-widget-button-editor
+                    value={buttonsJson}
+                    tag-definitions={dataTags}
+                    disabled={isSaving}
+                    onchange={handleButtonsChange}>
+                </c-ust-widget-button-editor>
+                <div class="slds-grid slds-wrap slds-gutters slds-m-top_small">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-input-field field-name="Button_Placement__c" onchange={handlePlacementChange}></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-input-field field-name="Button_Size__c" onchange={handleSizeChange}></lightning-input-field>
+                    </div>
+                </div>
+            </section>
+        </template>
+
         <!-- Hero Banner: pictures and look (Hero Banner widgets only) -->
         <template lwc:if={showHeroSection}>
             <section class="ust-section" aria-labelledby="ust-hero-heading">
-                <h2 id="ust-hero-heading" class="ust-section-title slds-text-heading_small">Hero Banner</h2>
+                <h2 id="ust-hero-heading" class="ust-section-title">Hero Banner</h2>
                 <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
                     Pictures upload as soon as you choose them and are not part of Save or Reset.
                     The headline, text, and buttons are set in the Content section below.
@@ -103,95 +150,54 @@
             </section>
         </template>
 
-        <!-- Content (Static Content and Hero Banner widgets) -->
+        <!-- Preview: always the card right above Audience Filters. -->
         <template lwc:if={showContentSection}>
-            <section class="ust-section" aria-labelledby="ust-content-heading">
-                <h2 id="ust-content-heading" class="ust-section-title slds-text-heading_small">Content</h2>
-                <div class="slds-grid slds-wrap slds-gutters">
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                        <c-ust-data-tag-input
-                            label={headerLabel}
-                            value={contentHeader}
-                            tag-definitions={dataTags}
-                            onchange={handleHeaderChange}>
-                        </c-ust-data-tag-input>
+            <section class="ust-section" aria-labelledby="ust-preview-heading">
+                <h2 id="ust-preview-heading" class="ust-section-title">Preview</h2>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">As shown on the portal.</p>
+                <template lwc:if={hasTagsInContent}>
+                    <lightning-input
+                        type="checkbox"
+                        label="Preview as a guest (no personal data, fallbacks only)"
+                        checked={previewAsGuest}
+                        onchange={handlePreviewAsGuestChange}>
+                    </lightning-input>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                        Data tags show sample values here. Signed-in alumni see their own information.
+                    </p>
+                </template>
+                <template lwc:if={isHero}>
+                    <div class="ust-preview-hero">
+                        <c-ust-hero-banner
+                            hero={previewHero}
+                            rich-text-content={previewContent}
+                            text-header={previewHeader}
+                            buttons={previewButtons}
+                            button-placement={buttonPlacement}
+                            button-size={buttonSize}
+                            preview-mode>
+                        </c-ust-hero-banner>
                     </div>
-                    <template lwc:if={showPanelStyle}>
-                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                            <lightning-input-field field-name="Content_CSS_Class__c" onchange={handleClassChange}></lightning-input-field>
-                        </div>
-                    </template>
-                </div>
-                <c-ust-rich-text-editor
-                    label={bodyLabel}
-                    value={staticContent}
-                    tag-definitions={dataTags}
-                    onchange={handleEditorChange}>
-                </c-ust-rich-text-editor>
-
-                <div class="ust-buttons-block slds-m-top_medium">
-                    <c-ust-widget-button-editor
-                        value={buttonsJson}
-                        tag-definitions={dataTags}
-                        disabled={isSaving}
-                        onchange={handleButtonsChange}>
-                    </c-ust-widget-button-editor>
-                    <div class="slds-grid slds-wrap slds-gutters slds-m-top_small">
-                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                            <lightning-input-field field-name="Button_Placement__c" onchange={handlePlacementChange}></lightning-input-field>
-                        </div>
-                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                            <lightning-input-field field-name="Button_Size__c" onchange={handleSizeChange}></lightning-input-field>
-                        </div>
+                </template>
+                <template lwc:else>
+                    <div class="ust-preview-body">
+                        <c-ust-static-content
+                            rich-text-content={previewContent}
+                            text-header={previewHeader}
+                            content-class={contentClass}
+                            buttons={previewButtons}
+                            button-placement={buttonPlacement}
+                            button-size={buttonSize}
+                            preview-mode>
+                        </c-ust-static-content>
                     </div>
-                </div>
-
-                <div class="ust-preview slds-m-top_medium">
-                    <h3 class="ust-preview-title slds-text-title_caps">Preview (as shown on the portal)</h3>
-                    <template lwc:if={hasTagsInContent}>
-                        <lightning-input
-                            type="checkbox"
-                            label="Preview as a guest (no personal data, fallbacks only)"
-                            checked={previewAsGuest}
-                            onchange={handlePreviewAsGuestChange}>
-                        </lightning-input>
-                        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
-                            Data tags show sample values here. Signed-in alumni see their own information.
-                        </p>
-                    </template>
-                    <template lwc:if={isHero}>
-                        <div class="ust-preview-hero">
-                            <c-ust-hero-banner
-                                hero={previewHero}
-                                rich-text-content={previewContent}
-                                text-header={previewHeader}
-                                buttons={previewButtons}
-                                button-placement={buttonPlacement}
-                                button-size={buttonSize}
-                                preview-mode>
-                            </c-ust-hero-banner>
-                        </div>
-                    </template>
-                    <template lwc:else>
-                        <div class="ust-preview-body">
-                            <c-ust-static-content
-                                rich-text-content={previewContent}
-                                text-header={previewHeader}
-                                content-class={contentClass}
-                                buttons={previewButtons}
-                                button-placement={buttonPlacement}
-                                button-size={buttonSize}
-                                preview-mode>
-                            </c-ust-static-content>
-                        </div>
-                    </template>
-                </div>
+                </template>
             </section>
         </template>
 
         <!-- Audience Filters -->
         <section class="ust-section" aria-labelledby="ust-filters-heading">
-            <h2 id="ust-filters-heading" class="ust-section-title slds-text-heading_small">Audience Filters</h2>
+            <h2 id="ust-filters-heading" class="ust-section-title">Audience Filters</h2>
             <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
                 Leave a filter blank to show the widget to everyone for that dimension.
             </p>

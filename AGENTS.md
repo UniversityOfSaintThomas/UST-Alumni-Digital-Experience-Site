@@ -68,9 +68,25 @@ cci task run run_tests --org dev
 # Code analysis
 sf code-analyzer run --target force-app/main/default --output-file ai-logs/code-analyzer.json --severity-threshold 3 2>&1 | Out-File ai-logs/ca-run.txt
 
+# Sample data (loaded automatically by config_dev steps 90-92; see "Sample data" below)
+cci task run load_sample_data --dataset widgets --org dev
+cci task run delete_sample_widgets --org dev
+
 # Re-sync Experience Bundle after Experience Builder changes
 sf project retrieve start --metadata "DigitalExperienceBundle:site/Alumni1" --output-dir unpackaged/config/experiences --target-org UST-Alumni-Digital-Experience-Site__dev
 ```
+
+---
+
+## Sample Data (scratch orgs)
+
+`datasets/dev` is loaded by `config_dev` step 90 and includes `datasets/widgets` (18 `[Sample]` widgets covering every zone, page context, filter, and edge case) and `datasets/alumni` (16 Contacts + 15 Alumni Directory records). Steps 91 and 92 (`create_sample_portal_users`, `link_sample_portal_users`, Apex in `datasets/alumni/`) create portal users smp1 to smp4 with `Alumni_Portal_User` + `Alumni_Favorites_User`, then link them to their Contact and Directory record. Full table and persona list: `docs/MAIN_GUIDE.md#sample-data-for-scratch-orgs`.
+
+- **Users cannot go through a Snowfakery recipe** (the loader demands all 119 platform-defaulted `User` checkboxes), and a User and a Contact cannot change in one transaction, hence two Apex scripts.
+- **People and users load once per org.** A Contact with a portal user cannot be deleted. Widgets can be reset (`delete_sample_widgets`) and reloaded. A scratch org has 5 Customer Community Login licenses; the sample uses 4.
+- **`School_College`, `Degree_Types`, `Varsity_Sports`, `Academic_Majors` keep every real value inactive in this repo** (only `Placeholder` is valid, and the fields are restricted), so sample data and filters use `Placeholder` for those. Do not activate them in a scratch org to make a load pass.
+- **The Alumni network stays `UnderConstruction` in a dev org until published**, so a browser login as a sample user is not possible there. Prove portal-user access with `Alumni_Portal_User_TEST` (runs the controllers as a real Customer Community user).
+- **Known gaps in the dev org, not caused by recent work:** `Contact.Community_Address_Range__c` and `Academic_Majors__c` and `Contact.Degree_s_Formatted__c` (read by the news feed and business directory) do not exist there, so those controllers cannot fully run; `Contact.Job_Title__c` exists in the org but not in the repo source.
 
 ---
 
@@ -89,11 +105,14 @@ sf project retrieve start --metadata "DigitalExperienceBundle:site/Alumni1" --ou
 - **EDA namespace:** All Higher Education objects use `hed__` prefix (e.g. `hed__Affiliation__c`, `hed__Program_Enrollment__c`); available in both orgs
 - **Audience rules** (`Donor`, `Parent`, `Faculty_Staff`) are stubbed in `PortalWidgetController.resolveUserAudiences()` — only `All` is active; confirm Contact field API names before un-commenting
 - **Widget record sharing** is two rules for active widgets (Read): portal users in `sharingRules/UST_Portal_Widget__c.sharingRules-meta.xml`, and the `Alumni` guest in `unpackaged/config/guestSharing/` (task `create_community_guest_sharing`, `config_dev` step 5.7). The guest rule must NOT go in `force-app`: it needs the site's guest user, which only exists after `create_community`. The object's external default is Private, so a new widget-like object needs its own rule. Never put personal data in widget text.
+- **Signed-in portal users** get access from the `Alumni_Portal_User` permission set (Apex, fields) plus the `Alumni Directory Edit Own` sharing set in `unpackaged/config/portalSharing/` (edit own profile). The old `Alumni Community User` profile belonged to the Aura site and is not used. Sample users smp1 to smp4 are made by `create_sample_portal_users` (see `datasets/alumni/`); Snowfakery cannot load `User`.
 - **Guest user Apex access** goes in `Alumni_Portal_Guest` permission set (not in Guest profile). After changing any permission set on the guest user, **republish the site** from Experience Builder — CDN caches stale responses
 - **Experience Bundle:** Must keep `source_format: sfdx` in the `create_community_experience_cloud_bundle` CCI task and never flatten the `site/Alumni1/` folder structure. See `docs/AI-TOOLS-CONFIG.md#experience-cloud-bundle` for the full error-cause reference table
 - **NavigationMenu, Network, and DigitalExperienceConfig are separate from the Experience Bundle** and live in their own `unpackaged/config/` folders. Only `NavigationMenu` has a deploy task (`create_community_navigation`) wired into `config_dev`; the other two are backup snapshots only, not deployed anywhere yet
 - **Default Navigation menu binding breaks on every fresh org** if not handled — Salesforce assigns its `NavigationLinkSet.DeveloperName` non-deterministically per org (`Default_Navigation`, `_1`, `_2`, ...) and won't allow renaming it for uniqueness. `tasks/sync_navigation_menu.py` (flow step `config_dev` 4.5) queries the real value and rewrites the theme layout's binding before every bundle deploy — don't hardcode a specific `Default_NavigationN` value in `content.json`. Symptom if this ever regresses: Experience Builder error *"Couldn't load the selected navigation menu."* See `docs/AI-TOOLS-CONFIG.md#experience-cloud-bundle` for the full writeup
 - **When retrieving pages from a source org (e.g. EDA-Staging) that reference LWCs/Apex/objects not yet in `force-app`:** grep the bundle's `content.json` files for `"c:ComponentName"` refs and diff against `force-app/main/default/lwc/` to find all missing components in one pass, then trace each one's Apex/static-resource/object dependencies before redeploying. Check `sf package installed list` on the target org before adding a new managed-package dependency to `cumulusci.yml` — the `dev` scratch org's EASY snapshot already bakes in EDA and Summit Events App. Not every dependency is worth chasing: drop widgets blocked by real environment gaps (e.g. a managed package's Record Type only configured in the source org) rather than trying to replicate org-specific setup. See `docs/AI-TOOLS-CONFIG.md#experience-cloud-bundle` for the full methodology and dead ends already hit
+- **Widget editor (`ustWidgetRecordEditor`):** cards in a fixed order: Widget Setup, Content, Call-to-action buttons, Hero Banner (hero only), Preview, Audience Filters. Content must stay directly under Setup and Preview directly above Filters (pinned by tests). `handleLoad` initialises **once per record**: `lightning-record-edit-form` fires `load` again with the saved values whenever its field list changes, which used to silently undo a type change. Never copy record values into state on every `load`.
+- **Hero Banner overlay:** blank (`--None--`) means **no overlay** in Apex (`PortalHero`), the banner, and the editor preview; a new widget starts on Medium (the field default); an unknown value falls back to Medium. White text on a light picture is unreadable with no overlay, which the field help text says.
 - **Picklist values** (e.g. `Preferred_Communication_Channel__c`) must be queried from org schema in tests — never hardcoded
 - **Branding:** Apply UST colors via CSS custom properties; see `docs/BRAND-COLORS.md` for HEX/RGB/PMS values. Base is SLDS with 8px spacing unit
 

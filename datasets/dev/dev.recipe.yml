@@ -4,7 +4,8 @@
 #   cci task run load_sample_data --org dev
 #
 # It only includes the two smaller datasets, which can also be loaded on their own:
-#   datasets/alumni/alumni.recipe.yml   4 portal users + 16 contacts/directory records (load once per org)
+#   datasets/alumni/alumni.recipe.yml   16 contacts + 15 directory records (the four portal users are made by
+#                                       the cci tasks create_sample_portal_users and link_sample_portal_users)
 #   datasets/widgets/widgets.recipe.yml 16 "[Sample]" widgets (reset with delete_sample_widgets, then reload)
 
 - include_file: ../alumni/alumni.recipe.yml

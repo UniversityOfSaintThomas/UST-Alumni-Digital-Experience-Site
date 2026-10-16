@@ -8,20 +8,16 @@
     padding: 1rem 1.25rem;
 }
 
+/* Card titles: larger and bolder than the labels inside the cards, with a UST purple underline, so each card
+   is easy to pick out when scrolling a long form. */
 .ust-section-title {
-    border-bottom: 1px solid #e5e5e5;
-    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #510c76;
+    color: #181818;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-}
-
-.ust-preview {
-    border-top: 1px dashed #c9c9c9;
-    padding-top: 0.75rem;
-}
-
-.ust-preview-title {
-    color: #5c5c5c;
-    margin-bottom: 0.5rem;
 }
 
 .ust-preview-body {
@@ -34,11 +30,6 @@
 
 .ust-actions {
     padding-bottom: 1rem;
-}
-
-.ust-buttons-block {
-    border-top: 1px dashed #c9c9c9;
-    padding-top: 0.75rem;
 }
 
 .ust-preview-hero {
