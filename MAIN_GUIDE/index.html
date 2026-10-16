@@ -685,6 +685,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sample-data-for-scratch-orgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sample Data for Scratch Orgs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#project-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1103,6 +1114,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sample-data-for-scratch-orgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sample Data for Scratch Orgs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#project-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1465,6 +1487,59 @@ See <a href="#widget-zone-system">Widget Zone System</a> below for implementatio
 <h3 id="code-analysis">Code Analysis<a class="headerlink" href="#code-analysis" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">sf</span> <span class="n">code-analyzer</span> <span class="n">run</span> <span class="p">-</span><span class="n">-target</span> <span class="n">force-app</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="k">default</span> <span class="p">-</span><span class="n">-output</span><span class="o">-file</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">code-analyzer</span><span class="p">.</span><span class="n">json</span> <span class="p">-</span><span class="n">-output</span><span class="o">-file</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">code-analyzer</span><span class="p">.</span><span class="n">html</span> <span class="p">-</span><span class="n">-severity-threshold</span> <span class="n">3</span> <span class="n">2</span><span class="p">&gt;&amp;</span><span class="n">1</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">ai-logs</span><span class="p">/</span><span class="n">ca-run</span><span class="p">.</span><span class="n">txt</span>
 </code></pre></div>
+<hr />
+<h2 id="sample-data-for-scratch-orgs">Sample Data for Scratch Orgs<a class="headerlink" href="#sample-data-for-scratch-orgs" title="Permanent link">&para;</a></h2>
+<p>A new dev scratch org (<code>cci flow run dev_org --org dev</code>) loads sample data in its last steps, so there is something to look
+at and test with straight away. It is built with CumulusCI's data tasks: Snowfakery recipes under <code>datasets/</code>, plus two small
+Apex scripts for the part the data loader cannot do.</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where</th>
+<th>How to run it on its own</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18 sample portal widgets, all named <code>[Sample] ...</code>: every zone, page context (<code>all</code>, <code>home</code>, <code>alumni_directory__c</code>, several pages), the filter dimensions, a hero with buttons, and edge cases (inactive, zone mismatch, unregistered page, unbuilt component)</td>
+<td><code>datasets/widgets/widgets.recipe.yml</code></td>
+<td><code>cci task run load_sample_data --dataset widgets --org dev</code></td>
+</tr>
+<tr>
+<td>16 Contacts and 15 Alumni Directory records (four personas plus twelve more people to search)</td>
+<td><code>datasets/alumni/alumni.recipe.yml</code></td>
+<td><code>cci task run load_sample_data --dataset alumni --org dev</code></td>
+</tr>
+<tr>
+<td>Four portal users, smp1 to smp4, with <code>Alumni_Portal_User</code> and <code>Alumni_Favorites_User</code></td>
+<td><code>datasets/alumni/create_portal_users.apex</code></td>
+<td><code>cci task run create_sample_portal_users --org dev</code></td>
+</tr>
+<tr>
+<td>Links each user back to its Contact and Directory record</td>
+<td><code>datasets/alumni/link_portal_users.apex</code></td>
+<td><code>cci task run link_sample_portal_users --org dev</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>datasets/dev/dev.recipe.yml</code> includes the widgets and the people; it is what <code>config_dev</code> step 90 (<code>load_sample_data</code>) runs.
+Steps 91 and 92 then create and link the users.</p>
+<ul>
+<li><strong>Personas.</strong> smp1 Jordan Newgrad (class of 2021), smp2 Morgan Lawalum (1985, donor, volunteer), smp3 Casey Parent (parent
+  only), smp4 Riley Nodirectory (a portal user with no Alumni Directory record). Each sees a different set of widgets because
+  of the widget filters. The recipe header explains who sees what.</li>
+<li><strong>Signing in as one.</strong> From the admin user: Setup &gt; Users &gt; the user &gt; Login, or Log in to Experience as User. No passwords
+  are stored and no emails are sent. Usernames end in a key taken from the org's admin username, so they are unique across all
+  Salesforce orgs; <code>SELECT Username FROM User WHERE Alias LIKE 'smp%'</code> lists them.</li>
+<li><strong>Resetting.</strong> Widgets can be reset and reloaded: <code>cci task run delete_sample_widgets --org dev</code>, edit the recipe, load
+  again. The people and users cannot (a Contact with a portal user cannot be deleted); build a new scratch org. A scratch org
+  has only 5 Customer Community Login licenses and the sample uses 4.</li>
+<li><strong>Why Apex for users.</strong> The data loader insists on all 119 platform-defaulted <code>User</code> checkboxes, so <code>User</code> cannot go
+  through a recipe. A User and a Contact also cannot be changed in the same transaction, hence two scripts.</li>
+<li><strong>Placeholder picklists.</strong> In this repo the College, Degree, Varsity Sports, and Academic Majors value sets keep every real
+  value inactive, so the sample uses <code>Placeholder</code> for those filters and live values for the rest.</li>
+</ul>
 <hr />
 <h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>force-app/main/default/
