@@ -616,7 +616,12 @@ Customer Community user (`Alumni_Portal_User_TEST`, 4 tests):
 - **`Alumni_Portal_User` permission set** (`force-app`): the 6 controllers a portal page calls, read on the directory,
   business directory, news and widget objects with only the fields those controllers read (no email, phone, birthdate, or
   street address; found by running the controllers as the user and adding what each missing field broke), the
-  `Alumni_Business` record type, and edit on the person's own profile fields. Favorites stay in `Alumni_Favorites_User`.
+  `Alumni_Business` record type, and edit on the person's own profile fields. The public business directory
+  (`AlumniBusinessDirectoryController`) now runs in system mode because guests read it, so it needs no field grants: only
+  9 `Professional_Directory__c` fields remain, for the profile and connected-profile pages. The guest set
+  `Alumni_Portal_Guest_User` also grants that controller and the `Alumni_Business` record type, because the record type
+  lookup is per user even in system mode. In system mode the controller's SELECT list and WHERE clause are the only gates on
+  what a guest sees, so review them when they change. Favorites stay in `Alumni_Favorites_User`.
   Assign both to portal users; this is the grant for production too, not just scratch orgs.
 - **Sharing Set `Alumni Directory Edit Own`** (`unpackaged/config/portalSharing`, task
   `create_community_portal_sharing_set`, `config_dev` step 5.8): maps `Alumni_Directory__c.Contact__c` to the user's own

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
+        <apexClass>AlumniBusinessDirectoryController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PortalWidgetController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -141,4 +145,8 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <recordType>Professional_Directory__c.Alumni_Business</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
 </PermissionSet>

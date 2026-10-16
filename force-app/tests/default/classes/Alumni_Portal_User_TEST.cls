@@ -31,6 +31,12 @@ private class Alumni_Portal_User_TEST {
             UserRoleId = role.Id
         );
         insert owner;
+        // The Alumni Business record type is only visible through a permission set, and the owner has to see it
+        // to create the business listings below. Setup DML, so it goes with the user insert.
+        insert new PermissionSetAssignment(
+            AssigneeId = owner.Id,
+            PermissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_User' LIMIT 1].Id
+        );
         return owner;
     }
 
@@ -58,6 +64,20 @@ private class Alumni_Portal_User_TEST {
                 new Alumni_Directory__c(
                     Name = 'Avery Neighbor', First_Name_Text__c = 'Avery', Last_Name_Text__c = 'Neighbor',
                     Class_Year_Text__c = '1999', Contact__c = other.Id
+                )
+            };
+            // an approved, active business listing for each person (read with user permissions by two controllers)
+            Id businessType = Schema.SObjectType.Professional_Directory__c.getRecordTypeInfosByDeveloperName().get('Alumni_Business').getRecordTypeId();
+            insert new List<Professional_Directory__c>{
+                new Professional_Directory__c(
+                    RecordTypeId = businessType, Alumni__c = signedIn.Id, Company_Name__c = 'Portal Test Coffee',
+                    Title__c = 'Owner', Company_City__c = 'Saint Paul', Company_State__c = 'MN',
+                    Company_Website__c = 'https://example.com/coffee', Company_Status__c = 'Approved', Active_Display__c = 'Active'
+                ),
+                new Professional_Directory__c(
+                    RecordTypeId = businessType, Alumni__c = other.Id, Company_Name__c = 'Neighbor Bakery',
+                    Title__c = 'Baker', Company_City__c = 'Edina', Company_State__c = 'MN',
+                    Company_Website__c = 'https://example.com/bakery', Company_Status__c = 'Approved', Active_Display__c = 'Active'
                 )
             };
             // public news for the neighbour, to exercise the connected-profile view
@@ -121,6 +141,30 @@ private class Alumni_Portal_User_TEST {
     }
 
     @IsTest
+    static void guestPermissionSetGrantsThePublicControllers() {
+        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_Guest_User' LIMIT 1].Id;
+        Set<String> granted = new Set<String>();
+        for (SetupEntityAccess access : [
+            SELECT SetupEntityId FROM SetupEntityAccess
+            WHERE ParentId = :permissionSetId AND SetupEntityType = 'ApexClass'
+        ]) {
+            granted.add(String.valueOf(access.SetupEntityId));
+        }
+        Set<String> names = new Set<String>();
+        for (ApexClass apexClass : [
+            SELECT Id, Name FROM ApexClass WHERE Name IN ('PortalWidgetController', 'AlumniBusinessDirectoryController')
+        ]) {
+            if (granted.contains(String.valueOf(apexClass.Id))) {
+                names.add(apexClass.Name);
+            }
+        }
+        System.assertEquals(
+            new Set<String>{ 'PortalWidgetController', 'AlumniBusinessDirectoryController' }, names,
+            'Guests need the widget and business directory controllers'
+        );
+    }
+
+    @IsTest
     static void portalUserWithThePermissionSetCanUseThePortal() {
         User owner = createAccountOwner();
         Id contactId = createAlumni(owner);
@@ -134,6 +178,8 @@ private class Alumni_Portal_User_TEST {
             System.assertEquals(true, mine.hasRecord, 'Own profile is found');
             System.assertEquals('Jordan', mine.firstNameText, 'Own first name');
             System.assertEquals(true, mine.canEdit, 'Own profile is editable');
+            System.assertEquals(1, mine.businessDirectoryRecords.size(), 'My own business listing is read with the granted fields');
+            System.assertEquals('Portal Test Coffee', mine.businessDirectoryRecords[0].Company_Name__c, 'Business name');
 
             // editing my own profile (update of the whitelisted fields)
             AlumniProfileController.AlumniProfileSaveInput input = new AlumniProfileController.AlumniProfileSaveInput();
@@ -151,13 +197,15 @@ private class Alumni_Portal_User_TEST {
             // connected profile with public news
             AlumniConnectionsController.ConnectedProfileDto connected = AlumniConnectionsController.getConnectedProfile(neighborContactId);
             System.assertEquals(true, connected.hasProfile, 'Connected profile is found');
+            System.assertEquals(1, connected.businessListings.size(), 'The neighbour\'s approved business listing is read with the granted fields');
+            System.assertEquals('Neighbor Bakery', connected.businessListings[0].Company_Name__c, 'Business name');
 
             // directory search and news (without USER_MODE, but they still must be callable)
             System.assertEquals(1, AlumniDirectoryListController.getAlumniDirectory(1, 10, 10, 'Avery', null).size(), 'Directory search finds the neighbour');
             System.assertNotEquals(null, AlumniNewsListController.getNews(1, 10, null, null), 'News list works');
 
-            // the business directory is read in USER_MODE: the object, its fields, and the record type must be granted
-            System.assertNotEquals(null, [SELECT Id, Company_Name__c, Company_Status__c FROM Professional_Directory__c WITH USER_MODE LIMIT 1], 'Business directory objects and fields are readable');
+            // The business directory controller itself runs in system mode (it is public), so it needs no field grants.
+            // It still looks the record type up for the running user, so the Alumni Business record type must be visible.
             System.assertNotEquals(null, Schema.SObjectType.Professional_Directory__c.getRecordTypeInfosByDeveloperName().get('Alumni_Business'), 'The Alumni Business record type is visible');
         }
     }

@@ -56,7 +56,7 @@ public without sharing class AlumniBusinessDirectoryController {
                 + ' Company_LinkedIn__c, Company_TikTok__c, Company_X_formerly_Twitter__c'
                 + ' FROM Professional_Directory__c'
                 + ' WHERE ' + buildWhereClause(recTypeId, searchWordsFilter, stateFilter, interestFilter, industryFilter, discountFilter)
-                + ' WITH USER_MODE'
+                + ' WITH SYSTEM_MODE'
                 + ' ORDER BY Company_Name__c NULLS LAST, Last_Name__c, First_Name__c, Id'
                 + ' LIMIT '  + safeSize
                 + ' OFFSET ' + safeOffset;
@@ -82,7 +82,7 @@ public without sharing class AlumniBusinessDirectoryController {
 
         String soql = 'SELECT COUNT() FROM Professional_Directory__c'
                 + ' WHERE ' + buildWhereClause(recTypeId, searchWordsFilter, stateFilter, interestFilter, industryFilter, discountFilter)
-                + ' WITH USER_MODE';
+                + ' WITH SYSTEM_MODE';
 
         return Database.countQuery(soql); // NOPMD ApexSOQLInjection: every filter value is escaped in buildWhereClause()
     }
