@@ -120,7 +120,7 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 1. Create a `UST_Portal_Widget__c` record, set **Component Name** = `Hero Banner`, choose the Zone and Page Context, and **Save**. (Pictures need a saved widget.)
 2. In the **Hero Banner** section, upload a **desktop picture** (cropped to 1600 x 600). Optionally upload a **mobile picture** (cropped to 800 x 640) for phones. Pictures upload immediately and are not part of Save or Reset.
 3. Write **alt text** that describes the picture (required once a picture exists).
-4. Choose the **height** (Short, Medium, Tall), where the **text sits** (Left, Center, Right), and the **overlay** (Light, Medium, Strong). Use Strong for light or busy photos: the text is white, so there is no "no overlay" option.
+4. Choose the **height** (Short, Medium, Tall), where the **text sits** (Left, Center, Right), and the **overlay** (Light, Medium, Strong, or --None-- for no overlay: the picture shows exactly as it is). The text is white, so use Strong for light or busy photos; with --None-- check the text is still readable. A new widget starts on Medium.
 5. Write the **Headline**, the **Overlay text**, and add **buttons** in the Content section. Data tags, headings, buttons, placement, and size all work exactly as they do for Static Content. Buttons line up with the text position.
 6. The preview shows the banner as visitors will see it (buttons do not navigate in the preview).
 

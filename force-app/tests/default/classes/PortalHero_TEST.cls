@@ -96,7 +96,18 @@ private class PortalHero_TEST {
         System.assertEquals(null, hero.altText, 'No alt text');
         System.assertEquals(PortalHero.DEFAULT_HEIGHT, hero.height, 'Default height');
         System.assertEquals(PortalHero.DEFAULT_TEXT_POSITION, hero.textPosition, 'Default text position');
-        System.assertEquals(PortalHero.DEFAULT_OVERLAY, hero.overlay, 'Default overlay');
+        // The field defaults to Medium, so a widget created without choosing an overlay starts on Medium.
+        System.assertEquals(PortalHero.DEFAULT_OVERLAY, hero.overlay, 'A new widget starts on Medium');
+    }
+
+    @IsTest
+    static void aBlankOverlayMeansNoOverlay() {
+        // Choosing --None-- in the editor stores a blank value.
+        UST_Portal_Widget__c widget = savedWidget(new Map<String, Object>{ 'Hero_Overlay__c' => null });
+        System.assertEquals(null, widget.Hero_Overlay__c, 'Test setup: the overlay really is blank');
+
+        System.assertEquals(PortalHero.OVERLAY_NONE, PortalHero.prepare(widget).overlay, 'Blank means none');
+        System.assertEquals(PortalHero.OVERLAY_NONE, PortalHero.prepare(new UST_Portal_Widget__c()).overlay, 'Unsaved and blank means none');
     }
 
     @IsTest
@@ -131,13 +142,13 @@ private class PortalHero_TEST {
         UST_Portal_Widget__c widget = savedWidget(new Map<String, Object>());
         widget.Hero_Height__c = 'gigantic';
         widget.Hero_Text_Position__c = 'sideways';
-        widget.Hero_Overlay__c = 'none';
+        widget.Hero_Overlay__c = 'sepia';
 
         PortalHero.HeroDto hero = PortalHero.prepare(widget);
 
         System.assertEquals(PortalHero.DEFAULT_HEIGHT, hero.height, 'Unknown height');
         System.assertEquals(PortalHero.DEFAULT_TEXT_POSITION, hero.textPosition, 'Unknown position');
-        System.assertEquals(PortalHero.DEFAULT_OVERLAY, hero.overlay, 'Unknown overlay (there is deliberately no "none")');
+        System.assertEquals(PortalHero.DEFAULT_OVERLAY, hero.overlay, 'Unknown overlay falls back to Medium so the white text stays protected');
     }
 
     @IsTest

@@ -12,7 +12,9 @@
  *   - A cache-busting version (the widget's last-modified time) is added to each address. The S3 tool
  *     reuses the same file name when an image is replaced, so without it visitors could keep seeing
  *     the old picture.
- *   - Height, text position, and overlay fall back to defaults when blank or unknown.
+ *   - Height and text position fall back to defaults when blank or unknown.
+ *   - Overlay: blank (the picklist's --None--) means NO overlay and is sent as "none"; an unknown value falls
+ *     back to Medium so a bad value never leaves the white text unprotected by accident.
  *   - Alt text is only used together with an image; without alt text the image is decorative.
  */
 public with sharing class PortalHero {
@@ -20,6 +22,7 @@ public with sharing class PortalHero {
     public static final String DEFAULT_HEIGHT = 'medium';
     public static final String DEFAULT_TEXT_POSITION = 'left';
     public static final String DEFAULT_OVERLAY = 'medium';
+    public static final String OVERLAY_NONE = 'none';
 
     private static final Integer MAX_URL_LENGTH = 2048;
     private static final Integer MAX_ALT_LENGTH = 255;
@@ -93,7 +96,9 @@ public with sharing class PortalHero {
         hero.altText = hero.imageUrl == null ? null : cleanAltText(widget.Hero_Alt_Text__c);
         hero.height = pick(widget.Hero_Height__c, HEIGHTS, DEFAULT_HEIGHT);
         hero.textPosition = pick(widget.Hero_Text_Position__c, TEXT_POSITIONS, DEFAULT_TEXT_POSITION);
-        hero.overlay = pick(widget.Hero_Overlay__c, OVERLAYS, DEFAULT_OVERLAY);
+        hero.overlay = String.isBlank(widget.Hero_Overlay__c)
+                ? OVERLAY_NONE
+                : pick(widget.Hero_Overlay__c, OVERLAYS, DEFAULT_OVERLAY);
         return hero;
     }
 

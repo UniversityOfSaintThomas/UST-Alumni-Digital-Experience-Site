@@ -1,0 +1,274 @@
+# Sample portal widgets for scratch orgs ("widgets" dataset; also included by the "dev" dataset).
+#
+#   cci task run load_sample_data --dataset widgets --org dev        # load
+#   cci task run delete_sample_widgets --org dev                     # remove them again (then edit and reload)
+#
+# Every widget is named "[Sample] ..." so delete_sample_widgets can find exactly these and nothing else.
+# Page contexts (UST_Portal_Zone_Placement__c) are NOT created here: config_dev step 1.6 seeds the real ones
+# (home, alumni_directory__c, plus the layout zones banner and above_footer). The widgets use those, plus
+# deliberate edge cases (inactive, zone mismatch, unregistered page, stub component).
+#
+# Which persona sees what (personas are in datasets/alumni/alumni.recipe.yml):
+#   everyone ........ the All Pages banner/above-footer widgets, the hero, the two-page sidebar widget
+#   smp1 Jordan ..... recent grads (Class Year 2021 AND connection Alumni), young-alumni communications
+#   smp2 Morgan ..... donors, volunteers, Location 1, and the Placeholder college/athletic filters
+#   smp3 Casey ...... parents
+#   smp4 Riley ...... only widgets with no filters (no Alumni Directory record)
+#   a guest ......... only widgets with no filters
+
+- plugin: snowfakery.standard_plugins.Salesforce
+
+# ---- Layout zones: appear on every page ------------------------------------------------------------------
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Banner - all pages, everyone (static)"
+    Component_Name__c: ust_static_content
+    Zone__c: banner
+    Page_Context__c: all
+    Is_Active__c: true
+    Sort_Order__c: 10
+    Description__c: Layout banner zone with page context All Pages. Everyone sees it on every page.
+    Content_CSS_Class__c: ust-content-muted
+    Static_Content_Header__c: "Welcome, {{First_Name|friend}}"
+    Static_Content__c: <p>This banner is on every page because its page context is <strong>All Pages</strong>.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Above footer - all pages (centered, buttons)"
+    Component_Name__c: ust_static_content
+    Zone__c: above_footer
+    Page_Context__c: all
+    Is_Active__c: true
+    Sort_Order__c: 10
+    Description__c: Layout zone above the footer with two buttons (portal link and external link).
+    Content_CSS_Class__c: ust-content-centered
+    Static_Content_Header__c: Questions about your record?
+    Static_Content__c: <p>Contact the Alumni Relations office and we will help you update it.</p>
+    Button_Placement__c: Below
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[
+      {"id":"b1","label":"Open the directory","type":"portal","url":"/alumni-directory","newTab":false,"style":"brand","align":"center"},
+      {"id":"b2","label":"Visit stthomas.edu","type":"external","url":"https://www.stthomas.edu","newTab":true,"style":"outline-brand","align":"center"}]}
+
+# ---- Home page, body zone --------------------------------------------------------------------------------
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home body - hero (no picture, brand-colour fallback)"
+    Component_Name__c: ust_hero_banner
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 10
+    Description__c: Hero Banner with no picture, so it shows the brand-purple fallback. Uploading pictures needs the S3 credential.
+    Hero_Height__c: medium
+    Hero_Text_Position__c: left
+    Hero_Overlay__c: medium
+    Static_Content_Header__c: "Welcome back, {{First_Name|friend}}"
+    Static_Content__c: <p>Class of {{Class_Year|your year}} - we are glad you are here.</p>
+    Button_Placement__c: Below
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[
+      {"id":"h1","label":"Find classmates","type":"portal","url":"/alumni-directory","newTab":false,"style":"brand","align":"left"},
+      {"id":"h2","label":"Alumni news","type":"external","url":"https://www.stthomas.edu/alumni","newTab":true,"style":"outline-brand","align":"left"}]}
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home body - recent grads (Class Year 2021 AND connection Alumni)"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 20
+    Description__c: Two filter dimensions (AND). Seen by smp1 only. smp2 is also Alumni but class 1985, so it is excluded.
+    Filter_Class_Year__c: "2021"
+    Filter_St_Thomas_Connection__c: Alumni
+    Content_CSS_Class__c: ust-content-callout
+    Static_Content_Header__c: "Recent graduates, {{First_Name}}"
+    Static_Content__c: <p>Young alumni events, mentoring, and career resources.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home body - College filter (Placeholder college)"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 30
+    Description__c: Filter College = Placeholder (the only valid college in this repo; real ones are inactive). Seen by smp2 only.
+    Filter_College__c: Placeholder
+    Content_CSS_Class__c: ust-content-inverse
+    Static_Content_Header__c: College-specific news
+    Static_Content__c: <p>Stands in for a real college filter such as the School of Law.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home body - sort order test (sorts last)"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 90
+    Description__c: Highest Sort Order, so it renders last in the body zone for everyone.
+    Static_Content_Header__c: Last in the body zone
+    Static_Content__c: <p>Sort Order 90.</p>
+
+# ---- Home page, sidebar zone -----------------------------------------------------------------------------
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home sidebar - donors (St Thomas Connection = Donor)"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 10
+    Description__c: Seen by smp2 only (Alumni;Donor). smp1 is Alumni, not Donor.
+    Filter_St_Thomas_Connection__c: Donor
+    Content_CSS_Class__c: ust-content-callout
+    Static_Content_Header__c: Thank you for giving
+    Static_Content__c: <p>Your gift supports students every day.</p>
+    Button_Placement__c: Below
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[{"id":"d1","label":"See your impact","type":"external","url":"https://www.stthomas.edu/giving","newTab":true,"style":"brand","align":"left"}]}
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home sidebar - parents"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 20
+    Description__c: Filter St Thomas Connection = Parent. Seen by smp3 only.
+    Filter_St_Thomas_Connection__c: Parent
+    Content_CSS_Class__c: ust-content-muted
+    Static_Content_Header__c: Parent and family programs
+    Static_Content__c: <p>Family weekend, the parent newsletter, and the parent giving council.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home sidebar - volunteers (Volunteer Status 1)"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 30
+    Description__c: Filter Volunteer Status = Status 1. Seen by smp2 only.
+    Filter_Volunteer_Status__c: Status 1
+    Static_Content_Header__c: Volunteer opportunities
+    Static_Content__c: <p>Mentor a student, host a chapter event, or join a committee.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home sidebar - athletic affiliation filter (Placeholder)"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 40
+    Description__c: Filter Athletic Affiliation = Placeholder (real teams are inactive in this repo). Seen by smp2 only.
+    Filter_Athletic_Affiliation__c: Placeholder
+    Static_Content_Header__c: Athletics
+    Static_Content__c: <p>Stands in for a team filter such as varsity hockey.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home sidebar - young alumni communications (Sender Key)"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 50
+    Description__c: Filter Content Sender Key = UDAR_YoungAlumni. Seen by smp1 only.
+    Filter_Content_Sender_Key__c: UDAR_YoungAlumni
+    Static_Content_Header__c: Young alumni
+    Static_Content__c: <p>Events and news chosen for the last ten years of graduates.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home sidebar - geo location filter (Location 1)"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 60
+    Description__c: Filter Geo Location = Location 1. Seen by smp2 only.
+    Filter_Geo_Location__c: Location 1
+    Static_Content_Header__c: Near you
+    Static_Content__c: <p>Chapter events in your area.</p>
+
+# ---- Multiple page contexts ------------------------------------------------------------------------------
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Sidebar - Home AND Alumni Directory (two pages)"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home;alumni_directory__c
+    Is_Active__c: true
+    Sort_Order__c: 5
+    Description__c: One record, two pages. Shows in the sidebar on Home and on the Alumni Directory page.
+    Content_CSS_Class__c: ust-content-callout
+    Static_Content_Header__c: Your Banner ID
+    Static_Content__c: <p>Banner ID {{Banner_ID|not on file}}</p>
+    Button_Placement__c: Below
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[{"id":"m1","label":"My record","type":"portal","url":"/alumni-directory?id={{Contact_Id}}","newTab":false,"style":"neutral","align":"left"}]}
+
+# ---- Alumni Directory page, sidebar ----------------------------------------------------------------------
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Directory sidebar - search tips"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: alumni_directory__c
+    Is_Active__c: true
+    Sort_Order__c: 10
+    Description__c: Only on the Alumni Directory page.
+    Static_Content_Header__c: Search tips
+    Static_Content__c: <p>Search by first and last name, then narrow by class year.</p>
+
+# ---- Edge cases for the editor and the page-context picker -----------------------------------------------
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] EDGE inactive - never shown"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: false
+    Sort_Order__c: 1
+    Description__c: Is Active is false, so it must not appear anywhere.
+    Static_Content_Header__c: You should never see this
+    Static_Content__c: <p>Inactive widget.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] EDGE zone mismatch (body zone on a page that has none)"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: alumni_directory__c
+    Is_Active__c: true
+    Sort_Order__c: 10
+    Description__c: Alumni Directory has no body zone. The page-context picker should warn, and nothing renders.
+    Static_Content_Header__c: Not rendered
+    Static_Content__c: <p>No body zone on this page.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] EDGE unregistered page context (giving)"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: giving
+    Is_Active__c: true
+    Sort_Order__c: 10
+    Description__c: Legacy value "giving" is not a registered page. The picker should flag it as unregistered.
+    Static_Content_Header__c: Giving page widget
+    Static_Content__c: <p>Legacy page context.</p>
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] EDGE stub component (not built yet)"
+    Component_Name__c: ust_events_widget
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 99
+    Description__c: Registered in the picklist but not in the zone registry, so it renders the Builder-only stub.

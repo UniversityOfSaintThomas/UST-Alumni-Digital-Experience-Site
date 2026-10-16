@@ -80,6 +80,10 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     _savedButtonSize = '';
     _savedZone = '';
     _savedPageContext = '';
+    _savedComponentName = '';
+
+    /** The record the form values were last initialised from (see handleLoad). */
+    _initialisedRecordId;
 
     isSaving = false;
 
@@ -147,19 +151,27 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     // ---- Form events ----
 
     /**
-     * Reads the loaded record so conditional sections and the editor start
-     * with the saved values. Fires for existing records only.
+     * Reads the loaded record so conditional sections and the editor start with the saved values.
+     * Fires for existing records only.
+     *
+     * The form fires "load" again whenever its field list changes, and that happens right after the user edits
+     * something: switching Component Name to Hero Banner adds the hero fields, so the form re-fetches and
+     * reports the SAVED values again. Copying those over the editor would silently undo the edit (the dropdown
+     * still shows the new choice but the sections snap back). So the editor is initialised once per record and
+     * later load events are ignored; Save and Reset keep the saved copies up to date.
      *
      * @param {CustomEvent} event load event from lightning-record-edit-form
      */
     handleLoad(event) {
         const records = event.detail && event.detail.records;
         const record = records && this.recordId ? records[this.recordId] : null;
-        if (!record) {
+        if (!record || this._initialisedRecordId === this.recordId) {
             return;
         }
+        this._initialisedRecordId = this.recordId;
         const fields = record.fields;
         this.componentName = this.readFieldValue(fields, 'Component_Name__c');
+        this._savedComponentName = this.componentName;
         this.zone = this.readFieldValue(fields, 'Zone__c');
         this.pageContext = this.readFieldValue(fields, 'Page_Context__c');
         this._savedZone = this.zone;
@@ -173,7 +185,8 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         this.heroAltText = this.readFieldValue(fields, 'Hero_Alt_Text__c');
         this.heroHeight = this.readFieldValue(fields, 'Hero_Height__c') || 'medium';
         this.heroTextPosition = this.readFieldValue(fields, 'Hero_Text_Position__c') || 'left';
-        this.heroOverlay = this.readFieldValue(fields, 'Hero_Overlay__c') || 'medium';
+        // Blank means None (no overlay), exactly as the portal treats it; only a NEW widget starts on Medium.
+        this.heroOverlay = this.readFieldValue(fields, 'Hero_Overlay__c') || 'none';
         this._savedStaticContent = this.staticContent;
         this._savedContentHeader = this.contentHeader;
         this._savedButtonsJson = this.buttonsJson;
@@ -289,7 +302,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     }
 
     handleHeroOverlayChange(event) {
-        this.heroOverlay = event.detail.value || 'medium';
+        this.heroOverlay = event.detail.value || 'none';
     }
 
     /**
@@ -409,6 +422,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         this._savedHeroOverlay = this.heroOverlay;
         this._savedZone = this.zone;
         this._savedPageContext = this.pageContext;
+        this._savedComponentName = this.componentName;
         this.showToast('Saved', 'Portal widget saved.', 'success');
         if (!this.recordId) {
             this.navigateToRecord(event.detail.id);
@@ -433,6 +447,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         this.buttonsJson = this._savedButtonsJson;
         this.buttonPlacement = this._savedButtonPlacement;
         this.buttonSize = this._savedButtonSize;
+        this.componentName = this._savedComponentName;
         this.zone = this._savedZone;
         this.pageContext = this._savedPageContext;
     }

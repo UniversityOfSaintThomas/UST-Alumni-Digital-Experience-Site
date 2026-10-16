@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>ShareActiveWidgetsWithPortalUsers</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Portal widgets are published content, so every signed-in portal user can read the active ones. Inactive widgets stay private until someone turns them on. Widgets must not hold personal data: data tags are resolved per viewer at render time and are never stored on the record.</description>
+        <label>Share Active Widgets With Portal Users</label>
+        <sharedTo>
+            <allCustomerPortalUsers></allCustomerPortalUsers>
+        </sharedTo>
+        <criteriaItems>
+            <field>Is_Active__c</field>
+            <operation>equals</operation>
+            <value>true</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+</SharingRules>

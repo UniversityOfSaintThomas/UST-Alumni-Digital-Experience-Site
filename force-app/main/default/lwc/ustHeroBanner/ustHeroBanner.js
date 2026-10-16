@@ -5,6 +5,9 @@ const HEIGHTS = ['short', 'medium', 'tall'];
 const POSITIONS = ['left', 'center', 'right'];
 const OVERLAYS = ['light', 'medium', 'strong'];
 
+/** No dark layer at all: the picture is shown as it is. */
+const OVERLAY_NONE = 'none';
+
 /** The hero's text position also decides where its buttons sit (per-button alignment is ignored). */
 const BUTTON_ALIGN_FOR_POSITION = { left: 'left', center: 'center', right: 'end' };
 
@@ -93,6 +96,12 @@ export default class UstHeroBanner extends LightningElement {
         return 'ust-hero ust-hero_' + height + ' ust-hero_' + this.position;
     }
 
+    /** False when the overlay is None, so no dark layer is drawn over the picture. */
+    get hasScrim() {
+        return this.settings.overlay !== OVERLAY_NONE;
+    }
+
+    /** An unknown value still gets a layer (Medium), so white text is never left unprotected by accident. */
     get scrimClass() {
         const overlay = OVERLAYS.includes(this.settings.overlay) ? this.settings.overlay : 'medium';
         return 'ust-hero-scrim ust-hero-scrim_' + overlay;

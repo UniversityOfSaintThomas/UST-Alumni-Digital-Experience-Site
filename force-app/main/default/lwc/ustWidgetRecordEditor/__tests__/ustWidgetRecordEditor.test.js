@@ -522,6 +522,22 @@ describe('c-ust-widget-record-editor', () => {
             expect(getHeroImages).toHaveBeenCalledTimes(1);
         });
 
+        it('previews a blank overlay as none (no dark layer), the same as the portal', async () => {
+            const element = createEditor();
+            loadRecord(element, { ...HERO_RECORD, Hero_Overlay__c: '' });
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.overlay).toBe('none');
+
+            getInputField(element, 'Hero_Overlay__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'strong' } }));
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.overlay).toBe('strong');
+
+            // choosing --None-- again sends no value
+            getInputField(element, 'Hero_Overlay__c').dispatchEvent(new CustomEvent('change', { detail: { value: null } }));
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.overlay).toBe('none');
+        });
+
         it('updates the preview as the look settings change', async () => {
             const element = createEditor();
             loadRecord(element, HERO_RECORD);
@@ -640,6 +656,105 @@ describe('c-ust-widget-record-editor', () => {
             const preview = element.shadowRoot.querySelector('c-ust-hero-banner');
             expect(preview.textHeader).toBe('Welcome');
             expect(preview.hero.height).toBe('tall');
+        });
+    });
+
+    describe('form load events after the user has edited something', () => {
+        // The form fires "load" again whenever its field list changes, which happens right after an edit
+        // (switching to Hero Banner adds the hero fields). Each repeat reports the SAVED values.
+        const STATIC_RECORD = { Component_Name__c: 'ust_static_content', Zone__c: 'body', Page_Context__c: 'home' };
+
+        it('keeps the Hero section when the form reloads after Component Name is changed to Hero Banner', async () => {
+            const element = createEditor();
+            loadRecord(element, STATIC_RECORD);
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-aws-s3-directory-image')).toBeNull();
+
+            getInputField(element, 'Component_Name__c').dispatchEvent(
+                new CustomEvent('change', { detail: { value: 'ust_hero_banner' } })
+            );
+            // what the live form did: three more loads, all still carrying the saved static-content values
+            loadRecord(element, STATIC_RECORD);
+            loadRecord(element, STATIC_RECORD);
+            loadRecord(element, STATIC_RECORD);
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelectorAll('c-aws-s3-directory-image')).toHaveLength(2);
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner')).not.toBeNull();
+        });
+
+        it('does not let a reload overwrite other unsaved edits either', async () => {
+            const element = createEditor();
+            loadRecord(element, { ...STATIC_RECORD, Static_Content_Header__c: 'Saved headline' });
+            await flushPromises();
+
+            element.shadowRoot.querySelector('c-ust-rich-text-editor').dispatchEvent(
+                new CustomEvent('change', { detail: { value: '<p>Unsaved body</p>' } })
+            );
+            getInputField(element, 'Zone__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'sidebar' } }));
+            loadRecord(element, { ...STATIC_RECORD, Static_Content_Header__c: 'Saved headline', Static_Content__c: '<p>Saved</p>' });
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelector('c-ust-rich-text-editor').value).toBe('<p>Unsaved body</p>');
+            expect(element.shadowRoot.querySelector('c-ust-page-context-picker').zone).toBe('sidebar');
+        });
+
+        it('puts the widget type back on Reset, so the sections follow', async () => {
+            const element = createEditor();
+            loadRecord(element, STATIC_RECORD);
+            await flushPromises();
+
+            getInputField(element, 'Component_Name__c').dispatchEvent(
+                new CustomEvent('change', { detail: { value: 'ust_hero_banner' } })
+            );
+            await flushPromises();
+            expect(element.shadowRoot.querySelectorAll('c-aws-s3-directory-image')).toHaveLength(2);
+
+            const resetButton = Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find(
+                (button) => button.label === 'Reset'
+            );
+            resetButton.click();
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelector('c-aws-s3-directory-image')).toBeNull();
+            expect(element.shadowRoot.querySelector('c-ust-rich-text-editor')).not.toBeNull();
+        });
+
+        it('remembers a saved type change, so Reset afterwards does not undo it', async () => {
+            const element = createEditor();
+            loadRecord(element, STATIC_RECORD);
+            await flushPromises();
+
+            getInputField(element, 'Component_Name__c').dispatchEvent(
+                new CustomEvent('change', { detail: { value: 'ust_hero_banner' } })
+            );
+            getForm(element).dispatchEvent(new CustomEvent('success', { detail: { id: RECORD_ID } }));
+            await flushPromises();
+
+            const resetButton = Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find(
+                (button) => button.label === 'Reset'
+            );
+            resetButton.click();
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelectorAll('c-aws-s3-directory-image')).toHaveLength(2);
+        });
+
+        it('still initialises from the record when the editor is pointed at a different widget', async () => {
+            const element = createEditor();
+            loadRecord(element, STATIC_RECORD);
+            await flushPromises();
+
+            const OTHER_ID = 'a1Nhs0000004OTHERAA';
+            element.recordId = OTHER_ID;
+            getForm(element).dispatchEvent(
+                new CustomEvent('load', {
+                    detail: { records: { [OTHER_ID]: { fields: { Component_Name__c: { value: 'ust_hero_banner' } } } } }
+                })
+            );
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelectorAll('c-aws-s3-directory-image')).toHaveLength(2);
         });
     });
 

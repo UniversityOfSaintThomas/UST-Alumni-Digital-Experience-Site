@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Hero_Overlay__c</fullName>
-    <description>Strength of the dark layer between the picture and the white text, so the text stays readable. There is deliberately no &quot;none&quot; option. Use Strong for light or busy photos.</description>
-    <inlineHelpText>Darkens the picture behind the text. Use Strong for light or busy photos.</inlineHelpText>
+    <description>Strength of the dark layer between the picture and the white text. Leave it blank (--None--) to show the picture exactly as it is; white text can then be hard to read on light or busy pictures. Light, Medium and Strong darken it progressively. New widgets start on Medium.</description>
+    <inlineHelpText>Darkens the picture behind the text. --None-- shows the picture as it is, but white text can be hard to read on light pictures. Use Strong for light or busy photos.</inlineHelpText>
     <label>Hero Overlay</label>
     <required>false</required>
     <trackTrending>false</trackTrending>

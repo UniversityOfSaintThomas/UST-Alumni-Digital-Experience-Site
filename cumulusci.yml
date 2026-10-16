@@ -67,6 +67,17 @@ tasks:
             path: unpackaged/config/navigationMenus
             unmanaged: True
 
+    create_community_guest_sharing:
+        description: >-
+            Deploys the sharing rule that lets the Alumni site guest user read active portal widgets. It lives
+            outside force-app because a guest rule needs the site's guest user to exist, and force-app is deployed
+            before create_community runs. Raw metadata folder: package.xml + sharingRules/ (no -meta.xml suffix).
+        class_path: cumulusci.tasks.salesforce.Deploy
+        options:
+            namespace_inject: $project_config.project__package__namespace
+            path: unpackaged/config/guestSharing
+            unmanaged: True
+
     sync_navigation_menu:
         description: >-
             Rewrites the theme layout's Default Navigation menu binding to match
@@ -142,6 +153,17 @@ tasks:
             apex: >
                 PortalPageRegistry.seedKnownPlacements();
 
+    delete_sample_widgets:
+        description: >-
+            Deletes the sample portal widgets (every UST_Portal_Widget__c whose name starts with "[Sample]") so the
+            widgets dataset can be edited and loaded again. Leaves your own widgets alone. Sample users and
+            contacts are not touched: they cannot be reset (see datasets/alumni/alumni.recipe.yml).
+        class_path: cumulusci.tasks.bulkdata.delete.DeleteData
+        group: Data Operations
+        options:
+            objects: UST_Portal_Widget__c
+            where: "Name LIKE '[Sample]%'"
+
     migrate_widget_page_context:
         description: >-
             One-time, idempotent data migration for existing Portal Widgets: replaces the legacy
@@ -187,6 +209,8 @@ flows:
                 task: create_community_experience_cloud_bundle
             5.5:
                 task: create_community_navigation
+            5.7:
+                task: create_community_guest_sharing
             6:
                 task: create_community_publish
 

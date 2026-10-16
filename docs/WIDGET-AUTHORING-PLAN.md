@@ -525,7 +525,7 @@ The editor and the server enforce the same rules, but the server never trusts th
 | Width | Fills its zone (the zone decides width). Image is `object-fit: cover`. |
 | Height | `Hero_Height__c`: Short (12rem), **Medium (20rem, default)**, Tall (30rem). `min-height`, so long text never clips. Smaller on phones. |
 | Text position | `Hero_Text_Position__c`: **Left (default)**, Center, Right; vertically centered. |
-| Overlay | `Hero_Overlay__c`: Light, **Medium (default)**, Strong. **No "none"**, so white text keeps usable contrast. Help text: use Strong for light or busy photos. |
+| Overlay | `Hero_Overlay__c`: Light, **Medium (default for a new widget)**, Strong, or blank (--None--) for **no overlay at all**. Changed 2026-10-16: it was first built with no "none" so white text always had contrast; the owner expected --None-- to show the picture as it is, and blank was silently becoming Medium. Blank now means none in Apex, the banner, and the editor preview; an unknown value still falls back to Medium. Help text warns that white text can be hard to read on light pictures. |
 | Mobile image | Optional second upload (`-hero-mobile`); shown with `<picture>` below 48em. |
 | No image yet | Solid brand purple, so text is still legible and the widget works before S3 is configured. |
 | Alt text | Required in the editor once an image exists; an image without alt text is rendered as decorative (`alt=""`). |
@@ -590,6 +590,37 @@ bucket policy.
    already assigns both to System Administrators.
 5. Republish the site after changing CSP or permission sets, and give each hero widget a Hero Image Field FLS (done in
    `UST_Portal_Widget_Admin` and the guest set).
+
+**Bug found and fixed after Phase 4: switching a widget to Hero Banner showed no Hero section.** Reported as "the S3
+upload and options are missing". Opening a widget that was *already* a Hero Banner worked, which is all the Phase 4
+browser checks covered; changing the type on an existing widget did not. Cause: `lightning-record-edit-form` fires
+`load` again whenever its field list changes (here, when the hero fields join the form), and each repeat reports the
+**saved** values. `handleLoad` copied them over the editor, so the Component Name dropdown still showed the new choice
+while the editor state snapped back to Static Content (any other unsaved edit was exposed the same way). Fix: the
+editor initialises once per record (`_initialisedRecordId`) and ignores repeat loads; `handleReset` and `handleSuccess`
+now also restore/track the widget type. Five Jest tests added (three fail without the fix). Verified in the browser by
+switching the Static Content `TEST` widget to Hero Banner. Lesson for later phases: test the *change* path in a real
+browser, not only the load path; Jest's single synthetic `load` could not show this.
+
+**Record sharing (added after Phase 4).** `UST_Portal_Widget__c` has an external default of Private, so signed-in portal
+users and the site guest could not read widget records directly (only through the `without sharing` controller).
+There are now two rules, both Read-only and both limited to `Is_Active__c = true`:
+- `ShareActiveWidgetsWithPortalUsers` shares with All Customer Portal Users (signed-in portal users). Lives in
+  `force-app/main/default/sharingRules/UST_Portal_Widget__c.sharingRules-meta.xml`.
+- `ShareActiveWidgetsWithAlumniGuest` shares with the Alumni site guest user (community nickname `Alumni`). Lives in
+  `unpackaged/config/guestSharing/` and is deployed by the task `create_community_guest_sharing` (`config_dev` step
+  5.7), **not** with `force-app`. A guest rule fails to deploy ("Specify a guest user's nickname for the guestUser
+  field", reproduced) until the site and its guest user exist, and `force-app` is deployed before `create_community`;
+  keeping it in `force-app` would have broken every fresh `cci flow run dev_org`. The folder is raw metadata format
+  (`package.xml` plus `sharingRules/<Object>.sharingRules`, no `-meta.xml`). For EDA-Staging or production, deploy that
+  folder after the site exists.
+
+Why: widgets are published content, and the pictures a Hero Banner points at must load for guests. Widgets hold no
+personal data: data tags (`{{First_Name}}` and so on) are stored as plain text and only resolved per viewer at render
+time, so a viewer who reads the record directly (for example through an Aura endpoint) sees the tag, not anyone's
+data. Do not type real personal details into widget text. Turning a widget off removes the share; turning it on adds it
+(checked in the dev org: 18 active widgets, 18 shares per rule, 0 for the inactive one, and a toggle added then removed
+both rows). Field access is still limited by the `Alumni_Portal_Guest_User` permission set.
 
 **Known limits / follow-ups.**
 - Links typed inside the overlay text keep the browser link colour (use a button for calls to action).

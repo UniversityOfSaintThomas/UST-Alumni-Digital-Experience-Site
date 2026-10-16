@@ -15,7 +15,9 @@
                         onerror={handleImageError}>
                 </picture>
             </template>
-            <div class={scrimClass}></div>
+            <template lwc:if={hasScrim}>
+                <div class={scrimClass}></div>
+            </template>
             <div class="ust-hero-content">
                 <c-ust-static-content
                     rich-text-content={richTextContent}

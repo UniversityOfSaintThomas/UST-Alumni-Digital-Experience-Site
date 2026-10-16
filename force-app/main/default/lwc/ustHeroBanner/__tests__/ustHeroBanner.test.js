@@ -108,10 +108,17 @@ describe('c-ust-hero-banner', () => {
     });
 
     it.each([
-        ['light', 'ust-hero-scrim_light'], ['medium', 'ust-hero-scrim_medium'], ['strong', 'ust-hero-scrim_strong'], ['none', 'ust-hero-scrim_medium']
-    ])('overlay %s uses %s (there is no "none")', (overlay, expected) => {
+        ['light', 'ust-hero-scrim_light'], ['medium', 'ust-hero-scrim_medium'], ['strong', 'ust-hero-scrim_strong'],
+        ['bogus', 'ust-hero-scrim_medium']
+    ])('overlay %s uses %s (an unknown value still protects the white text)', (overlay, expected) => {
         const element = createHero({ hero: { ...HERO, overlay } });
         expect(element.shadowRoot.querySelector('.ust-hero-scrim').className).toContain(expected);
+    });
+
+    it('draws no dark layer at all when the overlay is none, so the picture shows as it is', () => {
+        const element = createHero({ hero: { ...HERO, overlay: 'none' } });
+        expect(element.shadowRoot.querySelector('.ust-hero-scrim')).toBeNull();
+        expect(element.shadowRoot.querySelector('img.ust-hero-image')).not.toBeNull();
     });
 
     it('lines the buttons up with the text position, ignoring per-button alignment', () => {
