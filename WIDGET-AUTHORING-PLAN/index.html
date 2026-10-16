@@ -1791,7 +1791,7 @@ The editor and the server enforce the same rules, but the server never trusts th
 </tr>
 <tr>
 <td>Overlay</td>
-<td><code>Hero_Overlay__c</code>: Light, <strong>Medium (default)</strong>, Strong. <strong>No "none"</strong>, so white text keeps usable contrast. Help text: use Strong for light or busy photos.</td>
+<td><code>Hero_Overlay__c</code>: Light, <strong>Medium (default for a new widget)</strong>, Strong, or blank (--None--) for <strong>no overlay at all</strong>. Changed 2026-10-16: it was first built with no "none" so white text always had contrast; the owner expected --None-- to show the picture as it is, and blank was silently becoming Medium. Blank now means none in Apex, the banner, and the editor preview; an unknown value still falls back to Medium. Help text warns that white text can be hard to read on light pictures.</td>
 </tr>
 <tr>
 <td>Mobile image</td>
@@ -1907,6 +1907,34 @@ bucket policy.</p>
    already assigns both to System Administrators.
 5. Republish the site after changing CSP or permission sets, and give each hero widget a Hero Image Field FLS (done in
    <code>UST_Portal_Widget_Admin</code> and the guest set).</p>
+<p><strong>Bug found and fixed after Phase 4: switching a widget to Hero Banner showed no Hero section.</strong> Reported as "the S3
+upload and options are missing". Opening a widget that was <em>already</em> a Hero Banner worked, which is all the Phase 4
+browser checks covered; changing the type on an existing widget did not. Cause: <code>lightning-record-edit-form</code> fires
+<code>load</code> again whenever its field list changes (here, when the hero fields join the form), and each repeat reports the
+<strong>saved</strong> values. <code>handleLoad</code> copied them over the editor, so the Component Name dropdown still showed the new choice
+while the editor state snapped back to Static Content (any other unsaved edit was exposed the same way). Fix: the
+editor initialises once per record (<code>_initialisedRecordId</code>) and ignores repeat loads; <code>handleReset</code> and <code>handleSuccess</code>
+now also restore/track the widget type. Five Jest tests added (three fail without the fix). Verified in the browser by
+switching the Static Content <code>TEST</code> widget to Hero Banner. Lesson for later phases: test the <em>change</em> path in a real
+browser, not only the load path; Jest's single synthetic <code>load</code> could not show this.</p>
+<p><strong>Record sharing (added after Phase 4).</strong> <code>UST_Portal_Widget__c</code> has an external default of Private, so signed-in portal
+users and the site guest could not read widget records directly (only through the <code>without sharing</code> controller).
+There are now two rules, both Read-only and both limited to <code>Is_Active__c = true</code>:
+- <code>ShareActiveWidgetsWithPortalUsers</code> shares with All Customer Portal Users (signed-in portal users). Lives in
+  <code>force-app/main/default/sharingRules/UST_Portal_Widget__c.sharingRules-meta.xml</code>.
+- <code>ShareActiveWidgetsWithAlumniGuest</code> shares with the Alumni site guest user (community nickname <code>Alumni</code>). Lives in
+  <code>unpackaged/config/guestSharing/</code> and is deployed by the task <code>create_community_guest_sharing</code> (<code>config_dev</code> step
+  5.7), <strong>not</strong> with <code>force-app</code>. A guest rule fails to deploy ("Specify a guest user's nickname for the guestUser
+  field", reproduced) until the site and its guest user exist, and <code>force-app</code> is deployed before <code>create_community</code>;
+  keeping it in <code>force-app</code> would have broken every fresh <code>cci flow run dev_org</code>. The folder is raw metadata format
+  (<code>package.xml</code> plus <code>sharingRules/&lt;Object&gt;.sharingRules</code>, no <code>-meta.xml</code>). For EDA-Staging or production, deploy that
+  folder after the site exists.</p>
+<p>Why: widgets are published content, and the pictures a Hero Banner points at must load for guests. Widgets hold no
+personal data: data tags (<code>{{First_Name}}</code> and so on) are stored as plain text and only resolved per viewer at render
+time, so a viewer who reads the record directly (for example through an Aura endpoint) sees the tag, not anyone's
+data. Do not type real personal details into widget text. Turning a widget off removes the share; turning it on adds it
+(checked in the dev org: 18 active widgets, 18 shares per rule, 0 for the inactive one, and a toggle added then removed
+both rows). Field access is still limited by the <code>Alumni_Portal_Guest_User</code> permission set.</p>
 <p><strong>Known limits / follow-ups.</strong>
 - Links typed inside the overlay text keep the browser link colour (use a button for calls to action).
 - The S3 tool always saves PNG (large files for photos), keeps the same file name when replacing (handled here with
