@@ -1947,10 +1947,15 @@ Customer Community user (<code>Alumni_Portal_User_TEST</code>, 4 tests):
   makes users smp1 to smp4 and assigns both permission sets, <code>link_sample_portal_users</code> sets <code>Contact.Portal_User__c</code>
   and <code>Alumni_Directory__c.Community_Profile__c</code>. Idempotent. The Alumni network stays <code>UnderConstruction</code> in a dev org
   until published, so the proof is the Apex test, not a browser login.</p>
-<p><strong>Existing gaps found on the way (not caused by this work).</strong> The news feed queries <code>Contact.Community_Address_Range__c</code>
-and <code>Academic_Majors__c</code>, and the business directory reads <code>Alumni__r.Degree_s_Formatted__c</code>; none exist in the dev org,
-so those controllers cannot run there (the portal-user test avoids them). <code>Contact.Job_Title__c</code> exists in the org but
-not in the repo source. The <code>Alumni_Directory__c</code> record type and field sets behind EDA-Staging may differ.</p>
+<p><strong>Existing gaps found on the way (not caused by this work).</strong> <code>Contact.Community_Address_Range__c</code> (a city and state formula
+used by the news search) and <code>Contact.Degree_s_Formatted__c</code> (business directory) were added to the repo on 2026-10-16.
+<code>Alumni_Portal_User_TEST</code> now calls the public directory and runs a news search as a signed-in user; the search failed for
+every portal user until <code>Alumni_Portal_User</code> granted <code>Contact.Community_Address_Range__c</code>. The <strong>Academic Majors widget filter
+does not work</strong>: the controller lines that load the user's majors are commented out (they referenced a <code>Contact.Academic_Majors__c</code>
+that does not exist), so any widget using that filter is shown to nobody. The data is on <code>Alumni_Directory__c.Academic_Major_s__c</code>
+(same <code>Academic_Majors</code> value set). <code>Contact.Job_Title__c</code> exists in the org but not in the repo source. Three older test suites
+(business directory, connected profile, my profile) fail in any scratch org because the Admin profile cannot use the
+<code>Alumni_Business</code> record type; the cause is the profile, not a missing field. The <code>Alumni_Directory__c</code> record type and field sets behind EDA-Staging may differ.</p>
 <p><strong>Record sharing (added after Phase 4).</strong> <code>UST_Portal_Widget__c</code> has an external default of Private, so signed-in portal
 users and the site guest could not read widget records directly (only through the <code>without sharing</code> controller).
 There are now two rules, both Read-only and both limited to <code>Is_Active__c = true</code>:
