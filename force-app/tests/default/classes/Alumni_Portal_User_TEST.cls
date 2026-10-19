@@ -48,7 +48,7 @@ private class Alumni_Portal_User_TEST {
             insert account;
             Contact signedIn = new Contact(
                 FirstName = 'Jordan', LastName = 'Portaltest', Email = 'jordan.portaltest@example.com',
-                University_Banner_ID__c = BANNER_ID, AccountId = account.Id
+                University_Banner_ID__c = BANNER_ID, AccountId = account.Id, Degree_s_Formatted__c = '2021 BA'
             );
             Contact other = new Contact(
                 FirstName = 'Avery', LastName = 'Neighbor', Email = 'avery.neighbor@example.com',
@@ -72,7 +72,8 @@ private class Alumni_Portal_User_TEST {
                 new Professional_Directory__c(
                     RecordTypeId = businessType, Alumni__c = signedIn.Id, Company_Name__c = 'Portal Test Coffee',
                     Title__c = 'Owner', Company_City__c = 'Saint Paul', Company_State__c = 'MN',
-                    Company_Website__c = 'https://example.com/coffee', Company_Status__c = 'Approved', Active_Display__c = 'Active'
+                    Company_Website__c = 'https://example.com/coffee', Company_Status__c = 'Approved', Active_Display__c = 'Active',
+                    Company_Description__c = 'Fresh roasted', Company_Phone__c = '555-0100'
                 ),
                 new Professional_Directory__c(
                     RecordTypeId = businessType, Alumni__c = other.Id, Company_Name__c = 'Neighbor Bakery',
@@ -207,6 +208,56 @@ private class Alumni_Portal_User_TEST {
             // The business directory controller itself runs in system mode (it is public), so it needs no field grants.
             // It still looks the record type up for the running user, so the Alumni Business record type must be visible.
             System.assertNotEquals(null, Schema.SObjectType.Professional_Directory__c.getRecordTypeInfosByDeveloperName().get('Alumni_Business'), 'The Alumni Business record type is visible');
+        }
+    }
+
+    @IsTest
+    static void publicBusinessDirectoryNeedsNoFieldGrantsBecauseItRunsInSystemMode() {
+        User owner = createAccountOwner();
+        Id contactId = createAlumni(owner);
+        User portalUser = createPortalUser(owner, contactId, true);
+
+        // The portal user is NOT granted these fields (the permission set only has the nine the profile pages use),
+        // yet the public directory returns them: it runs in system mode, so its SELECT list is the only gate.
+        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_User' LIMIT 1].Id;
+        System.assertEquals(0, [
+            SELECT COUNT() FROM FieldPermissions
+            WHERE ParentId = :permissionSetId AND Field = 'Professional_Directory__c.Company_Description__c'
+        ], 'Test setup: the description is not one of the fields this permission set grants');
+
+        System.runAs(portalUser) {
+            List<Professional_Directory__c> page = AlumniBusinessDirectoryController.alumniBusinessDirectory(
+                null, null, null, null, null, 10, 0);
+            System.assertEquals(2, page.size(), 'Both approved listings are returned');
+            Map<String, Professional_Directory__c> byName = new Map<String, Professional_Directory__c>();
+            for (Professional_Directory__c row : page) {
+                byName.put(row.Company_Name__c, row);
+            }
+            System.assertEquals('Fresh roasted', byName.get('Portal Test Coffee').Company_Description__c, 'A field the user has no grant for is returned');
+            System.assertEquals('2021 BA', byName.get('Portal Test Coffee').Alumni__r.Degree_s_Formatted__c, 'The alumnus\'s formatted degree comes with it');
+            System.assertEquals(2, AlumniBusinessDirectoryController.alumniBusinessDirectoryCount(null, null, null, null, null), 'Count matches');
+
+            // the filters still narrow it
+            System.assertEquals(1, AlumniBusinessDirectoryController.alumniBusinessDirectory(
+                'Bakery', null, null, null, null, 10, 0).size(), 'Search narrows the results');
+        }
+    }
+
+    @IsTest
+    static void newsSearchWorksForAPortalUserIncludingTheCityAndStateMatch() {
+        User owner = createAccountOwner();
+        Id contactId = createAlumni(owner);
+        User portalUser = createPortalUser(owner, contactId, true);
+
+        System.runAs(portalUser) {
+            // The search builds a dynamic query that also matches Contact.Community_Address_Range__c (city + state), so the
+            // portal user needs read access to that field or the whole search fails with "No such column".
+            List<AlumniNewsListController.AlumniNews> byName = AlumniNewsListController.getNews(1, 10, 'Avery', null);
+            System.assertNotEquals(null, byName, 'A name search finds the neighbour\'s news');
+            System.assertEquals(1, byName.size(), 'One news item for Avery');
+            System.assertEquals('Started a new job', byName[0].newsItem, 'News text comes back');
+
+            System.assertEquals(0, AlumniNewsListController.getNews(1, 10, 'Nobodyhasthisname', null).size(), 'No match returns an empty list');
         }
     }
 

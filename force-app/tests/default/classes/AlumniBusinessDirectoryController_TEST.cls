@@ -9,6 +9,21 @@
 @IsTest
 private class AlumniBusinessDirectoryController_TEST {
 
+    /**
+     * The United States spelling differs between orgs (EDA-Staging uses "United States of America", a scratch org's
+     * Country value set uses "United States"), and the field is a restricted picklist, so ask the schema.
+     *
+     * @return the US value this org accepts
+     */
+    private static String usCountry() {
+        for (Schema.PicklistEntry entry : Professional_Directory__c.Company_Country__c.getDescribe().getPicklistValues()) {
+            if (entry.isActive() && (entry.getValue() == 'United States of America' || entry.getValue() == 'United States')) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
     // ─── Test Data Setup ─────────────────────────────────────────────────────
 
     @TestSetup
@@ -33,7 +48,7 @@ private class AlumniBusinessDirectoryController_TEST {
                 Company_Name__c = 'HealthCo LLC',
                 Company_Description__c = 'A healthcare company',
                 Company_State__c = 'MN',
-                Company_Country__c = 'United States of America',
+                Company_Country__c = usCountry(),
                 Company_Industry__c = 'Healthcare',
                 Company_Special_Interests__c = 'Women Owned',
                 Discounts_for_St_Thomas_Community__c = 'Yes'
@@ -49,7 +64,7 @@ private class AlumniBusinessDirectoryController_TEST {
                 Company_Name__c = 'TechCorp',
                 Company_Description__c = 'A tech company',
                 Company_State__c = 'CA',
-                Company_Country__c = 'United States of America',
+                Company_Country__c = usCountry(),
                 Company_Industry__c = 'Information Technology',
                 Company_Special_Interests__c = 'Veteran Owned',
                 Discounts_for_St_Thomas_Community__c = 'No'

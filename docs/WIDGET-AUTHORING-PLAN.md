@@ -634,10 +634,15 @@ Customer Community user (`Alumni_Portal_User_TEST`, 4 tests):
   and `Alumni_Directory__c.Community_Profile__c`. Idempotent. The Alumni network stays `UnderConstruction` in a dev org
   until published, so the proof is the Apex test, not a browser login.
 
-**Existing gaps found on the way (not caused by this work).** The news feed queries `Contact.Community_Address_Range__c`
-and `Academic_Majors__c`, and the business directory reads `Alumni__r.Degree_s_Formatted__c`; none exist in the dev org,
-so those controllers cannot run there (the portal-user test avoids them). `Contact.Job_Title__c` exists in the org but
-not in the repo source. The `Alumni_Directory__c` record type and field sets behind EDA-Staging may differ.
+**Existing gaps found on the way (not caused by this work).** `Contact.Community_Address_Range__c` (a city and state formula
+used by the news search) and `Contact.Degree_s_Formatted__c` (business directory) were added to the repo on 2026-10-16.
+`Alumni_Portal_User_TEST` now calls the public directory and runs a news search as a signed-in user; the search failed for
+every portal user until `Alumni_Portal_User` granted `Contact.Community_Address_Range__c`. The **Academic Majors widget filter
+does not work**: the controller lines that load the user's majors are commented out (they referenced a `Contact.Academic_Majors__c`
+that does not exist), so any widget using that filter is shown to nobody. The data is on `Alumni_Directory__c.Academic_Major_s__c`
+(same `Academic_Majors` value set). `Contact.Job_Title__c` exists in the org but not in the repo source. Three older test suites
+(business directory, connected profile, my profile) fail in any scratch org because the Admin profile cannot use the
+`Alumni_Business` record type; the cause is the profile, not a missing field. The `Alumni_Directory__c` record type and field sets behind EDA-Staging may differ.
 
 **Record sharing (added after Phase 4).** `UST_Portal_Widget__c` has an external default of Private, so signed-in portal
 users and the site guest could not read widget records directly (only through the `without sharing` controller).

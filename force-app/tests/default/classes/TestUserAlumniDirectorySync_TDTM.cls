@@ -22,7 +22,7 @@ public class TestUserAlumniDirectorySync_TDTM {
 
         Test.startTest();
 
-        User AdminUser = [SELECT Id, Name FROM User WHERE Profile.Name = 'System Administrator' AND Name = 'ETL User'][0];
+        User AdminUser = TestAlumniCommunityDataFactory.integrationUser();
 
         String usCountryValue = 'United States';
         if (TestAlumniCommunityDataFactory.doesPicklistContain(Schema.Interaction__c.Country__c, 'United States of America')) {
@@ -68,9 +68,18 @@ public class TestUserAlumniDirectorySync_TDTM {
             System.assertEquals('null, null', testDirectory.City_State__c);
 
             testUser.City = 'TestVille';
-            testUser.State = 'MT';
-            testUser.Country = usCountryValue;
+            // Orgs with state and country picklists enabled (a scratch org) validate the ISO codes and fill the State and
+            // Country text from them; orgs without them (EDA-Staging) take the text directly.
+            if (Schema.SObjectType.User.fields.getMap().containsKey('statecode')) {
+                testUser.put('StateCode', 'MT');
+                testUser.put('CountryCode', 'US');
+            } else {
+                testUser.State = 'MT';
+                testUser.Country = usCountryValue;
+            }
             update testUser;
+            // What the User record holds now is what the directory must show.
+            User updatedUser = [SELECT City, State, Country FROM User WHERE Id = :testUser.Id];
 
             testDirectory = [
                     SELECT Id, City_State__c, Contact_Country__c, Employer_Text__c, Occupation_Text__c
@@ -79,8 +88,10 @@ public class TestUserAlumniDirectorySync_TDTM {
             ];
             System.assertEquals('Superhero', testDirectory.Occupation_Text__c);
             System.assertEquals('Now This Ltd', testDirectory.Employer_Text__c);
-            System.assertEquals('TestVille, MT', testDirectory.City_State__c);
-            System.assertEquals(usCountryValue, testDirectory.Contact_Country__c);
+            System.assertEquals('TestVille', updatedUser.City, 'Test setup: the city was saved');
+            System.assert(String.isNotBlank(updatedUser.State), 'Test setup: the state was saved');
+            System.assertEquals(updatedUser.City + ', ' + updatedUser.State, testDirectory.City_State__c, 'The directory shows the user\'s city and state');
+            System.assertEquals(updatedUser.Country, testDirectory.Contact_Country__c, 'The directory shows the user\'s country');
 
         }
         Test.stopTest();

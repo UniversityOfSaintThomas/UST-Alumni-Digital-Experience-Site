@@ -122,6 +122,18 @@ tasks:
             network_name: Alumni
             content_path: unpackaged/config/experiences/digitalExperiences/site/Alumni1/sfdc_cms__themeLayout/scopedHeaderAndFooter/content.json
 
+    update_admin_profile:
+        description: >-
+            Gives the Admin profile access to every object, field, and class, and now also to the record types.
+            Without record_types the Admin profile cannot use Professional_Directory__c.Alumni_Business, which
+            fails every Apex test that builds business directory data (INVALID_CROSS_REFERENCE_KEY) and also
+            blocks anyone testing the business directory as an admin.
+        options:
+            record_types:
+                - record_type: Professional_Directory__c.Alumni_Business
+                  default: true
+                - record_type: Professional_Directory__c.Lawyer_Search
+
     role_to_userUser:
         description: Give Guest User Registrant Permission Set
         class_path: cumulusci.tasks.apex.anon.AnonymousApexTask

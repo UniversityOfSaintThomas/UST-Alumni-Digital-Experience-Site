@@ -13,9 +13,9 @@ public class TestAlumniCommunityDataFactory {
 
     public static List<testDataIds> createTestDATA(Integer howMany) {
 
-        Profile pr = [Select Id From Profile Where Name = 'Alumni Community User'][0];
+        Profile pr = communityProfile();
         List<testDataIds> testDataIdsOut = new List<testDataIds>();
-        User AdminUser = [SELECT Id, Name FROM User WHERE Profile.Name = 'System Administrator' AND Name = 'ETL User'][0];
+        User AdminUser = integrationUser();
 
         System.runAs(AdminUser) {
             /* Set up TDTM triggers for testing */
@@ -70,7 +70,11 @@ public class TestAlumniCommunityDataFactory {
                         Birthdate = Date.valueOf('1971-03-2' + xx),
                         AccountId = a.Id
                 );
-                insert testContact;
+                // The platform's standard Contact duplicate rule can flag these look-alike test people against each
+                // other (it does in a clean org), and that would stop the data from being created at all.
+                Database.DMLOptions allowDuplicates = new Database.DMLOptions();
+                allowDuplicates.DuplicateRuleHeader.allowSave = true;
+                Database.insert(testContact, allowDuplicates);
 
                 //Create User
                 User testUser = new User(
@@ -134,7 +138,69 @@ public class TestAlumniCommunityDataFactory {
             }
 
         }
+        // Setup object, so outside the block above. Only when the real profile is not in use: staging's Alumni
+        // Community User already carries its access, and assigning a permission set there would hide a gap.
+        List<Id> portalUserIds = new List<Id>();
+        for (testDataIds created : testDataIdsOut) {
+            portalUserIds.add(created.userId);
+        }
+        if (pr.Id == [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1].Id) {
+            System.runAs(new User(Id = UserInfo.getUserId())) {
+                assignPortalPermissionSets(portalUserIds);
+            }
+        }
         return testDataIdsOut;
+    }
+
+    /**
+     * The profile the Alumni portal users get. EDA-Staging has the old "Alumni Community User" profile, which is used
+     * when it exists. A scratch org does not have it (that profile belonged to the earlier Aura site), and its build
+     * gives the Alumni network the standard "Customer Community Login User" instead, so fall back to that. The access
+     * those users need comes from the Alumni_Portal_User permission set, assigned below.
+     *
+     * @return the profile to give the test portal users
+     */
+    @TestVisible
+    private static Profile communityProfile() {
+        List<Profile> profiles = [
+            SELECT Id FROM Profile
+            WHERE Name IN ('Alumni Community User', 'Customer Community Login User')
+            ORDER BY Name ASC
+        ];
+        // "Alumni Community User" sorts before "Customer Community Login User", so it wins when present
+        return profiles[0];
+    }
+
+    /**
+     * The administrator who owns the test data. EDA-Staging has a System Administrator literally named "ETL User", which
+     * is used when it exists; any other org uses the running user, who is a System Administrator in a normal test run.
+     *
+     * @return the user to run the data setup as
+     */
+    public static User integrationUser() {
+        List<User> etlUsers = [
+            SELECT Id, Name FROM User WHERE Profile.Name = 'System Administrator' AND Name = 'ETL User' LIMIT 1
+        ];
+        return etlUsers.isEmpty() ? new User(Id = UserInfo.getUserId()) : etlUsers[0];
+    }
+
+    /**
+     * Gives the test portal users the same access the real ones get from the permission sets. Setup DML, so it must run
+     * in its own runAs block, after the records above exist.
+     *
+     * @param userIds the portal users just created
+     */
+    private static void assignPortalPermissionSets(List<Id> userIds) {
+        List<PermissionSet> sets = [
+            SELECT Id FROM PermissionSet WHERE Name IN ('Alumni_Portal_User', 'Alumni_Favorites_User')
+        ];
+        List<PermissionSetAssignment> assignments = new List<PermissionSetAssignment>();
+        for (Id userId : userIds) {
+            for (PermissionSet permissionSet : sets) {
+                assignments.add(new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = permissionSet.Id));
+            }
+        }
+        insert assignments;
     }
 
     public static Boolean doesPicklistContain(Schema.sObjectField activeField, String valueToCheck) {

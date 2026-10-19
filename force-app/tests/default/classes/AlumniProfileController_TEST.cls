@@ -80,10 +80,11 @@ private class AlumniProfileController_TEST {
 
     @IsTest
     static void testGetMyProfile_negative_userWithNoContactReturnsHasRecordFalse() {
+        // A System Administrator with no Contact. EDA-Staging has one named "ETL User"; any other org uses the running user.
         User adminUser = [
                 SELECT Id, ContactId
                 FROM User
-                WHERE Profile.Name = 'System Administrator' AND Name = 'ETL User'
+                WHERE Id = :TestAlumniCommunityDataFactory.integrationUser().Id
                 LIMIT 1
         ];
 
