@@ -1,8 +1,10 @@
+@import 'c/ustSharedStyles';
+
 .ust-static-content {
     display: block;
 }
 
-/* Header colour: brand purple by default (same as slds-text-color_brand did). */
+/* Header: the shared H2 look (Lora, regular weight, fluid size) from ustSharedStyles, in brand Purple. */
 .ust-static-content-header {
     color: var(--dxp-g-brand, #510c76);
 }

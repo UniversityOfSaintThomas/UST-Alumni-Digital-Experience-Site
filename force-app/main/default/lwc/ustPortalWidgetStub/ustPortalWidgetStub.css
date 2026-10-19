@@ -8,12 +8,12 @@
     gap: 0.5rem;
     min-height: 120px;
     padding: 2rem 1.5rem;
-    border: 2px dashed #4f2d7f; /* UST purple */
+    border: 2px dashed var(--ust-purple-dark, #510c76);
     border-radius: 8px;
-    background: #f4effa;
+    background: var(--ust-purple-md-10, #f2eaf6);
     text-align: center;
-    font-family: sans-serif;
-    color: #3b1f5e;
+    font-family: var(--ust-font-family-ui, 'Lato', sans-serif);
+    color: var(--ust-purple-dark, #510c76);
 }
 
 .ust-widget-stub-icon {
@@ -30,14 +30,14 @@
     display: inline-block;
     font-size: 0.75rem;
     font-family: monospace;
-    background: #e0d0f7;
-    color: #3b1f5e;
+    background: var(--ust-purple-md-20, #e6d8ee);
+    color: var(--ust-purple-dark, #510c76);
     padding: 0.2rem 0.6rem;
     border-radius: 4px;
 }
 
 .ust-widget-stub-status {
     font-size: 0.75rem;
-    color: #7a5fa0;
+    color: var(--ust-purple-dark, #510c76);
     font-style: italic;
 }

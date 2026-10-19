@@ -136,6 +136,22 @@ describe('c-ust-widget-zone rendering', () => {
         return element;
     }
 
+    it.each([
+        ['banner', true],
+        ['above_footer', true],
+        ['body', false],
+        ['sidebar', false]
+    ])('tells a hero in the %s zone whether it spans the page (%s)', async (zoneName, expected) => {
+        const element = createZone({ zoneName });
+        CurrentPageReference.emit(LIVE_PAGE);
+        getWidgetsForZone.emit([
+            { id: 'h1', widgetLabel: 'Hero', componentName: 'ust_hero_banner', sortOrder: 1, hero: HERO }
+        ]);
+        await flushPromises();
+        await flushPromises();
+        expect(element.shadowRoot.querySelector('c-ust-hero-banner').fullWidth).toBe(expected);
+    });
+
     it('renders a hero banner widget with the hero settings, text, and buttons', async () => {
         const element = await renderWidgets([
             {

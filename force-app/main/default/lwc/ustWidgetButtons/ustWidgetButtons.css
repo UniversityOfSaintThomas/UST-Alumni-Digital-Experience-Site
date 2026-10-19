@@ -1,3 +1,5 @@
+@import 'c/ustSharedStyles';
+
 .ust-widget-buttons {
     display: block;
     margin: 0.5rem 0;
@@ -22,26 +24,19 @@
     justify-content: flex-end;
 }
 
-/* Buttons are links, so make them look like SLDS buttons and keep a visible focus ring. */
-.slds-button {
+/* Buttons are links (<a>), so they need a little layout of their own. Colours, the pill shape, padding
+   and font come from the --dxp-s-button-* hooks set in ust-branding.css (not from overriding .slds-button),
+   so the Experience Builder Theme panel stays in control. */
+.ust-widget-button {
     align-items: center;
     display: inline-flex;
     justify-content: center;
-    line-height: 1.875rem;
-    min-height: 2rem;
-    padding: 0 1rem;
     text-decoration: none;
 }
 
-.slds-button:focus-visible,
-.ust-text-link:focus-visible {
-    outline: 2px solid #8348ad;
-    outline-offset: 2px;
-}
-
-.ust-text-link {
-    color: var(--dxp-g-brand, #510c76);
-    text-decoration: underline;
+.ust-widget-button:focus-visible {
+    outline: var(--ust-focus-ring, 2px solid #9e28b5);
+    outline-offset: var(--ust-focus-offset, 2px);
 }
 
 .ust-button-icon {
@@ -49,7 +44,7 @@
 }
 
 /* Widget-wide sizes (Button_Size__c). To add one: picklist value + SIZE_CLASSES in the JS + a rule here. */
-.ust-buttons-wide .slds-button {
+.ust-buttons-wide .ust-widget-button {
     min-width: 12rem;
 }
 
@@ -57,20 +52,28 @@
     flex-direction: column;
 }
 
-.ust-buttons-full .slds-button,
-.ust-buttons-full .ust-text-link {
+.ust-buttons-full .ust-widget-button,
+.ust-buttons-full .ust-link {
     justify-content: center;
     width: 100%;
 }
 
-/* Over a picture (Hero Banner): keep the outline and text-link styles readable on the dark layer. */
-.ust-buttons-on-image .slds-button_outline-brand {
-    background-color: rgba(0, 0, 0, 0.25);
-    border-color: #ffffff;
-    color: #ffffff;
+/* Over a picture (Hero Banner): the outline (secondary) button gets a light border and text on a soft dark
+   fill. Done by setting the secondary-button hooks for this container only, so no SLDS class is overridden.
+   The text link turns white through .ust-on-dark in ustSharedStyles. */
+.ust-buttons-on-image {
+    --dxp-s-secondary-button-color: rgba(0, 0, 0, 0.25);
+    --dxp-s-secondary-button-border-color: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-text-color: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-color-hover: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-border-color-hover: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-text-color-hover: var(--ust-purple-dark, #510c76);
 }
 
-.ust-buttons-on-image .ust-text-link {
-    color: #ffffff;
+.ust-buttons-on-image .ust-widget-button:focus-visible {
+    outline-color: var(--ust-white, #ffffff);
+}
+
+.ust-buttons-on-image .ust-link {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
 }

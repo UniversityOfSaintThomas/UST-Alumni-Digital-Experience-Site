@@ -22,8 +22,8 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 3px solid rgba(79, 45, 127, 0.15); /* UST purple tint */
-    border-top-color: #4f2d7f;                 /* UST purple */
+    border: 3px solid var(--ust-purple-md-20, #e6d8ee);
+    border-top-color: var(--ust-purple-dark, #510c76);
     animation: ust-zone-spin 0.75s linear infinite;
 }
 
@@ -35,11 +35,11 @@
 
 .ust-widget-zone-empty,
 .ust-widget-zone-error {
-    border: 2px dashed #c9a227; /* UST gold */
+    border: 2px dashed var(--ust-purple-lt, #9e28b5);
     border-radius: 8px;
     padding: 1.25rem 1.5rem;
-    background: #fff8e6;
-    color: #3b1f5e;
+    background: var(--ust-purple-md-5, #f8f5f9);
+    color: var(--ust-purple-dark, #510c76);
     font-size: 0.875rem;
     line-height: 1.5;
 }

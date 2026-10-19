@@ -73,26 +73,45 @@
 
 .ust-hero-content {
     box-sizing: border-box;
-    padding: 2rem 1.5rem;
+    padding: 2rem 0;
     position: relative;
     width: 100%;
 }
 
-.ust-hero_left .ust-hero-content {
-    margin-right: auto;
+/* A hero that spans the page (banner and above-footer regions) lines its text up with the page grid. */
+.ust-hero_full .ust-hero-content {
+    padding-left: var(--ust-content-inset, 1.5rem);
+    padding-right: var(--ust-content-inset, 1.5rem);
+}
+
+/* The text block is capped at 44rem and placed left, centre or right INSIDE the page grid (the inset above is
+   the same left/right edge the footer and Builder sections use). */
+.ust-hero-content c-ust-static-content {
+    display: block;
     max-width: 44rem;
+}
+
+.ust-hero_left .ust-hero-content {
     text-align: left;
 }
 
-.ust-hero_center .ust-hero-content {
-    margin-left: auto;
+.ust-hero_left .ust-hero-content c-ust-static-content {
     margin-right: auto;
-    max-width: 44rem;
+}
+
+.ust-hero_center .ust-hero-content {
     text-align: center;
 }
 
-.ust-hero_right .ust-hero-content {
+.ust-hero_center .ust-hero-content c-ust-static-content {
     margin-left: auto;
-    max-width: 44rem;
+    margin-right: auto;
+}
+
+.ust-hero_right .ust-hero-content {
     text-align: right;
+}
+
+.ust-hero_right .ust-hero-content c-ust-static-content {
+    margin-left: auto;
 }

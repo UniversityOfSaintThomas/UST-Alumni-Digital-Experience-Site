@@ -50,6 +50,9 @@ const WIDGET_REGISTRY = {
     // ust_alumni_news:            'isAlumniNews',
 };
 
+/** Zones that sit outside any Builder section, so their widgets span the whole page. */
+const FULL_WIDTH_ZONES = ['banner', 'above_footer'];
+
 export default class UstWidgetZone extends LightningElement {
     /** Zone identifier - set in Experience Builder property panel.
      *  Must match Zone__c picklist value: body, sidebar, banner, above_footer */
@@ -200,6 +203,11 @@ export default class UstWidgetZone extends LightningElement {
 
     get isBuilderMode() {
         return this._isBuilderMode;
+    }
+
+    /** True for the banner and above-footer zones, whose widgets are as wide as the page. */
+    get isFullWidthZone() {
+        return FULL_WIDTH_ZONES.includes(this.zoneName);
     }
 
     get isEmpty() {

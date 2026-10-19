@@ -51,6 +51,13 @@ export default class UstHeroBanner extends LightningElement {
     /** True in the admin editor preview: buttons never navigate. */
     @api previewMode = false;
 
+    /**
+     * True when the hero spans the whole page (the banner and above-footer regions, which sit outside any
+     * Builder section). Its text then lines up with the 1344px page grid. False (the default) when the hero
+     * is inside a section, which already supplies the side padding.
+     */
+    @api fullWidth = false;
+
     imageFailed = false;
 
     get settings() {
@@ -93,7 +100,8 @@ export default class UstHeroBanner extends LightningElement {
 
     get bannerClass() {
         const height = HEIGHTS.includes(this.settings.height) ? this.settings.height : 'medium';
-        return 'ust-hero ust-hero_' + height + ' ust-hero_' + this.position;
+        const base = 'ust-hero ust-hero_' + height + ' ust-hero_' + this.position;
+        return this.fullWidth ? base + ' ust-hero_full' : base;
     }
 
     /** False when the overlay is None, so no dark layer is drawn over the picture. */

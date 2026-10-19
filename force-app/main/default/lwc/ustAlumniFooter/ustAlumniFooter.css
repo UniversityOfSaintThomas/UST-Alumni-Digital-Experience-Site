@@ -9,13 +9,17 @@
 
 :host {
     display: block;
+    /* The brand column's colour runs out to the left page edge (see .ust-footer__brand::before); clip, so it
+       can never create a horizontal scrollbar. */
+    overflow-x: clip;
 }
 
-/* ---- Shared container ---- */
+/* ---- Shared container: content capped at 1344px inside the fluid page gutter (matches the live footer) ---- */
 .ust-footer__container {
-    max-width: var(--ust-container-max, 1280px);
+    box-sizing: border-box;
+    max-width: calc(var(--ust-content-max, 1344px) + 2 * var(--ust-page-gutter, 3rem));
     margin: 0 auto;
-    padding: 0 1.25rem;
+    padding: 0 var(--ust-page-gutter, 3rem);
 }
 
 /* ============================================================
@@ -43,7 +47,7 @@
 
 .ust-footer__body > .ust-footer__container {
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 1fr 2fr; /* live: 421px / 843px of a 1265px content width */
     align-items: stretch;
 }
 
@@ -53,11 +57,23 @@
    the two-tone footer layout of alumni.stthomas.edu.
    ============================================================ */
 .ust-footer__brand {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 3rem 2.5rem;
-    background: var(--ust-footer-brand-bg, #59007b);
+    padding: 4rem 4rem 4rem 0;
+    background: var(--ust-footer-brand-bg, #510c76);
+}
+
+/* Extends the brand colour from the column to the left edge of the page, as on the live site. */
+.ust-footer__brand::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 100%;
+    width: 100vw;
+    background: inherit;
 }
 
 .ust-footer__logo-link {
@@ -94,24 +110,35 @@
 }
 
 .ust-footer__contact-links a {
+    /* Brand-refresh pill on a dark background: bright purple fill, white text; on hover the fill turns white
+       with Purple text (docs/Gemini-Brand-Refresh-Changes.md, Buttons). */
+    display: block;
+    box-sizing: border-box;
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
-    background-color: #992FB4;
-    border: solid 2px #992FB4;
-    padding: 0.75rem 0.75rem;
-    margin:0 0 0.75rem 0;
-    text-decoration: none;
-    transition: color 150ms ease;
-    display:block;
+    color: #ffffff !important; /* the footer body rule above forces link colours */
+    background-color: var(--ust-purple-lt, #9e28b5);
+    border: 2px solid var(--ust-purple-lt, #9e28b5);
+    border-radius: var(--ust-radius-pill, 9rem);
+    padding: var(--ust-button-padding, 0.75em 1.5em);
+    margin: 0 0 0.75rem 0;
     text-align: center;
+    text-decoration: none;
+    transition:
+        background-color var(--ust-transition-ui, 300ms ease),
+        border-color var(--ust-transition-ui, 300ms ease),
+        color var(--ust-transition-ui, 300ms ease);
 }
 
 .ust-footer__contact-links a:hover {
-    border: solid 2px #992FB4;
-    background-color: transparent;
-    color: #ffffff;
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: var(--ust-purple-dark, #510c76) !important;
     text-decoration: none;
-    text-underline-offset: 2px;
+}
+
+.ust-footer__contact-links a:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
 }
 
 /* Social icons — solid white circles with dark icon fill (matches real site) */
@@ -172,9 +199,9 @@
    ============================================================ */
 .ust-footer__nav {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    padding: 3rem 0 3rem 2.5rem;
+    grid-template-columns: repeat(2, 1fr); /* live: two columns of links per row */
+    gap: 2.5rem 2rem;
+    padding: 4rem 0 4rem 4rem;
 }
 
 .ust-footer__nav-col {
@@ -184,15 +211,16 @@
 }
 
 .ust-footer__nav-heading {
-    font-family: var(--ust-font-family-ui, sans-serif);
-    font-size: 1.5rem;
+    /* Lora with a thin rule underneath, as on the live site */
+    font-family: var(--ust-font-family, 'Lora', Georgia, serif);
+    font-size: var(--ust-font-size-h3, 1.5rem);
     font-weight: 400;
     letter-spacing: normal;
     text-transform: none;
     color: #ffffff;
     margin: 0 0 0.75rem 0;
-    padding-bottom: 0;
-    border-bottom: none;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.145);
 }
 
 .ust-footer__nav-list {
@@ -302,8 +330,14 @@
     }
 
     .ust-footer__brand {
-        padding: 2.5rem 1.25rem 2rem 1.25rem;
+        padding: 2.5rem 0 2rem 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* One column: the brand block sits on the same dark background as the rest, so the bleed is not needed */
+    .ust-footer__brand,
+    .ust-footer__brand::before {
+        background: transparent;
     }
 
     .ust-footer__nav {

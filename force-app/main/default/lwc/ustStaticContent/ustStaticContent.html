@@ -2,7 +2,7 @@
     <template lwc:if={hasContent}>
         <div class={wrapperClass}>
             <template lwc:if={hasHeader}>
-                <h2 class="ust-static-content-header slds-text-heading_medium slds-p-bottom_small">{textHeader}</h2>
+                <h2 class="ust-static-content-header ust-h2 slds-p-bottom_small">{textHeader}</h2>
             </template>
             <template lwc:if={showButtonsAbove}>
                 <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} preview-mode={previewMode} over-image={overImage}></c-ust-widget-buttons>

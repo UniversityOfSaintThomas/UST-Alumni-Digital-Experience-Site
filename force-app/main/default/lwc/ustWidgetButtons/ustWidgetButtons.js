@@ -10,7 +10,7 @@ const STYLE_CLASSES = {
     success: 'slds-button slds-button_success',
     destructive: 'slds-button slds-button_destructive',
     'text-destructive': 'slds-button slds-button_text-destructive',
-    text_link: 'ust-text-link'
+    text_link: 'ust-link'
 };
 const DEFAULT_STYLE_CLASS = STYLE_CLASSES.brand;
 
@@ -83,7 +83,7 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
     get containerClass() {
         let classes = SIZE_CLASSES.includes(this.buttonSize) ? 'ust-widget-buttons ' + this.buttonSize : 'ust-widget-buttons';
         if (this.overImage) {
-            classes += ' ust-buttons-on-image';
+            classes += ' ust-buttons-on-image ust-on-dark';
         }
         return classes;
     }
@@ -104,6 +104,12 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
         return rows;
     }
 
+    /** SLDS classes for the chosen style plus our own layout class (text links keep to ust-link only). */
+    classFor(button) {
+        const styleClass = STYLE_CLASSES[button.style] || DEFAULT_STYLE_CLASS;
+        return styleClass === STYLE_CLASSES.text_link ? styleClass : styleClass + ' ust-widget-button';
+    }
+
     toView(button) {
         const isPortal = button.type === TYPE_PORTAL;
         // Only real web links open a new tab, whatever the stored flag says (never mailto: or tel:).
@@ -122,7 +128,7 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
             target: opensNewTab ? '_blank' : undefined,
             rel: opensNewTab ? 'noopener noreferrer' : undefined,
             opensNewTab,
-            className: STYLE_CLASSES[button.style] || DEFAULT_STYLE_CLASS
+            className: this.classFor(button)
         };
     }
 

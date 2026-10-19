@@ -1,0 +1,178 @@
+/* ============================================================
+   ustSharedStyles — one source for the look shared by widgets.
+
+   Use from a component stylesheet:   @import 'c/ustSharedStyles';
+   then put the classes below on elements in that component's template.
+
+   Values come from the --ust-* tokens set on the theme (ustAlumniTheme.css)
+   and are measured from alumni.stthomas.edu plus the Spring 2026 brand
+   refresh (docs/Gemini-Brand-Refresh-Changes.md). Each var() has the raw
+   value as a fallback so a component still looks right where the theme is
+   absent (Jest, a standalone preview).
+
+   Colour pairs used here all pass WCAG AA (docs/BRAND-COLORS.md):
+   white on #9e28b5, white on #510c76, #510c76 on white, #9e28b5 on white.
+   ============================================================ */
+
+/* ---- Headings --------------------------------------------------------
+   H1/H2: Lora, regular weight, fluid size. H2 is Purple on light
+   backgrounds. H3 and below use the UI font (Lato), per the brand refresh. */
+
+.ust-h1,
+.ust-h2,
+.ust-h3 {
+    margin: 0;
+}
+
+.ust-h1 {
+    font-family: var(--ust-font-family, 'Lora', Georgia, serif);
+    font-size: var(--ust-font-size-h1, clamp(3rem, 2.8rem + 0.9vw, 3.5rem));
+    font-weight: var(--ust-font-weight-heading, 400);
+    line-height: var(--ust-line-height-h1, 1.1);
+}
+
+.ust-h2 {
+    color: var(--ust-purple-dark, #510c76);
+    font-family: var(--ust-font-family, 'Lora', Georgia, serif);
+    font-size: var(--ust-font-size-h2, clamp(2rem, 1.6rem + 1.7vw, 3rem));
+    font-weight: var(--ust-font-weight-heading, 400);
+    line-height: var(--ust-line-height-h2, 1.2);
+}
+
+.ust-h3 {
+    font-family: var(--ust-font-family-ui, 'Lato', sans-serif);
+    font-size: var(--ust-font-size-h3, clamp(1.25rem, 1.2rem + 0.4vw, 1.5rem));
+    font-weight: var(--slds-g-font-weight-4, 400);
+    line-height: var(--ust-line-height-h3, 1.45);
+}
+
+/* On a Purple, Dark Purple or picture background, headings are white. */
+.ust-on-dark .ust-h1,
+.ust-on-dark .ust-h2,
+.ust-on-dark .ust-h3,
+.ust-h2.ust-on-dark {
+    color: var(--ust-white, #ffffff);
+}
+
+/* ---- Text link --------------------------------------------------------
+   Bright purple with an underline drawn as a background, so it can slide
+   away on hover (the live site's "link-underline--reverse": underlined by
+   default). The underline stays for keyboard focus. Add .ust-on-dark (or
+   place inside .ust-on-dark) for white links on dark backgrounds. */
+
+.ust-link {
+    background-image: linear-gradient(90deg, currentColor 50%, transparent 50%);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 200% 1.5px;
+    color: var(--ust-purple-lt, #9e28b5);
+    /* No SLDS hook exists for this 2px gap between text and the drawn underline (intentional) */
+    padding-bottom: 2px;
+    text-decoration: none;
+    transition: background-position var(--ust-transition-ui, 300ms ease);
+}
+
+.ust-link:hover {
+    background-position: 100% 100%;
+}
+
+.ust-link:focus-visible {
+    background-position: 0 100%;
+    outline: var(--ust-focus-ring, 2px solid #9e28b5);
+    outline-offset: var(--ust-focus-offset, 2px);
+}
+
+.ust-on-dark .ust-link,
+.ust-link.ust-on-dark {
+    color: var(--ust-white, #ffffff);
+}
+
+.ust-on-dark .ust-link:focus-visible,
+.ust-link.ust-on-dark:focus-visible {
+    outline-color: var(--ust-white, #ffffff);
+}
+
+/* ---- Pill button -------------------------------------------------------
+   Bright purple fill, white text, short and wide. Hover on a light
+   background: Purple fill, white text. Hover on a dark background (inside
+   .ust-on-dark): white fill, Purple text. No outline on hover; the focus
+   ring is only for keyboard focus. */
+
+.ust-button {
+    align-items: center;
+    background-color: var(--ust-purple-lt, #9e28b5);
+    border: var(--slds-g-sizing-border-2, 2px) solid var(--ust-purple-lt, #9e28b5);
+    border-radius: var(--ust-radius-pill, 9rem);
+    box-sizing: border-box;
+    color: var(--ust-white, #ffffff);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--ust-font-family-ui, 'Lato', sans-serif);
+    /* 1em keeps the button the size of the text around it; no SLDS hook for a relative size (intentional) */
+    font-size: 1em;
+    font-weight: var(--slds-g-font-weight-4, 400);
+    justify-content: center;
+    line-height: var(--slds-g-font-line-height-base, 1.5);
+    padding: var(--ust-button-padding, 0.75em 1.5em);
+    text-align: center;
+    text-decoration: none;
+    transition:
+        background-color var(--ust-transition-ui, 300ms ease),
+        border-color var(--ust-transition-ui, 300ms ease),
+        color var(--ust-transition-ui, 300ms ease);
+}
+
+.ust-button:hover {
+    background-color: var(--ust-purple-dark, #510c76);
+    border-color: var(--ust-purple-dark, #510c76);
+    color: var(--ust-white, #ffffff);
+}
+
+.ust-button:focus-visible {
+    outline: var(--ust-focus-ring, 2px solid #9e28b5);
+    outline-offset: var(--ust-focus-offset, 2px);
+}
+
+.ust-on-dark .ust-button:hover,
+.ust-button.ust-on-dark:hover {
+    background-color: var(--ust-white, #ffffff);
+    border-color: var(--ust-white, #ffffff);
+    color: var(--ust-purple-dark, #510c76);
+}
+
+.ust-on-dark .ust-button:focus-visible,
+.ust-button.ust-on-dark:focus-visible {
+    outline-color: var(--ust-white, #ffffff);
+}
+
+/* Outline pill: same shape, transparent fill, purple border and text. */
+.ust-button_outline {
+    background-color: transparent;
+    color: var(--ust-purple-lt, #9e28b5);
+}
+
+.ust-button_outline:hover {
+    background-color: var(--ust-purple-dark, #510c76);
+    border-color: var(--ust-purple-dark, #510c76);
+    color: var(--ust-white, #ffffff);
+}
+
+.ust-on-dark .ust-button_outline,
+.ust-button_outline.ust-on-dark {
+    border-color: var(--ust-white, #ffffff);
+    color: var(--ust-white, #ffffff);
+}
+
+.ust-on-dark .ust-button_outline:hover,
+.ust-button_outline.ust-on-dark:hover {
+    background-color: var(--ust-white, #ffffff);
+    border-color: var(--ust-white, #ffffff);
+    color: var(--ust-purple-dark, #510c76);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ust-link,
+    .ust-button {
+        transition: none;
+    }
+}

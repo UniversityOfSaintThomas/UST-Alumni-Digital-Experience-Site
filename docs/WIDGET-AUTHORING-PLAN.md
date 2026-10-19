@@ -675,6 +675,213 @@ both rows). Field access is still limited by the `Alumni_Portal_Guest_User` perm
 
 ---
 
+## Phase 5 — Visual refresh: match the look of alumni.stthomas.edu (5.0, 5.1 and 5.2 DONE 2026-10-19; 5.3 to 5.6 planned)
+
+### Decisions (confirmed by the owner 2026-10-19)
+
+| Topic | Decision |
+|---|---|
+| Fidelity | **Match the live look closely** (pill buttons, square shadowed cards, large Lora headings, full-width colour bands). |
+| Fonts | **Free fonts only.** Lato and Lora are both OFL and are **already bundled** in `staticresources/ustAlumniThemplate/fonts/` and loaded by `ust-fonts.css` via `ustAlumniTheme.js`. No Typekit, no new CSP entry. (The live site uses a UST Typekit kit; the faces are the same families.) |
+| Sources of truth | 1) `docs/Gemini-Brand-Refresh-Changes.md` (Spring 2026 brand refresh, written for the Gemini CMS), 2) measurements of the live site (below), 3) current code. We re-create the look with our own CSS and our own images; we do not copy their stylesheet. |
+
+### What the live site does (measured 2026-10-19 at a 1280px window; screenshots were in `ai-logs/screenshots/`, not tracked)
+
+| Area | Live value |
+|---|---|
+| Body | Lato 400, about 17.9px / 1.5 line height, black. Page background white. |
+| H1 (hero) | Lora 400, about 56px, white. |
+| H2 | Lora 400, about 47px, `#510c76` (white on purple bands). |
+| H3 and below | **Lato** (brand refresh), card titles 24px. |
+| Primary button | Pill (`border-radius` 144px; guide says 9rem), fill `#9e28b5`, white text, padding about .75em 1.5em, 2px transparent border, 0.3s transition. Hover (guide): on light backgrounds fill `#510c76` with white text; on dark backgrounds fill white with purple text; no outline. |
+| Text link | Bright purple `#9e28b5` with an underline that animates in; white on purple bands. Black stays only for links with an arrow or +/- icon and for "active" states. |
+| Card | White, **no radius**, shadow `0 1em 2em rgba(0,0,0,.1)`, photo on top (3:2, `object-fit: cover`), title link in bright purple, text padding 24px, **bottom bar 8px emerald** (hover: bright purple). 3 columns, gap about 36px (rows) / 18px (columns). |
+| Band ("Panel") | Full-width, padding 48px, margin 48px 0, min-height 576px, 64px gap. Backgrounds: white, gray `#f6f6f6`, light purple, purple `#510c76`, dark purple `#340e51`. Text card at left, picture at right overlapping the edge, with a large circle shape behind (filled and outline, purple or emerald). |
+| Hero | Variant A: dark `#230e3c` with a faint shapes artwork, text left, photo right, breadcrumb under it. Variant B (home): full-bleed photo fading to purple, H1 over the picture, "eyebrow" links with arrows along the bottom (line colour is emerald). |
+| Links list | Rows with a bright purple arrow always visible; on hover the arrow becomes white on a bright purple circle and moves 1rem right, and the text turns bright purple. |
+| Stories | Portrait with a circle accent (alternating solid medium purple and outline emerald), quote, attribution with an em dash. |
+
+Not measured yet: mobile layouts, hover and focus states (the live CSS is cross-origin and unreadable, so those come from the guide), the exact fluid type formula (sizes scale with window width).
+
+### Colour tokens to add (from the brand guide)
+
+`--purple #510c76`, `--purple-md #8348ad`, `--purple-md-70 #a97cc6`, `--purple-md-30 #dac5e6`, `--purple-md-20 #e6d8ee`, `--purple-md-10 #f2eaf6`, **new** `--purple-md-5 #f8f5f9`, `--purple-lt` (bright) `#9e28b5`, **new** `--purple-lt-25 rgba(158,40,181,.1451)`, `--emerald #4c9c2e`.
+Open values to confirm: **Dark Purple** (not given in the guide; the live site and our `--ust-nav-bg` use `#340e51`), **Gray** (the live bands use `#f6f6f6`; `BRAND-COLORS.md` recommends `#f3f3f3`), and **black-10** (not defined; use `rgba(0,0,0,.1)`).
+Guide typo to ignore: the accordion section says "Light Purple (--purple-lt)"; it means `--purple-md-10` (`--purple-lt` is the bright purple).
+
+### Differences between today's code and the target (found in this review)
+
+- Heading weight is 600 in `ust-branding.css` (`--dxp-g-font-weight-heading`); live H1/H2 are 400. Heading sizes are 36/26/20px; live are about 56/47/24px.
+- Static Content's heading uses `slds-text-heading_medium` (about 20px) in the default (Lato) face; it should be a Lora H2.
+- Buttons are SLDS rectangles; the `callout` and `inverse` panel styles have a 4px radius and a left rule that the live site does not use.
+- `ustWidgetZone.css` and `ustPortalWidgetStub.css` still hardcode the old `#4f2d7f` purple and gold `#c9a227`.
+- Widgets hardcode hex values instead of using the `--ust-*` tokens defined on the theme.
+- `--dxp-c-button-*` makes base Lightning buttons a dark-purple rectangle.
+
+### Steps
+
+**5.0 Calibrate (small).** Measure the live site at 1440, 1024, 768 and 375px to derive `clamp()` type sizes and breakpoints; screenshot our current pages as the "before"; confirm the open colour values above with the owner. Spike: confirm that `--ust-*` tokens set on the theme `:host` reach widgets slotted into the page (they should inherit through the slot; not yet checked), and that a shared CSS module (`@import 'c/ustSharedStyles'`) deploys and renders in an LWR site.
+Done when: a measured token table is added to this section and both spikes have a recorded answer.
+
+**5.1 Foundation tokens and primitives.** In `ustAlumniTheme.css` and `ust-branding.css`: add the colour tokens, fluid type tokens, heading weight 400 for H1/H2, Lato for H3 and below, card shadow, pill radius, button padding, transition, shared focus ring. Add `lwc/ustSharedStyles` (CSS-only module) with the pill button, animated text-link underline, arrow-link and heading rules, so each widget imports one source. Replace the stray hardcoded hex values. Change the `--dxp-c-button-*` hooks so base buttons look like the primary pill.
+Done when: Jest unchanged and green; a page of plain headings, paragraphs, links and a base `lightning-button` matches the live site in side-by-side screenshots.
+
+**5.2 Template tweaks (`ustAlumniTheme`).** Decide and build: (a) how a widget goes full-bleed while its content stays within 1280px (the `.ust-main` area has no container today; check what the Experience Builder section wrapper adds before choosing a technique, since the `100vw` trick is fragile with scrollbars); (b) page background white versus the 10% gray in `BRAND-COLORS.md` (live is white with gray bands: recommend white); (c) a breadcrumb under the hero/banner slot; (d) a header and footer fidelity pass against the live site (nav height, spacing, footer columns); (e) skip link and focus ring unchanged.
+Done when: a full-bleed band and a contained widget can sit in the same zone and line up with the header on a 1280px and a 375px screen.
+
+**5.3 Restyle the shipped widgets.**
+- `ustStaticContent`: H2 as Lora at the new size, purple (white on dark bands); link colours per the guide. Keep the existing `Content_CSS_Class__c` values working so sample data and any saved widgets do not break: `ust-content-inverse` becomes the Purple band, `ust-content-callout` a Light Purple band without the left rule, `centered` and `muted` unchanged.
+- `ustWidgetButtons`: pill primary (light and dark hover per the guide), secondary as an animated-underline text link, eyebrow arrow link (bold, no caps, underlined by default), keep the `Button_Size__c` options. `ustButtonRules`/editor preview must show the same look.
+- `ustHeroBanner`: add the split variant (text left, photo right on dark purple with a faint shape), keep the full-bleed photo variant, add the emerald line. New picklist value on a new field `Hero_Layout__c` (Full picture, Split), default Full picture so existing heroes are unchanged.
+Done when: Jest green; the editor preview and the live widget match for each style; contrast pairs are only from `BRAND-COLORS.md` (white on emerald is large-text only: do not put small white text on emerald).
+
+**5.4 Section backgrounds and accents (Static Content and Hero).** New picklists on `UST_Portal_Widget__c` (not overloading `Content_CSS_Class__c`, which is single-select; same reasoning as `Button_Size__c`): `Section_Background__c` (White, Gray, Light Purple, Purple, Dark Purple) which also sets heading, text, link and button colours automatically, and `Section_Accent__c` (None, Green circles, Purple circles) for the decorative circles. Circles are CSS or inline SVG (no image requests). Permission sets, editor field and preview updated; `docs/WIDGET-CATALOG.md` updated.
+Done when: all 5 backgrounds x 3 accents render, pass the contrast table, and the editor preview matches.
+
+**5.5 New widget types (each = the 3 registry changes in `AGENTS.md`).** In order of value for the Support page:
+1. **Card Grid** (the "How You Can Make an Impact" block): 2 to 4 columns, picture, linked title, text, bottom bar (emerald by default, none allowed; one setting for the whole grid, per the guide).
+2. **Links List**: arrow rows (with and without a picture), with the hover motion from the guide.
+3. **Story / Testimonial**: portrait with circle accent, quote, attribution.
+4. **Events cards**: deferred until the event data source is chosen.
+Design question to settle first: where card/link/story items live. Recommendation: a child object `UST_Portal_Widget_Item__c` (lookup to the widget; picture URL, alt text, title, text, link). Buttons are JSON because they have no pictures; items need a picture each, and the S3 uploader keys files on a record Id, so each item needs its own record. Needs: object, fields, sharing rules (active parent only, as for widgets, including the guest rule outside `force-app`), permission sets, an items editor in `ustWidgetRecordEditor`.
+Done when: the Support page block from the live site can be rebuilt by an admin with no code.
+
+**5.6 Verify and document.** Side-by-side screenshots against the live URLs at 1280, 768 and 375px (BackstopJS or Playwright; widgets are guest-visible, so a published guest page is testable, but the dev org's Alumni network stays `UnderConstruction`, so use Experience Builder preview or EDA-Staging); Jest for every new class and allowlist; keyboard and focus check on pills, links and arrows; reduced-motion respected for the hover movement; Lighthouse accessibility; update `WIDGET-CATALOG.md`, `MAIN_GUIDE.md`, `BRAND-COLORS.md` (new tokens), `AGENTS.md`.
+
+### Phase 5.0 and 5.1 — as built (2026-10-19)
+
+**Colour decisions (owner, 2026-10-19): use the live site's values.** Dark Purple = `#340e51` (token `--ust-purple-deep`, same as `--ust-nav-bg`), Gray band = `#f6f6f6` (`--ust-band-gray`).
+
+**Measured token table** (live site, support page; window widths include the scrollbar; sizes are linear in `vw`, so each is one `clamp()`):
+
+| Token | 375px | 768px | 1024px | 1440px | Expression used |
+|---|---|---|---|---|---|
+| Body | 16.1px | 16.9px | 17.5px | 18px | `clamp(1rem, .96rem + .208vw, 1.125rem)`, line height 1.5 |
+| H1 (Lora 400) | 48.2px | 51.7px | 54.0px | 56px | `clamp(3rem, 2.8rem + .9vw, 3.5rem)`, line height 1.1 |
+| H2 (Lora 400) | 32px | 38.7px | 43.0px | 48px | `clamp(2rem, 1.6rem + 1.7vw, 3rem)`, line height 1.2 |
+| H3 (Lato 400) | 20.7px | 22.3px | 23.3px | 24px | `clamp(1.25rem, 1.2rem + .4vw, 1.5rem)`, line height 1.45 |
+
+Other live measurements: page side padding 18px at 375, 31px at 768, 39px at 1024, 48px from about 1265 (about `clamp(1rem, .33rem + 3.33vw, 3rem)`); content has **no 1280px cap** (a 1920px window gives a 1344px grid with 281px side padding, bands full width); card grid 1 column at 375, 2 at 768, 3 from 1024; card gaps 2em (rows) and 1em (columns) of the body size; card picture 3:2; card text padding 0 24px; band (Panel) is a column below 768px (padding 24px 24px 128px) and a row from 1024px (padding 48px, gap 64px, min-height 576px from 1440px); card hover shadow `0 16px 24px rgba(0,0,0,.2)` (the brand guide says change the bottom bar to bright purple 8px instead: follow the guide); text-link underline is a 1.5px gradient background that is present at rest and slides away on hover; pill hover on the live site was inconsistent, so the guide's rule is used.
+
+**Spike answers.**
+- Tokens set on the theme `:host` **do** reach widgets slotted into the page (`ustWidgetZone` resolves `--ust-purple-lt` and `--ust-font-size-h2`). Widgets can use `var(--ust-*)` freely.
+- `@import 'c/ustSharedStyles'` **works on the platform** (deploys, renders; the H2 in `ustStaticContent` comes from it). **Under Jest it needs a stand-in**: the import compiles to a JS import and a CSS-only module has no JS file. `jest.config.js` maps it to `jest-stubs/ustSharedStyles/` (outside `force-app`, never deployed). Any future CSS-only module needs the same mapping line.
+
+**What was built.**
+- `ust-branding.css`: bright-purple pill hooks (`--dxp-c-button-*` and, found by measuring, the **brand-variant** hooks `--slds-c-button-brand-*`, because `--dxp-c-button-*` alone left `.slds-button_brand` at `#510c76`), button radius and padding hooks, bright-purple default links, fluid body size, and a new **`:root:root` block at the end** for the type scale (see findings).
+- `ustAlumniTheme.css`: new colour tokens (`--ust-purple-deep`, `-lt`, `-lt-25`, `-md`, `-md-70/30/20/10/5`, `--ust-band-gray`, `--ust-black-10`), `--ust-shadow-card`, `--ust-radius-pill`, `--ust-button-padding`, `--ust-transition-ui`, focus ring tokens, fluid H1/H2/H3 tokens, line height 1.5.
+- `lwc/ustSharedStyles` (CSS-only): `.ust-h1/.ust-h2/.ust-h3`, `.ust-link` (animated underline), `.ust-button` and `.ust-button_outline` (with `.ust-on-dark` variants), reduced-motion respected.
+- First consumers: `ustStaticContent` (H2 is now `ust-h2`: Lora 400, fluid) and `ustWidgetButtons` (pill shape and padding, bright-purple focus ring, text link is now `ust-link`; the `slds-button_*` classes stay, so the existing tests still pin them; migration to `ust-button` is in 5.3).
+- `ustWidgetZone.css` and `ustPortalWidgetStub.css`: the old `#4f2d7f` purple and gold are gone (tokens with brand fallbacks).
+
+**Findings that change later steps (do not rediscover).**
+1. **The site's branding set overrides our hooks.** Experience Builder's Theme panel data (`sfdc_cms__brandingSet/Build_Your_Own_LWR`) injects an inline `:root` rule with its own `--dxp-s-text-heading-*`, `--dxp-s-body-*` and `--dxp-s-html-font-family` values. A plain `:root` rule in `ust-branding.css` loses to it, so the type hooks are repeated in a `:root:root` block (higher specificity, wins). Hooks we do not repeat still come from the Theme panel.
+2. **Several hook names in the old file were never read by anything**: `--dxp-g-font-size-heading-large/medium/small` and `--dxp-g-font-weight-heading`. The real names are `--dxp-s-text-heading-<extra-large|large|medium|small|extra-small|extra-extra-small>-font-size|font-family|font-weight|line-height` and fall back to `--dxp-g-heading-font-family`. Mapping: H1 = extra-large, H2 = large, H3 = medium. These were replaced.
+3. The official Salesforce docs return 403 to automated fetches; hook names were confirmed by reading the compiled stylesheets in the dev org (browser, `document.styleSheets`).
+4. Builder text blocks authored as **Bold** keep weight 700 through the block's own hook (`--dxp-c-text-block-font-weight`); that is content, not theme.
+5. After a static-resource deploy, **wait for it to finish before reloading Builder** (the org stamps the upload a few seconds after the CLI returns; a parallel reload measured stale CSS and nearly sent this investigation the wrong way).
+6. Opening Builder: Setup, Digital Experiences, All Sites, Builder link; direct URL is `/sfsites/picasso/core/config/commeditor.jsp?siteId=<0DM id>` on the `my.salesforce.com` domain (the dev org's Alumni site Id is `0DMjZ0000001K7y`). The canvas is the `live-preview` iframe.
+
+**Verified (dev org, Experience Builder canvas at 1920px).** Theme font Lato at 18px / 27px; Lora and Lato files load; Static Content H2 Lora 400 at 48px (40px on the dark band); Builder H2 text block Lora 48px, H3 Lato 24px; all three button styles are pills (radius 144px, padding 12px 24px, Lato); brand button fill `rgb(158,40,181)`; `--slds-c-button-brand-color-background-hover` resolves to `#510c76` with white text and no outline rule (real `:hover` cannot fire inside the Builder overlay, so hover is verified through the resolved hook values and the SLDS rule, not by moving the mouse). Jest 284/284.
+
+**NOT verified / open.**
+- Narrow widths (375px, 768px) of our own pages, the real hover and keyboard focus ring, and a published guest view (the dev network is `UnderConstruction`).
+- **Site-wide effect on the other pages** (directory, news, forms, profile): the body size, heading hooks and button hooks changed for every base component. Re-check those pages at the start of the next session.
+- The arrow link (`.ust-arrow-link`) planned for the shared module is deferred to 5.3/5.5, where it is first used.
+- Deployed to the dev org only; not committed.
+
+### Phase 5.1 follow-up — SLDS skills review (2026-10-19, same day)
+
+Ran the SLDS tooling from the Salesforce skills against the 5.1 files and used `platform-docs-get` for the official hook list.
+
+**Tools and how they were used.**
+- SLDS linter: `npx @salesforce-ux/slds-linter@latest lint <one directory>` (takes exactly one directory; run once per component). All findings are warnings, no errors.
+- `design-systems-slds-validate` analyzer: `node <skill>/scripts/analyze-quality.cjs <component> --hooks-index <apply-skill>/assets/hooks-index.json`.
+- `design-systems-slds-apply` hook lookup: `node <skill>/scripts/search-hooks.cjs --prefix "--slds-g-..."` (verified `--slds-g-sizing-border-2`, `--slds-g-font-weight-4`, `--slds-g-font-line-height-base` exist before using them).
+- `platform-docs-get`: the plain fetch is blocked (403), but **browser-rendered extraction works**. Official pages used: `.../exp-cloud-lwr/guide/brand-hooks-text.html` and, with the full hook tables, `.../brand-hooks-map.html` ("How --dxp Styling Hooks Map to Theme Panel Properties"). The page text is in `document` tables (`tr` rows), not `innerText` of `main`.
+
+**Results (linter warnings, before 5.1 / after 5.1 / after this review).**
+
+| Component | HEAD | After 5.1 | After review |
+|---|---|---|---|
+| ustSharedStyles (new) | – | 19 | 2 (intentional) |
+| ustWidgetButtons | 19 | 16 | 5 (0 `no-slds-class-overrides`) |
+| ustStaticContent | 17 | 17 | 17 (unchanged, pre-existing) |
+| ustWidgetZone | 21 | 16 | 16 |
+| ustPortalWidgetStub | 20 | 14 | 14 |
+| ustAlumniTheme | 7 | 7 | 7 |
+
+Analyzer: every component scores 100 in Component Usage; one critical (A004, decorative `lightning-icon` without `alternative-text`) fixed with an empty `alternative-text` (the icon is `aria-hidden`, the label sits beside it, so the finding was a false positive in intent but the fix is free); remaining warnings are `Q021`/`A021` in `ustAlumniTheme.css` (pre-existing: skip link) and one intentional `T021`. No invented `--slds-g-*` hooks (T051 clean). The **manual review gate** (loading/error/empty states, semantics) was not run: these are styling-only changes to existing widgets.
+
+**Decision: brand tokens are an accepted exception.** The linter's `no-hardcoded-values-slds2` suggests `--slds-g-*` colour hooks for UST colours. UST purples, emerald and the band colours are brand values with no SLDS equivalent, so they stay as `--ust-*` tokens with the raw value as the `var()` fallback (the pattern the apply skill itself recommends). Where an SLDS hook exists for a non-brand value it is used with a fallback (`--slds-g-sizing-border-2`, `--slds-g-font-weight-4`, `--slds-g-font-line-height-base`). The remaining ~60 warnings across the older files (spacing/rem values, the Builder-only dashed boxes, the skip link) were not part of this work and are left alone; fix them when those components are next edited.
+
+**Real bugs found and fixed (all pre-date or came from not checking hook names).**
+1. **16 hooks in `ust-branding.css` were read by nothing**: every `--dxp-c-button-*`, `--dxp-c-link-*`, `--dxp-c-badge-*`. The documented and consumed names are `--dxp-s-button-*` (color, border-color, color-contrast, `*-hover`, `*-focus`, `*-active`, radius-border, padding-*, font-size, line-height), `--dxp-s-secondary-button-*` and `--dxp-s-link-text-*`. Fixed: old names removed, correct ones set in the `:root:root` block. The `--slds-c-button-*` workaround I added earlier in 5.1 was removed (it overrode the Theme panel).
+2. **Horizontal button padding needs per-variant hooks.** The compiled `.slds-button_brand` (and `_outline-brand`, `_neutral`, `_success`, `_destructive`, `_text-destructive`, `_inverse`) rules set inline padding from `--slds-c-button-<variant>-spacing-inline-start|end` and end in a hardcoded `1rem`, so `--dxp-s-button-padding-inline-*` never reaches them. Block padding does follow `--dxp-s-button-padding-block-*`. Now set per variant (1.5em); measured `13.5px 27px` for an 18px button, matching the live site.
+3. **`ustWidgetButtons.css` overrode `.slds-button`, `.slds-button_outline-brand`** (lint `no-slds-class-overrides`). Replaced with our own `ust-widget-button` layout class and, for the on-picture look, the `--dxp-s-secondary-button-*` hooks scoped to `.ust-buttons-on-image`. Text links keep to `ust-link` only.
+4. Remaining dead hooks (4, pre-existing, harmless): `--dxp-g-root-contrast-2`, `--dxp-g-font-weight-body`, `--dxp-g-font-weight-bold`, `--dxp-s-section-spacing-block-start` (the `-end` one is read). Left in place; remove when `ust-branding.css` is next tidied. Re-run the audit (snippet below) after any edit to this file.
+
+**Hook audit snippet** (run in the Builder canvas iframe console or Playwright `frame.evaluate`): fetch `ust-branding.css`, list every `--dxp-*`/`--slds-*` it defines, and report those never referenced as `var(--name` in the other stylesheets' rules or inline `<style>`s. Run on 2026-10-19: 87 defined, 4 unread (above).
+
+**Verified after the fixes (dev org, Builder canvas).** Brand, outline-on-picture and neutral buttons: radius 144px, padding `13.5px 27px`, Lato 18px, fill `rgb(158,40,181)` (brand), `rgba(0,0,0,.25)` with white border and text (outline on picture), white with bright-purple text (neutral); hover hooks `#510c76` / white; Jest 284/284; platform links resolve to `rgb(158,40,181)` underlined. Not re-verified: a text-link (`ust-link`) button (none on the Home page), real mouse hover, narrow widths, the other pages.
+
+### Phase 5.2 — template tweaks, as built (2026-10-19)
+
+**How pages are structured (found by tracing the DOM, do not rediscover).**
+- The theme's `<main>` is full width with no padding. Page width and side padding come from **Experience Builder sections** (`community_layout:section`), whose inner `.columns-content` is capped by `--dxp-s-section-columns-max-width` (was 1240px) and padded by `--dxp-s-section-content-spacing-inline-start|end` (was 1rem). Below 1024px the section reads the `…-inline-start-mobile` / `…-end-mobile` hooks (also for the tablet range; measured at 768px). A section can override the cap with its own "Max Content Width" attribute (`maxContentWidth`, which writes `--dxp-c-max-content-width`); the theme header and footer sections set it to `none`.
+- Widget zones in `banner` and `above_footer` sit **outside any section**, so they are as wide as the page. Zones in `body` and `sidebar` sit inside a section's column.
+- A standalone copy of the Builder preview can be opened as a normal page for responsive checks: `https://<org>.scratch.live-preview.salesforce-experience.com/alumni/?app=commeditor&view=editor&formFactor=LARGE&viewid=<id from the Builder iframe URL>` (read the id with `page.frames()` in Playwright). Resize the window freely; no Builder iframe.
+
+**Decisions.**
+| Topic | Decision |
+|---|---|
+| Content width | Match the live site: **1344px** cap and the fluid gutter `clamp(1rem, .33rem + 3.33vw, 3rem)` (17.8px at 375, 30.9px at 768, 39.4px at 1024, 48px from about 1265). Set through Builder's own section hooks, no wrapper component. |
+| Full-bleed band | A band lives in a full-width region (`banner`, `above_footer`, or a section with Max Content Width `none`) and its **content aligns to the grid with `--ust-content-inset`** = `max(gutter, (100% - 1344px)/2)`. A viewport-bleed hack (`margin-inline: calc(50% - pageWidth/2)`) was prototyped and works only in a centred single-column section; not built. |
+| Page background | **White** (live site). Gray `#f6f6f6` is a band colour. |
+| Header | Content width 1440px with a 1rem edge (live), brand row 72px, nav row 64px, total 137px; tokens `--ust-header-max`, `--ust-header-gutter`, `--ust-header-height`. |
+| Footer | Content 1344px inside the page gutter; brand column Purple `#510c76` running to the left page edge (clipped, no scrollbar); column split 1:2; contact links are brand-refresh pills (white fill on hover); column headings Lora with a thin white rule. |
+| Breadcrumb | **Region only**: a `breadcrumb` slot in `ustAlumniTheme.html` between the banner and `<main>`. It is empty (invisible) until something is placed there in Builder. No component built (see open questions). |
+
+**What was built.**
+- `ustAlumniTheme.css`: tokens `--ust-content-max` (1344px), `--ust-page-gutter`, `--ust-content-inset`, `--ust-header-max/-gutter/-height`, `--ust-container-max` now follows `--ust-content-max`; page background white; footer brand colour `--ust-footer-brand-bg` = Purple. `ustAlumniTheme.html`: `breadcrumb` slot.
+- `ust-branding.css` (`:root:root` block): `--dxp-s-section-columns-max-width: 1344px` and the four `--dxp-s-section-content-spacing-inline-*` hooks (desktop and `-mobile`) set to the fluid gutter.
+- `ustAlumniHeader.css`, `ustAlumniFooter.css`: as in the table. Old `1280px` / `1.25rem` containers are gone.
+- `ustHeroBanner`: new `@api fullWidth`; with it the hero text lines up with the page grid (class `ust-hero_full`), without it the hero keeps plain padding because its section already supplies the gutter. `ustWidgetZone` sets it for the `banner` and `above_footer` zones (`isFullWidthZone`). Tests: 5 added (hero class follows the flag; the zone passes the flag for banner/above_footer and not for body/sidebar); both new behaviours were mutation-checked (fail without the fix).
+
+**Verified (dev org, standalone preview page; real window widths).**
+- Section content: x=48, width 1329 at 1440; x=281, width 1344 at 1920 (the live site gives 48/1329 and 281/1344). Gutter 17.8 / 30.9 / 39.4px at 375 / 768 / 1024 (equal to the live values to a tenth of a pixel). No horizontal scroll at 1920, 1440, 1024, 768 or 375.
+- Header content starts at x=233 at 1920 (live: 233); header 137px tall at 1440; page background `rgb(255,255,255)`; footer brand column `rgb(81,12,118)` with the bleed pseudo-element 1440px wide; contact buttons `rgb(158,40,181)`, radius 144px, padding 12px 24px.
+- Banner-zone hero: band x=0, full width, text at x=281 / 48 / 31 / 18 (1920 / 1440 / 768 / 375) which equals the body grid's x at each width; body-zone hero: text at the same x. A throwaway banner-zone copy of the sample hero was used for this and deleted (0 left).
+- Seven other pages (directory, business directory, notes, my account, login, and the two error cases) keep the same 48 / 1329 content box, Lora H2 at 48px, pill buttons, white background, no horizontal scroll.
+- Jest 289/289. SLDS linter warnings (before 5.2 -> after): header 183 -> 181, footer 70 -> 68, theme 7 -> 7, hero 19 -> 16, zone 21 -> 16 (legacy counts in the header and footer are large and were not part of this work). Analyzer: no criticals.
+
+**Findings.**
+1. **The footer's four link columns do not exist in this repo.** The theme layout's footer region holds one Builder section with an empty rich-text block (`<p><br></p>`), and the header's navigation menu (`Default_Navigation2`, 10 items) is the only menu with items in the dev org. The live site's columns (Benefits & Resources, Get Involved, News & Events, Support St. Thomas) are content to create, not CSS. The footer's right two thirds is therefore empty today.
+2. **Full-page screenshots do not paint the sticky header's menu row** (the nav looked empty in a full-page capture; a viewport capture and the DOM show all items). Use viewport captures for the header.
+3. `lawyer-search` and `news` showed "Invalid Page"/view-load errors in the preview (a 500 loading the view script; `news` needs an article URL). Not caused by CSS, but a clean baseline was not run, so it is not proven pre-existing.
+4. Percentages inside a custom property are resolved where the property is used (`--ust-content-inset` uses `100%`), so use it for `padding`/`margin` on an element that spans the page.
+
+**Not done / open.**
+- Header: the live header has a slightly different nav type size and spacing and an "audience" link group (Early Career Alumni, Parents & Families) and "Update Contact Info / Make a Gift" links; ours has none of these (content decisions, not CSS). Footer: the live legal links sit inside the left column and a "Back to Top" link is on the right; ours keeps a separate legal bar. The live footer has a faint shapes background image.
+- Not browser-verified: the real hover on footer pills, keyboard focus order across the new breadcrumb slot (empty), a published guest view.
+- Deployed to the dev org only; not committed.
+
+---
+
+### Brand-guide modules we are NOT building now
+
+Accordion, Program Cards, Stats (circles, lines, panels), Table, Text Grid, Sidebars, Feature Panel with stained glass. None exists as a widget yet; the guide's styles are recorded here so they can be built when a widget needs them. The Feature Panel's circle accents and the four background options are covered by 5.4.
+
+### Risks and unknowns
+
+- Live pages were measured only at desktop width; mobile is unverified until 5.0.
+- Fluid type sizes are estimated from one window width until 5.0.
+- Full-bleed bands inside Experience Builder sections may need a template change that also affects existing pages (5.2 spike first).
+- Changing the heading weight and sizes in `ust-branding.css` affects every base component site-wide (directory, news, forms): re-check those pages after 5.1.
+- Dark Purple and Gray values are unconfirmed.
+
+---
+
 ## Deployment & verification checklist (every phase)
 
 1. `sf project deploy start --source-dir <paths> --target-org UST-Alumni-Digital-Experience-Site__dev`
@@ -697,3 +904,4 @@ both rows). Field access is still limited by the `Alumni_Portal_Guest_User` perm
 - [x] Phase 2 — data tags (done 2026-10-15; see "Phase 2 — as built")
 - [x] Phase 3 — buttons (done 2026-10-15; see "Phase 3 — as built")
 - [x] Phase 4 — hero widget + S3 built and verified except real uploads (blocked on the S3 credential; see "Phase 4 — as built")
+- [ ] Phase 5 — visual refresh to match alumni.stthomas.edu (5.0 calibrate, 5.1 foundation and 5.2 template done 2026-10-19, deployed to dev, not committed; 5.3 to 5.6 open, see "Phase 5")

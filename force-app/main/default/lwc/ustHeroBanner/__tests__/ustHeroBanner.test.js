@@ -52,6 +52,11 @@ describe('c-ust-hero-banner', () => {
         expect(content.overImage).toBe(true);
     });
 
+    it('lines its text up with the page grid only when it spans the page', () => {
+        expect(banner(createHero()).className).not.toContain('ust-hero_full');
+        expect(banner(createHero({ fullWidth: true })).className).toContain('ust-hero_full');
+    });
+
     it('marks a picture without alt text as decorative', () => {
         const element = createHero({ hero: { ...HERO, altText: null } });
         expect(image(element).getAttribute('alt')).toBe('');

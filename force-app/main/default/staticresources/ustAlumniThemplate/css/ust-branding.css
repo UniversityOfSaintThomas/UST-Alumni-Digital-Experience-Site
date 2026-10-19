@@ -68,24 +68,13 @@
     --dxp-g-neutral-contrast:  #ffffff;
 
     /* ============================================================
-       COLOR HOOKS — COMPONENT (--dxp-c-*)
+       COMPONENT HOOKS (form fields, icons)
        Fine-tune individual component patterns without touching
        every --slds-c-* hook. The DXP layer maps these to SLDS.
        ============================================================ */
 
-    /* Buttons */
-    --dxp-c-button-color-background:        #510c76; /* brand purple */
-    --dxp-c-button-color-background-hover:  #8348ad;
-    --dxp-c-button-color-background-active: #3a0858; /* darker on press */
-    --dxp-c-button-color-border:            #510c76;
-    --dxp-c-button-color-border-hover:      #8348ad;
-    --dxp-c-button-text-color:              #ffffff;
-    --dxp-c-button-text-color-hover:        #ffffff;
-
-    /* Links */
-    --dxp-c-link-color-text:        #510c76;
-    --dxp-c-link-color-text-hover:  #8348ad;
-    --dxp-c-link-color-text-active: #3a0858;
+    /* Button and link colours/shape: see the :root:root block at the end of this file
+       (the branding set also defines them, so a plain :root rule would lose). */
 
     /* Form fields (input/textarea/select) — visible resting border + brand-
        purple focus + slightly roomier padding, so fields don't get lost in
@@ -131,10 +120,6 @@
        are unaffected by this. */
     --slds-c-icon-color-foreground-default: #6e6e6e;
 
-    /* Badges */
-    --dxp-c-badge-color-background: #510c76;
-    --dxp-c-badge-color-text:        #ffffff;
-
     /* ============================================================
        TEXT / TYPOGRAPHY HOOKS (--dxp-g-font-*)
        Lora  = UST brand serif  — headings, editorial body copy
@@ -145,9 +130,11 @@
     --dxp-g-font-family:         'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --dxp-g-font-family-heading: 'Lora', Georgia, 'Times New Roman', serif;
 
-    /* Base body size and rhythm */
-    --dxp-g-font-size:       1.0625rem;  /* 17px, up from 16px */
-    --dxp-g-line-height:     1.6;
+    /* Base body size and rhythm — fluid like alumni.stthomas.edu.
+       Measured on the live site: 16.1px at a 375px window, 16.9px at 768px,
+       17.5px at 1024px, capped at 18px from about 1270px. Line height 1.5. */
+    --dxp-g-font-size:       clamp(1rem, 0.96rem + 0.208vw, 1.125rem);
+    --dxp-g-line-height:     1.5;
 
     /* Form field text size — separate namespace from --dxp-g-font-size.
        --dxp-s-form-element-text-font-size is already explicitly set to 1rem
@@ -155,15 +142,9 @@
        so it overrides --dxp-g-font-size/--dxp-s-body-font-size for text
        typed into input/textarea/select — verified live in the browser.
        Kept in sync with --dxp-g-font-size above; bump both together. */
-    --dxp-s-form-element-text-font-size: 1.0625rem;
+    --dxp-s-form-element-text-font-size: clamp(1rem, 0.96rem + 0.208vw, 1.125rem);
 
-    /* Heading scale — maps to h1/h2/h3 throughout the site */
-    --dxp-g-font-size-heading-large:  2.25rem;  /* 36px — page titles */
-    --dxp-g-font-size-heading-medium: 1.625rem; /* 26px — section headings */
-    --dxp-g-font-size-heading-small:  1.25rem;  /* 20px — card/widget headings */
-
-    /* Heading weight — Lora 600 (SemiBold) is the UST editorial style */
-    --dxp-g-font-weight-heading: 600;
+    /* Heading and body type hooks live in the :root:root rule at the end of this file. */
     --dxp-g-font-weight-body:    400;
     --dxp-g-font-weight-bold:    700;
 
@@ -180,3 +161,133 @@
     --dxp-s-grid-gutter: 1.5rem;
 }
 
+
+/* ============================================================
+   TYPOGRAPHY, BUTTON AND LINK OVERRIDES — :root:root (specificity on purpose)
+   ============================================================
+   The site's branding set (Build_Your_Own_LWR, what the Experience Builder
+   Theme panel writes) injects its own inline :root rule with these same hooks
+   (heading sizes of 1.75rem/1.25rem, system fonts, weight 300). A plain :root
+   rule here loses to it, so the hooks that carry the brand type scale are
+   repeated with :root:root, which wins. Everything not listed here stays
+   under the Theme panel's control.
+
+   NAMES MATTER: the platform's .dxp-text-heading-* rules read
+   --dxp-s-text-heading-<size>-font-size / -font-family / -font-weight /
+   -line-height and fall back to --dxp-g-heading-font-family (verified by
+   reading the compiled stylesheet in the dev org). The earlier
+   --dxp-g-font-size-heading-* names are not read by anything.
+
+   Sizes are fluid and measured on alumni.stthomas.edu (each is linear in
+   window width, so each is one clamp()). Brand refresh: H1 and H2 are Lora at
+   regular weight; H3 and below are Lato.
+     extra-large = H1  48px at 375px   -> 56px from about 1230px
+     large       = H2  32px at 375px   -> 48px from about 1300px
+     medium      = H3  20.7px at 375px -> 24px from about 1190px
+
+   Not fixable here: text the author typed as Bold in an Experience Builder
+   text block keeps weight 700 (the block's own hook), which is a content
+   choice, not a theme setting.
+   ============================================================ */
+
+:root:root {
+    /* Base font for everything that reads the html font hook (text blocks, buttons, forms) */
+    --dxp-s-html-font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --dxp-g-root-font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --dxp-g-heading-font-family: 'Lora', Georgia, 'Times New Roman', serif;
+
+    /* Body */
+    --dxp-s-body-font-size:   clamp(1rem, 0.96rem + 0.208vw, 1.125rem);
+    --dxp-s-body-line-height: 1.5;
+
+    /* H1 */
+    --dxp-s-text-heading-extra-large-font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    --dxp-s-text-heading-extra-large-font-size:   clamp(3rem, 2.8rem + 0.9vw, 3.5rem);
+    --dxp-s-text-heading-extra-large-font-weight: 400;
+    --dxp-s-text-heading-extra-large-line-height: 1.1;
+
+    /* H2 */
+    --dxp-s-text-heading-large-font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    --dxp-s-text-heading-large-font-size:   clamp(2rem, 1.6rem + 1.7vw, 3rem);
+    --dxp-s-text-heading-large-font-weight: 400;
+    --dxp-s-text-heading-large-line-height: 1.2;
+
+    /* H3 and below: Lato */
+    --dxp-s-text-heading-medium-font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --dxp-s-text-heading-medium-font-size:   clamp(1.25rem, 1.2rem + 0.4vw, 1.5rem);
+    --dxp-s-text-heading-medium-font-weight: 400;
+    --dxp-s-text-heading-medium-line-height: 1.45;
+
+    --dxp-s-text-heading-small-font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --dxp-s-text-heading-small-font-size:   1.25rem;
+    --dxp-s-text-heading-small-font-weight: 700;
+    --dxp-s-text-heading-small-line-height: 1.45;
+
+    --dxp-s-text-heading-extra-small-font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --dxp-s-text-heading-extra-extra-small-font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Buttons — Spring 2026 brand refresh (docs/Gemini-Brand-Refresh-Changes.md) and the live site:
+       bright purple pill, short and wide. On hover the fill turns Purple (#510c76) with white text
+       and no outline. White on #9e28b5 and on #510c76 both pass WCAG AA at every text size.
+       Hook names are the documented, consumed ones (--dxp-s-button-*); the older --dxp-c-button-*
+       names in this file were never read by anything. */
+    --dxp-s-button-color:                  #9e28b5;
+    --dxp-s-button-border-color:           #9e28b5;
+    --dxp-s-button-color-contrast:         #ffffff;
+    --dxp-s-button-color-hover:            #510c76;
+    --dxp-s-button-border-color-hover:     #510c76;
+    --dxp-s-button-color-hover-contrast:   #ffffff;
+    --dxp-s-button-color-focus:            #510c76;
+    --dxp-s-button-border-color-focus:     #510c76;
+    --dxp-s-button-color-focus-contrast:   #ffffff;
+    --dxp-s-button-color-active:           #3a0858;
+    --dxp-s-button-border-color-active:    #3a0858;
+    --dxp-s-button-color-active-contrast:  #ffffff;
+    --dxp-s-button-radius-border:          9rem;
+    --dxp-s-button-padding-block-start:    0.75em;
+    --dxp-s-button-padding-block-end:      0.75em;
+    --dxp-s-button-padding-inline-start:   1.5em;
+    --dxp-s-button-padding-inline-end:     1.5em;
+    --dxp-s-button-font-size:              1em;
+    --dxp-s-button-line-height:            1.5;
+
+    /* Text links — bright purple and underlined (#9e28b5 on white passes AA). Black stays only for
+       links that carry an arrow or +/- icon, which those components style themselves. */
+    --dxp-s-link-text-color:               #9e28b5;
+    --dxp-s-link-text-color-hover:         #9e28b5;
+    --dxp-s-link-text-decoration:          underline;
+    --dxp-s-link-text-decoration-hover:    underline;
+    --dxp-s-link-text-decoration-focus:    underline;
+
+    /* Horizontal button padding: the compiled SLDS variant rules (.slds-button_brand and the rest) set
+       inline padding from these per-variant hooks and end in a hardcoded 1rem, so the generic
+       --dxp-s-button-padding-inline-* hooks above never reach them (found by reading the compiled rules). */
+    --slds-c-button-brand-spacing-inline-start: 1.5em;
+    --slds-c-button-brand-spacing-inline-end:   1.5em;
+    --slds-c-button-outline-brand-spacing-inline-start: 1.5em;
+    --slds-c-button-outline-brand-spacing-inline-end:   1.5em;
+    --slds-c-button-neutral-spacing-inline-start: 1.5em;
+    --slds-c-button-neutral-spacing-inline-end:   1.5em;
+    --slds-c-button-success-spacing-inline-start: 1.5em;
+    --slds-c-button-success-spacing-inline-end:   1.5em;
+    --slds-c-button-destructive-spacing-inline-start: 1.5em;
+    --slds-c-button-destructive-spacing-inline-end:   1.5em;
+    --slds-c-button-text-destructive-spacing-inline-start: 1.5em;
+    --slds-c-button-text-destructive-spacing-inline-end:   1.5em;
+    --slds-c-button-inverse-spacing-inline-start: 1.5em;
+    --slds-c-button-inverse-spacing-inline-end:   1.5em;
+
+    /* Experience Builder sections (Phase 5.2): the content of an ordinary section is capped at the live site's
+       1344px and padded by the fluid page gutter, so body content lines up with the footer and the full-width
+       bands. These are the hooks the compiled community_layout:section reads (--dxp-s-section-columns-max-width and
+       --dxp-s-section-content-spacing-inline-*); a section can still override them with its own Max Content Width.
+       Keep the clamp() equal to --ust-page-gutter in ustAlumniTheme.css. */
+    --dxp-s-section-columns-max-width:              1344px;
+    --dxp-s-section-content-spacing-inline-start:   clamp(1rem, 0.33rem + 3.33vw, 3rem);
+    --dxp-s-section-content-spacing-inline-end:     clamp(1rem, 0.33rem + 3.33vw, 3rem);
+    /* Tablet (48em to 64em) and phone (under 48em) read their own hooks; same fluid gutter on every width.
+       The compiled rule names the phone ones -mobile; the tablet ones are the same hooks with the -mobile
+       suffix used for both narrow breakpoints (verified in the browser at 768px: the tablet range follows the -mobile hooks). */
+    --dxp-s-section-content-spacing-inline-start-mobile: clamp(1rem, 0.33rem + 3.33vw, 3rem);
+    --dxp-s-section-content-spacing-inline-end-mobile:   clamp(1rem, 0.33rem + 3.33vw, 3rem);
+}
