@@ -6,6 +6,9 @@
 }
 
 .ust-button-row {
+    /* Centre the items so a text or arrow link (whose underline is drawn at the bottom of its own box) is not
+       stretched to the height of a pill beside it, which left the underline far below the text. */
+    align-items: center;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -53,9 +56,40 @@
 }
 
 .ust-buttons-full .ust-widget-button,
-.ust-buttons-full .ust-link {
+.ust-buttons-full .ust-link,
+.ust-buttons-full .ust-arrow-link {
     justify-content: center;
     width: 100%;
+}
+
+/* On a Purple, Dark Purple or picture background: the outline pill is white (transparent fill, white border and
+   text) and turns white with Purple text on hover, as the brand refresh asks. Done with the secondary-button hooks
+   for this container only, so no SLDS class is overridden. The primary pill's hover is handled by the same
+   .ust-on-dark rule in ustSharedStyles for the .ust-button class; the SLDS brand button keeps the Theme
+   panel's Purple hover, which is also readable on these backgrounds. */
+.ust-on-dark {
+    --dxp-s-secondary-button-color: transparent;
+    --dxp-s-secondary-button-border-color: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-text-color: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-color-hover: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-border-color-hover: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-text-color-hover: var(--ust-purple-dark, #510c76);
+    --dxp-s-secondary-button-color-focus: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-border-color-focus: var(--ust-white, #ffffff);
+    --dxp-s-secondary-button-text-color-focus: var(--ust-purple-dark, #510c76);
+
+    /* The primary (solid) pill: its normal hover fill is Purple, the same colour as a Purple panel, so on a dark
+       background it turns white with Purple text instead (brand refresh, Buttons). */
+    --dxp-s-button-color-hover: var(--ust-white, #ffffff);
+    --dxp-s-button-border-color-hover: var(--ust-white, #ffffff);
+    --dxp-s-button-color-hover-contrast: var(--ust-purple-dark, #510c76);
+    --dxp-s-button-color-focus: var(--ust-white, #ffffff);
+    --dxp-s-button-border-color-focus: var(--ust-white, #ffffff);
+    --dxp-s-button-color-focus-contrast: var(--ust-purple-dark, #510c76);
+}
+
+.ust-on-dark .ust-widget-button:focus-visible {
+    outline-color: var(--ust-white, #ffffff);
 }
 
 /* Over a picture (Hero Banner): the outline (secondary) button gets a light border and text on a soft dark

@@ -112,6 +112,31 @@ Admin-controlled registry driving the widget zone system. Each record tells one 
 | Is Active | `Is_Active__c` | Checkbox | Kill switch; default true |
 | Description | `Description__c` | Long Text Area | Admin notes only |
 
+Settings added after the first version (all optional picklists; blank means the default):
+
+| Field Label | API Name | Type | Notes |
+|------------|----------|------|-------|
+| Content CSS Class | `Content_CSS_Class__c` | Picklist | Centered, small print, and the older Callout / Purple Banner looks |
+| Section Background | `Section_Background__c` | Picklist | white; gray; light_purple; purple; dark_purple (Static Content and Card Grid) |
+| Section Accent | `Section_Accent__c` | Picklist | green_circles; purple_circles (needs a background) |
+| Hero Layout | `Hero_Layout__c` | Picklist | full (default); split |
+| Grid Columns | `Grid_Columns__c` | Picklist | 2; 3 (default); 4 (Card Grid) |
+| Card Bottom Bar | `Card_Bottom_Bar__c` | Picklist | green (default); none (Card Grid) |
+
+### UST_Portal_Widget_Item__c
+One card of a Card Grid widget. **Master-Detail** to `UST_Portal_Widget__c` (relationship `Items__r`), so cards are shared with and deleted with their widget (controlled by parent: the existing active-widget sharing rules cover them, including the guest rule). Admin editor: `UST_Portal_Widget_Admin` (full); read-only in the two portal sets.
+
+| Field Label | API Name | Type | Notes |
+|------------|----------|------|-------|
+| Title | `Name` | Text(80) | Required |
+| Widget | `Widget__c` | Master-Detail(UST_Portal_Widget__c) | |
+| Sort Order | `Sort_Order__c` | Number(4,0) | Ascending; blank sorts last, then by title |
+| Card Text | `Card_Text__c` | Long Text Area(500) | Plain text, line breaks kept |
+| Image URL | `Image_URL__c` | URL | https only; written by the S3 uploader or pasted |
+| Image Alt Text | `Image_Alt_Text__c` | Text(255) | Blank = decorative picture |
+| Link URL | `Link_URL__c` | Text(255) | Site page (`/...`) or https / mailto / tel |
+| Open In New Tab | `Open_In_New_Tab__c` | Checkbox | https links only |
+
 > **Implementation note:** Donor, Parent, and Faculty_Staff audience rules are wired up in `PortalWidgetController.resolveUserAudiences()` with TODO markers. Activate by un-commenting the Contact query block once the field API names for Donor_Flag__c, Parent_Flag__c, and Faculty_Staff_Flag__c are confirmed (see Open Questions below).
 
 ### Alumni_Preference__c

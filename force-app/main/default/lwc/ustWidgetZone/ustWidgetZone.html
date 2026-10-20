@@ -58,6 +58,8 @@
                             rich-text-content={widget.staticContent}
                             text-header={widget.staticContentHeader}
                             content-class={widget.contentCssClass}
+                            section-background={widget.sectionBackground}
+                            section-accent={widget.sectionAccent}
                             buttons={widget.buttons}
                             button-placement={widget.buttonPlacement}
                             button-size={widget.buttonSize}>
@@ -74,6 +76,20 @@
                             button-placement={widget.buttonPlacement}
                             button-size={widget.buttonSize}>
                         </c-ust-hero-banner>
+                    </template>
+
+                    <template lwc:elseif={widget.isCardGrid}>
+                        <c-ust-card-grid
+                            grid={widget.grid}
+                            rich-text-content={widget.staticContent}
+                            text-header={widget.staticContentHeader}
+                            content-class={widget.contentCssClass}
+                            section-background={widget.sectionBackground}
+                            section-accent={widget.sectionAccent}
+                            buttons={widget.buttons}
+                            button-placement={widget.buttonPlacement}
+                            button-size={widget.buttonSize}>
+                        </c-ust-card-grid>
                     </template>
 
                     <!--

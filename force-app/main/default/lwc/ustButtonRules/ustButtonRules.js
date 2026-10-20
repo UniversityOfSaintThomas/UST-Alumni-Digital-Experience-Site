@@ -30,6 +30,7 @@ export const STYLE_OPTIONS = [
     { label: 'Success', value: 'success' },
     { label: 'Destructive', value: 'destructive' },
     { label: 'Text link', value: 'text_link' },
+    { label: 'Arrow link', value: 'arrow_link' },
     { label: 'Destructive text link', value: 'text-destructive' }
 ];
 

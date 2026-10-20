@@ -57,6 +57,64 @@ describe('c-ust-hero-banner', () => {
         expect(banner(createHero({ fullWidth: true })).className).toContain('ust-hero_full');
     });
 
+    describe('split layout', () => {
+        const SPLIT = { ...HERO, layout: 'split', textPosition: 'right', overlay: 'strong' };
+
+        it('puts the text on a dark band with the picture beside it, and no dark layer over the picture', () => {
+            const element = createHero({ hero: SPLIT, buttons: BUTTONS });
+            expect(banner(element).className).toContain('ust-hero_split');
+            expect(banner(element).className).not.toContain('ust-hero_right');
+            expect(element.shadowRoot.querySelector('.ust-hero-split-text c-ust-static-content')).not.toBeNull();
+            expect(element.shadowRoot.querySelector('.ust-hero-scrim')).toBeNull();
+            expect(element.shadowRoot.querySelector('.ust-hero-picture')).toBeNull();
+            const img = element.shadowRoot.querySelector('.ust-hero-split-picture img');
+            expect(img.getAttribute('src')).toBe(HERO.imageUrl);
+            expect(img.getAttribute('alt')).toBe('The quad in autumn');
+        });
+
+        it('tells the text it is on a dark band with a large headline, and keeps buttons on the left', () => {
+            const element = createHero({ hero: SPLIT, buttons: BUTTONS });
+            const content = element.shadowRoot.querySelector('c-ust-static-content');
+            expect(content.darkBackground).toBe(true);
+            expect(content.largeHeading).toBe(true);
+            expect(content.overImage).toBeFalsy();
+            content.buttons.forEach((button) => expect(button.align).toBe('left'));
+        });
+
+        it('hides the decorative rings from assistive technology', () => {
+            const rings = createHero({ hero: SPLIT }).shadowRoot.querySelector('.ust-hero-rings');
+            expect(rings.getAttribute('aria-hidden')).toBe('true');
+        });
+
+        it('keeps the mobile picture source and drops the picture when there is none', () => {
+            const withMobile = createHero({ hero: SPLIT });
+            expect(withMobile.shadowRoot.querySelector('.ust-hero-split-picture source').getAttribute('media')).toBe('(max-width: 767px)');
+            const noImage = createHero({ hero: { ...SPLIT, imageUrl: null, mobileImageUrl: null } });
+            expect(noImage.shadowRoot.querySelector('.ust-hero-split-picture')).toBeNull();
+            expect(banner(noImage).className).toContain('ust-hero_split');
+        });
+
+        it('falls back to the picture on a failed load, like the full layout', async () => {
+            const element = createHero({ hero: SPLIT });
+            element.shadowRoot.querySelector('.ust-hero-split-image').dispatchEvent(new CustomEvent('error'));
+            await flush();
+            expect(element.shadowRoot.querySelector('.ust-hero-split-picture')).toBeNull();
+        });
+
+        it('treats a blank or unknown layout as the full picture', () => {
+            [undefined, '', 'full', 'diagonal'].forEach((layout) => {
+                const element = createHero({ hero: { ...HERO, layout } });
+                expect(banner(element).className).not.toContain('ust-hero_split');
+                expect(element.shadowRoot.querySelector('.ust-hero-picture')).not.toBeNull();
+                expect(element.shadowRoot.querySelector('.ust-hero-split')).toBeNull();
+            });
+        });
+
+        it('lines up with the page grid when it spans the page', () => {
+            expect(banner(createHero({ hero: SPLIT, fullWidth: true })).className).toContain('ust-hero_full');
+        });
+    });
+
     it('marks a picture without alt text as decorative', () => {
         const element = createHero({ hero: { ...HERO, altText: null } });
         expect(image(element).getAttribute('alt')).toBe('');

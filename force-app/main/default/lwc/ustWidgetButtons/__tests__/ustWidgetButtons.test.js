@@ -187,6 +187,37 @@ describe('c-ust-widget-buttons', () => {
         expect(overImage.shadowRoot.querySelector('.ust-widget-buttons').className).toContain('ust-buttons-on-image');
     });
 
+    it('adds the dark-background class, without the over-picture look, when told it is on a dark background', async () => {
+        const dark = await createRenderer({ buttons: [button()], darkBackground: true });
+        const container = dark.shadowRoot.querySelector('.ust-widget-buttons');
+        expect(container.className).toContain('ust-on-dark');
+        expect(container.className).not.toContain('ust-buttons-on-image');
+        const plain = await createRenderer({ buttons: [button()] });
+        expect(plain.shadowRoot.querySelector('.ust-widget-buttons').className).not.toContain('ust-on-dark');
+    });
+
+    it('draws an arrow link: its own class, an underlined label, and an arrow that screen readers skip', async () => {
+        const element = await createRenderer({
+            buttons: [button({ id: 'a1', style: 'arrow_link', label: 'Read stories' }), button({ id: 'a2', style: 'text_link', label: 'Plain' })]
+        });
+        const [arrow, plain] = links(element);
+        expect(arrow.className).toContain('ust-arrow-link');
+        expect(arrow.className).not.toContain('slds-button');
+        expect(arrow.className).not.toContain('ust-widget-button');
+        expect(arrow.querySelector('.ust-arrow-link__label').textContent).toBe('Read stories');
+        const icon = arrow.querySelector('svg.ust-arrow-link__icon');
+        expect(icon).not.toBeNull();
+        expect(icon.getAttribute('aria-hidden')).toBe('true');
+        // other link styles get no arrow
+        expect(plain.querySelector('svg')).toBeNull();
+        expect(plain.className).toBe('ust-link');
+    });
+
+    it('draws solid and outline buttons as pills with our layout class', async () => {
+        const element = await createRenderer({ buttons: [button(), button({ id: 'b2', style: 'outline-brand' })] });
+        links(element).forEach((link) => expect(link.className).toContain('ust-widget-button'));
+    });
+
     it('draws buttons in preview mode without links that go anywhere', async () => {
         const element = await createRenderer({
             previewMode: true,

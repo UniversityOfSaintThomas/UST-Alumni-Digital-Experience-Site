@@ -115,3 +115,129 @@
 .ust-hero_right .ust-hero-content c-ust-static-content {
     margin-left: auto;
 }
+
+/* ============================================================
+   SPLIT LAYOUT (Hero_Layout__c = split)
+   Measured on alumni.stthomas.edu (support page): a #230e3c band; text on the left; a 3:2 picture at most 560px
+   wide on the right, bottom-aligned so it hangs about 2rem below the band; faint rings behind. Under 1024px the
+   text comes first and the picture follows at full width. The overlay and text-position settings do not apply.
+   Intentional literals (no SLDS hook exists, so the lint warnings are accepted): the 560px picture width, ring sizes
+   and offsets, the 2rem overhang (a negative margin), 100% and 50% geometry.
+   ============================================================ */
+
+.ust-hero_split {
+    align-items: stretch;
+    background-color: var(--ust-purple-hero, #230e3c);
+    color: var(--ust-white, #ffffff);
+    /* The picture hangs below the band, so the band must not clip; the rings clip themselves. */
+    overflow: visible;
+    /* Room for the hanging picture so it never touches whatever comes next. */
+    margin-bottom: var(--slds-g-spacing-6, 2rem);
+}
+
+.ust-hero_split.ust-hero_short {
+    min-height: 12rem;
+}
+
+.ust-hero_split.ust-hero_medium {
+    min-height: 20rem;
+}
+
+.ust-hero_split.ust-hero_tall {
+    min-height: 30rem;
+}
+
+/* Faint concentric rings, clipped to the band. Decoration only (aria-hidden in the template). */
+.ust-hero-rings {
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+}
+
+.ust-hero-rings::before,
+.ust-hero-rings::after {
+    border: var(--slds-g-sizing-border-2, 2px) solid rgba(255, 255, 255, 0.1); /* ring colour: no SLDS equivalent (intentional) */
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.ust-hero-rings::before {
+    height: 50rem;
+    right: -3rem;
+    width: 50rem;
+}
+
+.ust-hero-rings::after {
+    height: 34rem;
+    right: var(--slds-g-spacing-12, 5rem);
+    width: 34rem;
+}
+
+.ust-hero-split {
+    align-items: flex-end;
+    box-sizing: border-box;
+    display: flex;
+    gap: var(--ust-page-gutter, 3rem);
+    padding: 0 var(--ust-page-gutter, 1.5rem);
+    position: relative;
+    width: 100%;
+}
+
+.ust-hero_full .ust-hero-split {
+    padding-left: var(--ust-content-inset, 1.5rem);
+    padding-right: var(--ust-content-inset, 1.5rem);
+}
+
+.ust-hero-split-text {
+    box-sizing: border-box;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: var(--slds-g-spacing-8, 3rem) 0;
+}
+
+.ust-hero-split-picture {
+    display: block;
+    flex: 0 1 35rem;
+    /* Hangs 2rem below the band */
+    margin-bottom: -2rem;
+    max-width: 35rem;
+    min-width: 0;
+    position: relative;
+}
+
+.ust-hero-split-image {
+    aspect-ratio: 3 / 2;
+    display: block;
+    height: auto;
+    object-fit: cover;
+    width: 100%;
+}
+
+@media (max-width: 1023px) {
+    /* Stacked: the picture sits inside the band with 4rem below it (the live site's 64px), no overhang. */
+    .ust-hero_split {
+        margin-bottom: 0;
+    }
+
+    .ust-hero-split {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
+        padding-bottom: var(--slds-g-spacing-10, 4rem);
+    }
+
+    .ust-hero-split-text {
+        padding: var(--slds-g-spacing-8, 3rem) 0 var(--slds-g-spacing-6, 2rem);
+    }
+
+    .ust-hero-split-picture {
+        flex: none;
+        margin-bottom: 0;
+        max-width: none;
+        width: 100%;
+    }
+}

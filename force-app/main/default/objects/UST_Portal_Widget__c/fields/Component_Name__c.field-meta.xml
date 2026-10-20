@@ -26,6 +26,11 @@
                 <label>Athletics</label>
             </value>
             <value>
+                <fullName>ust_card_grid</fullName>
+                <default>false</default>
+                <label>Card Grid</label>
+            </value>
+            <value>
                 <fullName>ust_communications_history</fullName>
                 <default>false</default>
                 <label>Communications History</label>

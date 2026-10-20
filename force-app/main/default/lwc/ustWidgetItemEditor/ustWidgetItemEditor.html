@@ -1,0 +1,128 @@
+<template>
+    <section class="ust-items" aria-label="Cards in this grid">
+        <template lwc:if={hasWidget}>
+            <template lwc:if={errorMessage}>
+                <div class="ust-items-error slds-m-bottom_small" role="alert">
+                    <strong>{errorMessage}</strong>
+                </div>
+            </template>
+
+            <template lwc:if={hasRows}>
+                <ol class="ust-item-list" aria-label="Cards, in the order they appear">
+                    <template for:each={rowViews} for:item="row">
+                        <li key={row.id} class="ust-item-row">
+                            <div class="ust-item-summary">
+                                <span class="ust-item-position" aria-hidden="true">{row.position}</span>
+                                <span class="ust-item-title">{row.title}</span>
+                                <span class="ust-item-notes slds-text-color_weak">{row.notes}</span>
+                            </div>
+                            <template lwc:if={row.confirming}>
+                                <div class="ust-item-actions" role="group" aria-label="Confirm delete">
+                                    <span class="slds-m-right_x-small">Delete this card?</span>
+                                    <lightning-button label="Delete" variant="destructive" data-id={row.id}
+                                        onclick={handleDeleteConfirm} disabled={controlsDisabled}></lightning-button>
+                                    <lightning-button label="Keep" class="slds-m-left_x-small"
+                                        onclick={handleDeleteCancel}></lightning-button>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="ust-item-actions">
+                                    <lightning-button-icon icon-name="utility:arrowup" variant="border-filled" size="small"
+                                        alternative-text={row.moveUpLabel} title="Move up" data-id={row.id}
+                                        onclick={handleMoveUp} disabled={row.upDisabled}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:arrowdown" variant="border-filled" size="small"
+                                        alternative-text={row.moveDownLabel} title="Move down" data-id={row.id}
+                                        class="slds-m-left_xx-small" onclick={handleMoveDown}
+                                        disabled={row.downDisabled}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:edit" variant="border-filled" size="small"
+                                        alternative-text={row.editLabel} title="Edit" data-id={row.id}
+                                        class="slds-m-left_xx-small" onclick={handleEdit}
+                                        disabled={controlsDisabled}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:delete" variant="border-filled" size="small"
+                                        alternative-text={row.deleteLabel} title="Delete" data-id={row.id}
+                                        class="slds-m-left_xx-small" onclick={handleDeleteAsk}
+                                        disabled={controlsDisabled}></lightning-button-icon>
+                                </div>
+                            </template>
+                        </li>
+                    </template>
+                </ol>
+            </template>
+            <template lwc:elseif={isLoading}>
+                <p class="slds-text-color_weak">Loading cards...</p>
+            </template>
+            <template lwc:else>
+                <p class="slds-text-color_weak slds-m-bottom_small">No cards yet. Add the first one below.</p>
+            </template>
+
+            <template lwc:if={isEditing}>
+                <div class="ust-item-form slds-m-top_small" role="group" aria-label={formTitle}>
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">{formTitle}</h3>
+                    <lightning-input class="ust-item-input" label="Title" required maxlength="80"
+                        data-field="title" value={draft.title} onchange={handleDraftChange}></lightning-input>
+                    <lightning-textarea class="ust-item-input" label="Text" maxlength="500"
+                        message-when-too-long="The text can be at most 500 characters."
+                        data-field="text" value={draft.text} onchange={handleDraftChange}></lightning-textarea>
+                    <lightning-input class="ust-item-input" label="Link" maxlength="255"
+                        field-level-help="A site page such as /alumni-directory, or an address starting with https://, mailto: or tel:. Leave blank for a card without a link."
+                        data-field="linkUrl" value={draft.linkUrl} onchange={handleDraftChange}></lightning-input>
+                    <lightning-input class="ust-item-input" type="checkbox" label="Open the link in a new tab"
+                        data-field="newTab" checked={draft.newTab} onchange={handleDraftChange}></lightning-input>
+
+                    <div class="ust-item-picture slds-m-top_small">
+                        <lightning-input class="ust-item-input" label="Picture address" type="url" maxlength="255"
+                            field-level-help="Paste an https:// address, or upload a picture below once the card is saved."
+                            data-field="imageUrl" value={draft.imageUrl} onchange={handleDraftChange}></lightning-input>
+                        <template lwc:if={draftPictureSrc}>
+                            <div class="ust-item-thumb slds-m-top_x-small">
+                                <img src={draftPictureSrc} alt="" />
+                                <lightning-button label="Remove picture" variant="base" class="slds-m-left_small"
+                                    onclick={handleRemovePicture}></lightning-button>
+                            </div>
+                        </template>
+                        <lightning-input class="ust-item-input" label="Picture description" maxlength="255"
+                            field-level-help="Tell screen reader users what the picture shows. Leave blank only if the picture is purely decorative."
+                            data-field="altText" value={draft.altText} onchange={handleDraftChange}></lightning-input>
+                        <template lwc:if={isSavedCard}>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                Upload a picture (cropped to 600 x 400; JPG, PNG, or GIF). It is saved as soon as you choose it.
+                            </p>
+                            <c-aws-s3-directory-image
+                                record-id={draft.id}
+                                image-field={picture.field}
+                                file-name-suffix={picture.suffix}
+                                image-max-width={picture.width}
+                                image-max-height={picture.height}
+                                image-mode="crop">
+                            </c-aws-s3-directory-image>
+                        </template>
+                        <template lwc:else>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                To upload a picture, save the card first, then edit it.
+                            </p>
+                        </template>
+                    </div>
+
+                    <div class="slds-m-top_medium">
+                        <lightning-button label="Save card" variant="brand" onclick={handleSaveCard}
+                            disabled={controlsDisabled}></lightning-button>
+                        <lightning-button label="Cancel" class="slds-m-left_x-small" onclick={handleCancel}
+                            disabled={isBusy}></lightning-button>
+                    </div>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="slds-m-top_small">
+                    <lightning-button label="Add card" icon-name="utility:add" onclick={handleAdd}
+                        disabled={addDisabled}></lightning-button>
+                    <template lwc:if={atLimit}>
+                        <span class="slds-m-left_small slds-text-color_weak">{limitMessage}</span>
+                    </template>
+                </div>
+            </template>
+        </template>
+        <template lwc:else>
+            <p class="slds-text-color_weak">Save the widget first, then add its cards here.</p>
+        </template>
+    </section>
+</template>

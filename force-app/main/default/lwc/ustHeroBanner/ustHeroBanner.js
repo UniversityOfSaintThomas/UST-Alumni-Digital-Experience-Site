@@ -1,7 +1,8 @@
 import { LightningElement, api } from 'lwc';
 
-/** Allowlisted look settings (Hero_Height__c, Hero_Text_Position__c, Hero_Overlay__c). */
+/** Allowlisted look settings (Hero_Height__c, Hero_Layout__c, Hero_Text_Position__c, Hero_Overlay__c). */
 const HEIGHTS = ['short', 'medium', 'tall'];
+const LAYOUT_SPLIT = 'split';
 const POSITIONS = ['left', 'center', 'right'];
 const OVERLAYS = ['light', 'medium', 'strong'];
 
@@ -98,9 +99,15 @@ export default class UstHeroBanner extends LightningElement {
         return POSITIONS.includes(this.settings.textPosition) ? this.settings.textPosition : 'left';
     }
 
+    /** Split: text on a dark band with the picture beside it. Anything else is the full picture layout. */
+    get isSplit() {
+        return this.settings.layout === LAYOUT_SPLIT;
+    }
+
     get bannerClass() {
         const height = HEIGHTS.includes(this.settings.height) ? this.settings.height : 'medium';
-        const base = 'ust-hero ust-hero_' + height + ' ust-hero_' + this.position;
+        const look = this.isSplit ? 'ust-hero_split' : 'ust-hero_' + this.position;
+        const base = 'ust-hero ust-hero_' + height + ' ' + look;
         return this.fullWidth ? base + ' ust-hero_full' : base;
     }
 
@@ -115,12 +122,12 @@ export default class UstHeroBanner extends LightningElement {
         return 'ust-hero-scrim ust-hero-scrim_' + overlay;
     }
 
-    /** Buttons follow the text position. */
+    /** Buttons follow the text position (always left in the split layout, where the text is always on the left). */
     get alignedButtons() {
         if (!this.hasButtons) {
             return [];
         }
-        const align = BUTTON_ALIGN_FOR_POSITION[this.position];
+        const align = this.isSplit ? 'left' : BUTTON_ALIGN_FOR_POSITION[this.position];
         return this.buttons.map((button) => ({ ...button, align }));
     }
 

@@ -251,6 +251,22 @@
     --dxp-s-button-font-size:              1em;
     --dxp-s-button-line-height:            1.5;
 
+    /* Outline buttons (the "secondary" button in the Theme panel): transparent pill with a bright-purple outline
+       and text; on hover the fill turns Purple with white text, like the primary button. Transparent so it also
+       sits on Light Purple and Gray bands. Over a dark band the widget buttons re-set these (ustWidgetButtons.css). */
+    --dxp-s-secondary-button-color:                 transparent;
+    --dxp-s-secondary-button-border-color:          #9e28b5;
+    --dxp-s-secondary-button-text-color:            #9e28b5;
+    --dxp-s-secondary-button-color-hover:           #510c76;
+    --dxp-s-secondary-button-border-color-hover:    #510c76;
+    --dxp-s-secondary-button-text-color-hover:      #ffffff;
+    --dxp-s-secondary-button-color-focus:           #510c76;
+    --dxp-s-secondary-button-border-color-focus:    #510c76;
+    --dxp-s-secondary-button-text-color-focus:      #ffffff;
+    --dxp-s-secondary-button-color-active:          #3a0858;
+    --dxp-s-secondary-button-border-color-active:   #3a0858;
+    --dxp-s-secondary-button-text-color-active:     #ffffff;
+
     /* Text links — bright purple and underlined (#9e28b5 on white passes AA). Black stays only for
        links that carry an arrow or +/- icon, which those components style themselves. */
     --dxp-s-link-text-color:               #9e28b5;

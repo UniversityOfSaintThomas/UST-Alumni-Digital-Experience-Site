@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Open_In_New_Tab__c</fullName>
+    <description>Opens an external link in a new tab. Ignored for site pages.</description>
+    <inlineHelpText>Applies to external https links only.</inlineHelpText>
+    <label>Open In New Tab</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <defaultValue>false</defaultValue>
+    <type>Checkbox</type>
+</CustomField>

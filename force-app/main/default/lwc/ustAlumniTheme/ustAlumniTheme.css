@@ -44,6 +44,7 @@
        2026-10-19), because the guide does not give them.
        ============================================================ */
     --ust-purple-deep:   #340e51;                    /* Dark Purple band / footer */
+    --ust-purple-hero:   #230e3c;                    /* hero band (live site) */
     --ust-purple-lt:     var(--ust-purple-bright);   /* Bright Purple: buttons, text links, arrows */
     --ust-purple-lt-25:  rgba(158, 40, 181, 0.1451); /* table borders, soft accents */
     --ust-purple-md:     #8348ad;                    /* Medium Purple */

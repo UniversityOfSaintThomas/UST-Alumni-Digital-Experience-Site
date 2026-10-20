@@ -28,7 +28,7 @@ private class PortalHero_TEST {
         insert widget;
         return [
                 SELECT Id, SystemModstamp, Hero_Image_URL__c, Hero_Mobile_Image_URL__c, Hero_Alt_Text__c,
-                        Hero_Height__c, Hero_Text_Position__c, Hero_Overlay__c
+                        Hero_Height__c, Hero_Layout__c, Hero_Text_Position__c, Hero_Overlay__c
                 FROM UST_Portal_Widget__c WHERE Id = :widget.Id
         ];
     }
@@ -72,6 +72,7 @@ private class PortalHero_TEST {
                 'Hero_Mobile_Image_URL__c' => 'https://x.edu/mobile.png',
                 'Hero_Alt_Text__c' => '  Students on the quad  ',
                 'Hero_Height__c' => 'tall',
+                'Hero_Layout__c' => 'split',
                 'Hero_Text_Position__c' => 'right',
                 'Hero_Overlay__c' => 'strong'
         });
@@ -83,6 +84,7 @@ private class PortalHero_TEST {
         System.assertEquals('https://x.edu/mobile.png?v=' + version, hero.mobileImageUrl, 'Mobile image is versioned');
         System.assertEquals('Students on the quad', hero.altText, 'Alt text is trimmed');
         System.assertEquals('tall', hero.height, 'Height');
+        System.assertEquals('split', hero.layout, 'Layout');
         System.assertEquals('right', hero.textPosition, 'Text position');
         System.assertEquals('strong', hero.overlay, 'Overlay');
     }
@@ -95,6 +97,7 @@ private class PortalHero_TEST {
         System.assertEquals(null, hero.mobileImageUrl, 'No mobile image');
         System.assertEquals(null, hero.altText, 'No alt text');
         System.assertEquals(PortalHero.DEFAULT_HEIGHT, hero.height, 'Default height');
+        System.assertEquals(PortalHero.DEFAULT_LAYOUT, hero.layout, 'A new widget starts on the full picture layout');
         System.assertEquals(PortalHero.DEFAULT_TEXT_POSITION, hero.textPosition, 'Default text position');
         // The field defaults to Medium, so a widget created without choosing an overlay starts on Medium.
         System.assertEquals(PortalHero.DEFAULT_OVERLAY, hero.overlay, 'A new widget starts on Medium');
@@ -138,15 +141,25 @@ private class PortalHero_TEST {
     }
 
     @IsTest
+    static void aBlankLayoutMeansTheFullPicture() {
+        UST_Portal_Widget__c widget = savedWidget(new Map<String, Object>());
+        widget.Hero_Layout__c = null; // widgets saved before this field existed have no value
+
+        System.assertEquals('full', PortalHero.prepare(widget).layout, 'Blank layout is the full picture');
+    }
+
+    @IsTest
     static void unknownLookSettingsFallBackToDefaults() {
         UST_Portal_Widget__c widget = savedWidget(new Map<String, Object>());
         widget.Hero_Height__c = 'gigantic';
+        widget.Hero_Layout__c = 'diagonal';
         widget.Hero_Text_Position__c = 'sideways';
         widget.Hero_Overlay__c = 'sepia';
 
         PortalHero.HeroDto hero = PortalHero.prepare(widget);
 
         System.assertEquals(PortalHero.DEFAULT_HEIGHT, hero.height, 'Unknown height');
+        System.assertEquals(PortalHero.DEFAULT_LAYOUT, hero.layout, 'Unknown layout falls back to the full picture');
         System.assertEquals(PortalHero.DEFAULT_TEXT_POSITION, hero.textPosition, 'Unknown position');
         System.assertEquals(PortalHero.DEFAULT_OVERLAY, hero.overlay, 'Unknown overlay falls back to Medium so the white text stays protected');
     }

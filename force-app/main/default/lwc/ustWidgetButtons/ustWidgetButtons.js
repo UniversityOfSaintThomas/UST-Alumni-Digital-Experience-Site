@@ -10,7 +10,8 @@ const STYLE_CLASSES = {
     success: 'slds-button slds-button_success',
     destructive: 'slds-button slds-button_destructive',
     'text-destructive': 'slds-button slds-button_text-destructive',
-    text_link: 'ust-link'
+    text_link: 'ust-link',
+    arrow_link: 'ust-arrow-link'
 };
 const DEFAULT_STYLE_CLASS = STYLE_CLASSES.brand;
 
@@ -45,6 +46,9 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
 
     /** True over a picture (Hero Banner): outline and text-link buttons turn white to stay readable. */
     @api overImage = false;
+
+    /** True on a Purple or Dark Purple background: white outline, white links, white fill on hover. */
+    @api darkBackground = false;
 
     _buttons = [];
     _connected = false;
@@ -84,6 +88,8 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
         let classes = SIZE_CLASSES.includes(this.buttonSize) ? 'ust-widget-buttons ' + this.buttonSize : 'ust-widget-buttons';
         if (this.overImage) {
             classes += ' ust-buttons-on-image ust-on-dark';
+        } else if (this.darkBackground) {
+            classes += ' ust-on-dark';
         }
         return classes;
     }
@@ -104,10 +110,11 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
         return rows;
     }
 
-    /** SLDS classes for the chosen style plus our own layout class (text links keep to ust-link only). */
+    /** SLDS classes for the chosen style plus our own layout class (the two link styles bring their own look). */
     classFor(button) {
         const styleClass = STYLE_CLASSES[button.style] || DEFAULT_STYLE_CLASS;
-        return styleClass === STYLE_CLASSES.text_link ? styleClass : styleClass + ' ust-widget-button';
+        const isLinkStyle = styleClass === STYLE_CLASSES.text_link || styleClass === STYLE_CLASSES.arrow_link;
+        return isLinkStyle ? styleClass : styleClass + ' ust-widget-button';
     }
 
     toView(button) {
@@ -128,6 +135,8 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
             target: opensNewTab ? '_blank' : undefined,
             rel: opensNewTab ? 'noopener noreferrer' : undefined,
             opensNewTab,
+            isArrow: button.style === 'arrow_link',
+            labelClass: button.style === 'arrow_link' ? 'ust-arrow-link__label' : undefined,
             className: this.classFor(button)
         };
     }

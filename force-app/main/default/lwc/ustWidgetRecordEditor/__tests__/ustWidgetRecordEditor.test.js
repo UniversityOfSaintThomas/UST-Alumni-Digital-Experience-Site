@@ -11,6 +11,14 @@ jest.mock(
     { virtual: true }
 );
 
+import getGridPreview from '@salesforce/apex/PortalCardGrid.getGridPreview';
+
+jest.mock(
+    '@salesforce/apex/PortalCardGrid.getGridPreview',
+    () => ({ default: jest.fn() }),
+    { virtual: true }
+);
+
 jest.mock(
     '@salesforce/apex/PortalButtons.getPortalLinkSuggestions',
     () => ({ default: jest.fn(() => Promise.resolve([])) }),
@@ -554,6 +562,31 @@ describe('c-ust-widget-record-editor', () => {
             });
         });
 
+        it('offers the layout choice, previews it, hints that position and overlay do not apply, and resets it', async () => {
+            const element = createEditor();
+            loadRecord(element, { ...HERO_RECORD, Hero_Layout__c: 'full' });
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.layout).toBe('full');
+            expect(element.shadowRoot.querySelector('.ust-hero-hint')).toBeNull();
+
+            getInputField(element, 'Hero_Layout__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'split' } }));
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.layout).toBe('split');
+            expect(element.shadowRoot.querySelector('.ust-hero-hint')).not.toBeNull();
+
+            Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find((button) => button.label === 'Reset').click();
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.layout).toBe('full');
+            expect(element.shadowRoot.querySelector('.ust-hero-hint')).toBeNull();
+        });
+
+        it('treats a blank saved layout as the full picture', async () => {
+            const element = createEditor();
+            loadRecord(element, { ...HERO_RECORD, Hero_Layout__c: '' });
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.layout).toBe('full');
+        });
+
         it('re-reads the addresses after an upload and keeps the refresh event from reaching the page', async () => {
             const element = createEditor();
             loadRecord(element, HERO_RECORD);
@@ -683,6 +716,41 @@ describe('c-ust-widget-record-editor', () => {
             expect(element.shadowRoot.querySelector('c-ust-hero-banner')).not.toBeNull();
         });
 
+        it('reads the saved hero settings from a LATER load, because the form asks for the hero fields only after the first one', async () => {
+            // Recorded from the live form: four loads without any Hero_ field, then loads that carry them.
+            const element = createEditor();
+            const WITHOUT_HERO_FIELDS = { Component_Name__c: 'ust_hero_banner', Static_Content_Header__c: 'Welcome' };
+            [1, 2, 3, 4].forEach(() => loadRecord(element, WITHOUT_HERO_FIELDS));
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner')).not.toBeNull();
+
+            loadRecord(element, {
+                ...WITHOUT_HERO_FIELDS,
+                Hero_Layout__c: 'split', Hero_Height__c: 'tall', Hero_Text_Position__c: 'right', Hero_Overlay__c: 'strong', Hero_Alt_Text__c: 'The quad'
+            });
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero).toMatchObject({
+                layout: 'split', height: 'tall', textPosition: 'right', overlay: 'strong', altText: 'The quad'
+            });
+            expect(element.shadowRoot.querySelector('.ust-hero-hint')).not.toBeNull();
+        });
+
+        it('does not let a repeated load undo hero edits made after the hero settings were read', async () => {
+            const element = createEditor();
+            const SAVED = { Component_Name__c: 'ust_hero_banner', Hero_Layout__c: 'full', Hero_Height__c: 'medium', Hero_Overlay__c: 'medium' };
+            loadRecord(element, { Component_Name__c: 'ust_hero_banner' });
+            loadRecord(element, SAVED);
+            await flushPromises();
+
+            getInputField(element, 'Hero_Layout__c').dispatchEvent(new CustomEvent('change', { detail: { value: 'split' } }));
+            loadRecord(element, SAVED);
+            loadRecord(element, SAVED);
+            await flushPromises();
+
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').hero.layout).toBe('split');
+        });
+
         it('does not let a reload overwrite other unsaved edits either', async () => {
             const element = createEditor();
             loadRecord(element, { ...STATIC_RECORD, Static_Content_Header__c: 'Saved headline' });
@@ -755,6 +823,314 @@ describe('c-ust-widget-record-editor', () => {
             await flushPromises();
 
             expect(element.shadowRoot.querySelectorAll('c-aws-s3-directory-image')).toHaveLength(2);
+        });
+    });
+
+    describe('section background, accent and the other inputs that arrive in a later load', () => {
+        // Recorded from the live form on a Static Content widget: the first loads carry only the always-present
+        // fields; the panel style, section fields, and button placement/size join in a later load.
+        const FIRST = { Component_Name__c: 'ust_static_content', Zone__c: 'body', Page_Context__c: 'home', Static_Content__c: '<p>Hi</p>' };
+        const LATER = {
+            ...FIRST,
+            Content_CSS_Class__c: 'ust-content-centered',
+            Section_Background__c: 'dark_purple',
+            Section_Accent__c: 'green_circles',
+            Button_Placement__c: 'Above',
+            Button_Size__c: 'large'
+        };
+        const preview = (element) => element.shadowRoot.querySelector('c-ust-static-content');
+        const change = (element, apiName, value) =>
+            getInputField(element, apiName).dispatchEvent(new CustomEvent('change', { detail: { value } }));
+        const clickReset = async (element) => {
+            Array.from(element.shadowRoot.querySelectorAll('lightning-button'))
+                .find((button) => button.label === 'Reset').click();
+            await flushPromises();
+        };
+
+        async function openWithLateFields() {
+            const element = createEditor();
+            [1, 2, 3, 4].forEach(() => loadRecord(element, FIRST));
+            await flushPromises();
+            loadRecord(element, LATER);
+            await flushPromises();
+            return element;
+        }
+
+        it('offers the Section Background and Section Accent pickers for Static Content only', async () => {
+            const element = createEditor();
+            loadRecord(element, FIRST);
+            await flushPromises();
+            expect(getInputField(element, 'Section_Background__c')).toBeTruthy();
+            expect(getInputField(element, 'Section_Accent__c')).toBeTruthy();
+
+            change(element, 'Component_Name__c', 'ust_hero_banner');
+            await flushPromises();
+            expect(getInputField(element, 'Section_Background__c')).toBeUndefined();
+            expect(getInputField(element, 'Section_Accent__c')).toBeUndefined();
+        });
+
+        it('gives the preview the saved style, background, accent, and button settings even though they arrive late', async () => {
+            const element = await openWithLateFields();
+            expect(preview(element).contentClass).toBe('ust-content-centered');
+            expect(preview(element).sectionBackground).toBe('dark_purple');
+            expect(preview(element).sectionAccent).toBe('green_circles');
+            expect(preview(element).buttonPlacement).toBe('Above');
+            expect(preview(element).buttonSize).toBe('large');
+        });
+
+        it('does not let the first loads (which lack these fields) leave the preview on blanks or defaults', async () => {
+            const element = createEditor();
+            loadRecord(element, FIRST);
+            await flushPromises();
+            expect(preview(element).sectionBackground).toBeFalsy();
+            expect(preview(element).buttonPlacement).toBe('Below');
+        });
+
+        it('shows the picked background and accent in the preview straight away', async () => {
+            const element = await openWithLateFields();
+            change(element, 'Section_Background__c', 'gray');
+            change(element, 'Section_Accent__c', 'purple_circles');
+            await flushPromises();
+            expect(preview(element).sectionBackground).toBe('gray');
+            expect(preview(element).sectionAccent).toBe('purple_circles');
+
+            change(element, 'Section_Background__c', '');
+            await flushPromises();
+            expect(preview(element).sectionBackground).toBeFalsy();
+        });
+
+        it('keeps an edit when the form loads again afterwards with the saved values', async () => {
+            const element = await openWithLateFields();
+            change(element, 'Section_Background__c', 'gray');
+            change(element, 'Content_CSS_Class__c', 'ust-content-muted');
+            loadRecord(element, LATER);
+            loadRecord(element, LATER);
+            await flushPromises();
+            expect(preview(element).sectionBackground).toBe('gray');
+            expect(preview(element).contentClass).toBe('ust-content-muted');
+        });
+
+        it('Reset returns the preview to the saved values, including the style class that used to be left behind', async () => {
+            const element = await openWithLateFields();
+            change(element, 'Section_Background__c', 'white');
+            change(element, 'Section_Accent__c', '');
+            change(element, 'Content_CSS_Class__c', 'ust-content-muted');
+            await clickReset(element);
+            expect(preview(element).sectionBackground).toBe('dark_purple');
+            expect(preview(element).sectionAccent).toBe('green_circles');
+            expect(preview(element).contentClass).toBe('ust-content-centered');
+        });
+
+        it('after Save, Reset returns to what was just saved', async () => {
+            const element = await openWithLateFields();
+            change(element, 'Section_Background__c', 'light_purple');
+            getForm(element).dispatchEvent(new CustomEvent('success', { detail: { id: RECORD_ID } }));
+            await flushPromises();
+            change(element, 'Section_Background__c', 'white');
+            await clickReset(element);
+            expect(preview(element).sectionBackground).toBe('light_purple');
+        });
+
+        it('reads these fields again for a different widget', async () => {
+            const element = await openWithLateFields();
+            const OTHER_ID = 'a1Nhs0000004OTHERAA';
+            element.recordId = OTHER_ID;
+            getForm(element).dispatchEvent(new CustomEvent('load', {
+                detail: { records: { [OTHER_ID]: { fields: {
+                    Component_Name__c: { value: 'ust_static_content' },
+                    Section_Background__c: { value: 'gray' }
+                } } } }
+            }));
+            await flushPromises();
+            expect(preview(element).sectionBackground).toBe('gray');
+        });
+    });
+
+    describe('card grid widgets', () => {
+        // Recorded shape: the first loads carry the always-present fields; the grid settings join later.
+        const GRID_FIRST = { Component_Name__c: 'ust_card_grid', Zone__c: 'body', Page_Context__c: 'home', Static_Content__c: '<p>Intro</p>' };
+        const GRID_LATER = { ...GRID_FIRST, Grid_Columns__c: '4', Card_Bottom_Bar__c: 'none' };
+        const SAVED_GRID = { columns: '4', bottomBar: 'none', cards: [{ id: 'c1', title: 'Card', linkType: null }] };
+        const cardsHeading = (element) =>
+            Array.from(element.shadowRoot.querySelectorAll('.ust-section-title')).find((h) => h.textContent === 'Cards') || null;
+        const gridPreviewHost = (element) => element.shadowRoot.querySelector('c-ust-card-grid');
+        const itemEditor = (element) => element.shadowRoot.querySelector('c-ust-widget-item-editor');
+        const change = (element, apiName, value) =>
+            getInputField(element, apiName).dispatchEvent(new CustomEvent('change', { detail: { value } }));
+
+        beforeEach(() => {
+            getGridPreview.mockReset();
+            getGridPreview.mockResolvedValue(SAVED_GRID);
+        });
+
+        async function openGrid() {
+            const element = createEditor();
+            [1, 2, 3].forEach(() => loadRecord(element, GRID_FIRST));
+            await flushPromises();
+            loadRecord(element, GRID_LATER);
+            await flushPromises();
+            return element;
+        }
+
+        it('shows the Cards section, with both grid settings and the cards editor, for a Card Grid only', async () => {
+            const element = createEditor();
+            loadRecord(element, GRID_FIRST);
+            await flushPromises();
+            expect(cardsHeading(element)).not.toBeNull();
+            expect(getInputField(element, 'Grid_Columns__c')).toBeTruthy();
+            expect(getInputField(element, 'Card_Bottom_Bar__c')).toBeTruthy();
+            expect(itemEditor(element)).not.toBeNull();
+            expect(itemEditor(element).widgetId).toBe(RECORD_ID);
+
+            const other = createEditor();
+            loadRecord(other, { Component_Name__c: 'ust_static_content', Zone__c: 'body', Page_Context__c: 'home' });
+            await flushPromises();
+            expect(cardsHeading(other)).toBeNull();
+            expect(itemEditor(other)).toBeNull();
+            const hero = createEditor();
+            loadRecord(hero, { Component_Name__c: 'ust_hero_banner', Zone__c: 'body', Page_Context__c: 'home' });
+            await flushPromises();
+            expect(cardsHeading(hero)).toBeNull();
+        });
+
+        it('keeps the Content section, with heading, text and buttons, for a Card Grid', async () => {
+            const element = createEditor();
+            loadRecord(element, GRID_FIRST);
+            await flushPromises();
+            expect(element.shadowRoot.querySelector('c-ust-rich-text-editor')).not.toBeNull();
+            expect(element.shadowRoot.querySelector('c-ust-widget-button-editor')).not.toBeNull();
+        });
+
+        it('previews the grid with the saved settings, read from the later load, and asks Apex for it', async () => {
+            const element = await openGrid();
+            expect(getGridPreview).toHaveBeenLastCalledWith({ widgetId: RECORD_ID, columns: '4', bottomBar: 'none' });
+            expect(gridPreviewHost(element)).not.toBeNull();
+            expect(gridPreviewHost(element).grid).toEqual(SAVED_GRID);
+            expect(gridPreviewHost(element).previewMode).toBe(true);
+            expect(element.shadowRoot.querySelector('c-ust-static-content')).toBeNull();
+        });
+
+        it('passes the heading, text and section choices to the grid preview', async () => {
+            const element = createEditor();
+            loadRecord(element, { ...GRID_FIRST, Static_Content_Header__c: 'Impact' });
+            await flushPromises();
+            loadRecord(element, { ...GRID_LATER, Static_Content_Header__c: 'Impact', Section_Background__c: 'gray', Section_Accent__c: 'purple_circles' });
+            await flushPromises();
+            expect(gridPreviewHost(element).textHeader).toBe('Impact');
+            expect(gridPreviewHost(element).sectionBackground).toBe('gray');
+            expect(gridPreviewHost(element).sectionAccent).toBe('purple_circles');
+        });
+
+        it('previews a change of columns or bar at once, using the choices on screen (not yet saved)', async () => {
+            const element = await openGrid();
+            getGridPreview.mockClear();
+            change(element, 'Grid_Columns__c', '2');
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenLastCalledWith({ widgetId: RECORD_ID, columns: '2', bottomBar: 'none' });
+            change(element, 'Card_Bottom_Bar__c', 'green');
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenLastCalledWith({ widgetId: RECORD_ID, columns: '2', bottomBar: 'green' });
+        });
+
+        it('treats a blank choice as the default (3 columns, green)', async () => {
+            const element = await openGrid();
+            change(element, 'Grid_Columns__c', '');
+            change(element, 'Card_Bottom_Bar__c', '');
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenLastCalledWith({ widgetId: RECORD_ID, columns: '3', bottomBar: 'green' });
+        });
+
+        it('refreshes the preview when the cards editor says the cards changed, and stops that event there', async () => {
+            const element = await openGrid();
+            getGridPreview.mockClear();
+            const bubbled = jest.fn();
+            element.addEventListener('itemschange', bubbled);
+            itemEditor(element).dispatchEvent(new CustomEvent('itemschange', { bubbles: true, composed: true }));
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenCalledTimes(1);
+            expect(bubbled).not.toHaveBeenCalled();
+        });
+
+        it('uses only the newest answer when two requests overlap', async () => {
+            const element = await openGrid();
+            let finishFirst;
+            getGridPreview.mockReturnValueOnce(new Promise((resolve) => { finishFirst = resolve; }));
+            getGridPreview.mockResolvedValueOnce({ columns: '2', bottomBar: 'none', cards: [{ id: 'new', title: 'Newest' }] });
+            change(element, 'Grid_Columns__c', '3');
+            change(element, 'Grid_Columns__c', '2');
+            await flushPromises();
+            finishFirst({ columns: '3', bottomBar: 'none', cards: [{ id: 'old', title: 'Stale' }] });
+            // Wait for the late answer AND for any re-render it would cause, so the check sees the final state.
+            await flushPromises();
+            await flushPromises();
+            await new Promise((resolve) => setTimeout(resolve, 0));
+            expect(gridPreviewHost(element).grid.cards[0].title).toBe('Newest');
+        });
+
+        it('keeps an edit when the form loads again afterwards with the saved values', async () => {
+            const element = await openGrid();
+            change(element, 'Grid_Columns__c', '2');
+            loadRecord(element, GRID_LATER);
+            loadRecord(element, GRID_LATER);
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenLastCalledWith({ widgetId: RECORD_ID, columns: '2', bottomBar: 'none' });
+        });
+
+        it('Reset returns the grid settings to the saved values and refreshes the preview', async () => {
+            const element = await openGrid();
+            change(element, 'Grid_Columns__c', '2');
+            change(element, 'Card_Bottom_Bar__c', 'green');
+            await flushPromises();
+            getGridPreview.mockClear();
+            Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find((b) => b.label === 'Reset').click();
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenLastCalledWith({ widgetId: RECORD_ID, columns: '4', bottomBar: 'none' });
+        });
+
+        it('after Save, Reset returns to what was just saved', async () => {
+            const element = await openGrid();
+            change(element, 'Grid_Columns__c', '2');
+            getForm(element).dispatchEvent(new CustomEvent('success', { detail: { id: RECORD_ID } }));
+            await flushPromises();
+            change(element, 'Grid_Columns__c', '3');
+            await flushPromises();
+            getGridPreview.mockClear();
+            Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find((b) => b.label === 'Reset').click();
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenLastCalledWith({ widgetId: RECORD_ID, columns: '2', bottomBar: 'none' });
+        });
+
+        it('loads the preview when an existing widget is switched to Card Grid', async () => {
+            const element = createEditor();
+            loadRecord(element, { Component_Name__c: 'ust_static_content', Zone__c: 'body', Page_Context__c: 'home' });
+            await flushPromises();
+            expect(getGridPreview).not.toHaveBeenCalled();
+            change(element, 'Component_Name__c', 'ust_card_grid');
+            await flushPromises();
+            expect(getGridPreview).toHaveBeenCalledWith({ widgetId: RECORD_ID, columns: '3', bottomBar: 'green' });
+            expect(itemEditor(element)).not.toBeNull();
+        });
+
+        it('asks Apex for nothing, and says to save first, for a widget that does not exist yet', async () => {
+            const element = createElement('c-ust-widget-record-editor', { is: UstWidgetRecordEditor });
+            document.body.appendChild(element);
+            await flushPromises();
+            change(element, 'Component_Name__c', 'ust_card_grid');
+            await flushPromises();
+            expect(getGridPreview).not.toHaveBeenCalled();
+            expect(itemEditor(element).widgetId).toBeFalsy();
+        });
+
+        it('shows no cards in the preview, rather than failing, when Apex cannot be reached', async () => {
+            getGridPreview.mockRejectedValue(new Error('offline'));
+            const element = await openGrid();
+            expect(gridPreviewHost(element)).not.toBeNull();
+            expect(gridPreviewHost(element).grid).toBeFalsy();
+        });
+
+        it('disables the cards editor while the widget is saving', async () => {
+            const element = await openGrid();
+            expect(itemEditor(element).disabled).toBeFalsy();
         });
     });
 

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Section_Accent__c</fullName>
+    <description>Decorative circles in the top-right corner of a Static Content widget that has a Section Background (ignored without one). Green circles: a tinted filled circle and emerald outline circles. Purple circles: the same with medium purple outlines. Blank means no circles. Drawn in CSS; hidden from assistive technology and on narrow screens.</description>
+    <inlineHelpText>Optional decorative circles in the top-right corner. Needs a Section Background; blank means none.</inlineHelpText>
+    <label>Section Accent</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>green_circles</fullName>
+                <default>false</default>
+                <label>Green circles</label>
+            </value>
+            <value>
+                <fullName>purple_circles</fullName>
+                <default>false</default>
+                <label>Purple circles</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

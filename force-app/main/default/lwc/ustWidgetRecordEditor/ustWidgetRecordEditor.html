@@ -56,6 +56,16 @@
                         </div>
                     </template>
                 </div>
+                <template lwc:if={showPanelStyle}>
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                            <lightning-input-field field-name="Section_Background__c" onchange={handleBackgroundChange}></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                            <lightning-input-field field-name="Section_Accent__c" onchange={handleAccentChange}></lightning-input-field>
+                        </div>
+                    </div>
+                </template>
                 <c-ust-rich-text-editor
                     label={bodyLabel}
                     value={staticContent}
@@ -137,16 +147,48 @@
                 </div>
 
                 <div class="slds-grid slds-wrap slds-gutters slds-m-top_x-small">
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-4">
+                        <lightning-input-field field-name="Hero_Layout__c" onchange={handleHeroLayoutChange}></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-4">
                         <lightning-input-field field-name="Hero_Height__c" onchange={handleHeroHeightChange}></lightning-input-field>
                     </div>
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-4">
                         <lightning-input-field field-name="Hero_Text_Position__c" onchange={handleHeroPositionChange}></lightning-input-field>
                     </div>
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-4">
                         <lightning-input-field field-name="Hero_Overlay__c" onchange={handleHeroOverlayChange}></lightning-input-field>
                     </div>
                 </div>
+                <template lwc:if={heroIsSplit}>
+                    <p class="slds-text-body_small slds-m-top_x-small ust-hero-hint">
+                        Split layout: the text is always on the left on a dark purple band, so Text position and Overlay are not used.
+                    </p>
+                </template>
+            </section>
+        </template>
+
+        <!-- Cards: grid settings and the cards (Card Grid widgets only) -->
+        <template lwc:if={showCardsSection}>
+            <section class="ust-section" aria-labelledby="ust-cards-heading">
+                <h2 id="ust-cards-heading" class="ust-section-title">Cards</h2>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                    Cards save on their own as soon as you save them here; they are not part of this page's Save or Reset.
+                    The heading, text, and buttons are set in the Content section above.
+                </p>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-input-field field-name="Grid_Columns__c" onchange={handleColumnsChange}></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-input-field field-name="Card_Bottom_Bar__c" onchange={handleBarChange}></lightning-input-field>
+                    </div>
+                </div>
+                <c-ust-widget-item-editor
+                    widget-id={recordId}
+                    disabled={isSaving}
+                    onitemschange={handleItemsChange}>
+                </c-ust-widget-item-editor>
             </section>
         </template>
 
@@ -179,12 +221,30 @@
                         </c-ust-hero-banner>
                     </div>
                 </template>
+                <template lwc:elseif={isCardGrid}>
+                    <div class="ust-preview-body">
+                        <c-ust-card-grid
+                            grid={gridPreview}
+                            rich-text-content={previewContent}
+                            text-header={previewHeader}
+                            content-class={contentClass}
+                            section-background={sectionBackground}
+                            section-accent={sectionAccent}
+                            buttons={previewButtons}
+                            button-placement={buttonPlacement}
+                            button-size={buttonSize}
+                            preview-mode>
+                        </c-ust-card-grid>
+                    </div>
+                </template>
                 <template lwc:else>
                     <div class="ust-preview-body">
                         <c-ust-static-content
                             rich-text-content={previewContent}
                             text-header={previewHeader}
                             content-class={contentClass}
+                            section-background={sectionBackground}
+                            section-accent={sectionAccent}
                             buttons={previewButtons}
                             button-placement={buttonPlacement}
                             button-size={buttonSize}

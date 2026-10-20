@@ -12,7 +12,7 @@
  *   - A cache-busting version (the widget's last-modified time) is added to each address. The S3 tool
  *     reuses the same file name when an image is replaced, so without it visitors could keep seeing
  *     the old picture.
- *   - Height and text position fall back to defaults when blank or unknown.
+ *   - Height, layout and text position fall back to defaults when blank or unknown (layout: full picture).
  *   - Overlay: blank (the picklist's --None--) means NO overlay and is sent as "none"; an unknown value falls
  *     back to Medium so a bad value never leaves the white text unprotected by accident.
  *   - Alt text is only used together with an image; without alt text the image is decorative.
@@ -20,6 +20,7 @@
 public with sharing class PortalHero {
 
     public static final String DEFAULT_HEIGHT = 'medium';
+    public static final String DEFAULT_LAYOUT = 'full';
     public static final String DEFAULT_TEXT_POSITION = 'left';
     public static final String DEFAULT_OVERLAY = 'medium';
     public static final String OVERLAY_NONE = 'none';
@@ -28,6 +29,7 @@ public with sharing class PortalHero {
     private static final Integer MAX_ALT_LENGTH = 255;
 
     private static final Set<String> HEIGHTS = new Set<String>{ 'short', 'medium', 'tall' };
+    private static final Set<String> LAYOUTS = new Set<String>{ 'full', 'split' };
     private static final Set<String> TEXT_POSITIONS = new Set<String>{ 'left', 'center', 'right' };
     private static final Set<String> OVERLAYS = new Set<String>{ 'light', 'medium', 'strong' };
 
@@ -43,6 +45,7 @@ public with sharing class PortalHero {
         @AuraEnabled public String mobileImageUrl;
         @AuraEnabled public String altText;
         @AuraEnabled public String height;
+        @AuraEnabled public String layout;
         @AuraEnabled public String textPosition;
         @AuraEnabled public String overlay;
     }
@@ -95,6 +98,7 @@ public with sharing class PortalHero {
         hero.mobileImageUrl = versionedImageUrl(widget.Hero_Mobile_Image_URL__c, version);
         hero.altText = hero.imageUrl == null ? null : cleanAltText(widget.Hero_Alt_Text__c);
         hero.height = pick(widget.Hero_Height__c, HEIGHTS, DEFAULT_HEIGHT);
+        hero.layout = pick(widget.Hero_Layout__c, LAYOUTS, DEFAULT_LAYOUT);
         hero.textPosition = pick(widget.Hero_Text_Position__c, TEXT_POSITIONS, DEFAULT_TEXT_POSITION);
         hero.overlay = String.isBlank(widget.Hero_Overlay__c)
                 ? OVERLAY_NONE
@@ -119,8 +123,7 @@ public with sharing class PortalHero {
      * @param version The version to append (blank means none)
      * @return The versioned, safe address or null
      */
-    @TestVisible
-    private static String versionedImageUrl(String url, String version) {
+    public static String versionedImageUrl(String url, String version) {
         if (!isAllowedImageUrl(url)) {
             return null;
         }

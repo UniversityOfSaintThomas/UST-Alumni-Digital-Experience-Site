@@ -1,5 +1,38 @@
 <template>
     <template lwc:if={isEmpty}></template>
+    <template lwc:elseif={isSplit}>
+        <!-- Split: text on a dark band, the picture beside it. The rings are decoration only. -->
+        <div class={bannerClass}>
+            <div class="ust-hero-rings" aria-hidden="true"></div>
+            <div class="ust-hero-split">
+                <div class="ust-hero-split-text">
+                    <c-ust-static-content
+                        rich-text-content={richTextContent}
+                        text-header={textHeader}
+                        buttons={alignedButtons}
+                        button-placement={buttonPlacement}
+                        button-size={buttonSize}
+                        preview-mode={previewMode}
+                        dark-background
+                        large-heading>
+                    </c-ust-static-content>
+                </div>
+                <template lwc:if={showImage}>
+                    <picture class="ust-hero-split-picture">
+                        <template lwc:if={hasMobileImage}>
+                            <source media={mobileMedia} srcset={settings.mobileImageUrl}>
+                        </template>
+                        <img
+                            class="ust-hero-split-image"
+                            src={settings.imageUrl}
+                            alt={altText}
+                            decoding="async"
+                            onerror={handleImageError}>
+                    </picture>
+                </template>
+            </div>
+        </div>
+    </template>
     <template lwc:else>
         <div class={bannerClass}>
             <template lwc:if={showImage}>
@@ -26,7 +59,8 @@
                     button-placement={buttonPlacement}
                     button-size={buttonSize}
                     preview-mode={previewMode}
-                    over-image>
+                    over-image
+                    large-heading>
                 </c-ust-static-content>
             </div>
         </div>

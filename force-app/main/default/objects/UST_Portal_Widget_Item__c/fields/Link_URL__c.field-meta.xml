@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Link_URL__c</fullName>
+    <description>Where the card goes. A site page such as /alumni-directory, or a full https address. Blank means no link.</description>
+    <inlineHelpText>Where the whole card goes. A portal path (starts with /) or an https, mailto or tel address; anything else is ignored and the card is shown without a link.</inlineHelpText>
+    <label>Link URL</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <length>255</length>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

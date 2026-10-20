@@ -42,6 +42,14 @@ private class PortalButtons_TEST {
     }
 
     @IsTest
+    static void keepsTheArrowLinkStyle() {
+        List<PortalButtons.ButtonDto> buttons = prepare('{"label":"Read stories","type":"external","url":"https://example.edu/stories","style":"arrow_link"}');
+
+        System.assertEquals(1, buttons.size(), 'Button is kept');
+        System.assertEquals('arrow_link', buttons[0].style, 'The arrow link style is on the allowlist');
+    }
+
+    @IsTest
     static void defaultsAreAppliedForMissingOrUnknownOptions() {
         List<PortalButtons.ButtonDto> buttons = prepare('{"label":"Go","type":"external","url":"https://example.edu","style":"rainbow","align":"sideways","icon":"Bad Icon!"}');
 

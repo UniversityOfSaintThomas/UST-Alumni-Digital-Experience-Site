@@ -88,6 +88,140 @@
 
 - object: UST_Portal_Widget__c
   fields:
+    Name: "[Sample] Home body - Light Purple panel with green circles"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 25
+    Description__c: Section Background Light Purple with the Green circles accent. Everyone sees it.
+    Section_Background__c: light_purple
+    Section_Accent__c: green_circles
+    Static_Content_Header__c: Stay connected
+    Static_Content__c: <p>Find classmates, read the latest news, and see what is happening on campus.</p>
+    Button_Placement__c: Below
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[
+      {"id":"p1","label":"Open the directory","type":"portal","url":"/alumni-directory","newTab":false,"style":"brand","align":"left"},
+      {"id":"p2","label":"Visit stthomas.edu","type":"external","url":"https://www.stthomas.edu","newTab":true,"style":"outline-brand","align":"left"}]}
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home body - Dark Purple band with arrow link"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 26
+    Description__c: Section Background Dark Purple (white text and links) with Purple circles and an arrow-link button.
+    Section_Background__c: dark_purple
+    Section_Accent__c: purple_circles
+    Static_Content_Header__c: Give back
+    Static_Content__c: <p>Your support helps the next generation of <a href="https://www.stthomas.edu">Tommies</a>.</p>
+    Button_Placement__c: Below
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[
+      {"id":"d1","label":"Learn more","type":"external","url":"https://www.stthomas.edu/alumni","newTab":true,"style":"arrow_link","align":"left"}]}
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home body - Card Grid (6 cards, 3 columns, green bar)"
+    Component_Name__c: ust_card_grid
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 27
+    Description__c: Card Grid on a Gray panel. Cards are listed out of title order on purpose, to show that Sort Order wins. Three link kinds (site page, external, mailto) and one card with no link. No pictures, so it works without an S3 bucket.
+    Section_Background__c: gray
+    Grid_Columns__c: "3"
+    Card_Bottom_Bar__c: green
+    Static_Content_Header__c: How You Can Make an Impact
+    Static_Content__c: <p>Six ways to stay connected and give back.</p>
+  friends:
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Refer a Student
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 10
+        Card_Text__c: Know someone who would thrive at St. Thomas? Share your Tommie experience with them.
+        Link_URL__c: /alumni-directory
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Become a Mentor
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 20
+        Card_Text__c: Share what you know with a student starting out.
+        Link_URL__c: https://www.stthomas.edu/alumni
+        Open_In_New_Tab__c: true
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Hire a Tommie
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 30
+        Card_Text__c: Post a job or internship for St. Thomas students and alumni.
+        Link_URL__c: mailto:alumni@stthomas.edu
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Volunteer with St. Thomas
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 40
+        Card_Text__c: Give your time to events, programs and your class.
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Join the Alumni Engagement Board
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 50
+        Card_Text__c: Help guide how the university stays connected with alumni.
+        Link_URL__c: /
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Share Your Story
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 60
+        Card_Text__c: Tell fellow Tommies what you have been up to.
+        Link_URL__c: /
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home body - Card Grid (2 columns, no bar, Dark Purple)"
+    Component_Name__c: ust_card_grid
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 28
+    Description__c: Card Grid with 2 columns and no bottom bar, on a Dark Purple panel with the Green circles accent. The cards stay white with dark text.
+    Section_Background__c: dark_purple
+    Section_Accent__c: green_circles
+    Grid_Columns__c: "2"
+    Card_Bottom_Bar__c: none
+    Static_Content_Header__c: Two columns, no bar
+  friends:
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Upcoming events
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 10
+        Card_Text__c: See what is happening near you.
+        Link_URL__c: /
+    - object: UST_Portal_Widget_Item__c
+      fields:
+        Name: Alumni news
+        Widget__c:
+          reference: UST_Portal_Widget__c
+        Sort_Order__c: 20
+        Card_Text__c: Stories from across the Tommie community.
+        Link_URL__c: https://www.stthomas.edu/alumni
+        Open_In_New_Tab__c: true
+
+- object: UST_Portal_Widget__c
+  fields:
     Name: "[Sample] Home body - College filter (Placeholder college)"
     Component_Name__c: ust_static_content
     Zone__c: body

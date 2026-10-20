@@ -1,0 +1,168 @@
+@import 'c/ustSharedStyles';
+
+/* ---- Grid ----
+   Gaps are in em so they follow the fluid body size, as on the live site (1em between columns, 2em between rows).
+   Columns follow the widget's choice when there is room and drop when there is not. "Room" is the width of the
+   area the widget sits in (a container query), not the window: a body zone next to a sidebar is much narrower
+   than the window. rem is used, not em, because em in a container query follows the container's own font size.
+   Widths: 3 columns from 52rem of space (832px), 2 from 32rem (512px), 1 below; 4 columns from 72rem (1152px).
+   Browsers without container queries use the window width instead. */
+.ust-card-grid-host {
+    container-name: ust-card-grid;
+    container-type: inline-size;
+    display: block;
+}
+
+.ust-card-grid {
+    display: grid;
+    gap: 2em 1em;
+    grid-template-columns: minmax(0, 1fr);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ust-card-grid_after-intro {
+    margin-top: 1.5rem;
+}
+
+@container ust-card-grid (min-width: 32rem) {
+    .ust-card-grid_cols-2,
+    .ust-card-grid_cols-3,
+    .ust-card-grid_cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@container ust-card-grid (min-width: 52rem) {
+    .ust-card-grid_cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@container ust-card-grid (min-width: 72rem) {
+    .ust-card-grid_cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@supports not (container-type: inline-size) {
+    @media (min-width: 48em) {
+        .ust-card-grid_cols-2,
+        .ust-card-grid_cols-3,
+        .ust-card-grid_cols-4 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 64em) {
+        .ust-card-grid_cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 75em) {
+        .ust-card-grid_cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+}
+
+/* ---- Card ----
+   A square white box with the brand's card shadow. Whatever panel colour the widget sits on, the card keeps its
+   own text colour and link colours: the panel's light text and white links are inherited through the slot, so
+   they are set again here. */
+.ust-card {
+    --dxp-s-link-text-color: var(--ust-purple-lt, #9e28b5);
+    --dxp-s-link-text-color-hover: var(--ust-purple-lt, #9e28b5);
+    background-color: var(--ust-white, #ffffff);
+    box-shadow: var(--ust-shadow-card, 0 1em 2em rgba(0, 0, 0, 0.1));
+    color: var(--ust-text-color, #1a1a1a);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* The bar along the bottom: green unless the widget says no bar. On a linked card it turns bright purple on hover
+   or keyboard focus, whatever its resting colour (the brand refresh's hover).
+   The colour lives in --ust-card-bar and the ::after only reads it, so the "bar on" rule and the hover rule never
+   compete: LWC adds an attribute selector to every compound in a selector, which made a descendant "bar on" rule
+   (4 specificity points) outrank the hover rule (3) and stopped the hover from ever showing. */
+/* Set on the list (the resting bar) and on a hovered or focused linked card (the hover bar). It is not set on the
+   card itself otherwise, or it would override the value inherited from the list. No value means no bar. */
+.ust-card-grid_bar {
+    --ust-card-bar: var(--ust-green-emerald, #4c9c2e);
+}
+
+.ust-card_linked:hover,
+.ust-card_linked:focus-within {
+    --ust-card-bar: var(--ust-purple-lt, #9e28b5);
+}
+
+.ust-card::after {
+    background-color: var(--ust-card-bar, transparent);
+    bottom: 0;
+    content: '';
+    height: 8px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    transition: background-color var(--ust-transition-ui, 300ms ease);
+}
+
+.ust-card__image img {
+    aspect-ratio: 3 / 2;
+    display: block;
+    height: auto;
+    object-fit: cover;
+    width: 100%;
+}
+
+.ust-card__body {
+    padding: 1.5rem 1.5rem 2.5rem;
+}
+
+.ust-card__title {
+    margin: 0 0 0.5em;
+}
+
+/* The whole card is the click target: the title link stretches over it. */
+.ust-card__link::before {
+    bottom: 0;
+    content: '';
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+/* The focus ring goes around the whole card (the stretched area), not just the title text. */
+.ust-card__link:focus-visible {
+    outline: none;
+}
+
+.ust-card__link:focus-visible::before {
+    outline: var(--ust-focus-ring, 2px solid #9e28b5);
+    outline-offset: var(--ust-focus-offset, 2px);
+}
+
+/* Hovering anywhere on the card does what hovering the title does: the underline slides away. */
+.ust-card_linked:hover .ust-card__link {
+    background-position: 100% 100%;
+}
+
+/* Short description: the guide's small body size, a fixed 16px as on the live site at every width, plain text
+   with its line breaks kept. */
+.ust-card__text {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-line;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ust-card::after {
+        transition: none;
+    }
+}

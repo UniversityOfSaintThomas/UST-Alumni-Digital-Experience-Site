@@ -46,6 +46,14 @@
     line-height: var(--ust-line-height-h3, 1.45);
 }
 
+/* Links inside rich text (lightning-formatted-rich-text, in its own shadow tree) take their colour from the site's
+   link hooks. Custom properties pass through shadow boundaries, so setting them here turns those links white on a
+   dark panel: bright purple on Purple is only 2.1:1, white is 12.6:1. */
+.ust-on-dark {
+    --dxp-s-link-text-color: var(--ust-white, #ffffff);
+    --dxp-s-link-text-color-hover: var(--ust-white, #ffffff);
+}
+
 /* On a Purple, Dark Purple or picture background, headings are white. */
 .ust-on-dark .ust-h1,
 .ust-on-dark .ust-h2,
@@ -61,6 +69,12 @@
    place inside .ust-on-dark) for white links on dark backgrounds. */
 
 .ust-link {
+    /* The site's own link rule (dxp-slds-extensions.css: a:link:not(.slds-button) etc.) outranks a plain
+       text-decoration:none here and would add a SECOND, real underline on top of the drawn one on the published
+       site. It reads these hooks, so set them to none for this element, in every link state. */
+    --dxp-c-link-text-decoration: none;
+    --dxp-s-link-text-decoration-hover: none;
+    --dxp-s-link-text-decoration-focus: none;
     background-image: linear-gradient(90deg, currentColor 50%, transparent 50%);
     background-position: 0 100%;
     background-repeat: no-repeat;
@@ -89,6 +103,63 @@
 
 .ust-on-dark .ust-link:focus-visible,
 .ust-link.ust-on-dark:focus-visible {
+    outline-color: var(--ust-white, #ffffff);
+}
+
+/* ---- Arrow link ------------------------------------------------------
+   A bold link with an arrow after the label (the live site's "eyebrow" / "link-eyebrow-arrow" link, minus the
+   all-caps, per the brand refresh). The label is underlined by default like .ust-link and the underline slides
+   away on hover; the arrow nudges right. Markup: <a class="ust-arrow-link"><span class="ust-arrow-link__label">
+   Label</span><svg class="ust-arrow-link__icon" ...></svg></a>. White inside .ust-on-dark. */
+
+.ust-arrow-link {
+    /* Same reason as .ust-link: the site's link rule would draw a second underline across the label and the arrow. */
+    --dxp-c-link-text-decoration: none;
+    --dxp-s-link-text-decoration-hover: none;
+    --dxp-s-link-text-decoration-focus: none;
+    align-items: center;
+    color: var(--ust-purple-lt, #9e28b5);
+    display: inline-flex;
+    font-weight: var(--slds-g-font-weight-7, 700);
+    gap: 0.5em;
+    text-decoration: none;
+}
+
+.ust-arrow-link__label {
+    background-image: linear-gradient(90deg, currentColor 50%, transparent 50%);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 200% 1.5px;
+    padding-bottom: 2px;
+    transition: background-position var(--ust-transition-ui, 300ms ease);
+}
+
+.ust-arrow-link__icon {
+    flex: none;
+    height: 0.7em;
+    transition: transform var(--ust-transition-ui, 300ms ease);
+    width: auto;
+}
+
+.ust-arrow-link:hover .ust-arrow-link__label {
+    background-position: 100% 100%;
+}
+
+.ust-arrow-link:hover .ust-arrow-link__icon {
+    transform: translateX(0.25rem);
+}
+
+.ust-arrow-link:focus-visible {
+    outline: var(--ust-focus-ring, 2px solid #9e28b5);
+    outline-offset: var(--ust-focus-offset, 2px);
+}
+
+.ust-on-dark .ust-arrow-link,
+.ust-arrow-link.ust-on-dark {
+    color: var(--ust-white, #ffffff);
+}
+
+.ust-on-dark .ust-arrow-link:focus-visible {
     outline-color: var(--ust-white, #ffffff);
 }
 
@@ -172,7 +243,13 @@
 
 @media (prefers-reduced-motion: reduce) {
     .ust-link,
-    .ust-button {
+    .ust-button,
+    .ust-arrow-link__label,
+    .ust-arrow-link__icon {
         transition: none;
+    }
+
+    .ust-arrow-link:hover .ust-arrow-link__icon {
+        transform: none;
     }
 }

@@ -65,6 +65,8 @@ public without sharing class PortalWidgetController {
                             Static_Content__c,
                             Static_Content_Header__c,
                             Content_CSS_Class__c,
+                            Section_Background__c,
+                            Section_Accent__c,
                             Buttons_JSON__c,
                             Button_Placement__c,
                             Button_Size__c,
@@ -73,8 +75,11 @@ public without sharing class PortalWidgetController {
                             Hero_Mobile_Image_URL__c,
                             Hero_Alt_Text__c,
                             Hero_Height__c,
+                            Hero_Layout__c,
                             Hero_Text_Position__c,
                             Hero_Overlay__c,
+                            Grid_Columns__c,
+                            Card_Bottom_Bar__c,
                             Filter_College__c,
                             Filter_Degree_Level__c,
                             Filter_St_Thomas_Connection__c,
@@ -87,7 +92,6 @@ public without sharing class PortalWidgetController {
                             Filter_Volunteer_Status__c
                     FROM UST_Portal_Widget__c
                     WHERE Zone__c = :zoneName
-                    AND Page_Context__c INCLUDES (:pageContext)
                     AND Is_Active__c = TRUE
                     WITH SYSTEM_MODE
                     ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
@@ -102,6 +106,8 @@ public without sharing class PortalWidgetController {
                     break;
                 }
             }
+            Map<Id, List<UST_Portal_Widget_Item__c>> cardItems =
+                    loadCardItems(candidateWidgets, pageContext, userFilters);
             List<PortalWidgetDto> results = new List<PortalWidgetDto>();
             for (UST_Portal_Widget__c widget : candidateWidgets) {
                 if (widgetMatchesPage(widget.Page_Context__c, pageContext)
@@ -120,11 +126,17 @@ public without sharing class PortalWidgetController {
                             ? PortalDataTags.resolve(widget.Static_Content_Header__c, tagValues, PortalDataTags.Mode.PLAIN_TEXT)
                             : '';
                     dto.contentCssClass = widget.Content_CSS_Class__c;
+                    dto.sectionBackground = widget.Section_Background__c;
+                    dto.sectionAccent = widget.Section_Accent__c;
                     dto.buttons = PortalButtons.prepare(widget.Buttons_JSON__c, tagValues);
                     dto.buttonPlacement = PortalButtons.normalizePlacement(widget.Button_Placement__c);
                     dto.buttonSize = PortalButtons.normalizeSize(widget.Button_Size__c);
                     if (widget.Component_Name__c == HERO_COMPONENT_NAME) {
                         dto.hero = PortalHero.prepare(widget);
+                    }
+                    if (widget.Component_Name__c == PortalCardGrid.COMPONENT_NAME) {
+                        dto.grid = PortalCardGrid.prepare(widget.Grid_Columns__c, widget.Card_Bottom_Bar__c,
+                                cardItems.get(widget.Id));
                     }
                     dto.isStaticContent = String.isNotBlank(widget.Static_Content__c)
                             || String.isNotBlank(widget.Static_Content_Header__c)
@@ -139,6 +151,47 @@ public without sharing class PortalWidgetController {
                     'Unable to load portal widgets: ' + caught.getMessage()
             );
         }
+    }
+
+    // ----- Card Grid items -----
+
+    /**
+     * Loads the cards of the Card Grid widgets that will be shown, in one query. Runs here (without sharing,
+     * system mode) because guests read it; PortalCardGrid only cleans what it is given.
+     *
+     * @param candidateWidgets Widgets queried for the zone
+     * @param pageContext      The page being rendered
+     * @param userFilters      The current user's filter values
+     * @return Items per Card Grid widget Id, in display order
+     */
+    private static Map<Id, List<UST_Portal_Widget_Item__c>> loadCardItems(
+            List<UST_Portal_Widget__c> candidateWidgets, String pageContext, ContactFilterValues userFilters) {
+        Set<Id> gridIds = new Set<Id>();
+        for (UST_Portal_Widget__c widget : candidateWidgets) {
+            if (widget.Component_Name__c == PortalCardGrid.COMPONENT_NAME
+                    && widgetMatchesPage(widget.Page_Context__c, pageContext)
+                    && widgetMatchesContactFilters(widget, userFilters)) {
+                gridIds.add(widget.Id);
+            }
+        }
+        Map<Id, List<UST_Portal_Widget_Item__c>> itemsByWidget = new Map<Id, List<UST_Portal_Widget_Item__c>>();
+        if (gridIds.isEmpty()) {
+            return itemsByWidget;
+        }
+        for (UST_Portal_Widget_Item__c item : [
+                SELECT Id, Name, Widget__c, Card_Text__c, Image_URL__c, Image_Alt_Text__c, Link_URL__c,
+                        Open_In_New_Tab__c, Sort_Order__c, SystemModstamp
+                FROM UST_Portal_Widget_Item__c
+                WHERE Widget__c IN :gridIds
+                WITH SYSTEM_MODE
+                ORDER BY Sort_Order__c ASC NULLS LAST, Name ASC
+        ]) {
+            if (!itemsByWidget.containsKey(item.Widget__c)) {
+                itemsByWidget.put(item.Widget__c, new List<UST_Portal_Widget_Item__c>());
+            }
+            itemsByWidget.get(item.Widget__c).add(item);
+        }
+        return itemsByWidget;
     }
 
     // ----- Page filter -----
@@ -377,12 +430,18 @@ public without sharing class PortalWidgetController {
         @AuraEnabled public String staticContentHeader;
         /** CSS class API name from Content_CSS_Class__c; styles the whole static content widget */
         @AuraEnabled public String contentCssClass;
+        /** Section_Background__c: white, gray, light_purple, purple or dark_purple; blank means no panel */
+        @AuraEnabled public String sectionBackground;
+        /** Section_Accent__c: green_circles or purple_circles; blank means none (the renderer allowlists both values) */
+        @AuraEnabled public String sectionAccent;
         /** Call-to-action buttons, cleaned and with data tags resolved for the current user */
         @AuraEnabled public List<PortalButtons.ButtonDto> buttons;
         /** Above or Below the text */
         @AuraEnabled public String buttonPlacement;
         /** Allowlisted size class, or empty */
         @AuraEnabled public String buttonSize;
+        /** Card Grid settings and cards; only set when componentName === 'ust_card_grid' */
+        @AuraEnabled public PortalCardGrid.GridDto grid;
         /** Picture settings; only set when componentName is the Hero Banner */
         @AuraEnabled public PortalHero.HeroDto hero;
         @AuraEnabled public Boolean isStaticContent;

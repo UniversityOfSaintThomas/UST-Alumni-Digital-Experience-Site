@@ -69,6 +69,109 @@ private class PortalWidgetController_TEST {
     }
 
     @IsTest
+    static void sectionBackgroundAndAccentReachThePortalAndStayBlankWhenNotSet() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c styled = buildWidget('Panel widget', zone, pageContext);
+        styled.Section_Background__c = 'dark_purple';
+        styled.Section_Accent__c = 'green_circles';
+        styled.Sort_Order__c = 1;
+        UST_Portal_Widget__c plain = buildWidget('Plain widget', zone, pageContext);
+        plain.Sort_Order__c = 2;
+        insert new List<UST_Portal_Widget__c>{ styled, plain };
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(2, results.size(), 'Both widgets are returned');
+        System.assertEquals('dark_purple', results[0].sectionBackground, 'Section background is passed through');
+        System.assertEquals('green_circles', results[0].sectionAccent, 'Section accent is passed through');
+        System.assertEquals(null, results[1].sectionBackground, 'No background stays blank (no default value on the field)');
+        System.assertEquals(null, results[1].sectionAccent, 'No accent stays blank');
+    }
+
+    @IsTest
+    static void cardGridWidgetsCarryTheirCardsInOrderAndOtherWidgetsDoNot() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c grid = buildWidget('Grid', zone, pageContext);
+        grid.Component_Name__c = PortalCardGrid.COMPONENT_NAME;
+        grid.Grid_Columns__c = '4';
+        grid.Card_Bottom_Bar__c = 'none';
+        grid.Sort_Order__c = 1;
+        UST_Portal_Widget__c plain = buildWidget('Plain', zone, pageContext);
+        plain.Sort_Order__c = 2;
+        UST_Portal_Widget__c inactiveGrid = buildWidget('Inactive grid', zone, pageContext);
+        inactiveGrid.Component_Name__c = PortalCardGrid.COMPONENT_NAME;
+        inactiveGrid.Is_Active__c = false;
+        insert new List<UST_Portal_Widget__c>{ grid, plain, inactiveGrid };
+        insert new List<UST_Portal_Widget_Item__c>{
+            new UST_Portal_Widget_Item__c(Widget__c = grid.Id, Name = 'Apple', Sort_Order__c = 2, Link_URL__c = '/alumni-directory'),
+            new UST_Portal_Widget_Item__c(Widget__c = grid.Id, Name = 'Zebra', Sort_Order__c = 1),
+            new UST_Portal_Widget_Item__c(Widget__c = inactiveGrid.Id, Name = 'Never shown')
+        };
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(2, results.size(), 'The inactive grid is not returned');
+        System.assertNotEquals(null, results[0].grid, 'The Card Grid carries its grid');
+        System.assertEquals('4', results[0].grid.columns, 'Columns reach the portal');
+        System.assertEquals('none', results[0].grid.bottomBar, 'Bottom bar reaches the portal');
+        System.assertEquals(2, results[0].grid.cards.size(), 'Only this widget\'s cards');
+        System.assertEquals('Zebra', results[0].grid.cards[0].title, 'Cards are in sort order, not title order');
+        System.assertEquals('portal', results[0].grid.cards[1].linkType, 'Links are cleaned and typed');
+        System.assertEquals(null, results[1].grid, 'A widget that is not a Card Grid has no grid');
+    }
+
+    @IsTest
+    static void aCardGridWithNoCardsStillReturnsAnEmptyGrid() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c grid = buildWidget('Empty grid', zone, pageContext);
+        grid.Component_Name__c = PortalCardGrid.COMPONENT_NAME;
+        insert grid;
+
+        List<PortalWidgetController.PortalWidgetDto> results =
+                PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(1, results.size(), 'The grid is returned');
+        System.assertNotEquals(null, results[0].grid, 'An empty grid object, not null');
+        System.assertEquals(0, results[0].grid.cards.size(), 'No cards');
+        System.assertEquals('3', results[0].grid.columns, 'Default columns when blank');
+    }
+
+    @IsTest
+    static void aWidgetForAllPagesShowsOnEveryPageAndItsZone() {
+        UST_Portal_Widget__c everywhere = buildWidget('Everywhere', 'banner', 'all');
+        UST_Portal_Widget__c twoPages = buildWidget('Two pages', 'banner', 'home;events');
+        UST_Portal_Widget__c elsewhere = buildWidget('Another zone', 'above_footer', 'all');
+        insert new List<UST_Portal_Widget__c>{ everywhere, twoPages, elsewhere };
+
+        List<PortalWidgetController.PortalWidgetDto> onHome = PortalWidgetController.getWidgetsForZone('banner', 'home');
+        List<PortalWidgetController.PortalWidgetDto> onEvents = PortalWidgetController.getWidgetsForZone('banner', 'events');
+        List<PortalWidgetController.PortalWidgetDto> onGiving = PortalWidgetController.getWidgetsForZone('banner', 'giving');
+        List<PortalWidgetController.PortalWidgetDto> footerOnHome = PortalWidgetController.getWidgetsForZone('above_footer', 'home');
+
+        System.assertEquals(2, onHome.size(), 'All Pages and the two-page widget both show on home');
+        System.assertEquals(2, onEvents.size(), 'All Pages and the two-page widget both show on events');
+        System.assertEquals(1, onGiving.size(), 'Only All Pages shows on a page the other widget does not list');
+        System.assertEquals('Everywhere', onGiving[0].widgetLabel, 'The All Pages widget');
+        System.assertEquals(1, footerOnHome.size(), 'All Pages applies in its own zone only');
+        System.assertEquals('Another zone', footerOnHome[0].widgetLabel, 'The widget placed in that zone');
+    }
+
+    @IsTest
+    static void aWidgetForOtherPagesDoesNotShowWhereItWasNotChosen() {
+        insert buildWidget('Home only', 'banner', 'home');
+
+        System.assertEquals(0, PortalWidgetController.getWidgetsForZone('banner', 'events').size(),
+                'A widget chosen for home must not show on events');
+        System.assertEquals(1, PortalWidgetController.getWidgetsForZone('banner', 'home').size(),
+                'It still shows on home');
+    }
+
+    @IsTest
     static void dataTagsAreResolvedForTheCurrentUserInBodyAndHeader() {
         String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
         String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
@@ -186,6 +289,7 @@ private class PortalWidgetController_TEST {
         widget.Hero_Image_URL__c = 'https://x.edu/hero.png';
         widget.Hero_Alt_Text__c = 'The quad in autumn';
         widget.Hero_Height__c = 'tall';
+        widget.Hero_Layout__c = 'split';
         widget.Hero_Text_Position__c = 'center';
         widget.Hero_Overlay__c = 'strong';
         widget.Buttons_JSON__c = '{"buttons":[{"label":"Visit","type":"portal","url":"/alumni-directory"}]}';
@@ -200,6 +304,7 @@ private class PortalWidgetController_TEST {
         System.assert(results[0].hero.imageUrl.startsWith('https://x.edu/hero.png?v='), 'Image is versioned: ' + results[0].hero.imageUrl);
         System.assertEquals('The quad in autumn', results[0].hero.altText, 'Alt text');
         System.assertEquals('tall', results[0].hero.height, 'Height');
+        System.assertEquals('split', results[0].hero.layout, 'Layout reaches the portal');
         System.assertEquals('center', results[0].hero.textPosition, 'Text position');
         System.assertEquals('strong', results[0].hero.overlay, 'Overlay');
         System.assertEquals('Welcome, Jordan', results[0].staticContentHeader, 'Headline resolves tags like Static Content');

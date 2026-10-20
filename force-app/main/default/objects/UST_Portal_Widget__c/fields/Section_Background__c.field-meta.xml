@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Section_Background__c</fullName>
+    <description>Background panel behind a Static Content widget. Heading, text, links and buttons switch to light colours on Purple and Dark Purple. Blank means no panel. When set, it replaces the older Callout Panel and Purple Banner looks of Content CSS Class. Each value is allowlisted in ustStaticContent.js and styled in ustStaticContent.css.</description>
+    <inlineHelpText>Optional colour panel behind this widget. Leave blank for no panel. Text and buttons adjust automatically.</inlineHelpText>
+    <label>Section Background</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>white</fullName>
+                <default>false</default>
+                <label>White</label>
+            </value>
+            <value>
+                <fullName>gray</fullName>
+                <default>false</default>
+                <label>Gray</label>
+            </value>
+            <value>
+                <fullName>light_purple</fullName>
+                <default>false</default>
+                <label>Light Purple</label>
+            </value>
+            <value>
+                <fullName>purple</fullName>
+                <default>false</default>
+                <label>Purple</label>
+            </value>
+            <value>
+                <fullName>dark_purple</fullName>
+                <default>false</default>
+                <label>Dark Purple</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

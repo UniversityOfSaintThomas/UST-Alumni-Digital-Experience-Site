@@ -35,7 +35,7 @@ public with sharing class PortalButtons {
     private static final String SITE_NETWORK_NAME = 'Alumni';
 
     private static final Set<String> STYLES = new Set<String>{
-            'text_link', 'brand', 'outline-brand', 'destructive', 'text-destructive', 'neutral', 'success'
+            'text_link', 'arrow_link', 'brand', 'outline-brand', 'destructive', 'text-destructive', 'neutral', 'success'
     };
     private static final Set<String> ALIGNMENTS = new Set<String>{ 'left', 'center', 'end' };
     private static final Set<String> SIZE_CLASSES = new Set<String>{ 'ust-buttons-wide', 'ust-buttons-full' };

@@ -1,0 +1,41 @@
+<template>
+    <c-ust-static-content
+        rich-text-content={richTextContent}
+        text-header={textHeader}
+        content-class={contentClass}
+        section-background={sectionBackground}
+        section-accent={sectionAccent}
+        buttons={buttons}
+        button-placement={buttonPlacement}
+        button-size={buttonSize}
+        has-slot-content={hasCards}
+        preview-mode={previewMode}>
+        <template lwc:if={hasCards}>
+            <div class="ust-card-grid-host">
+            <ul class={gridClass} role="list">
+                <template for:each={cardViews} for:item="card">
+                    <li key={card.id} class={card.className}>
+                        <template lwc:if={card.imageUrl}>
+                            <div class="ust-card__image">
+                                <img src={card.imageUrl} alt={card.altText} loading="lazy" />
+                            </div>
+                        </template>
+                        <div class="ust-card__body">
+                            <h3 class="ust-card__title ust-h3">
+                                <template lwc:if={card.hasLink}>
+                                    <a class="ust-card__link ust-link" data-id={card.id} href={card.href}
+                                       target={card.target} rel={card.rel} onclick={handleLinkClick}>{card.title}<template lwc:if={card.opensNewTab}><span class="slds-assistive-text"> (opens in a new tab)</span></template></a>
+                                </template>
+                                <template lwc:else>{card.title}</template>
+                            </h3>
+                            <template lwc:if={card.text}>
+                                <p class="ust-card__text">{card.text}</p>
+                            </template>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+            </div>
+        </template>
+    </c-ust-static-content>
+</template>

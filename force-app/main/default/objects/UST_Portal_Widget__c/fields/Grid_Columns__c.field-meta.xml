@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grid_Columns__c</fullName>
+    <description>How many cards sit side by side in a Card Grid on a wide screen: 2, 3 or 4. Fewer on narrower screens. Blank or unknown means 3.</description>
+    <inlineHelpText>How many cards sit side by side on a wide screen. Narrower screens show fewer.</inlineHelpText>
+    <label>Grid Columns</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>2</fullName>
+                <default>false</default>
+                <label>2 columns</label>
+            </value>
+            <value>
+                <fullName>3</fullName>
+                <default>true</default>
+                <label>3 columns</label>
+            </value>
+            <value>
+                <fullName>4</fullName>
+                <default>false</default>
+                <label>4 columns</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

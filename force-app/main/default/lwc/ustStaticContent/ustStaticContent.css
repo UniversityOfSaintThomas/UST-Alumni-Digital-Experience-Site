@@ -9,26 +9,114 @@
     color: var(--dxp-g-brand, #510c76);
 }
 
-/* ---- Widget-wide styles (Content_CSS_Class__c) ---- */
+/* ---- Section background (Section_Background__c) ----
+   A square colour panel behind the whole widget. The dark ones (Purple, Dark Purple) also get .ust-on-dark from the
+   component, which turns the heading, text, links and buttons light (see ustSharedStyles and below). The older
+   Content_CSS_Class__c panel looks (callout, inverse) map onto these in ustStaticContent.js. */
 
-/* Callout Panel: light purple tint with a purple left rule. */
-.ust-content-callout {
-    background-color: #f4eef8;
-    border-left: 0.25rem solid #510c76;
-    border-radius: 0.25rem;
-    padding: 1rem 1.25rem;
+.ust-bg {
+    box-sizing: border-box;
+    overflow: hidden; /* clips the decorative circles */
+    padding: var(--slds-g-spacing-6, 1.5rem);
+    position: relative;
 }
 
-/* Purple Banner: dark purple background with light text. */
-.ust-content-inverse {
-    background-color: #510c76;
-    color: #ffffff;
-    border-radius: 0.25rem;
-    padding: 1rem 1.25rem;
+.ust-bg-white {
+    background-color: var(--ust-white, #ffffff);
 }
 
-.ust-content-inverse .ust-static-content-header {
-    color: #ffffff;
+.ust-bg-gray {
+    background-color: var(--ust-band-gray, #f6f6f6);
+}
+
+.ust-bg-light-purple {
+    background-color: var(--ust-purple-md-10, #f2eaf6);
+}
+
+.ust-bg-purple {
+    background-color: var(--ust-purple-dark, #510c76);
+}
+
+.ust-bg-dark-purple {
+    background-color: var(--ust-purple-deep, #340e51);
+}
+
+/* Callout look (older Content_CSS_Class__c value, shown only when no Section Background is chosen): a thin
+   emerald line under the heading, as on the brand refresh's sidebars. */
+.ust-content-callout .ust-static-content-header {
+    border-bottom: var(--slds-g-sizing-border-2, 2px) solid var(--ust-green-emerald, #4c9c2e);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+/* ---- Section accent (Section_Accent__c): decorative circles ----
+   One filled circle with two outline circles around it, in the top-right corner, clipped by the panel. Colours are
+   the brand refresh's Feature Panel table: fill and line depend on the background; the line is emerald (green
+   circles) or Medium Purple 70% (purple circles). White has no entry in the guide; it uses the lightest tint.
+   The shapes are behind the content, hidden from assistive technology, and smaller on narrow screens. */
+
+.ust-has-accent {
+    --ust-accent-size: 14rem;
+    --ust-accent-fill: var(--ust-purple-md-10, #f2eaf6);
+    --ust-accent-line: var(--ust-green-emerald, #4c9c2e);
+}
+
+.ust-has-accent.ust-accent-purple {
+    --ust-accent-line: var(--ust-purple-md-70, #a97cc6);
+}
+
+.ust-has-accent.ust-bg-gray {
+    --ust-accent-fill: var(--ust-purple-md-20, #e6d8ee);
+}
+
+.ust-has-accent.ust-bg-light-purple {
+    --ust-accent-fill: var(--ust-purple-md-30, #dac5e6);
+}
+
+.ust-has-accent.ust-bg-purple {
+    --ust-accent-fill: var(--ust-purple-deep, #340e51);
+}
+
+.ust-has-accent.ust-bg-dark-purple {
+    --ust-accent-fill: var(--ust-purple-dark, #510c76);
+}
+
+/* The content sits above the shapes. */
+.ust-has-accent > :not(.ust-static-content-accent) {
+    position: relative;
+}
+
+.ust-static-content-accent {
+    background-color: var(--ust-accent-fill);
+    border-radius: 50%;
+    height: var(--ust-accent-size);
+    pointer-events: none;
+    position: absolute;
+    right: calc(var(--ust-accent-size) / -3);
+    top: calc(var(--ust-accent-size) / -3);
+    width: var(--ust-accent-size);
+}
+
+.ust-static-content-accent::before,
+.ust-static-content-accent::after {
+    border: var(--slds-g-sizing-border-2, 2px) solid var(--ust-accent-line);
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+}
+
+.ust-static-content-accent::before {
+    inset: calc(var(--ust-accent-size) / -6);
+}
+
+.ust-static-content-accent::after {
+    inset: calc(var(--ust-accent-size) / -3);
+}
+
+@media (max-width: 47.9375em) {
+    .ust-has-accent {
+        --ust-accent-size: 8rem;
+    }
 }
 
 /* Centered Text */
@@ -46,6 +134,20 @@
     color: inherit;
 }
 
+/* Small print on a dark panel stays light (the grey above would not be readable on Purple). */
+.ust-on-dark.ust-content-muted {
+    color: var(--ust-white, #ffffff);
+}
+
+/* Any dark background (a dark style, or the split hero's band): light text. Headings turn white through
+   .ust-on-dark in ustSharedStyles. */
+.ust-on-dark {
+    color: var(--ust-white, #ffffff);
+}
+
+/* Page-title sized headline (Hero Banner): the H1 size and line height of the type scale. Placed after the
+   over-picture heading rule below so it wins there too. */
+
 /* ---- Over a picture (Hero Banner): white text with a soft shadow, larger headline ---- */
 .ust-on-image,
 .ust-on-image lightning-formatted-rich-text {
@@ -57,4 +159,9 @@
     color: #ffffff;
     font-size: clamp(1.75rem, 4vw, 2.5rem);
     line-height: 1.2;
+}
+
+.ust-static-content_large .ust-static-content-header {
+    font-size: var(--ust-font-size-h1, clamp(3rem, 2.8rem + 0.9vw, 3.5rem));
+    line-height: var(--ust-line-height-h1, 1.1);
 }
