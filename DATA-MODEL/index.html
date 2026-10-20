@@ -717,6 +717,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#ust_portal_widget_item__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UST_Portal_Widget_Item__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alumni_preference__c" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1014,6 +1025,17 @@
     <span class="md-ellipsis">
       
         UST_Portal_Widget__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ust_portal_widget_item__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UST_Portal_Widget_Item__c
       
     </span>
   </a>
@@ -1446,6 +1468,117 @@
 <td><code>Description__c</code></td>
 <td>Long Text Area</td>
 <td>Admin notes only</td>
+</tr>
+</tbody>
+</table>
+<p>Settings added after the first version (all optional picklists; blank means the default):</p>
+<table>
+<thead>
+<tr>
+<th>Field Label</th>
+<th>API Name</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content CSS Class</td>
+<td><code>Content_CSS_Class__c</code></td>
+<td>Picklist</td>
+<td>Centered, small print, and the older Callout / Purple Banner looks</td>
+</tr>
+<tr>
+<td>Section Background</td>
+<td><code>Section_Background__c</code></td>
+<td>Picklist</td>
+<td>white; gray; light_purple; purple; dark_purple (Static Content and Card Grid)</td>
+</tr>
+<tr>
+<td>Section Accent</td>
+<td><code>Section_Accent__c</code></td>
+<td>Picklist</td>
+<td>green_circles; purple_circles (needs a background)</td>
+</tr>
+<tr>
+<td>Hero Layout</td>
+<td><code>Hero_Layout__c</code></td>
+<td>Picklist</td>
+<td>full (default); split</td>
+</tr>
+<tr>
+<td>Grid Columns</td>
+<td><code>Grid_Columns__c</code></td>
+<td>Picklist</td>
+<td>2; 3 (default); 4 (Card Grid)</td>
+</tr>
+<tr>
+<td>Card Bottom Bar</td>
+<td><code>Card_Bottom_Bar__c</code></td>
+<td>Picklist</td>
+<td>green (default); none (Card Grid)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ust_portal_widget_item__c">UST_Portal_Widget_Item__c<a class="headerlink" href="#ust_portal_widget_item__c" title="Permanent link">&para;</a></h3>
+<p>One card of a Card Grid widget. <strong>Master-Detail</strong> to <code>UST_Portal_Widget__c</code> (relationship <code>Items__r</code>), so cards are shared with and deleted with their widget (controlled by parent: the existing active-widget sharing rules cover them, including the guest rule). Admin editor: <code>UST_Portal_Widget_Admin</code> (full); read-only in the two portal sets.</p>
+<table>
+<thead>
+<tr>
+<th>Field Label</th>
+<th>API Name</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td><code>Name</code></td>
+<td>Text(80)</td>
+<td>Required</td>
+</tr>
+<tr>
+<td>Widget</td>
+<td><code>Widget__c</code></td>
+<td>Master-Detail(UST_Portal_Widget__c)</td>
+<td></td>
+</tr>
+<tr>
+<td>Sort Order</td>
+<td><code>Sort_Order__c</code></td>
+<td>Number(4,0)</td>
+<td>Ascending; blank sorts last, then by title</td>
+</tr>
+<tr>
+<td>Card Text</td>
+<td><code>Card_Text__c</code></td>
+<td>Long Text Area(500)</td>
+<td>Plain text, line breaks kept</td>
+</tr>
+<tr>
+<td>Image URL</td>
+<td><code>Image_URL__c</code></td>
+<td>URL</td>
+<td>https only; written by the S3 uploader or pasted</td>
+</tr>
+<tr>
+<td>Image Alt Text</td>
+<td><code>Image_Alt_Text__c</code></td>
+<td>Text(255)</td>
+<td>Blank = decorative picture</td>
+</tr>
+<tr>
+<td>Link URL</td>
+<td><code>Link_URL__c</code></td>
+<td>Text(255)</td>
+<td>Site page (<code>/...</code>) or https / mailto / tel</td>
+</tr>
+<tr>
+<td>Open In New Tab</td>
+<td><code>Open_In_New_Tab__c</code></td>
+<td>Checkbox</td>
+<td>https links only</td>
 </tr>
 </tbody>
 </table>

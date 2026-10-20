@@ -600,6 +600,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#card-grid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Card Grid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#1-profile-card" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -917,6 +928,17 @@
     <span class="md-ellipsis">
       
         Hero Banner
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#card-grid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Card Grid
       
     </span>
   </a>
@@ -1248,6 +1270,22 @@
 <td>Built-in; no separate LWC needed</td>
 </tr>
 <tr>
+<td>—</td>
+<td><a href="#hero-banner">Hero Banner</a></td>
+<td>4</td>
+<td>—</td>
+<td>✅ Done</td>
+<td>Picture upload needs the S3 bucket set up once per org</td>
+</tr>
+<tr>
+<td>—</td>
+<td><a href="#card-grid">Card Grid</a></td>
+<td>5.5</td>
+<td>—</td>
+<td>✅ Done</td>
+<td>Cards are child records (<code>UST_Portal_Widget_Item__c</code>); pictures need the S3 bucket or a pasted https address</td>
+</tr>
+<tr>
 <td>1</td>
 <td><a href="#1-profile-card">Profile Card</a></td>
 <td>1</td>
@@ -1375,10 +1413,13 @@
 2. Set <strong>Component Name</strong> = <code>Static Content</code>. The <strong>Content</strong> section appears.
 3. Enter an optional header, pick a <strong>Content CSS Class</strong> (optional), and write the content in the rich text editor. Use the <strong>Paragraph style</strong> dropdown for Heading 2-5. The preview below the editor shows how it renders on the portal.
 4. Set Zone, Page Context, Sort Order, and Is Active as normal, then <strong>Save</strong>.</p>
-<p><strong>Content CSS Class (<code>Content_CSS_Class__c</code>):</strong> styles the whole widget (not selected text). The classic Quill-based editor cannot round-trip a <code>class</code> attribute, so styles are widget-wide. Current values: <code>ust-content-callout</code>, <code>ust-content-inverse</code>, <code>ust-content-centered</code>, <code>ust-content-muted</code>. Only inherited properties (text color, alignment, font size) reach the rich text itself, because <code>lightning-formatted-rich-text</code> owns its markup.</p>
+<p><strong>Content CSS Class (<code>Content_CSS_Class__c</code>):</strong> styles the whole widget (not selected text). The classic Quill-based editor cannot round-trip a <code>class</code> attribute, so styles are widget-wide. Current values: <code>ust-content-callout</code> (<strong>Light Purple</strong> panel, square, thin emerald line under the heading), <code>ust-content-inverse</code> (<strong>Purple</strong> panel, square, white text and links; its buttons switch to the dark-background look), <code>ust-content-centered</code>, <code>ust-content-muted</code>. The two panels no longer have rounded corners or a left rule (Spring 2026 brand refresh). Only inherited properties (text color, alignment, font size) reach the rich text itself, because <code>lightning-formatted-rich-text</code> owns its markup.</p>
+<p><strong>Section Background and Section Accent (<code>Section_Background__c</code>, <code>Section_Accent__c</code>, Static Content only):</strong> a colour panel behind the whole widget (White, Gray, Light Purple, Purple, Dark Purple; blank = no panel) and optional decorative circles in the top-right corner (Green circles or Purple circles; needs a background). On Purple and Dark Purple the heading, text, links and buttons turn light automatically. A chosen background replaces the older Callout Panel and Purple Banner looks of Content CSS Class (which still work on their own); Centered and Small Print combine with any background. To add a background: picklist value, <code>BACKGROUND_CLASSES</code> (and <code>DARK_BACKGROUNDS</code> if dark) in <code>ustStaticContent.js</code>, and a rule in <code>ustStaticContent.css</code>.</p>
 <p><strong>Adding a new style class:</strong> (1) add a picklist value on <code>Content_CSS_Class__c</code> (API name = CSS class), (2) add it to <code>ALLOWED_CONTENT_CLASSES</code> in <code>ustStaticContent.js</code>, (3) add its rule in <code>ustStaticContent.css</code>. Classes not on the allowlist are ignored.</p>
 <p><strong>Adding a conditional section to the editor later:</strong> add the <code>Component_Name__c</code> value and a section key to <code>COMPONENT_SECTIONS</code> in <code>ustWidgetRecordEditor.js</code>, then add a getter and template block (see the header comment in that file).</p>
 <p><strong>Call-to-action buttons:</strong> In the Content section, use <strong>Add button</strong> to create buttons for the widget. Each button has text, a type, a link, a style, a position, and an optional icon. <strong>Links to</strong> either an <em>external link</em> (a full <code>https://</code> address, or <code>mailto:</code> / <code>tel:</code>) or a <em>portal page</em>: pick a site page from the list (pages that require sign-in are marked) or type a path that starts with a single <code>/</code>, such as <code>/alumni-directory</code>. Portal links are stored without the site's address, so the same widget works unchanged in sandbox and production. External web links open in a new tab unless you clear that option. Use the arrows to reorder, the pencil to edit, and the trash to delete; buttons are saved with the widget when you press <strong>Save</strong> (finish or cancel a button you are editing first). <strong>Button Placement</strong> puts the buttons above or below the text (below is the default). <strong>Button Size</strong> applies to every button in the widget: blank sizes to the text, <em>Wide</em> gives equal minimum width, <em>Full width</em> stretches them. Button text and links can use data tags (links accept only Banner ID and Contact Id). Anything that is not a safe link is dropped when the page loads, so a mistyped or unsafe link never reaches visitors. To add a size: add a <code>Button_Size__c</code> picklist value, list it in <code>ustWidgetButtons.js</code> (<code>SIZE_CLASSES</code>), and add its rule in <code>ustWidgetButtons.css</code>.</p>
+<p><strong>Button styles:</strong> <em>Brand</em> (solid bright-purple pill; Purple on hover, white with Purple text on a dark background), <em>Outline</em> (transparent pill with a bright-purple outline; white outline on dark backgrounds), Neutral, Success, Destructive, <em>Text link</em> (bright purple, underlined; the underline slides away on hover), <em>Arrow link</em> (bold label with an arrow that nudges right on hover; white on dark backgrounds), and Destructive text link. To add a style: add it to <code>STYLES</code> in <code>PortalButtons.cls</code> (the server allowlist), to <code>STYLE_OPTIONS</code> in <code>ustButtonRules.js</code> (the editor list) and to <code>STYLE_CLASSES</code> in <code>ustWidgetButtons.js</code>, plus its look in <code>ustSharedStyles.css</code> or <code>ustWidgetButtons.css</code>.</p>
+<p><strong>Hero Banner layout (<code>Hero_Layout__c</code>):</strong> <em>Full picture</em> (default; also used when blank): the picture fills the banner with the text on top, using Height, Text position and Overlay. <em>Split</em>: the text sits on a dark purple band (<code>#230e3c</code>) with faint rings, and the picture (3:2, up to 560px wide) sits beside it and hangs about 2rem below the band; under 1024px the picture stacks below the text inside the band. Text position and Overlay are not used in Split. The editor shows a hint and previews either layout.</p>
 <p><strong>Data tags (personalization):</strong> Write <code>{{First_Name}}</code> or <code>{{First_Name|Alum}}</code> (text after the pipe is the fallback) in the header or body. Use the <strong>Insert data tag</strong> list beside the editor and header field so tags are typed correctly. Available tags: <code>First_Name</code> (nickname if there is one), <code>Last_Name</code>, <code>Class_Year</code>, <code>Employer</code>, <code>Job_Title</code>, <code>St_Thomas_Degree</code>, <code>City_State</code>, <code>Contact_Id</code>, <code>Banner_ID</code>. Values come from the signed-in alumnus's Alumni Directory record; guests and alumni without a record see the fallback (or nothing). Tags are case-insensitive, unknown tags stay visible as typed (the editor warns), and values are escaped so a profile entry can never inject markup. The preview shows sample values; tick <strong>Preview as a guest</strong> to see the fallbacks. Email, phone, birthdate, and address are deliberately not available. To add a tag, add it to <code>PortalDataTags</code> (definition and value mapping) and its test.</p>
 <p><strong>Zone and page targeting:</strong> The editor's <strong>Page Context</strong> picker only offers pages that have the selected zone. It reads the <code>UST_Portal_Zone_Placement__c</code> registry, which <code>ustWidgetZone</code> keeps current by registering itself whenever an admin opens a page in Experience Builder (never for site visitors). Changing the zone removes known pages that lack it, with an Undo. Pages not yet registered can be typed in by page API name (lowercase, for example <code>my_account__c</code>). Admins need the <code>UST_Portal_Widget_Admin</code> permission set for registration to work. The <code>banner</code> and <code>above_footer</code> zones live in the shared theme layout (set <code>Zone Scope</code> = Layout on any zone placed there) and count as present on every page. See <code>docs/WIDGET-AUTHORING-PLAN.md</code>.</p>
 <p><strong>Components:</strong>
@@ -1423,6 +1464,31 @@
 <p><strong>Data flow:</strong>
 - <code>PortalWidgetController</code> adds a <code>hero</code> block (<code>PortalHero</code>) for hero widgets only: validated https picture addresses with a cache-busting version, alt text, and the look settings.
 - <code>ustWidgetZone</code> renders <code>&lt;c-ust-hero-banner&gt;</code>, which draws the picture and layers <code>ustStaticContent</code> on top for the headline, text, and buttons.</p>
+<h2 id="card-grid">Card Grid<a class="headerlink" href="#card-grid" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose:</strong> A heading, optional text and buttons, then a grid of cards, each with an optional picture, a title, a short description and an optional link (the "How You Can Make an Impact" block on the live Support page).</p>
+<p><strong>Widget Type value:</strong> <code>ust_card_grid</code><br />
+<strong>LWC:</strong> <code>c-ust-card-grid</code> (built; the heading, text, buttons, Section Background and Accent are drawn by <code>c-ust-static-content</code>, which the grid sits inside)<br />
+<strong>Zone-Ready:</strong> Yes</p>
+<p><strong>How to use:</strong>
+1. Create a <code>UST_Portal_Widget__c</code> record, set <strong>Component Name</strong> = <code>Card Grid</code>, choose the Zone and Page Context, and <strong>Save</strong>. (Cards need a saved widget.)
+2. In <strong>Content</strong>, write the heading and any intro text and buttons. Section Background and Accent work as for Static Content.
+3. In <strong>Cards</strong>, choose <strong>Grid Columns</strong> (2, 3 or 4; 3 if left blank) and <strong>Card Bottom Bar</strong> (Green, or No bar; Green if left blank). One setting applies to every card.
+4. Choose <strong>Add card</strong>. Give it a title (required), and optionally text (500 characters, plain text), a link, a picture address and a picture description. Use the arrows to reorder, the pencil to edit, the bin to delete (it asks first).
+5. To upload a picture, save the card first, then edit it: the upload appears (cropped to 600 x 400, shown 3 wide by 2 high). Pasting an https address works without the S3 bucket.
+6. The preview shows the grid as visitors will see it. Cards save as soon as you save them; they are not part of the page's Save or Reset. Column and bar choices preview at once but save with the widget.</p>
+<p><strong>Behavior:</strong>
+- <strong>Columns follow the space the grid has, not the window.</strong> 3 columns need 832px of width, 2 need 512px, 1 below; 4 columns need 1152px (so a narrow body zone never squeezes cards). Cards are never narrower than about 260px.
+- A card is one click target: the title link stretches over the whole card. The bottom bar turns bright purple on hover or keyboard focus for a card that has a link. A card without a link has no hover change.
+- <strong>Links</strong> follow the same rules as buttons: a site page (starts with <code>/</code>) or an <code>https:</code>, <code>mailto:</code> or <code>tel:</code> address. Anything else is refused when you save and dropped by the portal. A new tab applies to <code>https:</code> links only.
+- <strong>Pictures</strong> must be <code>https:</code>. A picture with no description is treated as decorative (empty alt text); add a description when it shows something.
+- At most 24 cards per grid. Cards stay white with dark text on any panel colour.
+- Order is Sort Order, then title; the arrows renumber 10, 20, 30...
+- Data tags are not supported in cards.</p>
+<p><strong>Data flow:</strong>
+- <code>PortalWidgetController</code> loads the cards of the Card Grid widgets that will show in one query (system mode, because guests read it) and <code>PortalCardGrid.prepare()</code> cleans them into <code>grid</code> on the widget DTO.
+- <code>ustWidgetZone</code> renders <code>&lt;c-ust-card-grid&gt;</code>; <code>ustStaticContent</code> has a slot (last, after the buttons) for the grid.
+- The admin editor uses <code>PortalCardGrid.getEditorItems/saveItem/deleteItem/reorder</code> (run as the admin, so object and field access are enforced; <code>UST_Portal_Widget_Admin</code> grants the class) and <code>getGridPreview</code> for the preview, so the preview applies exactly the portal's rules.</p>
+<p><strong>Adding another item-based widget later:</strong> reuse <code>UST_Portal_Widget_Item__c</code> only if the fields fit (title, text, picture, link); otherwise add a sibling object rather than overloading these fields.</p>
 <h2 id="1-profile-card">1. Profile Card<a class="headerlink" href="#1-profile-card" title="Permanent link">&para;</a></h2>
 <p><strong>Purpose:</strong> Surface the alumni's own information on the portal. Give them confidence the portal "knows" them and let them keep their record current.</p>
 <p><strong>Features:</strong>
