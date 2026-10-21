@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Component_Name__c</fullName>
-    <description>Registry key that maps this record to one entry in the ustWidgetZone component registry. Value must exactly match the key used in the JS mapping and the lwc:if condition in the template. Add a new picklist value here AND a corresponding entry in ustWidgetZone when a new widget LWC is built.</description>
+    <description>Registry key that maps this record to one entry in the ustWidgetZone registry. Only built widgets are active: Static Content, Hero Banner and Card Grid. The other values are inactive (planned, not built); to bring one back, build its LWC, register it in ustWidgetZone, then mark the value active here. Existing records keep their value.</description>
     <label>Component Name</label>
     <required>false</required>
     <trackTrending>false</trackTrending>
@@ -13,16 +13,19 @@
             <value>
                 <fullName>ust_alumni_directory</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Alumni Directory and Connect</label>
             </value>
             <value>
                 <fullName>ust_alumni_news</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Alumni News and UST Updates</label>
             </value>
             <value>
                 <fullName>ust_athletics</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Athletics</label>
             </value>
             <value>
@@ -33,21 +36,25 @@
             <value>
                 <fullName>ust_communications_history</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Communications History</label>
             </value>
             <value>
                 <fullName>ust_engagement_summary</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Engagement Summary</label>
             </value>
             <value>
                 <fullName>ust_events_widget</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Events Widget</label>
             </value>
             <value>
                 <fullName>ust_give_widget</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Give / Donor Widget</label>
             </value>
             <value>
@@ -58,26 +65,31 @@
             <value>
                 <fullName>ust_links_hub</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Links Hub</label>
             </value>
             <value>
                 <fullName>ust_photo_story</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Photo and Story Sharing</label>
             </value>
             <value>
                 <fullName>ust_preference_center</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Preference Center</label>
             </value>
             <value>
                 <fullName>ust_profile_card</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Profile Card</label>
             </value>
             <value>
                 <fullName>ust_connection_messages</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>St. Thomas Connection Messages</label>
             </value>
             <value>
@@ -88,11 +100,13 @@
             <value>
                 <fullName>ust_videos_media</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Videos and Media</label>
             </value>
             <value>
                 <fullName>ust_volunteer</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Volunteer Management</label>
             </value>
         </valueSetDefinition>

@@ -21,6 +21,8 @@ UST_Portal_Widget__c record (Zone/Page/Component/Audience)
 2. Add `<template lwc:elseif={widget.isMyWidget}>` block in `lwc/ustWidgetZone/ustWidgetZone.html`
 3. Deploy both `ustWidgetZone` and the new widget LWC together
 
+**Plus one thing in the org metadata: make its value selectable.** Only the built widgets (`ust_static_content`, `ust_hero_banner`, `ust_card_grid`) are active in the `Component_Name__c` picklist; the aspirational ones (profile card, events, give, and so on) are inactive so an admin cannot pick a widget that does not exist. For a widget that already has a value, delete its `<isActive>false</isActive>` line in `Component_Name__c.field-meta.xml`; for a new one, add a `<value>`. The field is restricted, so a record (or sample data) using an inactive value is refused on create; existing records keep their value.
+
 **A new widget that needs a new field on `UST_Portal_Widget__c` (or a field on a new child object) has more places to touch, and missing one fails silently** (the value just never arrives). Walk this list every time:
 1. Field XML under `objects/UST_Portal_Widget__c/fields/` (restricted picklists with **no default** if blank must mean "none"; a default fills every existing record).
 2. `fieldPermissions` in all three sets: `UST_Portal_Widget_Admin` (editable), `Alumni_Community_Guest` and `Alumni_Community` (read only). A guest cannot see a field that is missing here.
@@ -94,7 +96,7 @@ sf project retrieve start --metadata "DigitalExperienceBundle:site/Alumni1" --ou
 
 ## Sample Data (scratch orgs)
 
-`datasets/dev` is loaded by `config_dev` step 90 and includes `datasets/widgets` (24 `[Sample]` widgets covering every zone, page context, filter, and edge case) and `datasets/alumni` (16 Contacts + 15 Alumni Directory records). Steps 91 and 92 (`create_sample_portal_users`, `link_sample_portal_users`, Apex in `datasets/alumni/`) create portal users smp1 to smp4 with `Alumni_Community`, then link them to their Contact and Directory record. Full table and persona list: `docs/MAIN_GUIDE.md#sample-data-for-scratch-orgs`.
+`datasets/dev` is loaded by `config_dev` step 90 and includes `datasets/widgets` (23 `[Sample]` widgets covering every zone, page context, filter, and edge case) and `datasets/alumni` (16 Contacts + 15 Alumni Directory records). Steps 91 and 92 (`create_sample_portal_users`, `link_sample_portal_users`, Apex in `datasets/alumni/`) create portal users smp1 to smp4 with `Alumni_Community`, then link them to their Contact and Directory record. Full table and persona list: `docs/MAIN_GUIDE.md#sample-data-for-scratch-orgs`.
 
 - **Users cannot go through a Snowfakery recipe** (the loader demands all 119 platform-defaulted `User` checkboxes), and a User and a Contact cannot change in one transaction, hence two Apex scripts.
 - **People and users load once per org.** A Contact with a portal user cannot be deleted. Widgets can be reset (`delete_sample_widgets`) and reloaded. A scratch org has 5 Customer Community Login licenses; the sample uses 4.

@@ -6,7 +6,7 @@
 # Every widget is named "[Sample] ..." so delete_sample_widgets can find exactly these and nothing else.
 # Page contexts (UST_Portal_Zone_Placement__c) are NOT created here: config_dev step 1.6 seeds the real ones
 # (home, alumni_directory__c, plus the layout zones banner and above_footer). The widgets use those, plus
-# deliberate edge cases (inactive, zone mismatch, unregistered page, stub component).
+# deliberate edge cases (inactive, zone mismatch, unregistered page).
 #
 # Which persona sees what (personas are in datasets/alumni/alumni.recipe.yml):
 #   everyone ........ the All Pages banner/above-footer widgets, the hero, the two-page sidebar widget
@@ -433,13 +433,3 @@
     Description__c: Legacy value "giving" is not a registered page. The picker should flag it as unregistered.
     Static_Content_Header__c: Giving page widget
     Static_Content__c: <p>Legacy page context.</p>
-
-- object: UST_Portal_Widget__c
-  fields:
-    Name: "[Sample] EDGE stub component (not built yet)"
-    Component_Name__c: ust_events_widget
-    Zone__c: sidebar
-    Page_Context__c: home
-    Is_Active__c: true
-    Sort_Order__c: 99
-    Description__c: Registered in the picklist but not in the zone registry, so it renders the Builder-only stub.

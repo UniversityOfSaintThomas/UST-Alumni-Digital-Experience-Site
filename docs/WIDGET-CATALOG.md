@@ -27,7 +27,7 @@ Maps each widget to its `Component_Name__c` picklist value (the registry key use
 | 13 | Volunteer Management | `ust_volunteer` | `c-ust-volunteer` | All |
 | 14 | Alumni News & UST Updates | `ust_alumni_news` | `c-ust-alumni-news` | All |
 
-> **Registry activation:** The LWC component tag listed above only renders once its boolean flag is uncommented in `ustWidgetZone.js` and a matching `lwc:if` block is added to `ustWidgetZone.html`. Until then, a stub placeholder shows in Experience Builder and nothing shows in the live site. See MAIN_GUIDE.md → Widget Zone System → Adding a New Widget.
+> **Registry activation:** The LWC component tag listed above only renders once its boolean flag is uncommented in `ustWidgetZone.js` and a matching `lwc:if` block is added to `ustWidgetZone.html`. Until then, a stub placeholder shows in Experience Builder and nothing shows in the live site. See MAIN_GUIDE.md → Widget Zone System → Adding a New Widget. **Component Name picklist:** only built widgets are active there (Static Content, Hero Banner, Card Grid). The planned widgets in this table have their value kept but **inactive**, so they cannot be picked yet; reactivate a value (remove its `<isActive>false</isActive>` in `Component_Name__c.field-meta.xml`) when its widget is built.
 
 ---
 
