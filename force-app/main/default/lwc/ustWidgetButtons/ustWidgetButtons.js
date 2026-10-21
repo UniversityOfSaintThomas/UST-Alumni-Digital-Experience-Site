@@ -15,6 +15,13 @@ const STYLE_CLASSES = {
 };
 const DEFAULT_STYLE_CLASS = STYLE_CLASSES.brand;
 
+/** Layouts a widget may choose (Button_Layout__c); anything else is a row of buttons. */
+const LAYOUT_ROW = 'row';
+const LAYOUT_LIST = 'list';
+const LAYOUT_LIST_COMPACT = 'list_compact';
+const LAYOUTS = [LAYOUT_ROW, LAYOUT_LIST, LAYOUT_LIST_COMPACT];
+const KIND_NOTE = 'note';
+
 /** Sizes a widget may choose (Button_Size__c); anything else is ignored. */
 const SIZE_CLASSES = ['ust-buttons-wide', 'ust-buttons-full'];
 
@@ -40,6 +47,13 @@ const ALIGN_CLASSES = {
 export default class UstWidgetButtons extends NavigationMixin(LightningElement) {
     /** Widget-wide size class from Button_Size__c: ust-buttons-wide, ust-buttons-full, or blank. */
     @api buttonSize = '';
+
+    /**
+     * Widget-wide layout from Button_Layout__c: row (blank), list, or list_compact. In a list every link is a
+     * full-width row with an arrow (each link's own style, position and icon are not used) and notes sit
+     * between the rows. An unknown value is a row of buttons.
+     */
+    @api buttonLayout = '';
 
     /** When true (the admin editor preview) clicks never navigate. */
     @api previewMode = false;
@@ -76,15 +90,52 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
         this._connected = false;
     }
 
+    /** Links that pass the link rules, and notes that carry some text. Anything else is not drawn. */
     get safeButtons() {
-        return this._buttons.filter((button) => button && button.label && isAllowedUrl(button.type, button.url));
+        return this._buttons.filter((button) => {
+            if (!button) {
+                return false;
+            }
+            if (button.kind === KIND_NOTE) {
+                return typeof button.html === 'string' && button.html.trim() !== '';
+            }
+            return !!button.label && isAllowedUrl(button.type, button.url);
+        });
     }
 
     get hasButtons() {
         return this.safeButtons.length > 0;
     }
 
+    get layout() {
+        return LAYOUTS.includes(this.buttonLayout) ? this.buttonLayout : LAYOUT_ROW;
+    }
+
+    get isList() {
+        return this.layout !== LAYOUT_ROW;
+    }
+
+    /** One entry per link or note, for the list layouts (a <li> each). */
+    get listItems() {
+        return this.safeButtons.map((button) => {
+            if (button.kind === KIND_NOTE) {
+                return { key: 'item-' + button.id, isNote: true, html: button.html };
+            }
+            return { key: 'item-' + button.id, isNote: false, button: this.toView(button) };
+        });
+    }
+
     get containerClass() {
+        if (this.isList) {
+            let listClasses = 'ust-widget-buttons ust-links-list';
+            if (this.layout === LAYOUT_LIST_COMPACT) {
+                listClasses += ' ust-links-list_compact';
+            }
+            if (this.overImage || this.darkBackground) {
+                listClasses += ' ust-on-dark';
+            }
+            return listClasses;
+        }
         let classes = SIZE_CLASSES.includes(this.buttonSize) ? 'ust-widget-buttons ' + this.buttonSize : 'ust-widget-buttons';
         if (this.overImage) {
             classes += ' ust-buttons-on-image ust-on-dark';
@@ -94,13 +145,18 @@ export default class UstWidgetButtons extends NavigationMixin(LightningElement) 
         return classes;
     }
 
-    /** Consecutive buttons with the same alignment share a row. */
+    /** Consecutive buttons with the same alignment share a row; a note is a block between rows. */
     get rows() {
         const rows = [];
         this.safeButtons.forEach((button) => {
+            if (button.kind === KIND_NOTE) {
+                rows.push({ key: 'row-' + button.id, className: 'ust-note-row', isNote: true, html: button.html });
+                return;
+            }
             const alignClass = ALIGN_CLASSES[button.align] || ALIGN_CLASSES.left;
             const last = rows[rows.length - 1];
             const view = this.toView(button);
+            // A note row has its own class, so it never matches an alignment class and always ends the row before it.
             if (last && last.className === alignClass) {
                 last.buttons.push(view);
             } else {

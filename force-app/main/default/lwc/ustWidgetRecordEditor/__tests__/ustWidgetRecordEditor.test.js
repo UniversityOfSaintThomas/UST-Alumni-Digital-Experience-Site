@@ -1134,6 +1134,108 @@ describe('c-ust-widget-record-editor', () => {
         });
     });
 
+    describe('button layout (links list)', () => {
+        const FIRST = { Component_Name__c: 'ust_static_content', Zone__c: 'body', Page_Context__c: 'home', Static_Content__c: '<p>Hi</p>' };
+        const LATER = { ...FIRST, Button_Layout__c: 'list_compact' };
+        const buttonEditor = (element) => element.shadowRoot.querySelector('c-ust-widget-button-editor');
+        const previewHost = (element) => element.shadowRoot.querySelector('c-ust-static-content');
+        const change = (element, apiName, value) =>
+            getInputField(element, apiName).dispatchEvent(new CustomEvent('change', { detail: { value } }));
+        const clickReset = async (element) => {
+            Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find((b) => b.label === 'Reset').click();
+            await flushPromises();
+        };
+
+        async function openWithLayout(record = FIRST, later = LATER) {
+            const element = createEditor();
+            [1, 2, 3].forEach(() => loadRecord(element, record));
+            await flushPromises();
+            loadRecord(element, later);
+            await flushPromises();
+            return element;
+        }
+
+        it('offers the picker for Static Content and Card Grid, not for the Hero Banner', async () => {
+            const staticContent = createEditor();
+            loadRecord(staticContent, FIRST);
+            await flushPromises();
+            expect(getInputField(staticContent, 'Button_Layout__c')).toBeTruthy();
+
+            const grid = createEditor();
+            loadRecord(grid, { ...FIRST, Component_Name__c: 'ust_card_grid' });
+            await flushPromises();
+            expect(getInputField(grid, 'Button_Layout__c')).toBeTruthy();
+
+            const hero = createEditor();
+            loadRecord(hero, { ...FIRST, Component_Name__c: 'ust_hero_banner' });
+            await flushPromises();
+            expect(getInputField(hero, 'Button_Layout__c')).toBeUndefined();
+        });
+
+        it('gives the button editor and the preview the saved layout, read from the later load', async () => {
+            const element = await openWithLayout();
+            expect(buttonEditor(element).buttonLayout).toBe('list_compact');
+            expect(previewHost(element).buttonLayout).toBe('list_compact');
+        });
+
+        it('shows a row of buttons (no layout) until a layout has loaded or been chosen', async () => {
+            const element = createEditor();
+            loadRecord(element, FIRST);
+            await flushPromises();
+            expect(buttonEditor(element).buttonLayout).toBeFalsy();
+            expect(previewHost(element).buttonLayout).toBeFalsy();
+        });
+
+        it('previews a changed layout at once and tells the button editor', async () => {
+            const element = await openWithLayout();
+            change(element, 'Button_Layout__c', 'list');
+            await flushPromises();
+            expect(previewHost(element).buttonLayout).toBe('list');
+            expect(buttonEditor(element).buttonLayout).toBe('list');
+            change(element, 'Button_Layout__c', '');
+            await flushPromises();
+            expect(previewHost(element).buttonLayout).toBeFalsy();
+            expect(buttonEditor(element).buttonLayout).toBeFalsy();
+        });
+
+        it('passes the layout to the Card Grid preview too', async () => {
+            const grid = { ...FIRST, Component_Name__c: 'ust_card_grid' };
+            const element = await openWithLayout(grid, { ...grid, Button_Layout__c: 'list' });
+            expect(element.shadowRoot.querySelector('c-ust-card-grid').buttonLayout).toBe('list');
+        });
+
+        it('never gives the Hero Banner a layout, even if the record has one stored', async () => {
+            const hero = { ...FIRST, Component_Name__c: 'ust_hero_banner' };
+            const element = await openWithLayout(hero, { ...hero, Button_Layout__c: 'list' });
+            expect(buttonEditor(element).buttonLayout).toBeFalsy();
+            expect(element.shadowRoot.querySelector('c-ust-hero-banner').buttonLayout).toBeUndefined();
+        });
+
+        it('keeps an edit when the form loads again afterwards with the saved layout', async () => {
+            const element = await openWithLayout();
+            change(element, 'Button_Layout__c', 'list');
+            loadRecord(element, LATER);
+            loadRecord(element, LATER);
+            await flushPromises();
+            expect(previewHost(element).buttonLayout).toBe('list');
+        });
+
+        it('Reset returns to the saved layout, and after Save to what was just saved', async () => {
+            const element = await openWithLayout();
+            change(element, 'Button_Layout__c', 'list');
+            await flushPromises();
+            await clickReset(element);
+            expect(previewHost(element).buttonLayout).toBe('list_compact');
+
+            change(element, 'Button_Layout__c', 'list');
+            getForm(element).dispatchEvent(new CustomEvent('success', { detail: { id: RECORD_ID } }));
+            await flushPromises();
+            change(element, 'Button_Layout__c', '');
+            await clickReset(element);
+            expect(previewHost(element).buttonLayout).toBe('list');
+        });
+    });
+
     describe('card order', () => {
         /** The visible card titles, top to bottom. */
         function cardTitles(element) {

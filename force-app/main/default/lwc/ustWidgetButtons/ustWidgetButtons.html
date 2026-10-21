@@ -1,7 +1,43 @@
 <template>
     <template lwc:if={hasButtons}>
+        <template lwc:if={isList}>
+            <ul class={containerClass} role="list">
+                <template for:each={listItems} for:item="item">
+                    <li key={item.key} class="ust-links-list__item">
+                        <template lwc:if={item.isNote}>
+                            <div class="ust-links-list__note">
+                                <lightning-formatted-rich-text value={item.html}></lightning-formatted-rich-text>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <a
+                                class="ust-list-row"
+                                href={item.button.href}
+                                target={item.button.target}
+                                rel={item.button.rel}
+                                data-id={item.button.id}
+                                onclick={handleClick}>
+                                <span class="ust-list-row__label">{item.button.label}<template lwc:if={item.button.opensNewTab}><span class="slds-assistive-text"> (opens in a new tab)</span></template></span>
+                                <span class="ust-list-row__arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 25 15" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                                        <path fill="currentColor" d="M24.1785 7.2505L18.1022 0.692797C17.9553 0.537595 17.7031 0.536087 17.5622 0.674715C17.4183 0.816358 17.4079 1.07555 17.5444 1.22321L23.0153 7.12977L1.10731 7.12977C0.898138 7.12977 0.727539 7.30305 0.727539 7.51552C0.727539 7.72798 0.898138 7.90126 1.10731 7.90126L23.0153 7.90126L17.5444 13.8078C17.4079 13.9555 17.4153 14.2177 17.5622 14.3563C17.7076 14.4949 17.9434 14.498 18.1022 14.3382L24.1785 7.78053C24.3224 7.59971 24.2853 7.3782 24.1785 7.25013V7.2505Z"/>
+                                    </svg>
+                                </span>
+                            </a>
+                        </template>
+                    </li>
+                </template>
+            </ul>
+        </template>
+        <template lwc:else>
         <div class={containerClass}>
             <template for:each={rows} for:item="row">
+                <template lwc:if={row.isNote}>
+                    <div key={row.key} class={row.className}>
+                        <lightning-formatted-rich-text value={row.html}></lightning-formatted-rich-text>
+                    </div>
+                </template>
+                <template lwc:else>
                 <div key={row.key} class={row.className}>
                     <template for:each={row.buttons} for:item="button">
                         <a
@@ -34,7 +70,9 @@
                         </a>
                     </template>
                 </div>
+                </template>
             </template>
         </div>
+        </template>
     </template>
 </template>

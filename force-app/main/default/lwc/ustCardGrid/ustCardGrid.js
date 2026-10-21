@@ -37,6 +37,7 @@ export default class UstCardGrid extends NavigationMixin(LightningElement) {
     @api buttons;
     @api buttonPlacement;
     @api buttonSize;
+    @api buttonLayout;
 
     /** True in the admin editor: links do nothing, so clicking a card in the preview never leaves the page. */
     @api previewMode = false;

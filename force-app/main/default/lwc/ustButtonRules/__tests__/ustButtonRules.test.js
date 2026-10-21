@@ -1,6 +1,7 @@
 import {
     isAllowedUrl, normalizeIcon, validateButton, parseButtonsJson, serializeButtons, newButton, newButtonId,
-    resolveButtonsForPreview, TYPE_EXTERNAL, TYPE_PORTAL
+    resolveButtonsForPreview, TYPE_EXTERNAL, TYPE_PORTAL,
+    isNote, isListLayout, newNote, noteLength, noteText, MAX_NOTE_HTML, MAX_NOTES, MAX_ITEMS, LAYOUT_OPTIONS
 } from 'c/ustButtonRules';
 
 const TAGS = [
@@ -161,5 +162,94 @@ describe('resolveButtonsForPreview', () => {
     it('never opens mailto or portal links in a new tab', () => {
         const [mail] = resolveButtonsForPreview([{ id: 'm', label: 'Mail', type: TYPE_EXTERNAL, url: 'mailto:a@b.edu', newTab: true }], {}, TAGS);
         expect(mail.newTab).toBe(false);
+    });
+});
+
+describe('notes (short text between links)', () => {
+    const link = (id = 'a') => ({ id, label: 'Go', type: 'external', url: 'https://example.edu/' + id, newTab: true, style: 'brand', align: 'left', icon: '' });
+    const note = (html, id = 'n1') => ({ id, kind: 'note', html });
+
+    it('tells a note from a button and a links list from a row', () => {
+        expect(isNote(note('x'))).toBe(true);
+        expect(isNote(link())).toBe(false);
+        expect(isNote(null)).toBe(false);
+        expect(isListLayout('list')).toBe(true);
+        expect(isListLayout('list_compact')).toBe(true);
+        expect(isListLayout('row')).toBe(false);
+        expect(isListLayout(undefined)).toBe(false);
+        expect(LAYOUT_OPTIONS.map((option) => option.value)).toEqual(['row', 'list', 'list_compact']);
+    });
+
+    it('creates a note with its own id, apart from button ids', () => {
+        const first = newNote();
+        const second = newNote();
+        expect(first.kind).toBe('note');
+        expect(first.html).toBe('');
+        expect(first.id).not.toBe(second.id);
+        expect(first.id.startsWith('n')).toBe(true);
+    });
+
+    it('stores a note without a type, so an older release drops it instead of showing a broken button', () => {
+        const stored = JSON.parse(serializeButtons([link(), note('<strong>Hi</strong>')]));
+        expect(stored.buttons[1]).toEqual({ id: 'n1', kind: 'note', html: '<strong>Hi</strong>' });
+        expect(stored.buttons[1].type).toBeUndefined();
+        expect(stored.buttons[1].url).toBeUndefined();
+    });
+
+    it('round-trips links and notes in order', () => {
+        const items = [link('a'), note('Between'), link('b')];
+        const back = parseButtonsJson(serializeButtons(items));
+        expect(back.map((item) => (isNote(item) ? 'note' : item.id))).toEqual(['a', 'note', 'b']);
+        expect(back[1].html).toBe('Between');
+    });
+
+    it('reads a damaged note leniently', () => {
+        const back = parseButtonsJson(JSON.stringify({ version: 1, buttons: [{ kind: 'note' }, { kind: 'note', id: 5, html: 7 }] }));
+        expect(back).toHaveLength(2);
+        expect(back[0]).toEqual({ id: 'n1', kind: 'note', html: '' });
+        expect(back[1].html).toBe('');
+    });
+
+    it('counts a note\'s length the way the server does, tags included', () => {
+        expect(noteLength('<strong>x</strong>')).toBe(18);
+        expect(noteLength(null)).toBe(0);
+        expect(MAX_NOTE_HTML).toBe(500);
+        expect(MAX_NOTES).toBe(10);
+        expect(MAX_ITEMS).toBe(40);
+    });
+
+    it('summarises a note as its words', () => {
+        expect(noteText('<p>Meetings are <strong>monthly</strong>.&nbsp;<a href="https://x.edu">Details</a></p>')).toBe('Meetings are monthly . Details');
+        expect(noteText('')).toBe('');
+        expect(noteText(undefined)).toBe('');
+    });
+
+    describe('in the admin preview', () => {
+        const preview = (items) => resolveButtonsForPreview(items, {}, []);
+
+        it('passes a note through between links, in order', () => {
+            const shown = preview([link('a'), note('Hello'), link('b')]);
+            expect(shown.map((item) => (isNote(item) ? 'note' : item.id))).toEqual(['a', 'note', 'b']);
+            expect(shown[1].html).toBe('Hello');
+        });
+
+        it('drops a note that is empty, has only tags, uses a data tag, or is too long', () => {
+            const shown = preview([note(''), note('<p></p>', 'n2'), note('Hi {{First_Name}}', 'n3'), note('x'.repeat(MAX_NOTE_HTML + 1), 'n4'), note('x'.repeat(MAX_NOTE_HTML), 'n5')]);
+            expect(shown.map((item) => item.id)).toEqual(['n5']);
+        });
+
+        it('keeps at most 10 notes and looks at only the first 40 items, as the server does', () => {
+            const notes = Array.from({ length: MAX_NOTES + 3 }, (_, i) => note('Note ' + i, 'n' + i));
+            expect(preview(notes)).toHaveLength(MAX_NOTES);
+            const many = Array.from({ length: MAX_ITEMS + 5 }, (_, i) => link('l' + i));
+            expect(preview(many)).toHaveLength(MAX_ITEMS);
+            expect(preview(many)[0].id).toBe('l0');
+        });
+
+        it('counts a dropped button towards the 40 the server looks at', () => {
+            const bad = { id: 'bad', label: '', type: 'external', url: 'https://x.edu' };
+            const items = [...Array.from({ length: MAX_ITEMS }, () => bad), link('late')];
+            expect(preview(items)).toHaveLength(0);
+        });
     });
 });

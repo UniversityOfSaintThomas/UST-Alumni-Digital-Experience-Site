@@ -6,6 +6,8 @@
  * on every read; the portal never trusts what the editor allowed.
  *
  * Stored JSON: { "version": 1, "buttons": [{ id, label, type, url, newTab, style, align, icon }] }
+ * A list can also hold short notes (shown between the rows of a links list): { id, kind: "note", html }. The
+ * html was cleaned by Apex (PortalButtons.cleanNote) when it was added; the portal cleans it again on every read.
  *   type "external": https://, mailto:, or tel: link
  *   type "portal":   a path on this site such as /alumni-directory (base path is added at render time)
  */
@@ -17,6 +19,20 @@ export const DEFAULT_STYLE = 'brand';
 export const DEFAULT_ALIGN = 'left';
 export const MAX_LABEL_LENGTH = 80;
 export const MAX_URL_LENGTH = 2048;
+export const KIND_NOTE = 'note';
+/** Same limits as PortalButtons (Apex), which enforces them: a note counts its HTML tags too. */
+export const MAX_NOTE_HTML = 500;
+export const MAX_NOTES = 10;
+export const MAX_ITEMS = 40;
+
+export const LAYOUT_ROW = 'row';
+export const LAYOUT_LIST = 'list';
+export const LAYOUT_LIST_COMPACT = 'list_compact';
+export const LAYOUT_OPTIONS = [
+    { label: 'Row of buttons', value: LAYOUT_ROW },
+    { label: 'Links list', value: LAYOUT_LIST },
+    { label: 'Links list, compact (sidebar)', value: LAYOUT_LIST_COMPACT }
+];
 
 export const TYPE_OPTIONS = [
     { label: 'External link (https, email, or phone)', value: TYPE_EXTERNAL },
@@ -85,6 +101,51 @@ export function normalizeIcon(rawIcon) {
     }
     const match = ICON_PATTERN.exec(String(rawIcon).trim().toLowerCase());
     return match ? 'utility:' + match[1] : null;
+}
+
+/**
+ * @param {Object} item a stored button or note
+ * @return {boolean} true for a note
+ */
+export function isNote(item) {
+    return !!item && item.kind === KIND_NOTE;
+}
+
+/**
+ * @param {string} layout a Button_Layout__c value
+ * @return {boolean} true for either links list layout
+ */
+export function isListLayout(layout) {
+    return layout === LAYOUT_LIST || layout === LAYOUT_LIST_COMPACT;
+}
+
+/**
+ * Creates an empty note with a fresh id.
+ *
+ * @return {Object} a new note
+ */
+export function newNote() {
+    return { id: 'n' + newButtonId().slice(1), kind: KIND_NOTE, html: '' };
+}
+
+/**
+ * Counts a note the way the server does: the length of its HTML, tags included.
+ *
+ * @param {string} html the note as typed
+ * @return {number} characters used
+ */
+export function noteLength(html) {
+    return typeof html === 'string' ? html.length : 0;
+}
+
+/**
+ * The words of a note without its tags, for a one-line summary in a list.
+ *
+ * @param {string} html the note
+ * @return {string} plain text
+ */
+export function noteText(html) {
+    return typeof html === 'string' ? html.replace(/<[^<>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim() : '';
 }
 
 /**
@@ -183,10 +244,37 @@ function urlTagProblem(url, tagDefinitions) {
 }
 
 /**
+ * Reads one stored entry (a button or a note) leniently.
+ *
+ * @param {Object} item the stored entry
+ * @param {number} index its position, used to make an id when none is stored
+ * @return {Object} a button or a note with every field filled in
+ */
+function readItem(item, index) {
+    if (item.kind === KIND_NOTE) {
+        return {
+            id: typeof item.id === 'string' && item.id ? item.id : 'n' + (index + 1),
+            kind: KIND_NOTE,
+            html: typeof item.html === 'string' ? item.html : ''
+        };
+    }
+    return {
+        id: typeof item.id === 'string' && item.id ? item.id : 'b' + (index + 1),
+        label: typeof item.label === 'string' ? item.label : '',
+        type: item.type === TYPE_PORTAL ? TYPE_PORTAL : TYPE_EXTERNAL,
+        url: typeof item.url === 'string' ? item.url : '',
+        newTab: typeof item.newTab === 'boolean' ? item.newTab : true,
+        style: STYLE_VALUES.includes(item.style) ? item.style : DEFAULT_STYLE,
+        align: ALIGN_VALUES.includes(item.align) ? item.align : DEFAULT_ALIGN,
+        icon: typeof item.icon === 'string' ? item.icon : ''
+    };
+}
+
+/**
  * Reads the stored JSON leniently. Bad data yields an empty list, never an error.
  *
  * @param {string} json the Buttons_JSON__c value
- * @return {Array<Object>} buttons as stored (not yet validated)
+ * @return {Array<Object>} buttons and notes as stored (not yet validated)
  */
 export function parseButtonsJson(json) {
     if (!json) {
@@ -195,46 +283,46 @@ export function parseButtonsJson(json) {
     try {
         const parsed = JSON.parse(json);
         const list = parsed && Array.isArray(parsed.buttons) ? parsed.buttons : [];
-        return list
-            .filter((item) => item && typeof item === 'object')
-            .map((item, index) => ({
-                id: typeof item.id === 'string' && item.id ? item.id : 'b' + (index + 1),
-                label: typeof item.label === 'string' ? item.label : '',
-                type: item.type === TYPE_PORTAL ? TYPE_PORTAL : TYPE_EXTERNAL,
-                url: typeof item.url === 'string' ? item.url : '',
-                newTab: typeof item.newTab === 'boolean' ? item.newTab : true,
-                style: STYLE_VALUES.includes(item.style) ? item.style : DEFAULT_STYLE,
-                align: ALIGN_VALUES.includes(item.align) ? item.align : DEFAULT_ALIGN,
-                icon: typeof item.icon === 'string' ? item.icon : ''
-            }));
+        return list.filter((item) => item && typeof item === 'object').map(readItem);
     } catch {
         return [];
     }
 }
 
 /**
+ * Writes one entry for storage. A note keeps no type or link, so an older release drops it instead of
+ * showing it as a broken button.
+ *
+ * @param {Object} item a button or a note
+ * @return {Object} the stored shape
+ */
+function writeItem(item) {
+    if (isNote(item)) {
+        return { id: item.id, kind: KIND_NOTE, html: item.html || '' };
+    }
+    return {
+        id: item.id,
+        label: (item.label || '').trim(),
+        type: item.type,
+        url: (item.url || '').trim(),
+        newTab: item.type === TYPE_EXTERNAL ? item.newTab !== false : false,
+        style: item.style,
+        align: item.align,
+        icon: item.icon && item.icon.trim() ? normalizeIcon(item.icon) || '' : ''
+    };
+}
+
+/**
  * Builds the JSON to store. An empty list stores nothing.
  *
- * @param {Array<Object>} buttons the buttons
- * @return {string} the JSON, or an empty string when there are no buttons
+ * @param {Array<Object>} buttons the buttons and notes
+ * @return {string} the JSON, or an empty string when there is nothing
  */
 export function serializeButtons(buttons) {
     if (!buttons || buttons.length === 0) {
         return '';
     }
-    return JSON.stringify({
-        version: 1,
-        buttons: buttons.map((button) => ({
-            id: button.id,
-            label: (button.label || '').trim(),
-            type: button.type,
-            url: (button.url || '').trim(),
-            newTab: button.type === TYPE_EXTERNAL ? button.newTab !== false : false,
-            style: button.style,
-            align: button.align,
-            icon: button.icon && button.icon.trim() ? normalizeIcon(button.icon) || '' : ''
-        }))
-    });
+    return JSON.stringify({ version: 1, buttons: buttons.map(writeItem) });
 }
 
 /**
@@ -247,7 +335,17 @@ export function serializeButtons(buttons) {
  */
 export function resolveButtonsForPreview(buttons, values, tagDefinitions) {
     const ready = [];
-    (buttons || []).forEach((button) => {
+    let notes = 0;
+    // The server looks at the first MAX_ITEMS entries only (valid or not) and keeps at most MAX_NOTES notes.
+    (buttons || []).slice(0, MAX_ITEMS).forEach((button) => {
+        if (isNote(button)) {
+            const html = typeof button.html === 'string' ? button.html : '';
+            if (noteText(html) && !html.includes('{{') && html.length <= MAX_NOTE_HTML && notes < MAX_NOTES) {
+                ready.push({ id: button.id, kind: KIND_NOTE, html });
+                notes += 1;
+            }
+            return;
+        }
         const label = (resolveTags(button.label, values, tagDefinitions, MODE_TEXT) || '').trim();
         const url = resolveTags((button.url || '').trim(), values, tagDefinitions, MODE_URL);
         if (!label || !isAllowedUrl(button.type, url)) {

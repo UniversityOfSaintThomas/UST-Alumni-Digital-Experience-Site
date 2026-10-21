@@ -70,6 +70,7 @@ public without sharing class PortalWidgetController {
                             Buttons_JSON__c,
                             Button_Placement__c,
                             Button_Size__c,
+                            Button_Layout__c,
                             SystemModstamp,
                             Hero_Image_URL__c,
                             Hero_Mobile_Image_URL__c,
@@ -131,6 +132,7 @@ public without sharing class PortalWidgetController {
                     dto.buttons = PortalButtons.prepare(widget.Buttons_JSON__c, tagValues);
                     dto.buttonPlacement = PortalButtons.normalizePlacement(widget.Button_Placement__c);
                     dto.buttonSize = PortalButtons.normalizeSize(widget.Button_Size__c);
+                    dto.buttonLayout = PortalButtons.normalizeLayout(widget.Button_Layout__c);
                     if (widget.Component_Name__c == HERO_COMPONENT_NAME) {
                         dto.hero = PortalHero.prepare(widget);
                     }
@@ -440,6 +442,8 @@ public without sharing class PortalWidgetController {
         @AuraEnabled public String buttonPlacement;
         /** Allowlisted size class, or empty */
         @AuraEnabled public String buttonSize;
+        /** row, list or list_compact (Button_Layout__c); the Hero Banner ignores it */
+        @AuraEnabled public String buttonLayout;
         /** Card Grid settings and cards; only set when componentName === 'ust_card_grid' */
         @AuraEnabled public PortalCardGrid.GridDto grid;
         /** Picture settings; only set when componentName is the Hero Banner */

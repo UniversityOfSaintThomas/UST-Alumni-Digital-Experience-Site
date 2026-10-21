@@ -235,4 +235,146 @@ describe('c-ust-widget-buttons', () => {
         expect(__generateUrlMock).not.toHaveBeenCalled();
         expect(__navigateMock).not.toHaveBeenCalled();
     });
+
+    describe('links list layouts and notes', () => {
+        const note = (html, id = 'n1') => ({ id, kind: 'note', html });
+        const flushAll = async () => {
+            for (let i = 0; i < 6; i++) {
+                // eslint-disable-next-line no-await-in-loop
+                await Promise.resolve();
+            }
+        };
+        const rowsOf = (element) => Array.from(element.shadowRoot.querySelectorAll('a.ust-list-row'));
+        const items = (element) => Array.from(element.shadowRoot.querySelectorAll('li'));
+        const container = (element) => element.shadowRoot.querySelector('.ust-widget-buttons');
+        const three = () => [
+            button({ id: 'a', label: 'Volunteer', url: 'https://example.edu/v', newTab: false }),
+            note('Meetings are <strong>monthly</strong>.'),
+            button({ id: 'b', label: 'Mentor', type: 'portal', url: '/mentor' })
+        ];
+
+        it('draws a row of buttons, as before, when no layout is chosen or the value is unknown', async () => {
+            for (const buttonLayout of [undefined, '', 'row', 'grid', '__proto__']) {
+                const element = await createRenderer({ buttons: [button()], buttonLayout });
+                expect(element.shadowRoot.querySelector('ul')).toBeNull();
+                expect(links(element)).toHaveLength(1);
+                expect(container(element).className).not.toContain('ust-links-list');
+            }
+        });
+
+        it('draws a list: one list item per link, with the label and an arrow that screen readers skip', async () => {
+            const element = await createRenderer({ buttons: [button({ label: 'Volunteer', newTab: false }), button({ id: 'b2', label: 'Mentor' })], buttonLayout: 'list' });
+            const list = element.shadowRoot.querySelector('ul');
+            expect(list.className).toContain('ust-links-list');
+            expect(list.className).not.toContain('ust-links-list_compact');
+            expect(items(element)).toHaveLength(2);
+            const first = rowsOf(element)[0];
+            expect(first.querySelector('.ust-list-row__label').textContent).toBe('Volunteer');
+            expect(first.querySelector('.ust-list-row__arrow').getAttribute('aria-hidden')).toBe('true');
+            expect(first.querySelector('svg')).not.toBeNull();
+            expect(first.getAttribute('href')).toBe('https://example.edu/give');
+        });
+
+        it('draws the compact list for a sidebar', async () => {
+            const element = await createRenderer({ buttons: [button()], buttonLayout: 'list_compact' });
+            expect(element.shadowRoot.querySelector('ul').className).toContain('ust-links-list_compact');
+        });
+
+        it('puts the links in the list in their stored order with notes between them', async () => {
+            const element = await createRenderer({ buttons: three(), buttonLayout: 'list' });
+            const kinds = items(element).map((item) => (item.querySelector('a') ? 'link' : 'note'));
+            expect(kinds).toEqual(['link', 'note', 'link']);
+            expect(items(element)[1].querySelector('lightning-formatted-rich-text').value).toBe('Meetings are <strong>monthly</strong>.');
+        });
+
+        it('ignores a link\'s own style, position and icon in a list', async () => {
+            const element = await createRenderer({ buttons: [button({ style: 'destructive', align: 'end', icon: 'utility:heart' })], buttonLayout: 'list' });
+            const row = rowsOf(element)[0];
+            expect(row.className).toBe('ust-list-row');
+            expect(row.querySelector('lightning-icon')).toBeNull();
+        });
+
+        it('keeps the link safety rules in a list: an unsafe or label-less link is not drawn', async () => {
+            const element = await createRenderer({
+                buttonLayout: 'list',
+                buttons: [button({ id: 'x', url: 'javascript:alert(1)' }), button({ id: 'y', label: '' }), button({ id: 'z', type: 'portal', url: '//evil.example' }), button({ id: 'ok', label: 'Fine', newTab: false })]
+            });
+            expect(rowsOf(element)).toHaveLength(1);
+            expect(rowsOf(element)[0].querySelector('.ust-list-row__label').textContent).toBe('Fine');
+        });
+
+        it('opens a new tab only for an https link, and says so, in a list', async () => {
+            const element = await createRenderer({
+                buttonLayout: 'list',
+                buttons: [button({ id: 'a', newTab: true }), button({ id: 'b', url: 'mailto:a@b.edu', newTab: true }), button({ id: 'c', newTab: false })]
+            });
+            const [web, mail, same] = rowsOf(element);
+            expect(web.getAttribute('target')).toBe('_blank');
+            expect(web.getAttribute('rel')).toBe('noopener noreferrer');
+            expect(web.textContent).toContain('(opens in a new tab)');
+            expect(mail.getAttribute('target')).toBeNull();
+            expect(same.getAttribute('target')).toBeNull();
+        });
+
+        it('navigates inside the site on a plain click of a portal row, but leaves a modified click to the browser', async () => {
+            const element = await createRenderer({ buttonLayout: 'list', buttons: [button({ type: 'portal', url: '/mentor', label: 'Mentor' })] });
+            await flushAll();
+            expect(rowsOf(element)[0].getAttribute('href')).toBe('/alumni/mentor');
+            const plain = new MouseEvent('click', { bubbles: true, cancelable: true });
+            rowsOf(element)[0].dispatchEvent(plain);
+            expect(plain.defaultPrevented).toBe(true);
+            expect(__navigateMock).toHaveBeenCalledWith({ type: 'standard__webPage', attributes: { url: '/mentor' } });
+            __navigateMock.mockClear();
+            const modified = new MouseEvent('click', { bubbles: true, cancelable: true, metaKey: true });
+            rowsOf(element)[0].dispatchEvent(modified);
+            expect(modified.defaultPrevented).toBe(false);
+            expect(__navigateMock).not.toHaveBeenCalled();
+        });
+
+        it('does nothing when a row is clicked in the admin preview', async () => {
+            const element = await createRenderer({ buttonLayout: 'list', previewMode: true, buttons: [button({ type: 'portal', url: '/mentor' })] });
+            expect(rowsOf(element)[0].getAttribute('href')).toBe('#');
+            const click = new MouseEvent('click', { bubbles: true, cancelable: true });
+            rowsOf(element)[0].dispatchEvent(click);
+            expect(click.defaultPrevented).toBe(true);
+            expect(__navigateMock).not.toHaveBeenCalled();
+            expect(__generateUrlMock).not.toHaveBeenCalled();
+        });
+
+        it('marks the list as on a dark background for a dark panel or a picture, not otherwise', async () => {
+            const light = await createRenderer({ buttons: [button()], buttonLayout: 'list' });
+            expect(container(light).className).not.toContain('ust-on-dark');
+            const dark = await createRenderer({ buttons: [button()], buttonLayout: 'list', darkBackground: true });
+            expect(container(dark).className).toContain('ust-on-dark');
+            const picture = await createRenderer({ buttons: [button()], buttonLayout: 'list_compact', overImage: true });
+            expect(container(picture).className).toContain('ust-on-dark');
+        });
+
+        it('draws a note between buttons in a row layout, as its own block that ends the row before it', async () => {
+            const element = await createRenderer({ buttons: three() });
+            const blocks = Array.from(container(element).children).map((child) => (child.classList.contains('ust-note-row') ? 'note' : 'row'));
+            expect(blocks).toEqual(['row', 'note', 'row']);
+            expect(links(element)).toHaveLength(2);
+            expect(element.shadowRoot.querySelector('.ust-note-row lightning-formatted-rich-text').value).toContain('monthly');
+        });
+
+        it('does not draw a note that is empty, only spaces, or missing its text', async () => {
+            const element = await createRenderer({ buttonLayout: 'list', buttons: [note(''), note('   ', 'n2'), { id: 'n3', kind: 'note' }, { id: 'n4', kind: 'note', html: 42 }, button()] });
+            expect(items(element)).toHaveLength(1);
+            const row = await createRenderer({ buttons: [note('')] });
+            expect(row.shadowRoot.querySelector('.ust-widget-buttons')).toBeNull();
+        });
+
+        it('draws a note even when there are no links, so a text-only list is possible', async () => {
+            const element = await createRenderer({ buttonLayout: 'list', buttons: [note('Coming soon.')] });
+            expect(items(element)).toHaveLength(1);
+            expect(rowsOf(element)).toHaveLength(0);
+        });
+
+        it('treats a note as text and never as a link, whatever else is stored on it', async () => {
+            const element = await createRenderer({ buttonLayout: 'list', buttons: [{ id: 'n', kind: 'note', html: 'Hello', type: 'external', url: 'https://x.edu', label: 'Sneaky' }] });
+            expect(rowsOf(element)).toHaveLength(0);
+            expect(items(element)[0].querySelector('lightning-formatted-rich-text')).not.toBeNull();
+        });
+    });
 });

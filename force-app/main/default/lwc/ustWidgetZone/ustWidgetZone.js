@@ -173,6 +173,7 @@ export default class UstWidgetZone extends LightningElement {
                 buttons: item.buttons,
                 buttonPlacement: item.buttonPlacement,
                 buttonSize: item.buttonSize,
+                buttonLayout: item.buttonLayout,
                 hero: item.hero,
                 grid: item.grid,
                 ...flags

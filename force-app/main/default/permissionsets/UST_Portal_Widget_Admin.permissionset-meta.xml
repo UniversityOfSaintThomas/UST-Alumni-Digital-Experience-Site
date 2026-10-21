@@ -231,6 +231,11 @@
         <field>UST_Portal_Widget_Item__c.Sort_Order__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>UST_Portal_Widget__c.Button_Layout__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>UST Portal Widget Admin</label>
     <objectPermissions>

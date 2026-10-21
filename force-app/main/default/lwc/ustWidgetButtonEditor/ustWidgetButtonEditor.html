@@ -3,13 +3,26 @@
         <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_x-small">
             <p class="slds-col slds-text-body_small slds-text-color_weak">{countText}</p>
             <lightning-button
+                class="slds-col slds-no-flex slds-m-right_x-small"
+                label="Add note"
+                icon-name="utility:text"
+                onclick={handleAddNote}
+                disabled={addNoteDisabled}>
+            </lightning-button>
+            <lightning-button
                 class="slds-col slds-no-flex"
                 label="Add button"
                 icon-name="utility:add"
                 onclick={handleAdd}
-                disabled={addDisabled}>
+                disabled={addLinkDisabled}>
             </lightning-button>
         </div>
+        <template lwc:if={limitText}>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">{limitText}</p>
+        </template>
+        <template lwc:if={layoutHint}>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">{layoutHint}</p>
+        </template>
 
         <template lwc:if={hasButtons}>
             <ul class="ust-button-list" aria-label="Buttons for this widget">
@@ -38,6 +51,35 @@
         </template>
 
         <template lwc:if={isEditing}>
+            <template lwc:if={isNoteDraft}>
+                <div class="ust-button-form ust-note-form slds-m-top_small" role="group" aria-label={formTitle}>
+                    <h4 class="slds-text-title_caps slds-m-bottom_x-small">{formTitle}</h4>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                        A few words shown between links. Bold, italic, underline and links only. Keep it short.
+                    </p>
+                    <lightning-input-rich-text
+                        class="ust-note-input"
+                        label="Note"
+                        label-visible
+                        value={noteHtml}
+                        formats={noteFormats}
+                        disabled-categories={noteDisabledCategories}
+                        valid={noteValid}
+                        onchange={handleNoteChange}>
+                    </lightning-input-rich-text>
+                    <p class="slds-text-body_small slds-m-top_xx-small ust-note-counter" aria-live="polite">{noteCounter}</p>
+                    <template lwc:if={noteError}>
+                        <p class="slds-text-body_small slds-text-color_error" role="alert">{noteError}</p>
+                    </template>
+                    <div class="slds-m-top_small">
+                        <lightning-button class="slds-m-right_x-small" label="Cancel" onclick={handleCancelDraft}
+                            disabled={isCheckingNote}></lightning-button>
+                        <lightning-button variant="brand" label={submitLabel} onclick={handleSubmitDraft}
+                            disabled={isCheckingNote}></lightning-button>
+                    </div>
+                </div>
+            </template>
+            <template lwc:else>
             <div class="ust-button-form slds-m-top_small" role="group" aria-label={formTitle}>
                 <h4 class="slds-text-title_caps slds-m-bottom_x-small">{formTitle}</h4>
 
@@ -106,6 +148,7 @@
                     </lightning-input>
                 </template>
 
+                <template lwc:if={showLinkStyleFields}>
                 <div class="slds-grid slds-wrap slds-gutters slds-m-top_x-small">
                     <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
                         <lightning-combobox name="buttonStyle" label="Style" value={draft.style} options={styleOptions}
@@ -127,12 +170,14 @@
                 <template lwc:if={iconError}>
                     <p class="slds-text-body_small slds-text-color_error" role="alert">{iconError}</p>
                 </template>
+                </template>
 
                 <div class="slds-m-top_small">
                     <lightning-button class="slds-m-right_x-small" label="Cancel" onclick={handleCancelDraft}></lightning-button>
                     <lightning-button variant="brand" label={submitLabel} onclick={handleSubmitDraft}></lightning-button>
                 </div>
             </div>
+            </template>
         </template>
     </section>
 </template>

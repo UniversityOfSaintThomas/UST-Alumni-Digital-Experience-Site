@@ -6,6 +6,12 @@
  * read because the JSON could also arrive through a data load or an older editor.
  *
  * Stored shape: {"version":1,"buttons":[{"id","label","type","url","newTab","style","align","icon"}]}
+ * Besides links the list can hold short notes, for a Links List: {"id","kind":"note","html"}. A note has no
+ * type, so a version of this class that does not know notes drops it as an invalid button instead of showing
+ * it wrongly. A note is a few words of formatted text (bold, italic, underline, line break, paragraph, and
+ * https / mailto / tel links) and nothing else: sanitizeNote rebuilds it from an allowlist, so what comes out
+ * has only those tags with no attributes except a checked href. Notes are capped (MAX_NOTE_HTML characters,
+ * MAX_NOTES per widget, MAX_ITEMS items in all) so the long text field cannot be filled up.
  *   type  external : https://, mailto:, or tel: link
  *         portal   : a path on this site, such as /alumni-directory (the site base path is added at
  *                    render time, which keeps the JSON portable between sandbox and production)
@@ -27,8 +33,20 @@ public with sharing class PortalButtons {
 
     private static final String DEFAULT_STYLE = 'brand';
     private static final String DEFAULT_ALIGNMENT = 'left';
+    public static final String LAYOUT_ROW = 'row';
+    public static final String LAYOUT_LIST = 'list';
+    public static final String LAYOUT_LIST_COMPACT = 'list_compact';
+    public static final String KIND_LINK = 'link';
+    public static final String KIND_NOTE = 'note';
+    /** Longest note, counted on the cleaned HTML (tags included). */
+    public static final Integer MAX_NOTE_HTML = 500;
+    public static final Integer MAX_NOTES = 10;
+    /** Links and notes together; later items are ignored. */
+    public static final Integer MAX_ITEMS = 40;
+
     private static final Integer MAX_LABEL_LENGTH = 80;
     private static final Integer MAX_URL_LENGTH = 2048;
+    private static final Integer MAX_NOTE_DEPTH = 6;
 
     /** Network name of the portal; same value the sync_navigation_menu CumulusCI task uses. */
     @TestVisible
@@ -39,6 +57,12 @@ public with sharing class PortalButtons {
     };
     private static final Set<String> ALIGNMENTS = new Set<String>{ 'left', 'center', 'end' };
     private static final Set<String> SIZE_CLASSES = new Set<String>{ 'ust-buttons-wide', 'ust-buttons-full' };
+    private static final Set<String> LAYOUTS = new Set<String>{ LAYOUT_ROW, LAYOUT_LIST, LAYOUT_LIST_COMPACT };
+    private static final Set<String> NOTE_TAGS = new Set<String>{ 'p', 'br', 'strong', 'b', 'em', 'i', 'u', 'a' };
+    private static final Pattern NOTE_TAG_PATTERN = Pattern.compile('<[^<>]*>');
+    private static final Pattern NOTE_TAG_PARTS = Pattern.compile('(?s)^<\\s*(/?)\\s*([a-zA-Z][a-zA-Z0-9]*)(.*?)/?\\s*>$');
+    private static final Pattern NOTE_HREF = Pattern.compile('(?is)\\bhref\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\')');
+    private static final Pattern NOTE_BARE_AMPERSAND = Pattern.compile('&(?!(?:amp|lt|gt|quot|#39|nbsp);)');
 
     // Characters never allowed in a link: whitespace, control characters, backslash.
     private static final Pattern HTTPS_PATTERN = Pattern.compile('(?i)^https://[^\\s\\x00-\\x1F\\x7F/?#\\\\]+[^\\s\\x00-\\x1F\\x7F\\\\]*$');
@@ -49,6 +73,10 @@ public with sharing class PortalButtons {
 
     /** One cleaned button, ready to render. */
     public class ButtonDto {
+        /** 'link' for a button or link, 'note' for a short text between links */
+        @AuraEnabled public String kind = KIND_LINK;
+        /** Cleaned HTML of a note (null for a link) */
+        @AuraEnabled public String html;
         @AuraEnabled public String id;
         @AuraEnabled public String label;
         @AuraEnabled public String type;
@@ -92,12 +120,29 @@ public with sharing class PortalButtons {
             return cleaned;
         }
         Integer position = 0;
+        Integer notes = 0;
         for (Object item : (List<Object>) rawList) {
             position++;
+            if (position > MAX_ITEMS) {
+                break;
+            }
             if (!(item instanceof Map<String, Object>)) {
                 continue;
             }
-            ButtonDto button = cleanButton((Map<String, Object>) item, tagValues, position);
+            Map<String, Object> source = (Map<String, Object>) item;
+            if (stringValue(source, 'kind') == KIND_NOTE) {
+                String html = readNote(stringValue(source, 'html'));
+                if (html != null && notes < MAX_NOTES) {
+                    ButtonDto note = new ButtonDto();
+                    note.kind = KIND_NOTE;
+                    note.html = html;
+                    note.id = String.isNotBlank(stringValue(source, 'id')) ? stringValue(source, 'id') : 'n' + position;
+                    cleaned.add(note);
+                    notes++;
+                }
+                continue;
+            }
+            ButtonDto button = cleanButton(source, tagValues, position);
             if (button != null) {
                 cleaned.add(button);
             }
@@ -123,6 +168,168 @@ public with sharing class PortalButtons {
      */
     public static String normalizePlacement(String placement) {
         return placement == PLACEMENT_ABOVE ? PLACEMENT_ABOVE : PLACEMENT_BELOW;
+    }
+
+    /**
+     * Normalizes the layout field; blank or unknown means a row of buttons.
+     *
+     * @param layout Raw Button_Layout__c value
+     * @return row, list or list_compact
+     */
+    public static String normalizeLayout(String layout) {
+        return layout != null && LAYOUTS.contains(layout) ? layout : LAYOUT_ROW;
+    }
+
+    /**
+     * Checks a note as typed in the editor and returns the cleaned HTML to store. Refuses with a message the
+     * admin can act on; the portal re-cleans on every read (readNote), so storing anything else gains nothing.
+     *
+     * @param html The note as typed
+     * @return The cleaned HTML
+     */
+    @AuraEnabled
+    public static String cleanNote(String html) {
+        if (String.isNotBlank(html) && html.contains('{{')) {
+            throw noteProblem('Data tags are not available in notes. Remove the {{ }} text.');
+        }
+        String cleaned = sanitizeNote(html);
+        if (visibleText(cleaned).length() == 0) {
+            throw noteProblem('Write some text for the note.');
+        }
+        if (cleaned.length() > MAX_NOTE_HTML) {
+            throw noteProblem('The note is too long. Keep it to about ' + (MAX_NOTE_HTML / 5) + ' words or fewer ('
+                    + cleaned.length() + ' of ' + MAX_NOTE_HTML + ' characters used, formatting included).');
+        }
+        return cleaned;
+    }
+
+    /**
+     * Cleans a stored note for the portal.
+     *
+     * @param html The stored HTML
+     * @return The cleaned HTML, or null when the note is empty or too long to show safely
+     */
+    @TestVisible
+    private static String readNote(String html) {
+        if (String.isBlank(html) || html.contains('{{')) {
+            return null;
+        }
+        String cleaned = sanitizeNote(html);
+        if (visibleText(cleaned).length() == 0 || cleaned.length() > MAX_NOTE_HTML) {
+            return null;
+        }
+        return cleaned;
+    }
+
+    /**
+     * Rebuilds a note from an allowlist: only p, br, strong, b, em, i, u and a, with no attributes except a
+     * checked href (https, mailto or tel). Every other tag is dropped and its text kept; text is escaped; tags
+     * are closed in order. Nothing the author typed is copied through as markup.
+     *
+     * @param raw The note as typed or stored
+     * @return Clean HTML (possibly empty)
+     */
+    @TestVisible
+    private static String sanitizeNote(String raw) {
+        if (String.isBlank(raw)) {
+            return '';
+        }
+        List<String> parts = new List<String>();
+        List<String> open = new List<String>();
+        Integer position = 0;
+        Matcher tags = NOTE_TAG_PATTERN.matcher(raw);
+        while (tags.find()) {
+            parts.add(escapeNoteText(raw.substring(position, tags.start())));
+            parts.add(rebuildTag(tags.group(), open));
+            position = tags.end();
+        }
+        parts.add(escapeNoteText(raw.substring(position)));
+        for (Integer i = open.size() - 1; i >= 0; i--) {
+            parts.add(closingTag(open[i]));
+        }
+        return String.join(parts, '').trim();
+    }
+
+    private static String rebuildTag(String tagText, List<String> open) {
+        Matcher partsMatcher = NOTE_TAG_PARTS.matcher(tagText);
+        if (!partsMatcher.matches()) {
+            return '';
+        }
+        Boolean closing = partsMatcher.group(1) == '/';
+        String name = partsMatcher.group(2).toLowerCase();
+        if (!NOTE_TAGS.contains(name)) {
+            return '';
+        }
+        if (closing) {
+            return name == 'br' ? '' : closeNoteTag(name, open);
+        }
+        if (name == 'br') {
+            return '<br>';
+        }
+        if (open.size() >= MAX_NOTE_DEPTH) {
+            return '';
+        }
+        if (name == 'a') {
+            String href = open.contains('a') || open.contains('a!') ? null : noteHref(partsMatcher.group(3));
+            if (href == null) {
+                open.add('a!');
+                return '';
+            }
+            open.add('a');
+            return '<a href="' + href.replace('&', '&amp;').replace('"', '&quot;') + '">';
+        }
+        open.add(name);
+        return '<' + name + '>';
+    }
+
+    private static String noteHref(String attributes) {
+        Matcher hrefMatcher = NOTE_HREF.matcher(attributes == null ? '' : attributes);
+        if (!hrefMatcher.find()) {
+            return null;
+        }
+        String value = hrefMatcher.group(1) != null ? hrefMatcher.group(1) : hrefMatcher.group(2);
+        value = value.replace('&amp;', '&').trim();
+        // Site paths are not allowed in a note: their base path is only known when buttons are drawn.
+        return !value.startsWith('/') && isAllowedUrl(TYPE_EXTERNAL, value) ? value : null;
+    }
+
+    private static String closeNoteTag(String name, List<String> open) {
+        String lookFor = name;
+        Integer found = -1;
+        for (Integer i = open.size() - 1; i >= 0; i--) {
+            if (open[i] == lookFor || (name == 'a' && open[i] == 'a!')) {
+                found = i;
+                break;
+            }
+        }
+        if (found < 0) {
+            return '';
+        }
+        List<String> closers = new List<String>();
+        for (Integer i = open.size() - 1; i >= found; i--) {
+            closers.add(closingTag(open[i]));
+            open.remove(i);
+        }
+        return String.join(closers, '');
+    }
+
+    private static String closingTag(String openName) {
+        return openName == 'a!' ? '' : '</' + openName + '>';
+    }
+
+    private static String escapeNoteText(String text) {
+        return NOTE_BARE_AMPERSAND.matcher(text).replaceAll('&amp;').replace('<', '&lt;').replace('>', '&gt;');
+    }
+
+    /** The words of a note with the tags and entities taken out, for the "is it empty" check. */
+    private static String visibleText(String html) {
+        return html.replaceAll('<[^<>]*>', '').replace('&nbsp;', ' ').trim();
+    }
+
+    private static AuraHandledException noteProblem(String message) {
+        AuraHandledException problem = new AuraHandledException(message);
+        problem.setMessage(message);
+        return problem;
     }
 
     /**

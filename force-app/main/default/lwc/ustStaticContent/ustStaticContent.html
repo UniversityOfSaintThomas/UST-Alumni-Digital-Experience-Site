@@ -8,13 +8,13 @@
                 <h2 class="ust-static-content-header ust-h2 slds-p-bottom_small">{textHeader}</h2>
             </template>
             <template lwc:if={showButtonsAbove}>
-                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} preview-mode={previewMode} over-image={overImage} dark-background={onDarkPanel}></c-ust-widget-buttons>
+                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} button-layout={buttonLayout} preview-mode={previewMode} over-image={overImage} dark-background={onDarkPanel}></c-ust-widget-buttons>
             </template>
             <template lwc:if={hasRichText}>
                 <lightning-formatted-rich-text value={richTextContent}></lightning-formatted-rich-text>
             </template>
             <template lwc:if={showButtonsBelow}>
-                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} preview-mode={previewMode} over-image={overImage} dark-background={onDarkPanel}></c-ust-widget-buttons>
+                <c-ust-widget-buttons buttons={buttons} button-size={buttonSize} button-layout={buttonLayout} preview-mode={previewMode} over-image={overImage} dark-background={onDarkPanel}></c-ust-widget-buttons>
             </template>
             <!-- Extra content from a parent widget (the Card Grid), after the text and buttons -->
             <slot></slot>

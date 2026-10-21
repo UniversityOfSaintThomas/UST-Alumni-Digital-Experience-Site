@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Button_Layout__c</fullName>
+    <description>How a widget's buttons and notes are laid out. Row of buttons (blank): side by side, as before. Links list: one full-width row per link with an arrow that shows a purple circle on hover. Links list, compact: the same in a narrow column (sidebar) without the circle. Short notes added in the button editor sit between the rows. Not used by the Hero Banner. Blank or unknown means a row of buttons.</description>
+    <inlineHelpText>Row of buttons puts them side by side. The links lists turn the buttons into rows with an arrow, with any notes between the rows. Choose Links list, compact for a sidebar.</inlineHelpText>
+    <label>Button Layout</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>row</fullName>
+                <default>false</default>
+                <label>Row of buttons</label>
+            </value>
+            <value>
+                <fullName>list</fullName>
+                <default>false</default>
+                <label>Links list</label>
+            </value>
+            <value>
+                <fullName>list_compact</fullName>
+                <default>false</default>
+                <label>Links list, compact (sidebar)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

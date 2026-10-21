@@ -87,6 +87,9 @@ export default class UstStaticContent extends LightningElement {
     /** Widget-wide button size class from Button_Size__c. */
     @api buttonSize = '';
 
+    /** Button_Layout__c: row (blank), list or list_compact. Passed to the buttons renderer, which allowlists it. */
+    @api buttonLayout = '';
+
     /** True in the admin editor preview: buttons are drawn but never navigate. */
     @api previewMode = false;
 

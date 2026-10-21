@@ -172,6 +172,24 @@ private class PortalWidgetController_TEST {
     }
 
     @IsTest
+    static void buttonLayoutReachesThePortalAndFallsBackToARow() {
+        String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
+        String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);
+        UST_Portal_Widget__c listed = buildWidget('Listed', zone, pageContext);
+        listed.Button_Layout__c = 'list_compact';
+        listed.Sort_Order__c = 1;
+        UST_Portal_Widget__c plain = buildWidget('Plain', zone, pageContext);
+        plain.Sort_Order__c = 2;
+        insert new List<UST_Portal_Widget__c>{ listed, plain };
+
+        List<PortalWidgetController.PortalWidgetDto> results = PortalWidgetController.getWidgetsForZone(zone, pageContext);
+
+        System.assertEquals(2, results.size(), 'Both widgets are returned');
+        System.assertEquals('list_compact', results[0].buttonLayout, 'The chosen layout reaches the portal');
+        System.assertEquals('row', results[1].buttonLayout, 'Blank means a row of buttons');
+    }
+
+    @IsTest
     static void dataTagsAreResolvedForTheCurrentUserInBodyAndHeader() {
         String zone = firstPicklistValue(UST_Portal_Widget__c.Zone__c);
         String pageContext = firstPicklistValue(UST_Portal_Widget__c.Page_Context__c);

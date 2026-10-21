@@ -1,6 +1,13 @@
 import { createElement } from 'lwc';
 import UstWidgetButtonEditor from 'c/ustWidgetButtonEditor';
 import getPortalLinkSuggestions from '@salesforce/apex/PortalButtons.getPortalLinkSuggestions';
+import cleanNote from '@salesforce/apex/PortalButtons.cleanNote';
+
+jest.mock(
+    '@salesforce/apex/PortalButtons.cleanNote',
+    () => ({ default: jest.fn() }),
+    { virtual: true }
+);
 
 jest.mock(
     '@salesforce/apex/PortalButtons.getPortalLinkSuggestions',
@@ -290,5 +297,204 @@ describe('c-ust-widget-button-editor', () => {
         rowButton(element, 'Edit button Give').click();
         await flush();
         expect(byLabel(element, 'lightning-button', 'Add button').disabled).toBe(true);
+    });
+
+    describe('notes and layout', () => {
+        const WITH_NOTE = stored([
+            { id: 'a', label: 'Give', type: 'external', url: 'https://example.edu/give', newTab: true, style: 'brand', align: 'left', icon: '' },
+            { id: 'n1', kind: 'note', html: 'Monthly <strong>meetings</strong>' }
+        ]);
+        const noteInput = (element) => element.shadowRoot.querySelector('lightning-input-rich-text');
+        const submitLabelled = (element, label) => {
+            const matches = Array.from(element.shadowRoot.querySelectorAll('lightning-button')).filter((button) => button.label === label);
+            return matches[matches.length - 1];
+        };
+        const typeNote = async (element, html) => {
+            noteInput(element).dispatchEvent(new CustomEvent('change', { detail: { value: html } }));
+            await flush();
+        };
+        const lastValue = (element) => {
+            const handler = element.__emitted || [];
+            return handler[handler.length - 1];
+        };
+        const watch = (element) => {
+            element.__emitted = [];
+            element.addEventListener('change', (event) => element.__emitted.push(event.detail.value));
+        };
+
+        it('lists a note among the buttons, with its words and size, and counts both', async () => {
+            const element = await createEditor({ value: WITH_NOTE });
+            expect(listedLabels(element)).toEqual(['Give', 'Monthly meetings']);
+            expect(element.shadowRoot.textContent).toContain('1 button, 1 note');
+            expect(element.shadowRoot.textContent).toContain('of 500 characters');
+        });
+
+        it('opens a note form with a limited rich text box, not the button form', async () => {
+            const element = await createEditor();
+            byLabel(element, 'lightning-button', 'Add note').click();
+            await flush();
+            const box = noteInput(element);
+            expect(box).not.toBeNull();
+            expect(box.formats).toEqual(['bold', 'italic', 'underline', 'link']);
+            expect(box.disabledCategories).toEqual(expect.stringContaining('FORMAT_BODY'));
+            expect(box.disabledCategories).toEqual(expect.stringContaining('FORMAT_FONT'));
+            expect(tagInputs(element)).toHaveLength(0);
+            expect(element.shadowRoot.textContent).toContain('New note');
+        });
+
+        it('sends a new note to the server, stores what comes back (not what was typed), and reports it', async () => {
+            const element = await createEditor({ value: SAVED });
+            watch(element);
+            cleanNote.mockResolvedValue('Cleaned <strong>by the server</strong>');
+            byLabel(element, 'lightning-button', 'Add note').click();
+            await flush();
+            await typeNote(element, '<p onclick="x()">typed <script>bad</script></p>');
+            submitLabelled(element, 'Add note').click();
+            await flush();
+            expect(cleanNote).toHaveBeenCalledWith({ html: '<p onclick="x()">typed <script>bad</script></p>' });
+            const stored = JSON.parse(lastValue(element)).buttons;
+            expect(stored).toHaveLength(3);
+            expect(stored[2]).toEqual({ id: expect.stringMatching(/^n/), kind: 'note', html: 'Cleaned <strong>by the server</strong>' });
+            expect(stored[2].type).toBeUndefined();
+            expect(noteInput(element)).toBeNull();
+        });
+
+        it('keeps the form open and shows the server\'s message when the note is refused', async () => {
+            const element = await createEditor();
+            watch(element);
+            cleanNote.mockRejectedValue({ body: { message: 'Data tags are not available in notes.' } });
+            byLabel(element, 'lightning-button', 'Add note').click();
+            await flush();
+            await typeNote(element, 'Hello {{First_Name}}');
+            submitLabelled(element, 'Add note').click();
+            await flush();
+            expect(element.shadowRoot.querySelector('[role="alert"]').textContent).toContain('Data tags are not available');
+            expect(noteInput(element)).not.toBeNull();
+            expect(element.__emitted).toHaveLength(0);
+            expect(noteInput(element).value).toBe('Hello {{First_Name}}');
+        });
+
+        it('says so when the server cannot be reached, and keeps the note', async () => {
+            const element = await createEditor();
+            cleanNote.mockRejectedValue(new Error('offline'));
+            byLabel(element, 'lightning-button', 'Add note').click();
+            await flush();
+            await typeNote(element, 'Hi');
+            submitLabelled(element, 'Add note').click();
+            await flush();
+            expect(element.shadowRoot.querySelector('[role="alert"]').textContent).toContain('could not be checked');
+            expect(noteInput(element)).not.toBeNull();
+        });
+
+        it('shows a running count and stops a too-long note before it reaches the server', async () => {
+            const element = await createEditor();
+            byLabel(element, 'lightning-button', 'Add note').click();
+            await flush();
+            await typeNote(element, 'x'.repeat(120));
+            expect(element.shadowRoot.querySelector('.ust-note-counter').textContent).toContain('120 of 500');
+            expect(noteInput(element).valid).toBe(true);
+            await typeNote(element, 'x'.repeat(501));
+            expect(element.shadowRoot.querySelector('.ust-note-counter').textContent).toContain('501 of 500');
+            expect(noteInput(element).valid).toBe(false);
+            submitLabelled(element, 'Add note').click();
+            await flush();
+            expect(cleanNote).not.toHaveBeenCalled();
+            expect(element.shadowRoot.querySelector('[role="alert"]').textContent).toContain('too long');
+        });
+
+        it('edits a note in place: same id and position, text cleaned again', async () => {
+            const element = await createEditor({ value: WITH_NOTE });
+            watch(element);
+            rowButton(element, 'Edit note 2').click();
+            await flush();
+            expect(noteInput(element).value).toBe('Monthly <strong>meetings</strong>');
+            expect(element.shadowRoot.textContent).toContain('Edit note');
+            cleanNote.mockResolvedValue('Weekly');
+            await typeNote(element, 'Weekly');
+            submitLabelled(element, 'Update note').click();
+            await flush();
+            const stored = JSON.parse(lastValue(element)).buttons;
+            expect(stored.map((item) => item.id)).toEqual(['a', 'n1']);
+            expect(stored[1].html).toBe('Weekly');
+        });
+
+        it('moves and deletes a note like a button, naming it for screen readers', async () => {
+            const element = await createEditor({ value: WITH_NOTE });
+            watch(element);
+            expect(rowButton(element, 'Move note 2 up')).not.toBeNull();
+            rowButton(element, 'Move note 2 up').click();
+            await flush();
+            expect(JSON.parse(lastValue(element)).buttons.map((item) => item.id)).toEqual(['n1', 'a']);
+            rowButton(element, 'Delete note 1').click();
+            await flush();
+            expect(JSON.parse(lastValue(element)).buttons.map((item) => item.id)).toEqual(['a']);
+        });
+
+        it('stops adding notes at 10 and everything at 40, and says why', async () => {
+            const tenNotes = stored(Array.from({ length: 10 }, (_, i) => ({ id: 'n' + i, kind: 'note', html: 'Note ' + i })));
+            const withTen = await createEditor({ value: tenNotes });
+            expect(byLabel(withTen, 'lightning-button', 'Add note').disabled).toBe(true);
+            expect(byLabel(withTen, 'lightning-button', 'Add button').disabled).toBe(false);
+            expect(withTen.shadowRoot.textContent).toContain('at most 10 notes');
+
+            const forty = stored(Array.from({ length: 40 }, (_, i) => ({ id: 'b' + i, label: 'L' + i, type: 'external', url: 'https://x.edu/' + i, newTab: true, style: 'brand', align: 'left', icon: '' })));
+            const full = await createEditor({ value: forty });
+            expect(byLabel(full, 'lightning-button', 'Add note').disabled).toBe(true);
+            expect(byLabel(full, 'lightning-button', 'Add button').disabled).toBe(true);
+            expect(full.shadowRoot.textContent).toContain('at most 40');
+        });
+
+        it('disables both Add buttons while a note or button is open', async () => {
+            const element = await createEditor();
+            byLabel(element, 'lightning-button', 'Add note').click();
+            await flush();
+            expect(byLabel(element, 'lightning-button', 'Add note').disabled).toBe(true);
+            expect(byLabel(element, 'lightning-button', 'Add button').disabled).toBe(true);
+        });
+
+        it('reports an open note as an open draft, so the widget cannot be saved with it half-finished', async () => {
+            const element = await createEditor();
+            expect(element.hasOpenDraft()).toBe(false);
+            byLabel(element, 'lightning-button', 'Add note').click();
+            await flush();
+            expect(element.hasOpenDraft()).toBe(true);
+            submitLabelled(element, 'Cancel').click();
+            await flush();
+            expect(element.hasOpenDraft()).toBe(false);
+        });
+
+        it('hides style, position and icon in a links list, and says why; shows them in a row of buttons', async () => {
+            const row = await createEditor({ buttonLayout: 'row' });
+            byLabel(row, 'lightning-button', 'Add button').click();
+            await flush();
+            expect(byName(row, 'lightning-combobox', 'buttonStyle')).not.toBeNull();
+            expect(byName(row, 'lightning-combobox', 'buttonAlign')).not.toBeNull();
+            expect(byName(row, 'lightning-input', 'buttonIcon')).not.toBeNull();
+            expect(row.shadowRoot.textContent).not.toContain('full-width row');
+
+            for (const layout of ['list', 'list_compact']) {
+                const list = await createEditor({ buttonLayout: layout });
+                byLabel(list, 'lightning-button', 'Add button').click();
+                await flush();
+                expect(byName(list, 'lightning-combobox', 'buttonStyle')).toBeNull();
+                expect(byName(list, 'lightning-combobox', 'buttonAlign')).toBeNull();
+                expect(byName(list, 'lightning-input', 'buttonIcon')).toBeNull();
+                expect(list.shadowRoot.textContent).toContain('full-width row');
+            }
+        });
+
+        it('still validates and adds a link in a links list', async () => {
+            const element = await createEditor({ buttonLayout: 'list' });
+            watch(element);
+            await fillAndAdd(element, { label: 'Volunteer', url: 'https://example.edu/v' });
+            expect(JSON.parse(lastValue(element)).buttons[0]).toEqual(expect.objectContaining({ label: 'Volunteer', url: 'https://example.edu/v' }));
+        });
+
+        it('reads a note from a value the parent supplies, such as after Reset', async () => {
+            const element = await createEditor({ value: SAVED });
+            element.value = WITH_NOTE;
+            await flush();
+            expect(listedLabels(element)).toEqual(['Give', 'Monthly meetings']);
+        });
     });
 });

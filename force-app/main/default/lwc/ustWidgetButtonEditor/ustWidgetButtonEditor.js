@@ -1,9 +1,17 @@
 import { LightningElement, api } from 'lwc';
 import getPortalLinkSuggestions from '@salesforce/apex/PortalButtons.getPortalLinkSuggestions';
+import cleanNote from '@salesforce/apex/PortalButtons.cleanNote';
 import {
-    ALIGN_OPTIONS, STYLE_OPTIONS, TYPE_EXTERNAL, TYPE_OPTIONS, TYPE_PORTAL,
-    newButton, parseButtonsJson, serializeButtons, validateButton
+    ALIGN_OPTIONS, MAX_ITEMS, MAX_NOTE_HTML, MAX_NOTES, STYLE_OPTIONS, TYPE_EXTERNAL, TYPE_OPTIONS, TYPE_PORTAL,
+    isListLayout, isNote, newButton, newNote, noteLength, noteText, parseButtonsJson, serializeButtons, validateButton
 } from 'c/ustButtonRules';
+
+/**
+ * A note allows only these formats; everything else is left out of the toolbar. The server rebuilds the note from
+ * an allowlist whatever is sent, so this only keeps the toolbar honest.
+ */
+const NOTE_FORMATS = ['bold', 'italic', 'underline', 'link'];
+const NOTE_DISABLED_CATEGORIES = 'FORMAT_FONT,FORMAT_BACKGROUND,FORMAT_BODY,ALIGN_TEXT,REMOVE_FORMATTING';
 
 /**
  * ustWidgetButtonEditor
@@ -11,6 +19,10 @@ import {
  * Lets an admin add, edit, reorder, and delete a widget's call-to-action buttons. Changes are held in
  * memory and reported through `change` ({ value } = the JSON to store in Buttons_JSON__c); they are saved
  * together with the rest of the widget when the admin presses Save on the record.
+ *
+ * Besides buttons the list can hold short notes (a few words of formatted text shown between the rows of a
+ * links list). A note is cleaned by the server when it is added (PortalButtons.cleanNote refuses with a message,
+ * or returns the cleaned text that is stored), so no HTML cleaning is done here.
  *
  * A button being added or edited is a "draft" that only joins the list when the admin presses Add/Update.
  * The parent asks hasOpenDraft() before saving so a half-finished button is never silently lost.
@@ -25,6 +37,12 @@ export default class UstWidgetButtonEditor extends LightningElement {
     /** Disables everything (used while the parent is saving). */
     @api disabled = false;
 
+    /**
+     * The widget's Button_Layout__c. In a links list each link is a row with an arrow, so the style, position
+     * and icon of a link are not used and the form hides them.
+     */
+    @api buttonLayout = '';
+
     buttons = [];
     draft = null;
     isNewDraft = false;
@@ -32,6 +50,9 @@ export default class UstWidgetButtonEditor extends LightningElement {
     showErrors = false;
     suggestions = [];
     suggestionsFailed = false;
+    isNoteDraft = false;
+    noteError = '';
+    isCheckingNote = false;
 
     _lastEmitted;
 
@@ -73,25 +94,79 @@ export default class UstWidgetButtonEditor extends LightningElement {
     // ---- List view ----
 
     get rows() {
-        return this.buttons.map((button, index) => ({
-            id: button.id,
-            label: button.label || '(no text)',
-            summary: this.describe(button),
-            upDisabled: this.disabled || index === 0,
-            downDisabled: this.disabled || index === this.buttons.length - 1,
-            editLabel: 'Edit button ' + (button.label || index + 1),
-            deleteLabel: 'Delete button ' + (button.label || index + 1),
-            upLabel: 'Move button ' + (button.label || index + 1) + ' up',
-            downLabel: 'Move button ' + (button.label || index + 1) + ' down'
-        }));
+        return this.buttons.map((button, index) => {
+            const note = isNote(button);
+            const name = note ? 'note ' + (index + 1) : 'button ' + (button.label || index + 1);
+            return {
+                id: button.id,
+                isNote: note,
+                label: note ? noteText(button.html) || '(empty note)' : button.label || '(no text)',
+                summary: note ? 'Note | ' + noteLength(button.html) + ' of ' + MAX_NOTE_HTML + ' characters' : this.describe(button),
+                upDisabled: this.disabled || index === 0,
+                downDisabled: this.disabled || index === this.buttons.length - 1,
+                editLabel: 'Edit ' + name,
+                deleteLabel: 'Delete ' + name,
+                upLabel: 'Move ' + name + ' up',
+                downLabel: 'Move ' + name + ' down'
+            };
+        });
     }
 
     get hasButtons() {
         return this.buttons.length > 0;
     }
 
+    get noteCount() {
+        return this.buttons.filter((item) => isNote(item)).length;
+    }
+
+    get linkCount() {
+        return this.buttons.length - this.noteCount;
+    }
+
     get countText() {
-        return this.buttons.length === 1 ? '1 button' : this.buttons.length + ' buttons';
+        const links = this.linkCount === 1 ? '1 button' : this.linkCount + ' buttons';
+        if (this.noteCount === 0) {
+            return links;
+        }
+        return links + ', ' + (this.noteCount === 1 ? '1 note' : this.noteCount + ' notes');
+    }
+
+    get isList() {
+        return isListLayout(this.buttonLayout);
+    }
+
+    /** Notes only show in a links list, or as a block between rows of buttons; both work, so always offered. */
+    get atItemLimit() {
+        return this.buttons.length >= MAX_ITEMS;
+    }
+
+    get atNoteLimit() {
+        return this.noteCount >= MAX_NOTES;
+    }
+
+    get addLinkDisabled() {
+        return this.addDisabled || this.atItemLimit;
+    }
+
+    get addNoteDisabled() {
+        return this.addDisabled || this.atItemLimit || this.atNoteLimit;
+    }
+
+    get limitText() {
+        if (this.atItemLimit) {
+            return 'A widget can have at most ' + MAX_ITEMS + ' buttons and notes.';
+        }
+        if (this.atNoteLimit) {
+            return 'A widget can have at most ' + MAX_NOTES + ' notes.';
+        }
+        return '';
+    }
+
+    get layoutHint() {
+        return this.isList
+            ? 'In a links list each link is a full-width row with an arrow. Style, position and icon are not used.'
+            : '';
     }
 
     describe(button) {
@@ -111,11 +186,47 @@ export default class UstWidgetButtonEditor extends LightningElement {
     }
 
     get formTitle() {
+        if (this.isNoteDraft) {
+            return this.isNewDraft ? 'New note' : 'Edit note';
+        }
         return this.isNewDraft ? 'New button' : 'Edit button';
     }
 
     get submitLabel() {
+        if (this.isNoteDraft) {
+            return this.isNewDraft ? 'Add note' : 'Update note';
+        }
         return this.isNewDraft ? 'Add button' : 'Update button';
+    }
+
+    // ---- Note form ----
+
+    get noteFormats() {
+        return NOTE_FORMATS;
+    }
+
+    get noteDisabledCategories() {
+        return NOTE_DISABLED_CATEGORIES;
+    }
+
+    get noteHtml() {
+        return this.draft ? this.draft.html || '' : '';
+    }
+
+    get noteCounter() {
+        return noteLength(this.noteHtml) + ' of ' + MAX_NOTE_HTML + ' characters (formatting counts too)';
+    }
+
+    get noteOverLimit() {
+        return noteLength(this.noteHtml) > MAX_NOTE_HTML;
+    }
+
+    get noteValid() {
+        return !this.noteOverLimit && !this.noteError;
+    }
+
+    get showLinkStyleFields() {
+        return !this.isList;
     }
 
     get isExternal() {
@@ -194,19 +305,38 @@ export default class UstWidgetButtonEditor extends LightningElement {
 
     handleAdd() {
         this.draft = newButton(TYPE_EXTERNAL);
+        this.isNoteDraft = false;
         this.isNewDraft = true;
         this.errors = {};
         this.showErrors = false;
+        this.noteError = '';
+    }
+
+    handleAddNote() {
+        this.draft = newNote();
+        this.isNoteDraft = true;
+        this.isNewDraft = true;
+        this.errors = {};
+        this.showErrors = false;
+        this.noteError = '';
     }
 
     handleEdit(event) {
         const found = this.buttons.find((button) => button.id === event.currentTarget.dataset.id);
         if (found && this.draft === null) {
             this.draft = { ...found };
+            this.isNoteDraft = isNote(found);
             this.isNewDraft = false;
             this.errors = {};
             this.showErrors = false;
+            this.noteError = '';
         }
+    }
+
+    handleNoteChange(event) {
+        event.stopPropagation();
+        this.draft = { ...this.draft, html: event.detail.value || '' };
+        this.noteError = '';
     }
 
     handleDelete(event) {
@@ -279,6 +409,10 @@ export default class UstWidgetButtonEditor extends LightningElement {
     }
 
     handleSubmitDraft() {
+        if (this.isNoteDraft) {
+            this.submitNote();
+            return;
+        }
         this.showErrors = true;
         this.errors = validateButton(this.draft, this.tagDefinitions);
         if (Object.keys(this.errors).length > 0) {
@@ -292,6 +426,41 @@ export default class UstWidgetButtonEditor extends LightningElement {
         }
         this.cancelDraft();
         this.emitChange();
+    }
+
+    /**
+     * Sends the note to the server to be checked and cleaned. A refusal is shown and the note stays open; the
+     * cleaned text it returns is what gets stored.
+     */
+    submitNote() {
+        const html = this.draft.html || '';
+        if (noteLength(html) > MAX_NOTE_HTML) {
+            this.noteError = 'The note is too long (' + noteLength(html) + ' of ' + MAX_NOTE_HTML + ' characters). Shorten it.';
+            return;
+        }
+        this.isCheckingNote = true;
+        this.noteError = '';
+        const draftId = this.draft.id;
+        cleanNote({ html })
+            .then((cleaned) => {
+                if (!this.draft || this.draft.id !== draftId) {
+                    return;
+                }
+                const finished = { id: draftId, kind: 'note', html: cleaned };
+                if (this.isNewDraft) {
+                    this.buttons = [...this.buttons, finished];
+                } else {
+                    this.buttons = this.buttons.map((item) => (item.id === draftId ? finished : item));
+                }
+                this.cancelDraft();
+                this.emitChange();
+            })
+            .catch((error) => {
+                this.noteError = (error && error.body && error.body.message) || 'The note could not be checked. Try again.';
+            })
+            .finally(() => {
+                this.isCheckingNote = false;
+            });
     }
 
     handleCancelDraft() {
@@ -309,6 +478,8 @@ export default class UstWidgetButtonEditor extends LightningElement {
 
     cancelDraft() {
         this.draft = null;
+        this.isNoteDraft = false;
+        this.noteError = '';
         this.isNewDraft = false;
         this.errors = {};
         this.showErrors = false;

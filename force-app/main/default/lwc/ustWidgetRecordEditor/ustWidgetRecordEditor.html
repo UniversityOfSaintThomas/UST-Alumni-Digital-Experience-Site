@@ -80,9 +80,15 @@
                 <c-ust-widget-button-editor
                     value={buttonsJson}
                     tag-definitions={dataTags}
+                    button-layout={effectiveButtonLayout}
                     disabled={isSaving}
                     onchange={handleButtonsChange}>
                 </c-ust-widget-button-editor>
+                <template lwc:if={showPanelStyle}>
+                    <div class="slds-m-top_small">
+                        <lightning-input-field field-name="Button_Layout__c" onchange={handleLayoutChange}></lightning-input-field>
+                    </div>
+                </template>
                 <div class="slds-grid slds-wrap slds-gutters slds-m-top_small">
                     <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
                         <lightning-input-field field-name="Button_Placement__c" onchange={handlePlacementChange}></lightning-input-field>
@@ -233,6 +239,7 @@
                             buttons={previewButtons}
                             button-placement={buttonPlacement}
                             button-size={buttonSize}
+                            button-layout={buttonLayout}
                             preview-mode>
                         </c-ust-card-grid>
                     </div>
@@ -248,6 +255,7 @@
                             buttons={previewButtons}
                             button-placement={buttonPlacement}
                             button-size={buttonSize}
+                            button-layout={buttonLayout}
                             preview-mode>
                         </c-ust-static-content>
                     </div>

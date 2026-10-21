@@ -55,6 +55,7 @@ const LATE_FIELDS = [
     'Section_Accent__c',
     'Button_Placement__c',
     'Button_Size__c',
+    'Button_Layout__c',
     'Grid_Columns__c',
     'Card_Bottom_Bar__c'
 ];
@@ -87,6 +88,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     buttonsJson = '';
     buttonPlacement = 'Below';
     buttonSize = '';
+    buttonLayout = '';
     staticContent = '';
 
     // Hero Banner settings (the two image addresses are read separately; see class comment).
@@ -117,6 +119,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
     _savedButtonsJson = '';
     _savedButtonPlacement = 'Below';
     _savedButtonSize = '';
+    _savedButtonLayout = '';
     _savedZone = '';
     _savedPageContext = '';
     _savedComponentName = '';
@@ -321,6 +324,10 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
                 this.buttonSize = value;
                 this._savedButtonSize = value;
                 break;
+            case 'Button_Layout__c':
+                this.buttonLayout = value;
+                this._savedButtonLayout = value;
+                break;
             case 'Grid_Columns__c':
                 this.gridColumns = value || DEFAULT_GRID_COLUMNS;
                 this._savedGridColumns = this.gridColumns;
@@ -455,6 +462,15 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
 
     handlePlacementChange(event) {
         this.buttonPlacement = event.detail.value || 'Below';
+    }
+
+    handleLayoutChange(event) {
+        this.buttonLayout = event.detail.value || '';
+    }
+
+    /** The layout the buttons use: the Hero Banner always keeps a row of buttons, so it is given none. */
+    get effectiveButtonLayout() {
+        return this.isHero ? '' : this.buttonLayout;
     }
 
     handleSizeChange(event) {
@@ -614,6 +630,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         this._savedButtonsJson = this.buttonsJson;
         this._savedButtonPlacement = this.buttonPlacement;
         this._savedButtonSize = this.buttonSize;
+        this._savedButtonLayout = this.buttonLayout;
         this._savedHeroAltText = this.heroAltText;
         this._savedHeroHeight = this.heroHeight;
         this._savedHeroLayout = this.heroLayout;
@@ -653,6 +670,7 @@ export default class UstWidgetRecordEditor extends NavigationMixin(LightningElem
         this.buttonsJson = this._savedButtonsJson;
         this.buttonPlacement = this._savedButtonPlacement;
         this.buttonSize = this._savedButtonSize;
+        this.buttonLayout = this._savedButtonLayout;
         this.componentName = this._savedComponentName;
         this.zone = this._savedZone;
         this.pageContext = this._savedPageContext;

@@ -222,6 +222,43 @@
 
 - object: UST_Portal_Widget__c
   fields:
+    Name: "[Sample] Home body - Links List with a note (Light Purple)"
+    Component_Name__c: ust_static_content
+    Zone__c: body
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 29
+    Description__c: Button Layout "Links list" on a Light Purple panel. Each link is a full-width row with an arrow; the short note sits between two rows.
+    Section_Background__c: light_purple
+    Button_Layout__c: list
+    Static_Content_Header__c: Ways to get involved
+    Static_Content__c: <p>Choose a way to connect with fellow Tommies.</p>
+    Button_Placement__c: Below
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[
+      {"id":"l1","label":"Volunteer with St. Thomas","type":"portal","url":"/","newTab":false,"style":"brand","align":"left"},
+      {"id":"n1","kind":"note","html":"Chapters meet <strong>monthly</strong> in Saint Paul. <a href=\"https://www.stthomas.edu/alumni\">See the calendar</a>"},
+      {"id":"l2","label":"Mentor a student or fellow alum","type":"external","url":"https://www.stthomas.edu/alumni","newTab":true,"style":"brand","align":"left"},
+      {"id":"l3","label":"Join the Alumni Engagement Board","type":"portal","url":"/","newTab":false,"style":"brand","align":"left"}]}
+
+- object: UST_Portal_Widget__c
+  fields:
+    Name: "[Sample] Home sidebar - Links List, compact"
+    Component_Name__c: ust_static_content
+    Zone__c: sidebar
+    Page_Context__c: home
+    Is_Active__c: true
+    Sort_Order__c: 40
+    Description__c: Button Layout "Links list, compact (sidebar)". Rows without the circle; the arrow moves 0.5rem on hover.
+    Button_Layout__c: list_compact
+    Static_Content_Header__c: Related links
+    Buttons_JSON__c: >-
+      {"version":1,"buttons":[
+      {"id":"s1","label":"Alumni directory","type":"portal","url":"/alumni-directory","newTab":false,"style":"brand","align":"left"},
+      {"id":"s2","label":"Alumni news","type":"external","url":"https://www.stthomas.edu/alumni","newTab":true,"style":"brand","align":"left"}]}
+
+- object: UST_Portal_Widget__c
+  fields:
     Name: "[Sample] Home body - College filter (Placeholder college)"
     Component_Name__c: ust_static_content
     Zone__c: body

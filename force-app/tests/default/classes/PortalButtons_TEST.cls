@@ -227,4 +227,152 @@ private class PortalButtons_TEST {
 
         System.assert(suggestions.isEmpty(), 'Users without widget edit access get nothing');
     }
+
+    // ----- Notes (short text between links) -----
+
+    private static String note(String html) {
+        return '{"id":"n1","kind":"note","html":' + JSON.serialize(html) + '}';
+    }
+
+    private static String cleaned(String html) {
+        return PortalButtons.sanitizeNote(html);
+    }
+
+    @IsTest
+    static void aNoteKeepsOnlyTheAllowlistedFormattingAndLinks() {
+        System.assertEquals('<p>Hello <strong>bold</strong>, <em>it</em> and <u>un</u></p>',
+                cleaned('<p>Hello <strong>bold</strong>, <em>it</em> and <u>un</u></p>'), 'Allowed tags pass');
+        System.assertEquals('Line<br>break', cleaned('Line<br/>break'), 'A break is rebuilt');
+        System.assertEquals('<a href="https://www.stthomas.edu/x?a=1&amp;b=2">Read</a>',
+                cleaned('<a href="https://www.stthomas.edu/x?a=1&b=2" target="_blank" onclick="x()">Read</a>'),
+                'Only a checked href survives on a link; other attributes are dropped');
+        System.assertEquals('<a href="mailto:alumni@stthomas.edu">Email</a> or <a href="tel:+16516476000">call</a>',
+                cleaned('<a href=\'mailto:alumni@stthomas.edu\'>Email</a> or <a href="tel:+16516476000">call</a>'),
+                'mailto and tel links are allowed');
+    }
+
+    @IsTest
+    static void aNoteRemovesScriptsAttributesAndUnsafeLinks() {
+        System.assertEquals('hi alert(1)', cleaned('hi <script>alert(1)</script>'), 'The script tag goes, its text is only text');
+        System.assertEquals('<p>x</p>', cleaned('<p onclick="steal()" style="x" class="y">x</p>'), 'Attributes on allowed tags are dropped');
+        System.assertEquals('', cleaned('<img src=x onerror=alert(1)>'), 'An image is not allowed');
+        System.assertEquals('', cleaned('<iframe src="https://evil.example"></iframe>'), 'An iframe is not allowed');
+        System.assertEquals('Click', cleaned('<a href="javascript:alert(1)">Click</a>'), 'A javascript link keeps only its text');
+        System.assertEquals('Click', cleaned('<a href="JaVaScRiPt:alert(1)">Click</a>'), 'Case does not help');
+        System.assertEquals('Click', cleaned('<a href="&#106;avascript:alert(1)">Click</a>'), 'An entity-encoded scheme does not help');
+        System.assertEquals('Click', cleaned('<a href="data:text/html,hi">Click</a>'), 'A data link keeps only its text');
+        System.assertEquals('Click', cleaned('<a href="http://insecure.example">Click</a>'), 'Plain http is not allowed');
+        System.assertEquals('Click', cleaned('<a href="//evil.example">Click</a>'), 'A protocol-relative link is not allowed');
+        System.assertEquals('Click', cleaned('<a href="/alumni-directory">Click</a>'), 'A site path is not allowed in a note');
+        System.assertEquals('Click', cleaned('<a>Click</a>'), 'A link with no address keeps its text');
+        System.assertEquals('Click', cleaned('<a href="https://x.edu/a b">Click</a>'), 'A link with a space is not allowed');
+        System.assertEquals('<a href="https://x.edu">one two</a>', cleaned('<a href="https://x.edu">one <a href="https://y.edu">two</a></a>'),
+                'A link inside a link is flattened');
+    }
+
+    @IsTest
+    static void aNoteEscapesTextAndClosesWhatWasLeftOpen() {
+        System.assertEquals('Q&amp;A and 1 &lt; 2', cleaned('Q&A and 1 &lt; 2'), 'A loose & is escaped; an entity the editor wrote is kept');
+        System.assertEquals('a &gt; b', cleaned('a > b'), 'A loose > is escaped');
+        System.assert(!cleaned('1 < 2 & 3 > 2').contains('<'), 'Raw angle brackets never come out as markup');
+        System.assertEquals('<strong>open</strong>', cleaned('<strong>open'), 'An unclosed tag is closed');
+        System.assertEquals('<p><em>deep</em></p>', cleaned('<p><em>deep'), 'Several unclosed tags close in order');
+        System.assertEquals('stray', cleaned('stray</strong></p></a>'), 'Closing tags with nothing open are dropped');
+        System.assertEquals('<strong>a<em>b</em></strong>', cleaned('<strong>a<em>b</strong></em>'), 'Crossed tags are repaired into proper nesting');
+        System.assertEquals('<b>Same</b> <i>thing</i>', cleaned('<B>Same</B> <I>thing</I>'), 'Tag names are case-insensitive');
+        System.assertEquals('', cleaned('   '), 'Blank is empty');
+        System.assertEquals('', cleaned(null), 'Null is empty');
+        System.assert(!cleaned('<a href="x>y">z</a>').contains('<a'), 'A quote hiding a > does not smuggle an attribute');
+        System.assert(!cleaned('<<script>script>alert(1)').contains('<script'), 'A split tag does not rebuild into a script');
+        System.assert(!cleaned('<p><p><p><p><p><p><p><p><p>x').contains('<p><p><p><p><p><p><p>'), 'Nesting depth is limited');
+    }
+
+    @IsTest
+    static void cleanNoteAcceptsAGoodNoteAndRefusesWithAMessage() {
+        System.assertEquals('<strong>Tip:</strong> bring a friend.', PortalButtons.cleanNote(' <strong>Tip:</strong> bring a friend. '), 'Good note, cleaned');
+
+        List<String> bad = new List<String>{ '   ', '<p></p>', '<br>', '<script></script>', 'Hello {{First_Name}}', 'x'.repeat(PortalButtons.MAX_NOTE_HTML + 1) };
+        List<String> expected = new List<String>{ 'text', 'text', 'text', 'text', 'data tags', 'too long' };
+        for (Integer i = 0; i < bad.size(); i++) {
+            try {
+                PortalButtons.cleanNote(bad[i]);
+                System.assert(false, 'Should refuse: ' + bad[i].left(30));
+            } catch (AuraHandledException problem) {
+                System.assert(problem.getMessage().containsIgnoreCase(expected[i]),
+                        'Message for "' + bad[i].left(20) + '" should mention ' + expected[i] + ' but was: ' + problem.getMessage());
+            }
+        }
+        System.assertEquals('x'.repeat(PortalButtons.MAX_NOTE_HTML), PortalButtons.cleanNote('x'.repeat(PortalButtons.MAX_NOTE_HTML)), 'Exactly at the limit is fine');
+    }
+
+    @IsTest
+    static void theLengthLimitCountsTheFormattingToo() {
+        String tagged = '<strong>x</strong>'.repeat(40);
+        System.assert(tagged.length() > PortalButtons.MAX_NOTE_HTML, 'Setup: more than the limit with tags');
+        try {
+            PortalButtons.cleanNote(tagged);
+            System.assert(false, 'Few words but many tags should be refused');
+        } catch (AuraHandledException problem) {
+            System.assert(problem.getMessage().containsIgnoreCase('too long'), 'Message: ' + problem.getMessage());
+        }
+    }
+
+    @IsTest
+    static void notesComeThroughBetweenLinksInOrderAndAreCleanedAgainOnRead() {
+        String json = wrap(external('https://example.edu/a') + ',' + note('Before <strong>b</strong><script>x</script>') + ',' + portal('/alumni-directory'));
+
+        List<PortalButtons.ButtonDto> items = PortalButtons.prepare(json, null);
+
+        System.assertEquals(3, items.size(), 'Two links and a note');
+        System.assertEquals('link', items[0].kind, 'A button is a link');
+        System.assertEquals('note', items[1].kind, 'The note sits between the links');
+        System.assertEquals('Before <strong>b</strong>x', items[1].html, 'Cleaned again even though it was stored');
+        System.assertEquals(null, items[1].url, 'A note has no link');
+        System.assertEquals('n1', items[1].id, 'Id kept');
+        System.assertEquals('link', items[2].kind, 'Order kept');
+    }
+
+    @IsTest
+    static void aStoredNoteThatIsEmptyTooLongOrUsesTagsIsDropped() {
+        String tooLong = note('x'.repeat(PortalButtons.MAX_NOTE_HTML + 1));
+        String json = wrap(note('<script></script>') + ',' + tooLong + ',' + note('Hello {{First_Name}}') + ',' + external('https://example.edu/ok'));
+        List<PortalButtons.ButtonDto> items = PortalButtons.prepare(json, new Map<String, String>{ 'first_name' => 'Pat' });
+        System.assertEquals(1, items.size(), 'Only the link survives');
+        System.assertEquals('link', items[0].kind, 'It is the link');
+    }
+
+    @IsTest
+    static void aNoteWithoutATypeIsNotMistakenForAButtonByTheOldRules() {
+        // The shape an older release would see: no "type", so it is dropped there rather than shown as a link.
+        Map<String, Object> asStored = (Map<String, Object>) JSON.deserializeUntyped(note('Hi'));
+        System.assertEquals(null, asStored.get('type'), 'A note has no type');
+        System.assertEquals('note', asStored.get('kind'), 'A note says what it is');
+    }
+
+    @IsTest
+    static void thereAreLimitsOnNotesAndOnTheWholeList() {
+        List<String> many = new List<String>();
+        for (Integer i = 0; i < PortalButtons.MAX_NOTES + 5; i++) {
+            many.add(note('Note ' + i));
+        }
+        List<PortalButtons.ButtonDto> notes = PortalButtons.prepare(wrap(String.join(many, ',')), null);
+        System.assertEquals(PortalButtons.MAX_NOTES, notes.size(), 'Extra notes are ignored');
+
+        List<String> links = new List<String>();
+        for (Integer i = 0; i < PortalButtons.MAX_ITEMS + 10; i++) {
+            links.add(external('https://example.edu/' + i));
+        }
+        List<PortalButtons.ButtonDto> all = PortalButtons.prepare(wrap(String.join(links, ',')), null);
+        System.assertEquals(PortalButtons.MAX_ITEMS, all.size(), 'Extra items are ignored');
+        System.assertEquals('https://example.edu/0', all[0].url, 'The first ones are kept');
+    }
+
+    @IsTest
+    static void layoutFallsBackToARowOfButtons() {
+        System.assertEquals('row', PortalButtons.normalizeLayout(null), 'Blank means a row');
+        System.assertEquals('row', PortalButtons.normalizeLayout('grid'), 'Unknown means a row');
+        System.assertEquals('list', PortalButtons.normalizeLayout('list'), 'List is allowed');
+        System.assertEquals('list_compact', PortalButtons.normalizeLayout('list_compact'), 'Compact list is allowed');
+        System.assertEquals('row', PortalButtons.normalizeLayout('row'), 'Row is allowed');
+    }
 }

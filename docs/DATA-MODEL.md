@@ -122,6 +122,7 @@ Settings added after the first version (all optional picklists; blank means the 
 | Hero Layout | `Hero_Layout__c` | Picklist | full (default); split |
 | Grid Columns | `Grid_Columns__c` | Picklist | 2; 3 (default); 4 (Card Grid) |
 | Card Bottom Bar | `Card_Bottom_Bar__c` | Picklist | green (default); none (Card Grid) |
+| Button Layout | `Button_Layout__c` | Picklist | row (default); list; list_compact. Links list layouts for the buttons (Static Content and Card Grid). Notes live inside `Buttons_JSON__c` (`kind: "note"`), not in a field |
 
 ### UST_Portal_Widget_Item__c
 One card of a Card Grid widget. **Master-Detail** to `UST_Portal_Widget__c` (relationship `Items__r`), so cards are shared with and deleted with their widget (controlled by parent: the existing active-widget sharing rules cover them, including the guest rule). Admin editor: `UST_Portal_Widget_Admin` (full); read-only in the two portal sets.
