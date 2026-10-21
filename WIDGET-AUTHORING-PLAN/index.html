@@ -1199,6 +1199,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#permission-set-rename-2026-10-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permission set rename (2026-10-21)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#progress" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1775,7 +1786,7 @@ Phase 3 buttons. The enum constants are not named <code>HTML</code>/<code>URL</c
 <ul>
 <li><code>Buttons_JSON__c</code> — Long Text Area (32,768) on <code>UST_Portal_Widget__c</code>.</li>
 <li><code>Button_Placement__c</code> — picklist: <code>Below</code> (default), <code>Above</code>.</li>
-<li>Add both to <code>UST_Portal_Widget_Admin</code> and <code>Alumni_Portal_Guest_User</code> permission sets.</li>
+<li>Add both to <code>UST_Portal_Widget_Admin</code> and <code>Alumni_Community_Guest</code> permission sets.</li>
 </ul>
 <h3 id="json-shape-versioned">JSON shape (versioned)<a class="headerlink" href="#json-shape-versioned" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
@@ -2097,17 +2108,18 @@ editor no longer draws its own heading (the card title names it). To move the He
 <p><strong>Signed-in portal users: permission set, sharing set, and sample users (2026-10-16).</strong> Signed-in alumni on the LWR
 site had no access to any portal Apex or to the directory fields. The old <code>Alumni Community User</code> profile belonged to
 the earlier Aura site and is not used here, so access is granted by two things, both proven by a test that runs as a real
-Customer Community user (<code>Alumni_Portal_User_TEST</code>, 4 tests):
-- <strong><code>Alumni_Portal_User</code> permission set</strong> (<code>force-app</code>): the 6 controllers a portal page calls, read on the directory,
+Customer Community user (<code>Alumni_Community_TEST</code>, 4 tests):
+- <strong><code>Alumni_Community</code> permission set</strong> (<code>force-app</code>): the 6 controllers a portal page calls, read on the directory,
   business directory, news and widget objects with only the fields those controllers read (no email, phone, birthdate, or
   street address; found by running the controllers as the user and adding what each missing field broke), the
   <code>Alumni_Business</code> record type, and edit on the person's own profile fields. The public business directory
   (<code>AlumniBusinessDirectoryController</code>) now runs in system mode because guests read it, so it needs no field grants: only
   9 <code>Professional_Directory__c</code> fields remain, for the profile and connected-profile pages. The guest set
-  <code>Alumni_Portal_Guest_User</code> also grants that controller and the <code>Alumni_Business</code> record type, because the record type
+  <code>Alumni_Community_Guest</code> also grants that controller and the <code>Alumni_Business</code> record type, because the record type
   lookup is per user even in system mode. In system mode the controller's SELECT list and WHERE clause are the only gates on
-  what a guest sees, so review them when they change. Favorites stay in <code>Alumni_Favorites_User</code>.
-  Assign both to portal users; this is the grant for production too, not just scratch orgs.
+  what a guest sees, so review them when they change. Favorites (<code>AlumniFavoriteController</code> and <code>Alumni_Favorite__c</code>)
+  are part of <code>Alumni_Community</code> too. Assign <code>Alumni_Community</code> to portal users; this is the grant for production too,
+  not just scratch orgs.
 - <strong>Sharing Set <code>Alumni Directory Edit Own</code></strong> (<code>unpackaged/config/portalSharing</code>, task
   <code>create_community_portal_sharing_set</code>, <code>config_dev</code> step 5.8): maps <code>Alumni_Directory__c.Contact__c</code> to the user's own
   Contact with Edit. Without it a portal user can read but <strong>cannot edit their own profile</strong> (<code>UserRecordAccess
@@ -2115,13 +2127,13 @@ Customer Community user (<code>Alumni_Portal_User_TEST</code>, 4 tests):
   class). A permission set cannot fix that. It applies to the <code>Customer Community Login User</code> profile. For EDA-Staging or
   production, check whether an equivalent sharing set exists by hand and deploy this one if not.
 - <strong>Sample users</strong> (<code>config_dev</code> steps 90 to 92): the alumni dataset loads the people, <code>create_sample_portal_users</code>
-  makes users smp1 to smp4 and assigns both permission sets, <code>link_sample_portal_users</code> sets <code>Contact.Portal_User__c</code>
+  makes users smp1 to smp4 and assigns <code>Alumni_Community</code>, <code>link_sample_portal_users</code> sets <code>Contact.Portal_User__c</code>
   and <code>Alumni_Directory__c.Community_Profile__c</code>. Idempotent. The Alumni network stays <code>UnderConstruction</code> in a dev org
   until published, so the proof is the Apex test, not a browser login.</p>
 <p><strong>Existing gaps found on the way (not caused by this work).</strong> <code>Contact.Community_Address_Range__c</code> (a city and state formula
 used by the news search) and <code>Contact.Degree_s_Formatted__c</code> (business directory) were added to the repo on 2026-10-16.
-<code>Alumni_Portal_User_TEST</code> now calls the public directory and runs a news search as a signed-in user; the search failed for
-every portal user until <code>Alumni_Portal_User</code> granted <code>Contact.Community_Address_Range__c</code>. The <strong>Academic Majors widget filter
+<code>Alumni_Community_TEST</code> now calls the public directory and runs a news search as a signed-in user; the search failed for
+every portal user until <code>Alumni_Community</code> granted <code>Contact.Community_Address_Range__c</code>. The <strong>Academic Majors widget filter
 does not work</strong>: the controller lines that load the user's majors are commented out (they referenced a <code>Contact.Academic_Majors__c</code>
 that does not exist), so any widget using that filter is shown to nobody. The data is on <code>Alumni_Directory__c.Academic_Major_s__c</code>
 (same <code>Academic_Majors</code> value set). <code>Contact.Job_Title__c</code> exists in the org but not in the repo source. Three older test suites
@@ -2144,7 +2156,7 @@ personal data: data tags (<code>{{First_Name}}</code> and so on) are stored as p
 time, so a viewer who reads the record directly (for example through an Aura endpoint) sees the tag, not anyone's
 data. Do not type real personal details into widget text. Turning a widget off removes the share; turning it on adds it
 (checked in the dev org: 18 active widgets, 18 shares per rule, 0 for the inactive one, and a toggle added then removed
-both rows). Field access is still limited by the <code>Alumni_Portal_Guest_User</code> permission set.</p>
+both rows). Field access is still limited by the <code>Alumni_Community_Guest</code> permission set.</p>
 <p><strong>Known limits / follow-ups.</strong>
 - Links typed inside the overlay text keep the browser link colour (use a button for calls to action).
 - The S3 tool always saves PNG (large files for photos), keeps the same file name when replacing (handled here with
@@ -2502,7 +2514,7 @@ Done when: the Support page block from the live site can be rebuilt by an admin 
 </ul>
 <p><strong>Bugs found by measuring.</strong> (1) Row text was bright purple at rest wherever the site stylesheet is absent (it only set the site's link-color hooks): the row now sets <code>color</code> too, from one <code>--ust-row-text</code> property. (2) On Dark Purple the text turned bright purple on hover (about 2.6:1): it now stays white in every state; measured contrast 15.8 (Dark Purple) and 12.6 (Purple) in every state, 6.13 and 5.67 for the hover text on white and gray. (3) My first mutation checks caught two tests that proved nothing (one guarded dead code); the dead condition was removed.</p>
 <p><strong>Verification.</strong> Jest 441. Apex 81 across the touched classes (<code>PortalButtons_TEST</code> 29: scripts, event attributes, <code>javascript:</code> in several disguises, entity-encoded schemes, split and crossed tags, nesting depth, length counted with tags, caps, "old release drops a note"), 8 Apex mutations and about 40 Jest mutations caught. On a real Lightning record (scripted): the layout picker offers the three layouts and previews at once, the form hides style/position/icon, a note with a link and bold saves cleaned (the <code>onclick</code> is gone and the stored note has no <code>type</code>), a data tag is refused with a readable message and the form stays open, a 600-character note is stopped with a count, the layout persisted after a real Save, and the controller returns <code>list</code> with link, note, link in order. Geometry and contrast of the row states were measured on a local page built from the real CSS, markup, fonts and tokens (arrow moves 16px in the list and 8px in the compact list).</p>
-<p><strong>Published site check (2026-10-21, after the owner activated and published).</strong> First look at the real guest view. Every widget zone failed with "The Apex request is invalid" until the owner assigned <code>Alumni_Portal_Guest_User</code> to the site's guest user (nothing in the build does this; the guest profile grants none of the widget classes). After that, as a guest: the All Pages banner and above-footer widget show (so the earlier All Pages fix works for the public), the Card Grid renders in the 875px body zone with 3 columns, a card whose link was inserted as <code>javascript:</code> has no link, the hover bar turns purple, arrow and text links compute <code>text-decoration: none</code> (one underline), and the three links lists render with a note. Hover and keyboard focus were measured on the real page once the transitions settled (light list text 5.22:1, arrow 6.13:1 on a 50px circle, shift 16px; compact 8px with no circle; dark list white text 15.82:1 with a white circle; 2px focus ring). One false alarm: the list probes first rendered <strong>empty</strong> for the guest, which looked like a permission problem but was invalid JSON in my own test data (an unescaped quote in the note); the server correctly returns nothing for malformed JSON.</p>
+<p><strong>Published site check (2026-10-21, after the owner activated and published).</strong> First look at the real guest view. Every widget zone failed with "The Apex request is invalid" until the owner assigned <code>Alumni_Community_Guest</code> to the site's guest user (nothing in the build does this; the guest profile grants none of the widget classes). After that, as a guest: the All Pages banner and above-footer widget show (so the earlier All Pages fix works for the public), the Card Grid renders in the 875px body zone with 3 columns, a card whose link was inserted as <code>javascript:</code> has no link, the hover bar turns purple, arrow and text links compute <code>text-decoration: none</code> (one underline), and the three links lists render with a note. Hover and keyboard focus were measured on the real page once the transitions settled (light list text 5.22:1, arrow 6.13:1 on a 50px circle, shift 16px; compact 8px with no circle; dark list white text 15.82:1 with a white circle; 2px focus ring). One false alarm: the list probes first rendered <strong>empty</strong> for the guest, which looked like a permission problem but was invalid JSON in my own test data (an unescaped quote in the note); the server correctly returns nothing for malformed JSON.</p>
 <p><strong>Still not verified.</strong> A screen reader, and a signed-in portal user viewing a links list or a Card Grid. (Not run: the editor's note and layout behaviour on a real Lightning record is covered above.) Sample data: two widgets (a list with a note on Light Purple; a compact list in the sidebar), validated against the org in a rolled-back savepoint.</p>
 <p><strong>Bug found after 5.5: "All Pages" widgets never showed (fixed 2026-10-20).</strong> <code>PortalWidgetController</code> still had <code>AND Page_Context__c INCLUDES (:pageContext)</code> in its SOQL, which only returns widgets whose stored value contains the requested page, so a widget stored as <code>all</code> was filtered out before <code>widgetMatchesPage</code> (which does accept <code>all</code>) ever saw it. The comment above the query already said the page check was meant to happen after the query. Every test chose the first picklist value, so none used <code>all</code>. The clause is removed; two tests now cover All Pages (several pages, several zones, a widget for another page not leaking). Confirmed with Apex on the dev org (banner and above-footer on <code>home</code> and <code>alumni_directory__c</code> went from 0 to 1) and by reading the org's theme layout, which places both zones with Layout scope. <strong>Not confirmed in a browser</strong> (no usable session at the time); open the home page to see the banner and the above-footer widgets.</p>
 <p><strong>Sample data.</strong> Two Card Grid widgets (6 cards on Gray; 2 cards, 2 columns, no bar, on Dark Purple), with no pictures so they work without S3. The recipe was generated offline with Snowfakery and its exact values inserted in a rolled-back savepoint to validate them (it also showed Snowfakery turns a quoted <code>"3"</code> into the number 3, which Bulk API serializes back to <code>3</code>; picklist values stay strings in the file).</p>
@@ -2531,6 +2543,8 @@ Done when: the Support page block from the live site can be rebuilt by an admin 
 <li>Nothing is committed yet — the working tree also contains unrelated in-progress changes (staged
    renames of test classes into <code>force-app/tests/default/classes/</code>, <code>.agentbridge</code> deletions, etc.).</li>
 </ol>
+<h2 id="permission-set-rename-2026-10-21">Permission set rename (2026-10-21)<a class="headerlink" href="#permission-set-rename-2026-10-21" title="Permanent link">&para;</a></h2>
+<p>The permission sets were renamed to match the sandbox, and Favorites was rolled in: <code>Alumni_Portal_User</code> + <code>Alumni_Favorites_User</code> became <strong><code>Alumni_Community</code></strong> (signed-in alumni), and <code>Alumni_Portal_Guest_User</code> became <strong><code>Alumni_Community_Guest</code></strong> (the site guest user). Both new sets were built by merging the old XML and checked to be supersets of what they replace (nothing lost, nothing extra); the Favorites grants (the <code>AlumniFavoriteController</code> class, <code>Alumni_Favorite__c</code> CRUD, read on the two directory objects) sit in <code>Alumni_Community</code> only, since a guest has no Contact to favorite from. <code>Alumni_Portal_User_TEST</code> became <code>Alumni_Community_TEST</code>. Older sections of this plan that mention the original names are history; read them as the new names. The API names are derived from the sandbox labels (<code>Alumni Community</code>, <code>Alumni Community Guest</code>); check them against the sandbox before a deploy there.</p>
 <h2 id="progress">Progress<a class="headerlink" href="#progress" title="Permanent link">&para;</a></h2>
 <ul>
 <li>[x] Phase A — editor layout, headings, widget style class, API 68.0, lint fixes, link-dialog fix</li>

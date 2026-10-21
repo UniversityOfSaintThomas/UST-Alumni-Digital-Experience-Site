@@ -980,7 +980,7 @@ recovery):</strong>
    (a standard, always-available portal profile) with an <code>Account</code> on each test <code>Contact</code>
    (portal users require one).
 3. <strong>A fresh custom object grants zero access to non-admin profiles by default.</strong> A new
-   <code>Alumni_Favorites_User</code> permission set was added, granting object CRUD on
+   <code>Alumni_Community</code> permission set was added, granting object CRUD on
    <code>Alumni_Favorite__c</code> and Read on the small field set <code>getMyFavorites()</code> resolves from
    <code>Alumni_Directory__c</code>/<code>Professional_Directory__c</code> (<code>Name</code>/<code>First_Name_Text__c</code>/
    <code>Last_Name_Text__c</code>/<code>Class_Year_Text__c</code> and <code>Company_Name__c</code>/<code>Company_City__c</code>/
@@ -1006,7 +1006,7 @@ recovery):</strong>
    non-setup object). Wrapped in <code>System.runAs(new User(Id = UserInfo.getUserId()))</code> to
    isolate it, which is the standard pattern for this restriction inside test methods.</p>
 <p>Deployed to <code>dev</code> scratch org only (<code>Alumni_Favorite__c</code>, <code>AlumniFavoriteController</code>,
-<code>AlumniFavoriteController_TEST</code>, <code>Alumni_Favorites_User</code> permission set). Not yet pushed to
+<code>AlumniFavoriteController_TEST</code>, <code>Alumni_Community</code> permission set). Not yet pushed to
 <code>eda-staging</code>.</p>
 <h3 id="task-3-build-reusable-ustfavoritetoggle-lwc-done">Task 3: Build reusable <code>ustFavoriteToggle</code> LWC — ✅ Done<a class="headerlink" href="#task-3-build-reusable-ustfavoritetoggle-lwc-done" title="Permanent link">&para;</a></h3>
 <ul>
