@@ -216,7 +216,7 @@ Apex scripts for the part the data loader cannot do.
 |------|-------|--------------------------|
 | 24 sample portal widgets, all named `[Sample] ...`: every zone, page context (`all`, `home`, `alumni_directory__c`, several pages), the filter dimensions, a hero with buttons, and edge cases (inactive, zone mismatch, unregistered page, unbuilt component) | `datasets/widgets/widgets.recipe.yml` | `cci task run load_sample_data --dataset widgets --org dev` |
 | 16 Contacts and 15 Alumni Directory records (four personas plus twelve more people to search) | `datasets/alumni/alumni.recipe.yml` | `cci task run load_sample_data --dataset alumni --org dev` |
-| Four portal users, smp1 to smp4, with `Alumni_Portal_User` and `Alumni_Favorites_User` | `datasets/alumni/create_portal_users.apex` | `cci task run create_sample_portal_users --org dev` |
+| Four portal users, smp1 to smp4, with `Alumni_Community` | `datasets/alumni/create_portal_users.apex` | `cci task run create_sample_portal_users --org dev` |
 | Links each user back to its Contact and Directory record | `datasets/alumni/link_portal_users.apex` | `cci task run link_sample_portal_users --org dev` |
 
 `datasets/dev/dev.recipe.yml` includes the widgets and the people; it is what `config_dev` step 90 (`load_sample_data`) runs.

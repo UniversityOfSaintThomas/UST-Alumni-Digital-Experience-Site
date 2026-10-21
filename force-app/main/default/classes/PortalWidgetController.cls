@@ -18,7 +18,7 @@
  *
  * Runs without sharing so that community user profiles do not need explicit
  * sharing rules on UST_Portal_Widget__c. The community user profile OR a
- * permission set (Alumni_Portal_Guest for guest, community profile for logged-in)
+ * permission set (Alumni_Community_Guest for guest, Alumni_Community for logged-in)
  * must still grant Read access to the object and all queried fields.
  *
  * See AI-TOOLS-CONFIG.md - Experience Cloud Guest User Access

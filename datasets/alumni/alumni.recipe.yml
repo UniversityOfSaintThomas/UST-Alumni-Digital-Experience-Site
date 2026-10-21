@@ -6,8 +6,8 @@
 #
 # This recipe creates the PEOPLE: 16 Contacts and 15 Alumni Directory records (EDA adds an Administrative Account for
 # each Contact). It cannot create the portal USERS: CumulusCI's data loader insists on all 119 platform-defaulted User
-# checkboxes. datasets/alumni/create_portal_users.apex does that instead, and also assigns the Alumni_Portal_User and
-# Alumni_Favorites_User permission sets. The users are tied to these Contacts by Banner ID:
+# checkboxes. datasets/alumni/create_portal_users.apex does that instead, and also assigns the Alumni_Community
+# permission set. The users are tied to these Contacts by Banner ID:
 #
 #    smp1  Jordan Newgrad      90000001  class 2021, alumni, young-alumni sender key        -> "recent grad" widgets
 #    smp2  Morgan Lawalum      90000002  class 1985, alumni + donor, volunteer, Location 1  -> donor/volunteer/geo widgets

@@ -20,11 +20,11 @@
  * Professional_Directory__c in this org (confirmed via a live query) - whatever grants let
  * AlumniProfileController/AlumniBusinessDirectoryController work for real alumni today must
  * live on a site-specific profile this scratch org has not yet been provisioned with. Rather
- * than depend on that org-setup state, the new Alumni_Favorites_User permission set below
+ * than depend on that org-setup state, the Alumni_Community permission set below
  * explicitly grants Read on the small field set getMyFavorites() actually selects, so these
  * tests do not depend on any Experience Cloud site configuration having run.
  *
- * The Alumni_Favorites_User permission set (object CRUD on Alumni_Favorite__c, plus Read on
+ * The Alumni_Community permission set (which includes object CRUD on Alumni_Favorite__c, plus Read on
  * Alumni_Directory__c/Professional_Directory__c and the handful of display fields
  * getMyFavorites() resolves) is assigned to each test user in @TestSetup, since a fresh
  * Private custom object grants no access to non-admin profiles by default.
@@ -104,7 +104,7 @@ private class AlumniFavoriteController_TEST {
         // user) isolates it into its own transaction context, which is the standard pattern
         // for this restriction in test methods.
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            PermissionSet favoritesPermSet = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Favorites_User' LIMIT 1];
+            PermissionSet favoritesPermSet = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Community' LIMIT 1];
             insert new List<PermissionSetAssignment>{
                     new PermissionSetAssignment(AssigneeId = ownerUser.Id, PermissionSetId = favoritesPermSet.Id),
                     new PermissionSetAssignment(AssigneeId = otherUser.Id, PermissionSetId = favoritesPermSet.Id)

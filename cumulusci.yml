@@ -93,7 +93,7 @@ tasks:
     create_sample_portal_users:
         description: >-
             Creates the four sample portal users (aliases smp1 to smp4) for the Contacts the alumni dataset loads, and
-            assigns them the Alumni_Portal_User and Alumni_Favorites_User permission sets. Idempotent. Needs the
+            assigns them the Alumni_Community permission set. Idempotent. Needs the
             "alumni" dataset (load_sample_data) first. Apex rather than Snowfakery because the data loader cannot
             load User.
         class_path: cumulusci.tasks.apex.anon.AnonymousApexTask

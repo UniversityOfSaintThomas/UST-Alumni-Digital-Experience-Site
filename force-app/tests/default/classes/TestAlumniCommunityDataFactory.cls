@@ -156,7 +156,7 @@ public class TestAlumniCommunityDataFactory {
      * The profile the Alumni portal users get. EDA-Staging has the old "Alumni Community User" profile, which is used
      * when it exists. A scratch org does not have it (that profile belonged to the earlier Aura site), and its build
      * gives the Alumni network the standard "Customer Community Login User" instead, so fall back to that. The access
-     * those users need comes from the Alumni_Portal_User permission set, assigned below.
+     * those users need comes from the Alumni_Community permission set, assigned below.
      *
      * @return the profile to give the test portal users
      */
@@ -192,7 +192,7 @@ public class TestAlumniCommunityDataFactory {
      */
     private static void assignPortalPermissionSets(List<Id> userIds) {
         List<PermissionSet> sets = [
-            SELECT Id FROM PermissionSet WHERE Name IN ('Alumni_Portal_User', 'Alumni_Favorites_User')
+            SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Community'
         ];
         List<PermissionSetAssignment> assignments = new List<PermissionSetAssignment>();
         for (Id userId : userIds) {

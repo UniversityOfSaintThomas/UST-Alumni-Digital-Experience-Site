@@ -3,7 +3,7 @@
     <sharingGuestRules>
         <fullName>ShareActiveWidgetsWithAlumniGuest</fullName>
         <accessLevel>Read</accessLevel>
-        <description>Lets the Alumni site guest user read active portal widgets directly, for example the pictures a Hero Banner points at. Guests still only get the fields granted in the Alumni_Portal_Guest_User permission set.</description>
+        <description>Lets the Alumni site guest user read active portal widgets directly, for example the pictures a Hero Banner points at. Guests still only get the fields granted in the Alumni_Community_Guest permission set.</description>
         <label>Share Active Widgets With Alumni Guest</label>
         <sharedTo>
             <guestUser>Alumni</guestUser>

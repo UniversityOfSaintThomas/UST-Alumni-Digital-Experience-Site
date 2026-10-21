@@ -24,9 +24,9 @@ String orgKey = adminUsername.substringBefore('@').toLowerCase().replace('-', ''
 
 Id profileId = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1].Id;
 List<PermissionSet> permissionSets = [
-    SELECT Id, Name FROM PermissionSet WHERE Name IN ('Alumni_Portal_User', 'Alumni_Favorites_User')
+    SELECT Id, Name FROM PermissionSet WHERE Name = 'Alumni_Community'
 ];
-System.assertEquals(2, permissionSets.size(), 'Deploy the Alumni_Portal_User and Alumni_Favorites_User permission sets first.');
+System.assertEquals(1, permissionSets.size(), 'Deploy the Alumni_Community permission set first.');
 
 Map<Id, String> existingByContact = new Map<Id, String>();
 for (User existing : [SELECT ContactId, Username FROM User WHERE Alias IN :aliasByBannerId.values()]) {
@@ -78,7 +78,7 @@ if (!newUsers.isEmpty()) {
     }
 }
 
-// Both permission sets for every sample user (new or existing), skipping assignments that already exist.
+// The Alumni_Community permission set for every sample user (new or existing), skipping assignments that already exist.
 List<User> sampleUsers = [SELECT Id, Alias, Username FROM User WHERE Alias IN :aliasByBannerId.values() ORDER BY Alias];
 Set<String> assigned = new Set<String>();
 for (PermissionSetAssignment current : [

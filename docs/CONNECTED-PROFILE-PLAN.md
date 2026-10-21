@@ -177,7 +177,7 @@ recovery):**
    (a standard, always-available portal profile) with an `Account` on each test `Contact`
    (portal users require one).
 3. **A fresh custom object grants zero access to non-admin profiles by default.** A new
-   `Alumni_Favorites_User` permission set was added, granting object CRUD on
+   `Alumni_Community` permission set was added, granting object CRUD on
    `Alumni_Favorite__c` and Read on the small field set `getMyFavorites()` resolves from
    `Alumni_Directory__c`/`Professional_Directory__c` (`Name`/`First_Name_Text__c`/
    `Last_Name_Text__c`/`Class_Year_Text__c` and `Company_Name__c`/`Company_City__c`/
@@ -204,7 +204,7 @@ recovery):**
    isolate it, which is the standard pattern for this restriction inside test methods.
 
 Deployed to `dev` scratch org only (`Alumni_Favorite__c`, `AlumniFavoriteController`,
-`AlumniFavoriteController_TEST`, `Alumni_Favorites_User` permission set). Not yet pushed to
+`AlumniFavoriteController_TEST`, `Alumni_Community` permission set). Not yet pushed to
 `eda-staging`.
 
 ### Task 3: Build reusable `ustFavoriteToggle` LWC — ✅ Done

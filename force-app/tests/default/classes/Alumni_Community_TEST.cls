@@ -1,5 +1,5 @@
 /**
- * Proves that a signed-in portal user with the Alumni_Portal_User permission set can use the portal, and that the
+ * Proves that a signed-in portal user with the Alumni_Community permission set can use the portal, and that the
  * permission set (not something else) is what grants it. Everything runs as a real Customer Community user.
  *
  * Notes on what runAs can and cannot show:
@@ -9,14 +9,14 @@
  *    runAs blocks. Only one portal user is created per test: a scratch org has just five Community licenses.
  */
 @IsTest
-private class Alumni_Portal_User_TEST {
+private class Alumni_Community_TEST {
 
     private static final String BANNER_ID = '99999991';
     private static final String OTHER_BANNER_ID = '99999992';
 
     private static final Set<String> PORTAL_CLASSES = new Set<String>{
         'AlumniProfileController', 'AlumniConnectionsController', 'AlumniBusinessDirectoryController',
-        'AlumniDirectoryListController', 'AlumniNewsListController', 'PortalWidgetController'
+        'AlumniDirectoryListController', 'AlumniNewsListController', 'PortalWidgetController', 'AlumniFavoriteController'
     };
 
     /** A role-holding owner for the portal Contact's Account (Experience Cloud requires the owner to have a role). */
@@ -35,7 +35,7 @@ private class Alumni_Portal_User_TEST {
         // to create the business listings below. Setup DML, so it goes with the user insert.
         insert new PermissionSetAssignment(
             AssigneeId = owner.Id,
-            PermissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_User' LIMIT 1].Id
+            PermissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Community' LIMIT 1].Id
         );
         return owner;
     }
@@ -106,7 +106,7 @@ private class Alumni_Portal_User_TEST {
             if (withPermissionSet) {
                 insert new PermissionSetAssignment(
                     AssigneeId = portalUser.Id,
-                    PermissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_User' LIMIT 1].Id
+                    PermissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Community' LIMIT 1].Id
                 );
             }
         }
@@ -124,7 +124,7 @@ private class Alumni_Portal_User_TEST {
 
     @IsTest
     static void permissionSetGrantsEveryPortalControllerToApexClasses() {
-        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_User' LIMIT 1].Id;
+        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Community' LIMIT 1].Id;
         Set<String> granted = new Set<String>();
         for (SetupEntityAccess access : [
             SELECT SetupEntityId FROM SetupEntityAccess
@@ -143,7 +143,7 @@ private class Alumni_Portal_User_TEST {
 
     @IsTest
     static void guestPermissionSetGrantsThePublicControllers() {
-        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_Guest_User' LIMIT 1].Id;
+        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Community_Guest' LIMIT 1].Id;
         Set<String> granted = new Set<String>();
         for (SetupEntityAccess access : [
             SELECT SetupEntityId FROM SetupEntityAccess
@@ -219,7 +219,7 @@ private class Alumni_Portal_User_TEST {
 
         // The portal user is NOT granted these fields (the permission set only has the nine the profile pages use),
         // yet the public directory returns them: it runs in system mode, so its SELECT list is the only gate.
-        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Portal_User' LIMIT 1].Id;
+        Id permissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'Alumni_Community' LIMIT 1].Id;
         System.assertEquals(0, [
             SELECT COUNT() FROM FieldPermissions
             WHERE ParentId = :permissionSetId AND Field = 'Professional_Directory__c.Company_Description__c'
