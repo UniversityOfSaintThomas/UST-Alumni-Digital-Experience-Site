@@ -34,12 +34,19 @@ public with sharing class AlumniMyUpcomingEventsController {
         List<summit__Summit_Events_Instance__c> eventInstances = [
                 SELECT Id,
                         summit__Event__c,
+                        summit__Instance_Start_Date__c,
+                        summit__Instance_Start_Time__c,
+                        summit__Instance_End_Date__c,
+                        summit__Instance_End_Time__c,
+                        summit__Instance_Time_Zone__c,
+                        summit__Registration_Link__c,
+                        summit__Location_Title_Override__c,
                         summit__Event__r.summit__Event_Name__c,
                         summit__Event__r.summit__Start_Date__c,
                         summit__Event__r.summit__Event_description__c,
                         summit__Event__r.summit__Event_Short_Listing_Description__c,
+                        summit__Event__r.summit__Alternate_Registration_URL__c,
                         summit__Event__r.summit__Location_Title__c,
-                        summit__Location_Title_Override__c,
                         summit__Event__r.Academic_Major_s__c,
                         summit__Event__r.Athletic_Affiliation_s__c,
                         summit__Event__r.Class_Year__c,
@@ -49,13 +56,7 @@ public with sharing class AlumniMyUpcomingEventsController {
                         summit__Event__r.Event_Location_Type_s__c,
                         summit__Event__r.Geo_Locations__c,
                         summit__Event__r.St_Thomas_Connection__c,
-                        summit__Event__r.Volunteer_Status__c,
-                        summit__Instance_Start_Date__c,
-                        summit__Instance_Start_Time__c,
-                        summit__Instance_End_Date__c,
-                        summit__Instance_End_Time__c,
-                        summit__Instance_Time_Zone__c,
-                        summit__Registration_Link__c
+                        summit__Event__r.Volunteer_Status__c
                 FROM summit__Summit_Events_Instance__c
                 WHERE summit__Event__r.RecordTypeId = :recordTypeId
                 AND summit__Active_Status__c = 'Active'
@@ -129,6 +130,8 @@ public with sharing class AlumniMyUpcomingEventsController {
         @AuraEnabled public Boolean registeredStatus;
 
         public UpcomingEventInstance(summit__Summit_Events_Instance__c instance,  Id contactId) {
+            String altUrl = instance.summit__Event__r?.summit__Alternate_Registration_URL__c;
+
             this.instanceId = instance.Id;
             this.startDate = instance?.summit__Instance_Start_Date__c;
             this.startTime = formatInstanceTime(
@@ -137,7 +140,8 @@ public with sharing class AlumniMyUpcomingEventsController {
                     instance?.summit__Instance_Time_Zone__c
             );
             this.eventSchedule = buildEventSchedule(instance);
-            this.registrationLink = extractHrefUrl(instance.summit__Registration_Link__c);
+            this.registrationLink = String.isNotBlank(altUrl) ? extractHrefUrl(altUrl) : extractHrefUrl(instance.summit__Registration_Link__c);
+//            this.registrationLink = String.isNotBlank(instance.summit__Event__r.summit__Alternate_Registration_URL__c) ? extractHrefUrl(instance.summit__Event__r.summit__Alternate_Registration_URL__c) : extractHrefUrl(instance.summit__Registration_Link__c);
             this.registeredStatus = getregisteredStatus(instance.Id, contactId);
         }
     }
