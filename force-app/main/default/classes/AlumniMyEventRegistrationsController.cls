@@ -24,6 +24,7 @@ public with sharing class AlumniMyEventRegistrationsController {
 
         List<summit__Summit_Events_Registration__c> registrations = [
                 SELECT Id,
+                        summit__Location_Title__c,
                         summit__Event__r.summit__Event_Name__c,
                         summit__Event__r.summit__Event_description__c,
                         summit__Event__r.summit__Event_Short_Listing_Description__c,
@@ -73,9 +74,10 @@ public with sharing class AlumniMyEventRegistrationsController {
                     registration.summit__Event_Instance__r?.summit__Instance_Time_Zone__c
             );
             this.eventSchedule = buildEventSchedule(registration.summit__Event_Instance__r);
-            this.locationTitle = String.isNotBlank(registration.summit__Event_Instance__r?.summit__Location_Title_Override__c)
-                    ? registration.summit__Event_Instance__r?.summit__Location_Title_Override__c
-                    : registration.summit__Event__r?.summit__Location_Title__c;
+            this.locationTitle = registration.summit__Location_Title__c;
+//            this.locationTitle = String.isNotBlank(registration.summit__Event_Instance__r?.summit__Location_Title_Override__c)
+//                    ? registration.summit__Event_Instance__r?.summit__Location_Title_Override__c
+//                    : registration.summit__Event__r?.summit__Location_Title__c;
         }
     }
 
