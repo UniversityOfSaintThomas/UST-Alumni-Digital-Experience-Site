@@ -11,7 +11,7 @@
 # Which persona sees what (personas are in datasets/alumni/alumni.recipe.yml):
 #   everyone ........ the All Pages banner/above-footer widgets, the hero, the two-page sidebar widget
 #   smp1 Jordan ..... recent grads (Class Year 2021 AND connection Alumni), young-alumni communications
-#   smp2 Morgan ..... donors, volunteers, Location 1, and the Placeholder college/athletic filters
+#   smp2 Morgan ..... donors, volunteers, Location 1, and the School of Law / Men's Varsity Hockey filters
 #   smp3 Casey ...... parents
 #   smp4 Riley ...... only widgets with no filters (no Alumni Directory record)
 #   a guest ......... only widgets with no filters
@@ -259,14 +259,14 @@
 
 - object: UST_Portal_Widget__c
   fields:
-    Name: "[Sample] Home body - College filter (Placeholder college)"
+    Name: "[Sample] Home body - College filter (School of Law)"
     Component_Name__c: ust_static_content
     Zone__c: body
     Page_Context__c: home
     Is_Active__c: true
     Sort_Order__c: 30
-    Description__c: Filter College = Placeholder (the only valid college in this repo; real ones are inactive). Seen by smp2 only.
-    Filter_College__c: Placeholder
+    Description__c: Filter College = School of Law. Seen by smp2 only.
+    Filter_College__c: School of Law
     Content_CSS_Class__c: ust-content-inverse
     Static_Content_Header__c: College-specific news
     Static_Content__c: <p>Stands in for a real college filter such as the School of Law.</p>
@@ -330,14 +330,14 @@
 
 - object: UST_Portal_Widget__c
   fields:
-    Name: "[Sample] Home sidebar - athletic affiliation filter (Placeholder)"
+    Name: "[Sample] Home sidebar - athletic affiliation filter (Men's Varsity Hockey)"
     Component_Name__c: ust_static_content
     Zone__c: sidebar
     Page_Context__c: home
     Is_Active__c: true
     Sort_Order__c: 40
-    Description__c: Filter Athletic Affiliation = Placeholder (real teams are inactive in this repo). Seen by smp2 only.
-    Filter_Athletic_Affiliation__c: Placeholder
+    Description__c: Filter Athletic Affiliation = Men's Varsity Hockey. Seen by smp2 only.
+    Filter_Athletic_Affiliation__c: Men's Varsity Hockey
     Static_Content_Header__c: Athletics
     Static_Content__c: <p>Stands in for a team filter such as varsity hockey.</p>
 

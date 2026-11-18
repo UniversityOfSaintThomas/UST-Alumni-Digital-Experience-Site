@@ -115,6 +115,43 @@ private class PortalPageRegistry_TEST {
     }
 
     @IsTest
+    static void objectAccessWithoutFieldAccessGivesAMessageThatNamesThePermissionSet() {
+        Profile standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
+        String uniqueName = 'registry' + String.valueOf(Crypto.getRandomInteger()).replace('-', '');
+        User partialUser = new User(
+                Alias = 'partial', Email = uniqueName + '@example.com', EmailEncodingKey = 'UTF-8',
+                LastName = 'Partial', LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US',
+                ProfileId = standardProfile.Id, TimeZoneSidKey = 'America/Chicago',
+                Username = uniqueName + '@example.com'
+        );
+        insert partialUser;
+        insert new UST_Portal_Zone_Placement__c(Placement_Key__c = 'home|body', Page_Name__c = 'home',
+                Zone__c = activeZones()[0], Scope__c = PortalPageRegistry.SCOPE_PAGE);
+
+        // A user who can read the object but none of its optional fields, the state a metadata deploy leaves for
+        // anyone who has not been given the widget admin permission set. Setup DML needs its own transaction.
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            PermissionSet objectOnly = new PermissionSet(Name = 'ZZ_Object_Only', Label = 'ZZ Object Only');
+            insert objectOnly;
+            insert new ObjectPermissions(ParentId = objectOnly.Id, SobjectType = 'UST_Portal_Zone_Placement__c',
+                    PermissionsRead = true);
+            insert new PermissionSetAssignment(AssigneeId = partialUser.Id, PermissionSetId = objectOnly.Id);
+        }
+
+        String message;
+        System.runAs(partialUser) {
+            try {
+                PortalPageRegistry.getPlacements();
+                System.assert(false, 'Reading the registry without field access should be refused');
+            } catch (AuraHandledException refused) {
+                message = refused.getMessage();
+            }
+        }
+        System.assert(message.contains('UST_Portal_Widget_Admin'),
+                'The message should name the permission set to assign, but was: ' + message);
+    }
+
+    @IsTest
     static void getPlacementsExcludesHiddenAndOrders() {
         List<String> zones = activeZones();
         PortalPageRegistry.registerPlacement('zeta_page', zones[0], 'Page');

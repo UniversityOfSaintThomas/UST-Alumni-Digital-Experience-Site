@@ -187,4 +187,22 @@ describe('c-ust-page-context-picker', () => {
         expect(text(element)).toContain('page registry could not be loaded');
         expect(element.shadowRoot.querySelector('lightning-input')).not.toBeNull();
     });
+
+    it('shows the reason the server gave when the registry cannot be loaded', async () => {
+        getPlacements.mockRejectedValue({
+            body: { message: 'Assign the UST_Portal_Widget_Admin permission set to this user.' }
+        });
+        const element = await createPicker({ zone: 'sidebar' });
+        expect(text(element)).toContain('page registry could not be loaded');
+        expect(text(element)).toContain('Assign the UST_Portal_Widget_Admin permission set');
+    });
+
+    it('does not call selected pages "not registered" when the registry never loaded', async () => {
+        getPlacements.mockRejectedValue(new Error('no access'));
+        const element = await createPicker({ zone: 'sidebar', value: 'home;events;news' });
+        expect(text(element)).toContain('page registry could not be loaded');
+        expect(text(element)).not.toContain('Not registered yet');
+        const labels = listbox(element).options.map((option) => option.label);
+        expect(labels.some((label) => label.includes('(not registered)'))).toBe(false);
+    });
 });
