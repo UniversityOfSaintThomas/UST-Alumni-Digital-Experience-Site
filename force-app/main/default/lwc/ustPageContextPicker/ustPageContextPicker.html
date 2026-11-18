@@ -45,6 +45,7 @@
         <template lwc:if={loadFailed}>
             <p class="slds-m-top_x-small slds-text-body_small slds-text-color_error" role="alert">
                 The page registry could not be loaded. You can still type page names below.
+                <template lwc:if={loadFailedReason}> {loadFailedReason}</template>
             </p>
         </template>
 

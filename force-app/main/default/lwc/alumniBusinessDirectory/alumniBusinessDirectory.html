@@ -110,8 +110,13 @@
                             <div class="slds-text-align_center slds-p-around_small slds-m-top_small">
                                 <p class="ust-grid-record-business-name-display">{record.Company_Name__c}</p>
                                 <p lwc:if={record.Company_State__c} class="ust-grid-record-company-city-state">
-                                    {record.Company_City__c},
-                                    {record.Company_State__c}</p>
+                                    <template lwc:if={record.Company_City__c}>
+                                        {record.Company_City__c}, {record.Company_State__c}
+                                    </template>
+                                    <template lwc:else>
+                                        {record.Company_State__c}
+                                    </template>
+                                </p>
                                 <p class="slds-m-top_xx-small ust-grid-record-first-name-last-name-degree">
                                     {record.First_Name__c}
                                     {record.Last_Name__c} {record.degreesFormatted}</p>
@@ -249,7 +254,14 @@
                                 <address class="slds-col slds-grid slds-grid_vertical slds-m-left_small ust-modal-address-reset">
                                     <span class="slds-col ust-modal-company-address-1" lwc:if={selectedDirectoryRecord.Company_Address_Line_1__c}>{selectedDirectoryRecord.Company_Address_Line_1__c}</span>
                                     <span class="slds-col ust-modal-company-address-2" lwc:if={selectedDirectoryRecord.Company_Address_Line_2__c}>{selectedDirectoryRecord.Company_Address_Line_2__c}</span>
-                                    <span class="slds-col ust-modal-company-city-state-zipcode">{selectedDirectoryRecord.Company_City__c}, {selectedDirectoryRecord.Company_State__c} {selectedDirectoryRecord.Company_Zipcode__c}</span>
+                                    <span class="slds-col ust-modal-company-city-state-zipcode">
+                                        <template lwc:if={selectedDirectoryRecord.Company_City__c}>
+                                            {selectedDirectoryRecord.Company_City__c}, {selectedDirectoryRecord.Company_State__c} {selectedDirectoryRecord.Company_Zipcode__c}
+                                        </template>
+                                        <template lwc:else>
+                                            {selectedDirectoryRecord.Company_State__c} {selectedDirectoryRecord.Company_Zipcode__c}
+                                        </template>
+                                    </span>
                                 </address>
                             </div>
                             <!-- Phone -->

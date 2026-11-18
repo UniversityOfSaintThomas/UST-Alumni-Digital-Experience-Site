@@ -34,6 +34,8 @@ export default class UstPageContextPicker extends LightningElement {
     placements = [];
     isLoaded = false;
     loadFailed = false;
+    /** The reason the registry could not be loaded, as the server gave it (or a plain fallback). */
+    loadFailedReason = '';
 
     typedPageName = '';
     typedPageError = '';
@@ -82,8 +84,9 @@ export default class UstPageContextPicker extends LightningElement {
                 this.placements = result || [];
                 this.isLoaded = true;
             })
-            .catch(() => {
+            .catch((error) => {
                 this.loadFailed = true;
+                this.loadFailedReason = (error && error.body && typeof error.body.message === 'string' && error.body.message) || '';
                 this.isLoaded = true;
             });
     }
@@ -131,6 +134,10 @@ export default class UstPageContextPicker extends LightningElement {
 
     /** Selected values the registry does not know (other than "all"). */
     get unregisteredSelected() {
+        // When the registry did not load, nothing is known, so no page can be called "not registered".
+        if (this.loadFailed) {
+            return [];
+        }
         return this._selectedPages.filter(
             (pageName) => pageName !== ALL_PAGES_VALUE && !this.knownPageNames.has(pageName)
         );
@@ -157,7 +164,12 @@ export default class UstPageContextPicker extends LightningElement {
         // Keep every selected value visible so it can be removed, even when it is not offered.
         this._selectedPages.forEach((pageName) => {
             if (!options.some((option) => option.value === pageName)) {
-                const suffix = this.knownPageNames.has(pageName) ? ' (no ' + this.zoneLabel + ' zone)' : ' (not registered)';
+                let suffix = '';
+                if (this.knownPageNames.has(pageName)) {
+                    suffix = ' (no ' + this.zoneLabel + ' zone)';
+                } else if (!this.loadFailed) {
+                    suffix = ' (not registered)';
+                }
                 options.push({ label: this.pageLabel(pageName) + suffix, value: pageName });
             }
         });

@@ -112,13 +112,24 @@ public with sharing class PortalPageRegistry {
         if (!Schema.SObjectType.UST_Portal_Zone_Placement__c.isAccessible()) {
             return results;
         }
-        for (UST_Portal_Zone_Placement__c row : [
-                SELECT Id, Page_Name__c, Page_Label__c, Zone__c, Scope__c, Last_Seen__c
-                FROM UST_Portal_Zone_Placement__c
-                WHERE Hidden__c = FALSE
-                WITH USER_MODE
-                ORDER BY Page_Name__c ASC, Zone__c ASC
-        ]) {
+        List<UST_Portal_Zone_Placement__c> rows;
+        try {
+            rows = [
+                    SELECT Id, Page_Name__c, Page_Label__c, Zone__c, Scope__c, Last_Seen__c
+                    FROM UST_Portal_Zone_Placement__c
+                    WHERE Hidden__c = FALSE
+                    WITH USER_MODE
+                    ORDER BY Page_Name__c ASC, Zone__c ASC
+            ];
+        } catch (QueryException blocked) {
+            // Object access without access to every field it selects. Say what to do instead of a generic error.
+            String advice = 'You can see the page registry but not all of its fields. '
+                    + 'Assign the UST_Portal_Widget_Admin permission set to this user.';
+            AuraHandledException problem = new AuraHandledException(advice);
+            problem.setMessage(advice);
+            throw problem;
+        }
+        for (UST_Portal_Zone_Placement__c row : rows) {
             PlacementDto dto = new PlacementDto();
             dto.id = row.Id;
             dto.pageName = row.Page_Name__c;

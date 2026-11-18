@@ -22,11 +22,9 @@
 # Sign in as a sample user from the admin user: Setup > Users > (user) > Login, or "Log in to Experience as User".
 # No passwords are stored anywhere and no emails are sent.
 #
-# Why no real colleges, degrees, or sports? In this repo the School_College, Degree_Types, Varsity_Sports and
-# Academic_Majors value sets keep every real value INACTIVE (only "Placeholder" is valid), and the fields are
-# restricted, so a real value cannot be loaded. These people use the live value sets (Class Year, St Thomas
-# Connection, Volunteer Status, Geo Locations, Sender Key, Event Location) and "Placeholder" for the rest.
-# If those value sets are ever activated, add real values here.
+# Colleges, degrees, and sports: the School_College, Degree_Types, Varsity_Sports and Academic_Majors value
+# sets hold only real values (the old "Placeholder" value is gone), and the fields are restricted, so use a value
+# that is active in those sets. Morgan (smp2) is a law partner: School of Law, Juris Doctor (JD), Men's Varsity Hockey.
 #
 # =========================================================================================================
 # 1. THE FOUR PERSONAS (the Contacts that get portal users). EDA creates each Administrative Account; the admin
@@ -107,9 +105,9 @@
     Geo_Locations__c: Location 1
     Event_Location_Type_s__c: St. Paul
     Content_Sender_Keys__c: UDAR_PlannedGiving;UDAR_Reunions
-    College__c: Placeholder
-    Degree_Level_s__c: Placeholder
-    Athletic_Affiliation_s__c: Placeholder
+    College__c: School of Law
+    Degree_Level_s__c: Juris Doctor (JD)
+    Athletic_Affiliation_s__c: Men's Varsity Hockey
 
 
 # ---- smp3: parent only (sparse directory record) --------------------------------------------------------
